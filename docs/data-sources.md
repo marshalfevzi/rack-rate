@@ -285,7 +285,7 @@ The rewrite preserves these records and their obligations:
 - `src-real-api-pricing` — credit
 - `src-anthropic-max-pricing-search`, `src-openai-pro-pricing-search`,
   `src-cursor-pricing-search`, `src-google-ai-pricing-search`,
-  `src-zai-glm-pricing-search` — vendor pricing, search-corroborated, marked
+  `src-glm-zai-pricing-search` — vendor pricing, search-corroborated, marked
   `confidence: medium`/`low`
 
 ## What never belongs here

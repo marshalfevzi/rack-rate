@@ -9,6 +9,24 @@ Produced by, from the repository root, with the inputs at these hashes:
 
     python3 scripts/validate.py && python3 scripts/compute.py
 
+**All seven hashes below describe the freeze-point revision `37119ad`, not the
+current working tree.** Read them that way. Five of the seven files no longer
+exist at those contents, by design:
+
+- `scripts/validate.py`, `scripts/compute.py`, `data/derived.json` and
+  `data/derived.csv` were deleted by the Stage 1.5 cutover.
+- `data/models.json` and `data/plans.json` were migrated additively by Stage 1.4
+  (new fields on every row), so their working-tree hashes differ from the ones
+  below. The legacy pipeline ran against the revisions listed here; the
+  migration only added fields it does not read.
+- `data/sources.json` matched its listed hash until Stage 1's final commit, which
+  retargeted two present-tense references to the deleted fetcher inside `notes`.
+  No number or citation changed.
+
+Recover the frozen inputs with `git show 37119ad:data/models.json | shasum -a 256`
+(and likewise for each path). A mismatch against the working tree is expected and
+is not a fixture defect.
+
 | File | sha256 |
 |---|---|
 | data/models.json | afd43741f4da56327946519c682c9dee4a344d7f015bc112d8f91f756ce8080c |
