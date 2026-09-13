@@ -12,6 +12,7 @@
       "id": "gpt-6-astra",
       "name": "gpt-6-astra",
       "provider": "OpenAI",
+      "provider_slug": "openai",
       "score_pct": 74.12,
       "score_pass_at_4_pct": 80.53,
       "reasoning_effort": "xhigh",
@@ -64,12 +65,16 @@
           "input_tokens_per_task": 310994,
           "agent_steps_per_task": 17.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "expected-launch",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.8-flash",
       "name": "gemini-3.8-flash",
       "provider": "Google",
+      "provider_slug": "google",
       "score_pct": 73.83,
       "score_pass_at_4_pct": 85.84,
       "reasoning_effort": "high",
@@ -98,12 +103,16 @@
           "input_tokens_per_task": 13458718,
           "agent_steps_per_task": 140.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-opus-5",
       "name": "claude-opus-5",
       "provider": "Anthropic",
+      "provider_slug": "anthropic",
       "score_pct": 73.65,
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "max",
@@ -156,12 +165,16 @@
           "input_tokens_per_task": 872162,
           "agent_steps_per_task": 29.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.6-sol",
       "name": "gpt-5.6-sol",
       "provider": "OpenAI",
+      "provider_slug": "openai",
       "score_pct": 72.67,
       "score_pass_at_4_pct": 85.84,
       "reasoning_effort": "max",
@@ -214,12 +227,16 @@
           "input_tokens_per_task": 541018,
           "agent_steps_per_task": 21.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-fable-5",
       "name": "claude-fable-5",
       "provider": "Anthropic",
+      "provider_slug": "anthropic",
       "score_pct": 69.91,
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "xhigh",
@@ -272,12 +289,16 @@
           "input_tokens_per_task": 815862,
           "agent_steps_per_task": 29.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.6-terra",
       "name": "gpt-5.6-terra",
       "provider": "OpenAI",
+      "provider_slug": "openai",
       "score_pct": 69.62,
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "max",
@@ -330,12 +351,16 @@
           "input_tokens_per_task": 405397,
           "agent_steps_per_task": 20.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "glm-5.3",
       "name": "glm-5.3",
       "provider": "Zhipu (Z.ai)",
+      "provider_slug": "zhipu",
       "score_pct": 68.96,
       "score_pass_at_4_pct": 87.61,
       "reasoning_effort": "max",
@@ -346,12 +371,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "kimi-k3",
       "name": "kimi-k3",
       "provider": "Moonshot AI",
+      "provider_slug": "moonshot",
       "score_pct": 68.51,
       "score_pass_at_4_pct": 89.38,
       "reasoning_effort": "max",
@@ -362,12 +391,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "grok-4.6",
       "name": "grok-4.6",
       "provider": "xAI",
+      "provider_slug": "xai",
       "score_pct": 67.48,
       "score_pass_at_4_pct": 84.07,
       "reasoning_effort": "medium",
@@ -412,12 +445,16 @@
           "input_tokens_per_task": 1089649,
           "agent_steps_per_task": 39.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.6-luna",
       "name": "gpt-5.6-luna",
       "provider": "OpenAI",
+      "provider_slug": "openai",
       "score_pct": 67.19,
       "score_pass_at_4_pct": 90.27,
       "reasoning_effort": "max",
@@ -470,12 +507,16 @@
           "input_tokens_per_task": 143435,
           "agent_steps_per_task": 12.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.5",
       "name": "gpt-5.5",
       "provider": "OpenAI",
+      "provider_slug": "openai",
       "score_pct": 67.04,
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "xhigh",
@@ -520,12 +561,16 @@
           "input_tokens_per_task": 645288,
           "agent_steps_per_task": 27.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.7-flash",
       "name": "gemini-3.7-flash",
       "provider": "Google",
+      "provider_slug": "google",
       "score_pct": 65.49,
       "score_pass_at_4_pct": 83.19,
       "reasoning_effort": "medium",
@@ -562,12 +607,16 @@
           "input_tokens_per_task": 9612558,
           "agent_steps_per_task": 113.5
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "glm-5.3-flash",
       "name": "glm-5.3-flash",
       "provider": "Zhipu (Z.ai)",
+      "provider_slug": "zhipu",
       "score_pct": 63.39,
       "score_pass_at_4_pct": 84.96,
       "reasoning_effort": "max",
@@ -578,12 +627,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "deepseek-v4-pro",
       "name": "deepseek-v4-pro",
       "provider": "DeepSeek",
+      "provider_slug": "deepseek",
       "score_pct": 62.83,
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "max",
@@ -594,12 +647,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-opus-4.8",
       "name": "claude-opus-4.8",
       "provider": "Anthropic",
+      "provider_slug": "anthropic",
       "score_pct": 58.97,
       "score_pass_at_4_pct": 79.28,
       "reasoning_effort": "max",
@@ -652,12 +709,16 @@
           "input_tokens_per_task": 1658113,
           "agent_steps_per_task": 47.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "qwen-3.8-max",
       "name": "qwen-3.8-max",
       "provider": "Alibaba",
+      "provider_slug": "alibaba",
       "score_pct": 57.46,
       "score_pass_at_4_pct": 83.19,
       "reasoning_effort": "xhigh",
@@ -668,12 +729,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "muse-spark-1.2",
       "name": "muse-spark-1.2",
-      "provider": "Unknown",
+      "provider": null,
+      "provider_slug": null,
       "score_pct": 54.87,
       "score_pass_at_4_pct": 81.42,
       "reasoning_effort": "xhigh",
@@ -684,12 +749,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-sonnet-5",
       "name": "claude-sonnet-5",
       "provider": "Anthropic",
+      "provider_slug": "anthropic",
       "score_pct": 53.85,
       "score_pass_at_4_pct": 78.76,
       "reasoning_effort": "max",
@@ -742,12 +811,16 @@
           "input_tokens_per_task": 3126877,
           "agent_steps_per_task": 70.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "grok-4.5",
       "name": "grok-4.5",
       "provider": "xAI",
+      "provider_slug": "xai",
       "score_pct": 53.76,
       "score_pass_at_4_pct": 77.88,
       "reasoning_effort": "high",
@@ -758,12 +831,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "deepseek-v4-flash",
       "name": "deepseek-v4-flash",
       "provider": "DeepSeek",
+      "provider_slug": "deepseek",
       "score_pct": 53.32,
       "score_pass_at_4_pct": 80.53,
       "reasoning_effort": "max",
@@ -774,12 +851,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "muse-spark-1.1",
       "name": "muse-spark-1.1",
-      "provider": "Unknown",
+      "provider": null,
+      "provider_slug": null,
       "score_pct": 53.32,
       "score_pass_at_4_pct": 79.65,
       "reasoning_effort": "xhigh",
@@ -790,12 +871,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.4",
       "name": "gpt-5.4",
       "provider": "OpenAI",
+      "provider_slug": "openai",
       "score_pct": 51.77,
       "score_pass_at_4_pct": 77.88,
       "reasoning_effort": "xhigh",
@@ -806,12 +891,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.6-flash",
       "name": "gemini-3.6-flash",
       "provider": "Google",
+      "provider_slug": "google",
       "score_pct": 46.68,
       "score_pass_at_4_pct": 75.22,
       "reasoning_effort": "high",
@@ -822,12 +911,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "glm-5.2",
       "name": "glm-5.2",
       "provider": "Zhipu (Z.ai)",
+      "provider_slug": "zhipu",
       "score_pct": 43.78,
       "score_pass_at_4_pct": 76.99,
       "reasoning_effort": "max",
@@ -856,12 +949,16 @@
           "input_tokens_per_task": 7049446,
           "agent_steps_per_task": 112.0
         }
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.5-flash",
       "name": "gemini-3.5-flash",
       "provider": "Google",
+      "provider_slug": "google",
       "score_pct": 36.06,
       "score_pass_at_4_pct": 63.72,
       "reasoning_effort": "high",
@@ -872,12 +969,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "kimi-k2.7-code",
       "name": "kimi-k2.7-code",
       "provider": "Moonshot AI",
+      "provider_slug": "moonshot",
       "score_pct": 30.53,
       "score_pass_at_4_pct": 61.06,
       "reasoning_effort": null,
@@ -888,12 +989,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-sonnet-4.6",
       "name": "claude-sonnet-4.6",
       "provider": "Anthropic",
+      "provider_slug": "anthropic",
       "score_pct": 29.93,
       "score_pass_at_4_pct": 56.64,
       "reasoning_effort": "high",
@@ -904,12 +1009,16 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.1-pro-preview",
       "name": "gemini-3.1-pro-preview",
       "provider": "Google",
+      "provider_slug": "google",
       "score_pct": 11.73,
       "score_pass_at_4_pct": 28.32,
       "reasoning_effort": "high",
@@ -920,7 +1029,10 @@
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
-      ]
+      ],
+      "benchmark_version": "deepswe@1.1",
+      "cost_basis": "list",
+      "retrieved_at": "2026-09-10"
     }
   ]
 }

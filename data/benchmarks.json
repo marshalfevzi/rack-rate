@@ -1,0 +1,16 @@
+{
+  "benchmarks": [
+    {
+      "id": "deepswe",
+      "version": "1.1",
+      "title": "DeepSWE v1.1",
+      "url": "https://deepswe.datacurve.ai/",
+      "generated_at": "2026-09-03T22:24:37.984682+00:00",
+      "task_count": 113,
+      "unit": "pass@1",
+      "scale": "0-100",
+      "retrieved_at": "2026-09-10",
+      "rows": []
+    }
+  ]
+}

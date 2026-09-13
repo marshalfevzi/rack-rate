@@ -49,7 +49,7 @@ unless you ask otherwise.
 
 - Annual or promotional pricing. One billing basis keeps the comparison readable.
 - Regional pricing. Worth doing, but as its own axis, not by quietly changing the base numbers.
-- Benchmark task content. See the note in SOURCES.md.
+- Benchmark task content. See the note in docs/data-sources.md.
 - Affiliate links.
 
 ## Upstream changes

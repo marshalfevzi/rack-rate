@@ -38,6 +38,10 @@ source-level detail behind it.
   permissive licenses.
 - **Redistribution: permitted** for the numeric results and our derived figures,
   with credit and a link.
+- **Status:** The live DeepSWE leaderboard is still blocked by this build
+  environment's network egress. `data/models.json`'s scores come from a
+  directly-supplied snapshot recorded as `src-deepswe-data`. The Stage 2.2
+  fetcher's endpoint remains unverified against the live site.
 
 **Hard constraint — no task content.** DeepSWE ships a canary string to detect
 mirroring, and contamination would destroy the benchmark this project depends
@@ -97,7 +101,7 @@ Constraints:
   ChatGPT Plus, Ollama Pro, OpenCode Go, Kimi Code, GLM Coding Plan, Cursor Pro
   and GitHub Copilot Pro, among others.
 - **Required attribution, verbatim, per the upstream license — this must appear
-  in `data/sources.json`, in `SOURCES.md`, and on the site's Sources page:**
+  in `data/sources.json`, in `docs/data-sources.md`, and on the site's Sources page:**
 
   > Identification of the creator: mahonzhan@gmail.com
   > License Notice: Licensed under the Creative Commons Attribution 4.0
@@ -258,15 +262,16 @@ the honest configuration is the default one: AA disabled, linked out.
 
 `https://github.com/FeiZhuLulu/real-api-pricing` (MIT, 326★) reached a related
 idea first: real cost per usable token across third-party leaderboards, with
-Pareto frontiers. It is credited in `README.md` and on the Sources page. **No
-figures from it are copied into this repo.**
+Pareto frontiers. It is credited in `README.md` and on the Sources page.
 
+It is used for credit only: no figures from it are copied into this repo. No
+regional or promotional pricing or affiliate links are included.
 It is also the closest available **risk calibration** on the Artificial
 Analysis question: it publishes AA Intelligence and Coding Agent scores on
-every one of its 202 exported rows, combined with four other leaderboards, in a
-public model-comparison product — the same shape of use the terms restrict. Its
-own `SOURCES.md` disclaims exactly the inference we must not draw: source links
-are provenance, "not a claim that third-party datasets are MIT-licensed."
+every one of its 202 exported rows, combined with four other leaderboards, in
+a public model-comparison product — the same shape of use the terms restrict.
+Its own `SOURCES.md` disclaims exactly the inference we must not draw: source
+links are provenance, "not a claim that third-party datasets are MIT-licensed."
 Treat it as evidence that this use is *practised publicly*, never as evidence
 that it is *permitted*.
 

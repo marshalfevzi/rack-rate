@@ -38,7 +38,8 @@
       "model_scope": [
         "Anthropic"
       ],
-      "cross_check_tokens_month": 1588000000
+      "cross_check_tokens_month": 1588000000,
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "claude-max-5x",
@@ -62,7 +63,8 @@
       "available": true,
       "model_scope": [
         "Anthropic"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "claude-max-20x",
@@ -86,7 +88,8 @@
       "available": true,
       "model_scope": [
         "Anthropic"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "chatgpt-plus",
@@ -108,7 +111,8 @@
       "model_scope": [
         "OpenAI"
       ],
-      "cross_check_tokens_month": 616000000
+      "cross_check_tokens_month": 616000000,
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "chatgpt-pro-20x",
@@ -130,7 +134,8 @@
       "available": true,
       "model_scope": [
         "OpenAI"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "cursor-pro",
@@ -150,7 +155,8 @@
         "src-cursor-pricing-search"
       ],
       "available": true,
-      "model_scope": "any"
+      "model_scope": "any",
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "cursor-pro-plus",
@@ -168,7 +174,8 @@
         "src-cursor-pricing-search"
       ],
       "available": true,
-      "model_scope": "any"
+      "model_scope": "any",
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "cursor-ultra",
@@ -186,7 +193,8 @@
         "src-cursor-pricing-search"
       ],
       "available": true,
-      "model_scope": "any"
+      "model_scope": "any",
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "opencode-go",
@@ -212,7 +220,8 @@
         "qwen-3.6-plus",
         "minimax-m2.7"
       ],
-      "model_scope_note": "model_scope is the exact model list OpenCode Go's own page names as included, not every model DeepSWE tracks."
+      "model_scope_note": "model_scope is the exact model list OpenCode Go's own page names as included, not every model DeepSWE tracks.",
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "ollama-pro",
@@ -230,7 +239,8 @@
         "src-awesome-coding-plan"
       ],
       "available": true,
-      "model_scope": "any"
+      "model_scope": "any",
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "github-copilot-pro",
@@ -248,13 +258,15 @@
         "src-awesome-coding-plan"
       ],
       "available": true,
-      "model_scope": "any"
+      "model_scope": "any",
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "kimi-code-andante",
       "name": "Kimi Code Andante",
       "provider": "Moonshot AI",
       "price_usd_month": 7.23,
+      "fx": { "rate": 6.7787, "date": "2026-09-04" },
       "quota_model": "requests",
       "requests_month": 2556,
       "measured_against_model": "kimi-k2.5",
@@ -269,13 +281,15 @@
       "available": true,
       "model_scope": [
         "Moonshot AI"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "kimi-code-allegretto",
       "name": "Kimi Code Allegretto",
       "provider": "Moonshot AI",
       "price_usd_month": 29.36,
+      "fx": { "rate": 6.7787, "date": "2026-09-04" },
       "quota_model": "requests",
       "requests_month": 36292,
       "measured_against_model": "kimi-k2.5",
@@ -290,13 +304,15 @@
       "available": true,
       "model_scope": [
         "Moonshot AI"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "glm-coding-lite",
       "name": "GLM Coding Plan Lite",
       "provider": "Zhipu (Z.ai)",
       "price_usd_month": 7.23,
+      "fx": { "rate": 6.7787, "date": "2026-09-04" },
       "quota_model": "requests",
       "requests_month": 2400,
       "measured_against_model": "glm-5.1",
@@ -311,13 +327,15 @@
       "available": true,
       "model_scope": [
         "Zhipu (Z.ai)"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "glm-coding-pro",
       "name": "GLM Coding Plan Pro",
       "provider": "Zhipu (Z.ai)",
       "price_usd_month": 21.98,
+      "fx": { "rate": 6.7787, "date": "2026-09-04" },
       "quota_model": "requests",
       "requests_month": 12000,
       "measured_against_model": "glm-5.1",
@@ -332,7 +350,8 @@
       "available": true,
       "model_scope": [
         "Zhipu (Z.ai)"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     },
     {
       "id": "google-ai-pro",
@@ -353,7 +372,8 @@
       "available": true,
       "model_scope": [
         "Google"
-      ]
+      ],
+      "retrieved_at": "2026-09-09"
     }
   ],
   "known_gaps": [
@@ -381,6 +401,16 @@
       "plan": "MiniMax Coding Plan Plus",
       "provider": "MiniMax",
       "reason": "A real measured quota exists in Awesome Coding Plan (CNY 49/month, 54,400 requests, CNY 4,344 value) but has not yet been added to plans.json."
+    },
+    {
+      "plan": "Kimi Code Andante, Kimi Code Allegretto",
+      "provider": "Moonshot AI",
+      "reason": "measured_against_model is kimi-k2.5, which is not in this DeepSWE snapshot. The measured request count cannot be converted to tasks_per_month until a matching model row exists. Never resolve this by substituting a newer Kimi model."
+    },
+    {
+      "plan": "GLM Coding Plan Lite, GLM Coding Plan Pro",
+      "provider": "Zhipu (Z.ai)",
+      "reason": "measured_against_model is glm-5.1, which is not in this DeepSWE snapshot. See the Kimi entry: the gap is the missing model row, not a missing price."
     }
   ]
 }
