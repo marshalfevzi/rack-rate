@@ -62,8 +62,9 @@ bun test
 ```
 
 `bun run dev` prints the local address to open in a browser. The first two
-commands are the normal path for viewing the site; the latter two are the
-typecheck and test gates.
+commands are the normal path for viewing the site; the last two are the gates,
+and `bun run check` itself runs `tsc`, oxlint, a formatting check, and
+`astro check`.
 
 ## Data commands
 
@@ -81,6 +82,9 @@ bun run data:build
 bun run og
 bun run build
 bun run check
+bun run lint
+bun run format
+bun run quality
 bun run test
 bun run dev
 ```
@@ -92,6 +96,12 @@ bun run dev
   `data:build` runs validation and computation together.
 - `build` builds the data and Astro site. `og` generates the social card with
   satori → resvg via `apps/site/scripts/og.ts`.
+- `lint` runs oxlint with every rule at error severity; `lint:fix` applies its
+  safe autofixes.
+- `format` rewrites files with oxfmt; `format:check` is the non-writing gate
+  form.
+- `quality` runs the fallow report over dead code, duplication, and complexity.
+  It is advisory: it reports findings and is never part of `bun run check`.
 - Artificial Analysis is disabled unless both `AA_API_KEY` and
   `AA_PUBLISH=1` are explicitly set. See [CAVEATS.md](CAVEATS.md) before
   enabling it.

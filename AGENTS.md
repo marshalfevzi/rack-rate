@@ -99,12 +99,25 @@ bun run compute             # data/derived.json (join, metrics, frontiers)
 bun run data:build          # validate && compute
 bun run build               # data:build → astro build → og image → dist/
 bun run typecheck           # tsc --build --force
-bun run check               # typecheck (types are the gate; no formatter config ships yet)
+bun run lint                # oxlint, every rule at error severity
+bun run lint:fix            # oxlint --fix (safe autofixes only)
+bun run format              # oxfmt, writes in place
+bun run format:check        # oxfmt --check (the gate form)
+bun run quality             # fallow report: dead code, duplication, complexity
+bun run check               # typecheck → lint → format:check → astro check
 bun test                    # unit tests
 ```
 
-If a stage needs a formatter or bundler config, add it in that stage and record
-it here. Do not add tooling speculatively.
+Tooling is fixed as of task 1.10: `oxlint` 1.82.0 with the vendored anti-slop
+plugin (`tools/oxlint/anti-slop/`, registered in `.oxlintrc.json` and excluded
+from lint, format and typecheck), `oxfmt` 0.67.0 with `semi: false` to match the
+existing semicolon-free style, and `fallow` 3.25.0 as a report-only reviewer
+(`bun run quality`, no gate). Two exclusions are load-bearing rather than taste:
+`data/**` is never formatted because fixture hashes are recorded in `PLAN.md`,
+and `**/*.md` is out of format scope. `.astro` files get Oxlint's frontmatter
+linting but no formatting — oxfmt has no Astro support. If a stage needs another
+formatter or bundler config, add it in that stage and record it here. Do not add
+tooling speculatively.
 
 ## Invariants — violating one of these is a bug
 

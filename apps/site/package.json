@@ -2,8 +2,8 @@
   "name": "@rack-rate/site",
   "version": "2.0.0",
   "private": true,
-  "type": "module",
   "description": "Astro static site. Reads data/*.json at build time; ships zero data fetching to the browser.",
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

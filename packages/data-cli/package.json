@@ -2,11 +2,11 @@
   "name": "@rack-rate/data-cli",
   "version": "2.0.0",
   "private": true,
-  "type": "module",
   "description": "Gather, normalize, validate and derive benchmark + plan data. Network and filesystem live only here.",
   "bin": {
     "rack-rate-data": "./src/main.ts"
   },
+  "type": "module",
   "scripts": {
     "cli": "bun run src/main.ts"
   },

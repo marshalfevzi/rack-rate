@@ -1,8 +1,11 @@
 import { z } from "zod"
 
 const ReasoningEffort = z.enum(["low", "medium", "high", "xhigh", "max"])
+
 const Confidence = z.enum(["measured", "high", "medium", "low"])
+
 const CostBasis = z.enum(["list", "expected-launch", "disputed", "unknown"])
+
 const QuotaModel = z.enum(["budget", "credits", "requests", "tokens_total"])
 
 export const Source = z.strictObject({
@@ -43,7 +46,10 @@ export const Model = z.strictObject({
   id: z.string().min(1),
   name: z.string().min(1),
   provider: z.string().min(1).nullable(),
-  provider_slug: z.string().regex(/^[a-z0-9-]+$/).nullable(),
+  provider_slug: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .nullable(),
   score_pct: z.number().min(0).max(100),
   score_pass_at_4_pct: z.number().min(0).max(100),
   reasoning_effort: ReasoningEffort.nullable(),

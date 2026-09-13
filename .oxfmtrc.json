@@ -1,0 +1,4 @@
+{
+  "semi": false,
+  "ignorePatterns": ["data/**", "**/*.md", "tools/oxlint/anti-slop/**"]
+}

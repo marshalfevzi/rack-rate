@@ -2,8 +2,8 @@
   "name": "@rack-rate/core",
   "version": "2.0.0",
   "private": true,
-  "type": "module",
   "description": "Domain types, zod schemas, cost model, benchmark normalization, Pareto frontier, insight math. Pure and I/O-free.",
+  "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*.ts"
