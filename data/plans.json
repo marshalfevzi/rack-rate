@@ -13,7 +13,7 @@
       "tokens_month"
     ],
     "_note": "A plan may set quota_unresolved: true to skip the required-field check above when the conversion genuinely does not exist yet. Explain why in known_gaps. requests_month's tasks_per_month divides by agent_steps_per_task from the matching model in data/models.json; agent_steps_per_task_assumed is only a plan-level fallback for a model DeepSWE hasn't measured, and is not itself required.",
-    "model_scope": "Every plan also needs model_scope: either the string 'any' for a multi-model aggregator plan (Cursor, Ollama, GitHub Copilot), or a list of provider names (matching a model's provider field) or exact model ids (for a plan with a fixed included list, like OpenCode Go) that plan can actually run. scripts/compute.py only prices a model against a plan whose model_scope allows it \u2014 a Claude subscription cannot run a Kimi model, however the arithmetic would come out."
+    "model_scope": "Every plan also needs model_scope: either the string 'any' for a multi-model aggregator plan (Cursor, Ollama, GitHub Copilot), or a list of provider names (matching a model's provider field) or exact model ids (for a plan with a fixed included list, like OpenCode Go) that plan can actually run. @rack-rate/core (Stage 2.7) applies the same rule \u2014 a Claude subscription cannot run a Kimi model, however the arithmetic would come out."
   },
   "plans": [
     {
