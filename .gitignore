@@ -1,4 +1,14 @@
+node_modules/
+dist/
+.astro/
+data/raw/
+.env
+.env.*
+*.tsbuildinfo
+
+# Legacy Python pipeline — removed in Stage 1.5 of PLAN.md.
 __pycache__/
 *.pyc
 .venv/
+
 .DS_Store

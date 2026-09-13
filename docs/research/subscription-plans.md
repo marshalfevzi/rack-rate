@@ -1,0 +1,166 @@
+# Subscription plans research
+
+**Verdict:** Convertible quotas exist for ~14 plans (budget/credits/requests); Google AI credits, SuperGrok shared pool, Cursor Pro+/Ultra multipliers-without-pools, and JS-only CN pages stay `quota_unresolved` or `low` — do not compute cost-per-task for them.
+
+All live fetches below retrieved **2026-09-14** unless noted. Anything not fetched live is marked `[UNVERIFIED]`. Prices are **USD, monthly billing only** (annual/quarterly noted separately, never used for `price_usd_month`). Quota vocabulary: `budget` (USD) / `credits` / `requests` / `tokens` / `unlimited-with-FUP`.
+
+---
+
+## 1. Per-vendor table (canonical)
+
+| Plan (plans.json id) | Price/mo USD (monthly billing) | Quota model | Exact published limit wording (quote) | Measurable? | Source URL + date |
+|---|---|---|---|---|---|
+| `claude-pro` | $20 | `budget` ($1273.60/mo implied) + `requests` 14360/mo + `tokens` 1.588B (measured on claude-opus-4.8) | vendor: "At least five times the usage per session compared to our free service" + "session-based usage limit will reset every five hours" + "weekly usage limit that applies across all models"; measured: 5h $31.84 | Y (measured) | https://support.claude.com/en/articles/8325606-what-is-the-pro-plan (2026-09-14); https://claude.ai/upgrade (2026-09-14); measured via https://github.com/mahonzhan/awesome-coding-plan (2026-09-14) |
+| `claude-max-5x` | $100 | `budget` ($6368.0) | vendor: "Max 5x provides five times more usage per session than the Pro plan" + "session-based usage limit will reset every five hours" + weekly limit | Y (scaled, medium) | https://support.claude.com/en/articles/11049741-what-is-the-max-plan (2026-09-14) |
+| `claude-max-20x` | $200 | `budget` ($25472.0) | vendor: "Max 20x provides 20 times more usage per session than the Pro plan" | Y (scaled, medium) | same as above (2026-09-14) |
+| `chatgpt-plus` | $20 | `budget` ($436.48) + `requests` 8760 + `tokens` 616M (measured on gpt-5.6-sol) | pricing page: "Expanded Codex usage" (no number); help: Codex "Terra for Free and Go; Sol, Terra, and Luna for Plus, Pro, Business, and Enterprise" | Y (measured) | https://openai.com/chatgpt/pricing/ (2026-09-14, prices JS-stripped); https://help.openai.com/en/articles/11909943-codex-use-in-chatgpt [redirected to GPT-5.6 article] (2026-09-14); measured via awesome-coding-plan |
+| `chatgpt-pro-20x` | $200 | `budget` ($8729.6) | help: "Pro $200: 200 messages per week" (GPT-6 Pro in Chat) + "Separate 170 messages per day for GPT-5.6 Sol Pro. Both models together are also limited to 200 messages per day" — **Chat only, NOT Codex** | Partial (Codex quota unnumbered on Plus/Pro pricing page) | https://help.openai.com/en/articles/11909943-codex-use-in-chatgpt (2026-09-14); rate card https://help.openai.com/en/articles/20001106-codex-rate-card (2026-09-14) |
+| `cursor-pro` | $20 | `budget` ($20 floor) + `unlimited-with-FUP` (Auto/tab) | docs: "Pro: $20/mo — Included / Included" (Cursor Models + Other Models pools); "Both pools are visible in your editor settings"; "Daily Tab users: Typically stay within included usage" | Y (floor, high) | https://cursor.com/docs/models-and-pricing (2026-09-14); https://cursor.com/pricing (2026-09-14, per-tab $ stripped from static HTML) |
+| `cursor-pro-plus` | $60 | `budget` ($60 placeholder) | pricing-md: "Pro+: $60/mo"; third-party: "Pro+: $60/month (monthly credits: $70)" `[UNVERIFIED — aggregator only]` | N (placeholder) | https://cursor.com/help/account-and-billing/pricing.md (via web_search 2026-09-14) `[UNVERIFIED — not directly fetched]` |
+| `cursor-ultra` | $200 | `budget` ($400 placeholder) | pricing-md: "Ultra: $200/mo"; third-party: "monthly credits: $400" `[UNVERIFIED]` | N (placeholder) | same as above |
+| `opencode-go` | $10 | `budget` ($60/mo usage) | vendor: "Go costs $10/month" / "Use with any agent. $10/month. Top up credit if needed." + usage table "Monthly usage" e.g. `Kimi K3 | 110 | $15`, `Kimi K2.7 Code | 1,350 | $60`, footer `*View all 27 models` | Y (high) | https://opencode.ai/go (2026-09-14) |
+| `ollama-pro` | $20 `[UNVERIFIED — Pro price line missing from static fetch; presumed]` | `budget` ($60 credits) | vendor: "Pro: $60 of usage credits per month"; FAQ: "included usage resets monthly" / "No [rollover]" / "Usage is measured in tokens at each model's rates." Model rows: `kimi-k2.6 | $0.95 | $0.16 | $4.00`, `glm-5.1 | $1.00 | $0.20 | $3.20`, `deepseek-v4-pro | $0.66 | $0.022 | $1.98` per 1M (Input|Cached|Output); peak `12:00–18:00 UTC Mon–Fri` | Y (credits, high) | https://ollama.com/pricing (2026-09-14) |
+| `ollama-max` / `ollama-team` | Max $? `[UNVERIFIED]` / Team $500 floor | `budget` | vendor: "Max: $300 of usage credits per month", "Team: starts at $500 per month ... $1,000 of usage credits included each month, shared across the team." | Partial (credits known, price floor only for Team) | https://ollama.com/pricing (2026-09-14) — in `known_gaps` at snapshot time |
+| `github-copilot-pro` | $10 | `budget` ($15 credits) + `unlimited-with-FUP` (completions) | vendor: "Pro $10USD per user/month ... $15 monthly total credits for Pro" + "Unlimited code completion and next edit suggestions"; "Pro+ $39USD ... $70 monthly total credits"; "Max $100USD ... $200 monthly total credits"; "Free $0 ... 2,000 completions per month" | Y (high) | https://github.com/features/copilot/plans (2026-09-14) |
+| `kimi-code-andante` | CNY49 → $7.23 (rate 6.7787, 2026-09-04 spot) | `requests` 2556/mo | upstream: Kimi Code 5h/week cap, shared credit pool; help: "Kimi Code has a separate 5-hour-per-week limit" + "Credits refresh monthly; unused credits expire" | Y (measured) | https://www.kimi.com/membership/pricing (2026-09-14 JS shell, no static price); https://www.kimi.com/en/help/membership/membership-pricing + membership-overview (via web_search 2026-09-14); measured via awesome-coding-plan |
+| `kimi-code-allegretto` | CNY199 → $29.36 | `requests` 36292/mo | same mechanics; upstream notes `20 倍额度` (20x) wording | Y (measured) | same as above |
+| `glm-coding-lite` (domestic CNY) | CNY49 → $7.23 | `requests` 2400 on glm-5.1 | upstream: "3x Claude Pro 用量额度 / 每5小时最多约80 prompts / 每周最多约400 prompts" | Y (measured) | https://bigmodel.cn/glm-coding (2026-09-14 JS shell); measured via awesome-coding-plan |
+| `glm-coding-pro` (domestic CNY) | CNY149 → $21.98 | `requests` 12000 | upstream: "5x Lite / 最多约400 prompts / 最多约2000 prompts" | Y (measured) | same as above |
+| `glm-coding-lite-intl` / `pro-intl` / `max-intl` (USD) | $18 / $72–$80 / $160–$168 (sources disagree) | `credits` 2000/5h+10000/wk; 12000+60000; 28000+140000 | docs: "Starting at just 18 USD per month"; "5-hour credits: Dynamically refreshed; credit quota resets 5 hours after consumption"; "Weekly credits: Activated upon subscription; resets every 7 days"; formula: "Model credit usage = (Input tokens × Input multiplier + Cached Input tokens × Cached Input multiplier + Output tokens × Output multiplier) / 10,000"; GLM-5.3 row `6.9 / 1.7 / 24`; Flash `2.3 / 0.56 / 8`; "During off-peak hours, model usage is charged at 50%"; peak "Monday to Friday, 14:00–18:00 Singapore Standard Time (UTC+8)" | Y (docs-measured, price disputed) | https://docs.z.ai/devpack/overview (2026-09-14); https://z.ai/subscribe (2026-09-14 meta only: "Plans from 18/month") |
+| `google-ai-pro` | $19.99 `[UNVERIFIED in this fetch — TR locale showed ₺869.99/mo; US $19.99 corroborated by prior src + 9to5/Google support]` | `credits` 1000 AI credits/mo — **unmeasurable** | Antigravity: "Flexible AI credit pool" + "rate limits"; subscriptions page: Plus ₺199.99 (2x free), Pro ₺869.99 (4x free, 1000 Flow credits, 5TB), Ultra ₺1.479,99 (5x Pro) + ₺8.999,99 (20x Pro) [TR locale skew]; support: "If you reach your plan's limit, Google AI Pro and Ultra members can purchase AI credits" + "The amount of AI credits used for each feature and model varies" (no table) | N (`quota_unresolved: true`) | https://antigravity.google/pricing (2026-09-14); https://gemini.google/subscriptions/ (2026-09-14 TR locale); https://support.google.com/googleone/answer/16287445 (2026-09-14) |
+| `google-ai-ultra` | $99.99 vs $200 vs $249.99 (disputed) | `credits` 25000/mo (Antigravity block) | Ultra "25000/mo" per awesome-coding-plan Antigravity block; I/O 2026 blogs claim Ultra $100 (cut from $250→$200) `[UNVERIFIED — news]` | N (gap) | `known_gaps`: price disputed, no credit conversion |
+| `supergrok` (+Lite/Plus/Heavy) | $30 ($10 Lite / $100 Plus / $300 Heavy — Heavy via aggregators + x.ai compare table; static supergrok page is noindex JS shell) | **shared weekly pool, no coding quota** | vendor: "$30/month" + "Higher rate limits across all features"; Plus: "$100/month ... Significantly higher usage across Chat, Imagine, Voice & Build"; compare table lists Free/Lite/SuperGrok/Plus/Heavy/Business/Enterprise; **no numeric coding quota** | N (gap: shared pool) | https://x.ai/pricing (2026-09-14); https://x.ai/grok + https://grok.com/supergrok (2026-09-14 JS shell) |
+| `minimax-plus` | CNY49 (measured CNY4344 value, 54400 req, 24亿 tokens, 88.65x) | `requests` | upstream-only row, not yet in plans.json | Y (upstream measured) | awesome-coding-plan (2026-09-14) — `known_gaps` |
+| Out-of-scope (no convertible subscription quota) | Kilo Free $0 / Teams $15/user/mo / Kilo Pass $19–$199/mo (bonus ≤50%); Cline (BYO/infra, no number in static fetch) | n/a (BYOK/pay-as-you-go) | Kilo: "AI inference stays at provider rates with no markup" + "Pay exact provider rates"; Cline meta only | N | https://kilo.ai/pricing (2026-09-14); https://cline.bot/pricing (2026-09-14 meta only) |
+
+**CNY→USD:** 6.7787 (2026-09-04 spot, per plans.json). Recompute on refresh; never hard-code into CLI.
+
+---
+
+## 2. Endpoints (exact URL, method, auth, params, pagination, rate limits, real excerpts)
+
+No JSON API exists for any plan price/quota — all sources are **static HTML/docs pages, GET, no auth, no query params (except grok `?referrer=`), no pagination**. Treat every fetch as a fragile scrape: cache raw HTML + extracted facts + date.
+
+| # | URL (GET, no auth) | Rate limit / stability | Real excerpt (trimmed, 2026-09-14) |
+|---|---|---|
+| 1 | `https://docs.z.ai/devpack/overview` (+ `.md` alt) | none observed | `| Lite | 2,000 | 10,000 |` / `| Pro | 12,000 | 60,000 |` / `| Max | 28,000 | 140,000 |`; `Model credit usage = (Input tokens × Input multiplier + Cached Input tokens × Cached Input multiplier + Output tokens × Output multiplier) / 10,000`; `GLM-5.3 | 6.9 | 1.7 | 24`; Flash `2.3 / 0.56 / 8`; `During off-peak hours, model usage is charged at 50%`; `Peak hours: Monday to Friday, 14:00–18:00 Singapore Standard Time (UTC+8)` |
+| 2 | `https://cursor.com/docs/models-and-pricing` (+ `.md`) | none | `There are two separate usage pools` — `Cursor Models: ... Grok 4.6, Grok 4.5, and Composer 2.5` / `Other Models: ... charged at the model's API price`; `| Pro | $20/mo | Included | Included |`; `Daily Agent users: Typically $60–$100/mo total usage` |
+| 3 | `https://x.ai/pricing` | none | `### SuperGrok / $30/month / Higher rate limits across all features`; `### SuperGrok Plus / $100/month / Significantly higher usage across Chat, Imagine, Voice & Build` |
+| 4 | `https://support.claude.com/en/articles/8325606-what-is-the-pro-plan` | none | `The Pro plan is available for $20 per month (US)`; `at least five times the usage per session compared to our free service`; `session-based usage limit will reset every five hours`; `weekly usage limit that applies across all models` |
+| 5 | `https://support.claude.com/en/articles/11049741-what-is-the-max-plan` | none | `Max 5x: $100 per month` / `Max 20x: $200 per month`; `Max 5x provides five times more usage per session than the Pro plan`; `Max 20x provides 20 times more usage` |
+| 6 | `https://support.claude.com/en/articles/9797557-usage-limit-best-practices` | none | `Settings > Usage to view progress bars showing how much of your five-hour session and weekly usage limits`; `Current session ... Weekly limits ... for Opus only and all other models` |
+| 7 | `https://help.openai.com/en/articles/20001106-codex-rate-card` | none | `Total credits = (input tokens / 1,000,000 × input rate) + (cached input tokens / 1,000,000 × cached input rate) + (output tokens / 1,000,000 × output rate)`; `GPT-5.6 Sol | 100 | 10 | 500`; `A typical Codex task using GPT-5.6 Sol may consume between 5 and 30 credits`; `On average, Codex costs approximately $100–$200 per developer per month` |
+| 8 | `https://help.openai.com/en/articles/11909943-codex-use-in-chatgpt` → GPT-5.6 article | none | `GPT-6 Pro ... Pro $200: 200 messages per week ... Separate 170 messages per day for GPT-5.6 Sol Pro`; `Codex: Terra for Free and Go; Sol, Terra, and Luna for Plus, Pro, Business, and Enterprise` |
+| 9 | `https://support.google.com/googleone/answer/16287445` | none | `If you reach your plan's limit, Google AI Pro and Ultra members can purchase AI credits`; `The amount of AI credits used for each feature and model varies` (no numeric table) |
+| 10 | `https://github.com/mahonzhan/awesome-coding-plan` (reader) | GitHub 60 req/h unauth | file list `.gitignore, Gemfile, LICENCE, README.md, _config.yml, _layouts/default.html, assets/css/style.scss, assets/js/site.js` — **markdown tables only, no JSON/CSV/YAML**; sample: `| [Claude Pro](https://claude.ai/upgrade) (Claude Code claude-opus-4.8) | $20.00 | ... | 359/3966万 | $31.84 | 1.59 | 3590/3.97亿 | $318.4 | 15.9 | 14360/15.88亿 | $1273.6 | 63.6 |` |
+| 11 | `https://raw.githubusercontent.com/mahonzhan/awesome-coding-plan/main/LICENCE` | none | `Licensed under the Creative Commons Attribution 4.0 International License` + `Identification of the creator: mahonzhan@gmail.com` |
+| 12 | `https://opencode.ai/go`, `https://ollama.com/pricing`, `https://github.com/features/copilot/plans`, `https://openai.com/chatgpt/pricing/`, `https://gemini.google/subscriptions/`, `https://antigravity.google/pricing`, `https://z.ai/subscribe`, `https://claude.ai/upgrade` | none (429: `https://devin.ai/pricing`; 404: `https://docs.z.ai/guides/coding-plan/billing`, `https://platform.claude.com/docs/en/agents/claude-code-limits`; JS shells: `bigmodel.cn/glm-coding`, `kimi.com/membership/pricing`, `grok.com/supergrok`) | See per-vendor table; representative: `Go costs $10/month`; `Pro: $60 of usage credits per month`; `Pro $10USD ... $15 monthly total credits for Pro`; `Flexible AI credit pool`; `Plans from 18/month` (meta only) |
+| 13 | `https://kilo.ai/pricing`, `https://cline.bot/pricing` | none | Kilo: `Free ... Usage is billed separately` / `Teams $15/user/month` / `Kilo Pass $19/mo Up to 50% bonus credits`; Cline: meta-only, no static price |
+
+**Auth header:** none required anywhere. **Query params:** none except `grok.com/supergrok?referrer=grok` (ignored). **Pagination:** none (single pages).
+
+---
+
+## 3. Schema (`data/plans.json` — keep concepts; `compute.py` already implements them)
+
+| Field | Type | Meaning | Nullable | Units |
+|---|---|---|---|---|
+| `id` | string (slug) | stable plan key, e.g. `claude-pro` | no | — |
+| `vendor` / `plan` | string | display names | no | — |
+| `price_usd_month` | number | monthly-billing price, USD | no | USD/mo |
+| `price_src` / `evidence.url` + `evidence.retrieved` | string / date | where price was seen + fetch date | no | — |
+| `quota_model` | enum `budget|credits|requests|tokens|tokens_total|unlimited-with-FUP` | which conversion branch to use | no | — |
+| `quota_usd_month` | number | (budget) implied API value included | iff budget | USD/mo |
+| `credits_month` + `credit_formula` (`input_mult`, `cached_mult`, `output_mult`, `divisor`) | number + object | (credits) pool + vendor formula | iff credits | credits/mo |
+| `requests_month` | integer | (requests) prompts/msgs included | iff requests | req/mo |
+| `tokens_month` | integer | (tokens) raw token pool | iff tokens | tokens/mo |
+| `rolling_window_hours` + `rolling_window_usd` | number | 5h/session cap + its USD value (enables `days_for_full_run` min()) | yes | h + USD |
+| `model_scope` | `"any"` or string[] | which benchmark models this plan may run (`provider` or `model.id` match) | no | — |
+| `confidence` | enum `measured|high|medium|low` | measured-community > vendor-docs-direct > vendor-multiplier > aggregator-only | no | — |
+| `quota_unresolved` + `quota_note` | bool + string | true when quota exists but is unconvertible (Google credits, SuperGrok pool) | no | — |
+| `known_gaps[]` | object | the 5 gaps (Ultra price dispute, GLM-intl USD, Ollama Max/Team, SuperGrok coding, MiniMax Plus) | yes | — |
+| `fx.cny_to_usd` + `fx.date` | number + date | CNY conversion rate + spot date | iff CNY source | — |
+
+**Consumed benchmark medians (`data/models.json`, DeepSWE v1.1, 113 tasks):** `api_cost_per_task_usd` (USD/task), `input_tokens_per_task`, `output_tokens_per_task` (tokens/task), `agent_steps_per_task` (steps/task, fallback `agent_steps_per_task_assumed`).
+
+---
+
+## 4. Refresh
+
+- **Cadence:** re-fetch all vendor URLs + awesome-coding-plan README + `docs.z.ai/devpack/overview(.md)` **weekly** (quotas/prices change mid-cycle: e.g. Z.ai credits-based cutover 2026-07-30, GLM-5.3-Flash campaign, Cursor pool renames, Google I/O tier reprices). Recompute CNY→USD spot each refresh; store `fx.date`.
+- **Stability/versioning:** no versioned API; pages are unversioned HTML. Pin `evidence.retrieved` per row; keep raw HTML snapshots in-repo (e.g. `data/raw/<source>-<YYYY-MM-DD>.html`) so diffs are reviewable. Awesome-coding-plan has no tags — pin commit SHA + README date.
+- **Staleness detection:** CLI check fails when (a) any `evidence.retrieved` > 14 days old, (b) awesome-coding-plan HEAD SHA moved, (c) keyword scan of cached HTML no longer contains the quoted limit string (e.g. `$60 of usage credits`, `resets every five hours`, `Starting at just 18 USD`), (d) CNY rate > 30 days old. Surface per-row `stale: true` in build; never silently reuse.
+
+---
+
+## 5. License / redistribution verdict
+
+| Source | License | Attribution required? | CAN we republish numbers on a public static site + repo? |
+|---|---|---|---|
+| Vendor **facts** (prices, quota numbers, short phrases) | Facts, not copyrightable in most jurisdictions | No (but cite URL + date as practice) | **YES** — rewrite in own expression/tables; quote briefly (1–2 lines) with URL + 2026-09-14; do not mirror pages wholesale. |
+| `awesome-coding-plan` README/tables (expression + selection) | **CC BY 4.0** (`LICENCE` file; `data/sources.json:src-awesome-coding-plan`, `credited_contributor: mahonzhan`) | **YES** — must retain: `Identification of the creator: mahonzhan@gmail.com` + `License Notice: Licensed under the Creative Commons Attribution 4.0 International License.` + `Link to the License: https://creativecommons.org/licenses/by/4.0/` + indicate changes | **YES, incl. commercial**, IF attribution string kept in file + `data/sources.json` + site Sources section per `SOURCES.md`. May Share/Adapt; keep measured rows as derived values with own computation, not verbatim table copies. |
+| DeepSWE benchmark data | **Apache-2.0** (methodology/metrics only) | Yes (license + notice) | **YES for costs/methods** — never mirror task content/canary strings. |
+| Vendor docs/support text (Anthropic/OpenAI/Google/Z.ai/Cursor help) | © vendors, no open license | Quote briefly with URL + date | **YES for short quotes + own paraphrase**; no wholesale scraping. |
+| Aggregator/blog claims (Cursor $70/$400 pools, Ultra $99–$249, Heavy $300 promo) | © their authors | Cite + mark `[UNVERIFIED]` | **NO as facts** — keep as `low`/gap notes only, never as computed rows. |
+
+---
+
+## 6. Recommended TS fetch strategy (Bun, validated CLI, no re-litigation)
+
+- **Paths:** raw snapshots `data/raw/<slug>-<YYYY-MM-DD>.{html,md}` → normalized `data/plans.json` (+ `data/sources.json`, `data/models.json`) → `scripts/validate.ts` (schema + staleness + `[UNVERIFIED]` ban on computed rows) → `scripts/compute.ts` (port of `compute.py`) → Astro `src/content/` build. Never fetch at page-load; site ships precomputed JSON only.
+- **Signatures:**
+  ```ts
+  // scripts/plans.ts
+  export async function fetchSnapshot(url: string, slug: string): Promise<{ html: string; retrieved: string }>;
+  export function extractPlanFacts(html: string, slug: string): PlanFacts; // keyword-anchored, throws on missing anchor
+  export function normalizePlans(facts: PlanFacts[], fx: FxRate): Plan[]; // USD-monthly only, records evidence.url+retrieved
+  export function validatePlans(plans: Plan[]): { ok: boolean; errors: string[] }; // schema + staleness + no-compute-on-unresolved/low
+  export function computeTasksPerMonth(plan: Plan, medians: ModelMedians): number | null;
+  ```
+- **Retry/caching:** `fetch` with 3 retries (exponential backoff, honor 429 `Retry-After`; `devin.ai` already 429s — back off to weekly); persist raw + ETag/Last-Modified; diff anchors before overwriting `plans.json`; fail closed (keep last-good + `stale: true`) rather than writing guessed numbers. Cache `awesome-coding-plan` by commit SHA; re-extract tables only on SHA change. All network in CLI (`bun run fetch:plans`), never in browser.
+- **Compute port (exact `compute.py` semantics):**
+  ```
+  budget:  tpm = quota_usd_month / api_cost_per_task_usd
+  credits: w = output_rate / input_rate   // Z.ai GLM-5.3 w = 24/6.9 ≈ 3.478 (cache-aware variant uses cached_mult where disclosed)
+           credits_per_task = (input_tokens + output_tokens * w) / 10000
+           tpm = credits_month / credits_per_task
+  requests: tpm = requests_month / (agent_steps_per_task || ASSUMED_STEPS)
+  tokens:  tpm = tokens_month / (input_tokens_per_task + output_tokens_per_task)
+  cost_per_task = price_usd_month / tpm
+  days_for_full_run (113 tasks): tpd_monthly = tpm/30
+    if rolling_window: tpw = window_usd/cost; tpd = min(tpd_monthly, tpw * (24/window_hours)); days = 113/tpd
+    else days = 113/tpd_monthly
+  model_allowed: scope == 'any' → true else model.provider ∈ scope || model.id ∈ scope
+  ```
+  Units: USD ÷ (USD/task) = tasks; tokens ÷ (tokens/task) = tasks; USD ÷ tasks = USD/task; days = tasks ÷ (tasks/day). Assumptions to record per row: cache-hit rate (Z.ai table 95/96/98% → use 95% min unless measured), peak/off-peak mix (use 1× peak as conservative default; note 0.5× off-peak upside), `ASSUMED_STEPS` value, FX date.
+
+---
+
+## 7. Gotchas / unknowns (explicit, no hedging)
+
+1. **Google AI credits are unconvertible:** no credits→tokens/dollars table exists on any vendor page, Antigravity docs, or support article — `quota_unresolved: true` stays. Ultra price disputed ($99.99 vs $200 vs $249.99) across locale/aggregator/news — gap.
+2. **SuperGrok has no coding quota:** x.ai pages expose only "$30/month" + "Higher rate limits" / Plus "$100 ... higher usage across Chat, Imagine, Voice & Build" — shared weekly pool, no per-task number. Heavy $300 is aggregator-only `[UNVERIFIED]` on official web surface. Gap stays.
+3. **Cursor Pro+/Ultra pools are `[UNVERIFIED]`:** official docs confirm tier names + $20/$60/$200 prices + two-pool model, but `$70`/`$400` Other-Models dollar figures appear only in `pricing.md` mirror + aggregators — keep as `low`, do not compute.
+4. **Z.ai USD tier prices disagree:** $18 Lite is docs-confirmed; Pro $72 vs $80 and Max $160 vs $168 vary by aggregator/quarterly/annual math — pin docs + subscribe-page snapshot; record billing-period explicitly. Off-peak 0.5× + cache-hit range (48–97M Lite/wk at 95%) means any single tpm is a range, not a point.
+5. **CN pages are JS shells:** `bigmodel.cn/glm-coding`, `kimi.com/membership/pricing`, `z.ai/subscribe` (body), `grok.com/supergrok` expose no static numbers — domestic CNY rows survive only as measured fallbacks; re-verify via docs/help + awesome-coding-plan diff.
+6. **ChatGPT Codex quota is unnumbered on pricing pages:** Plus/Pro Chat message caps (200/wk etc.) are Chat-only; Codex draws from token credit pools (5–30 credits/task on Sol, ~$100–200/dev/mo average) with no fixed monthly task count — `requests` rows for Plus/Pro remain measured-only, `medium` at best for scaled Pro.
+7. **Locale skew is real:** `gemini.google/subscriptions/` served Turkish prices (₺199.99/₺869.99/₺1.479,99) — always fetch with `?hl=en` + US IP, record locale, never mix TR/US numbers.
+8. **Claude weekly caps are invisible until hit:** 5h + weekly (Opus-only vs all-model) shown only in Settings>Usage progress bars; vendor multiplier claims (5x/20x) are marketing until measured — `medium`, never `measured`.
+9. **Ollama price-vs-credit dollars confuse:** "$60 of usage credits" ≠ $60 price; Pro $20 price line was absent from static fetch — keep price `[UNVERIFIED]` until direct confirm; Team $500 floor is confirmed.
+10. **Kilo/Cline are not subscriptions:** Kilo is BYOK/at-cost inference + optional Pass bonus; Cline is BYO/infra — exclude from cost-per-task ranking, list as alternatives only.
+11. **MiniMax Plus measured row exists upstream but not in plans.json:** CNY49 / 54400 req / 24亿 tokens / CNY4344 value / 88.65x — add on next refresh, do not invent USD.
+12. **Trust ranking (apply per row):** vendor page direct > vendor docs/support > measured community dataset (awesome-coding-plan) > third-party aggregator > news. Vendor-claimed multipliers = `medium`; aggregator-only = `low`; community-measured saturated-month = `measured`/`high`.
+
+---
+
+### Current `data/plans.json` confidence audit (carry forward)
+
+- `measured`: `claude-pro`, `chatgpt-plus`, `kimi-code-andante`, `kimi-code-allegretto`, `glm-coding-lite`, `glm-coding-pro`.
+- `medium`: `claude-max-5x`, `claude-max-20x`, `chatgpt-pro-20x`.
+- `high`: `cursor-pro`, `opencode-go`, `ollama-pro`, `github-copilot-pro`.
+- `low`: `cursor-pro-plus`, `cursor-ultra`, `google-ai-pro` (`quota_unresolved`).
+- `known_gaps` (5): Google AI Ultra; GLM-intl USD Lite/Pro/Max; Ollama Max/Team; SuperGrok coding; MiniMax Plus.
+
+### Extra measured rows in awesome-coding-plan not yet in plans.json
+
+MiniMax Plus (￥49, 54400/24亿, ￥4344, 88.65x); Xiaomi MiMo Token Plan Pro (￥329, 380亿 Credits); Fireworks Fire Pass ($7/w×4); Windsurf Pro ($20, daily+weekly budget, 8–101 msgs/day premium, unlimited SWE-1.5); Antigravity block (Free 50/d; Plus $7.99 200/mo; Pro $19.99 1000/mo; Ultra $249.99 25000/mo; Gemini CLI caps Free 1000/d, Pro 1500/d, Ultra 2000/d — June 18 2026 cutoff note). Add only with evidence + confidence, never silently.

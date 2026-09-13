@@ -1,0 +1,37 @@
+{
+  "name": "rack-rate",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Compare LLM models across benchmarks, and price coding subscriptions against API list rates.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "engines": {
+    "bun": ">=1.4.2"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter @rack-rate/site dev",
+    "build": "bun run data:build && bun run --filter @rack-rate/site build && bun run og",
+    "preview": "bun run --filter @rack-rate/site preview",
+    "check": "bun run typecheck && bun run --filter @rack-rate/site check",
+    "typecheck": "tsc --build --force",
+    "test": "bun test --pass-with-no-tests",
+    "fetch": "bun run --filter @rack-rate/data-cli cli -- fetch",
+    "fetch:deepswe": "bun run --filter @rack-rate/data-cli cli -- fetch deepswe",
+    "fetch:terminal-bench": "bun run --filter @rack-rate/data-cli cli -- fetch terminal-bench",
+    "fetch:plans": "bun run --filter @rack-rate/data-cli cli -- fetch plans",
+    "fetch:artificial-analysis": "bun run --filter @rack-rate/data-cli cli -- fetch artificial-analysis",
+    "validate": "bun run --filter @rack-rate/data-cli cli -- validate",
+    "compute": "bun run --filter @rack-rate/data-cli cli -- compute",
+    "data:build": "bun run validate && bun run compute",
+    "og": "bun run --filter @rack-rate/site og"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "^6.0.3"
+  }
+}

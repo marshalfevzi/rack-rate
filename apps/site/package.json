@@ -1,0 +1,30 @@
+{
+  "name": "@rack-rate/site",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Astro static site. Reads data/*.json at build time; ships zero data fetching to the browser.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "og": "bun run scripts/og.ts"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@nanostores/persistent": "^1.3.5",
+    "@rack-rate/core": "workspace:*",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^7.3.2",
+    "echarts": "^6.1.0",
+    "nanostores": "^1.5.3",
+    "satori": "^0.33.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}
