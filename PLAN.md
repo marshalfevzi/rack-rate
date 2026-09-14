@@ -1113,3 +1113,53 @@ than silently absorbed)
 - The deepswe v1 fallback and the harbor-CLI fallback in `fetch:terminal-bench`
   were not exercised (the live paths worked). Both exist for a future site
   change and are unproven.
+
+---
+
+### 2026-09-14 — Stage 2 corrections (token mapping, derived rounding, portability)
+
+Review of the stage-2 commit found three defects and one noise problem. All are
+fixed in `f450f37` and `a0b9118`; the stage stays ticked because no requirement
+changed, but the published numbers did.
+
+- **Terminal-Bench `tokens_input` double counted cache reads.** Upstream's
+  `metrics.total_tokens` equals `metrics.uncached_input_tokens + output_tokens`
+  **exactly** on all 18 display rows, so cached reads are already inside
+  `uncached_input_tokens` and the sum this repo published (`cached + uncached`)
+  was 1.87–1.95× the true input — e.g. gpt-6-astra shipped 2,949,141,032 instead
+  of 1,505,789,330. `tokens_input` is now `uncached_input_tokens`, the identity
+  is asserted per row and fails the run if it breaks, and `cached_input_tokens`,
+  `uncached_input_tokens`, `total_tokens` plus a `token_mapping` note are kept in
+  the row provenance so the mapping is auditable. This was the one wrong number
+  in committed data, and a 1.9× error is worse than a missing one.
+- **Float artifacts in published rows.** `ci_hi` on one terminal-bench row read
+  `41.050000000000004` (raw float addition of our own). `score`, `ci_lo` and
+  `ci_hi` are now rounded to 2dp with `roundHalfEven`, with the
+  `ci_lo <= score <= ci_hi` invariant re-asserted after rounding.
+- **Non-portable hardcoded binary path.** `fetch:terminal-bench` hardcoded
+  `/Users/marshal/.local/bin/harbor`, which cannot exist in CI or another
+  checkout. Resolved now from `HARBOR_BIN`, then `PATH`, with the resolved
+  binary logged and a fail-closed message naming both when neither works — and
+  only after the flight-data path has already failed. `git grep /Users/marshal`
+  is empty.
+- **Derived output noise.** `data/derived.json` shipped 941 values with six or
+  more fractional digits in the sections added this stage (raw z-scores,
+  weighted z, frontier distances, blended rates) — its published form now rounds
+  those to 4dp via `roundHalfEven` (log 0.47 / 4.9425 instead of
+  `0.46999999999999886` / `4.9425091236551495`).
+- **Precision rule this settles, stated once so Stage 3 does not re-litigate
+  it:** round what this repo computes (published derived metrics 4dp, benchmark
+  score/CI 2dp), preserve what upstream reports (`models.json` CI fractions and
+  the DeepSWE benchmark CIs keep upstream precision; the site's format layer
+  owns display rounding). The legacy `pairs`/`best_routes`/`cross_check`
+  precision is untouched because the parity fixture pins its bytes.
+
+**Verified:** `fetch terminal-bench --diff` exit **1** before the fix landed
+(the differing case, previously unproven) and exit **0** after, with a repeat
+plain run leaving `data/benchmarks.json` byte-identical
+(`b35914d2…81029d`); the token identity holds for all 12 published rows and no
+long-float artifact remains in any published score/CI; `fetch:deepswe --diff`
+still exit 0 and byte-stable; `validate` "no problems"; `bun run check`, `bun
+test` (17 pass), `bun run data:build`, `bun run data:check` and two back-to-back
+compute runs (sha256 `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`
+both times) all exit 0.
