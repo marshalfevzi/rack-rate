@@ -3,6 +3,12 @@
  * `generated_at` is the newest exact `generated_at` string among models.json and
  * every benchmark entry in benchmarks.json, so rerunning with unchanged inputs
  * produces the same bytes.
+ *
+ * Legacy cost fields retain their established precision: `tasks_per_month` and
+ * `days_for_full_run` use 2 decimal places, while `cost_per_task_usd` uses 4.
+ * Numeric fields in the published computed sections use 4 decimal places with
+ * half-to-even rounding; authored weights, integer counts, and badge metadata
+ * retain their source precision.
  */
 
 import type {
@@ -28,6 +34,7 @@ import {
   ModelsFile,
   paretoFrontier,
   PlansFile,
+  roundHalfEven,
   tokenAllowance,
   zScores,
 } from "@rack-rate/core"
@@ -36,6 +43,42 @@ import { dataPath, info, readJsonAs, warn, writeJson } from "../paths.ts"
 type FrontierDocument = {
   api: ParetoFrontier
   plan_adjusted: Record<string, ParetoFrontier>
+}
+
+function roundCompositeRow(row: CompositeRow): CompositeRow {
+  return {
+    ...row,
+    weighted_z: roundHalfEven(row.weighted_z, 4),
+    composite: row.composite === null ? null : roundHalfEven(row.composite, 4),
+    ci_lo: row.ci_lo === null ? null : roundHalfEven(row.ci_lo, 4),
+    ci_hi: row.ci_hi === null ? null : roundHalfEven(row.ci_hi, 4),
+  }
+}
+
+function roundFrontier(frontier: ParetoFrontier): ParetoFrontier {
+  return {
+    ...frontier,
+    points: frontier.points.map((point) => ({
+      ...point,
+      cost: roundHalfEven(point.cost, 4),
+      score: roundHalfEven(point.score, 4),
+      distance: {
+        ...point.distance,
+        delta_score: roundHalfEven(point.distance.delta_score, 4),
+        cost_ratio: roundHalfEven(point.distance.cost_ratio, 4),
+      },
+    })),
+  }
+}
+
+function roundTokenAllowance(row: TokenAllowanceRow): TokenAllowanceRow {
+  return {
+    ...row,
+    tokens_per_month_allowance: roundHalfEven(row.tokens_per_month_allowance, 4),
+    allowance_per_million_tokens: roundHalfEven(row.allowance_per_million_tokens, 4),
+    adjusted_api_cost_per_million: roundHalfEven(row.adjusted_api_cost_per_million, 4),
+    value_multiple: roundHalfEven(row.value_multiple, 4),
+  }
 }
 
 function newestGeneratedAt(
@@ -129,7 +172,7 @@ function makeApiFrontier(models: readonly Model[]): ParetoFrontier {
     })
   }
 
-  return paretoFrontier(points)
+  return roundFrontier(paretoFrontier(points))
 }
 
 function makePlanFrontiers(plans: readonly Plan[], pairs: readonly CostedPair[]) {
@@ -154,7 +197,7 @@ function makePlanFrontiers(plans: readonly Plan[], pairs: readonly CostedPair[])
       continue
     }
 
-    frontiers[plan.id] = paretoFrontier(points)
+    frontiers[plan.id] = roundFrontier(paretoFrontier(points))
   }
 
   return frontiers
@@ -178,7 +221,7 @@ function makeTokenAllowances(
     const row = tokenAllowance(model, plan)
 
     if (row !== null) {
-      rows.push(row)
+      rows.push(roundTokenAllowance(row))
     }
   }
 
@@ -300,7 +343,7 @@ export async function buildDerivedDocument(): Promise<DerivedDocument> {
   const generatedAt = newestGeneratedAt(modelsDocument.generated_at, benchmarksDocument.benchmarks)
 
   const { normalized, weights, weightMap } = normalizeBenchmarks(benchmarksDocument.benchmarks)
-  const compositeRows = composite(normalized, { weights: weightMap })
+  const compositeRows = composite(normalized, { weights: weightMap }).map(roundCompositeRow)
   const apiFrontier = makeApiFrontier(modelsDocument.models)
   const planAdjusted = makePlanFrontiers(plansDocument.plans, pairs)
   const frontiers: FrontierDocument = { api: apiFrontier, plan_adjusted: planAdjusted }

@@ -3253,7 +3253,7 @@
     "rows": [
       {
         "model_id": "claude-fable-5",
-        "weighted_z": 0.8396754889109991,
+        "weighted_z": 0.8397,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3265,33 +3265,33 @@
       },
       {
         "model_id": "claude-opus-4.8",
-        "weighted_z": -0.058059367152235385,
-        "composite": 49.41940632847765,
+        "weighted_z": -0.0581,
+        "composite": 49.4194,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 47.68034277320999,
-        "ci_hi": 51.161342500348304
+        "ci_lo": 47.6803,
+        "ci_hi": 51.1613
       },
       {
         "model_id": "claude-opus-5",
-        "weighted_z": 1.3430748291247125,
-        "composite": 63.43074829124713,
+        "weighted_z": 1.3431,
+        "composite": 63.4307,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 61.05071550289455,
-        "ci_hi": 65.80989052278319
+        "ci_lo": 61.0507,
+        "ci_hi": 65.8099
       },
       {
         "model_id": "claude-sonnet-4.6",
-        "weighted_z": -1.7950546638710623,
+        "weighted_z": -1.7951,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3303,20 +3303,20 @@
       },
       {
         "model_id": "claude-sonnet-5",
-        "weighted_z": -0.5920412968989874,
-        "composite": 44.07958703101013,
+        "weighted_z": -0.592,
+        "composite": 44.0796,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 41.68602608144219,
-        "ci_hi": 46.47061331886953
+        "ci_lo": 41.686,
+        "ci_hi": 46.4706
       },
       {
         "model_id": "deepseek-v4-flash",
-        "weighted_z": -0.25362549244603927,
+        "weighted_z": -0.2536,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3328,7 +3328,7 @@
       },
       {
         "model_id": "deepseek-v4-pro",
-        "weighted_z": 0.3730949616049212,
+        "weighted_z": 0.3731,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3340,7 +3340,7 @@
       },
       {
         "model_id": "gemini-3.1-pro-preview",
-        "weighted_z": -2.9944565843471387,
+        "weighted_z": -2.9945,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3352,7 +3352,7 @@
       },
       {
         "model_id": "gemini-3.5-flash",
-        "weighted_z": -1.3910802807656584,
+        "weighted_z": -1.3911,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3364,7 +3364,7 @@
       },
       {
         "model_id": "gemini-3.6-flash",
-        "weighted_z": -0.6912094898065417,
+        "weighted_z": -0.6912,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3376,33 +3376,33 @@
       },
       {
         "model_id": "gemini-3.7-flash",
-        "weighted_z": -0.24788867256332486,
-        "composite": 47.521113274366755,
+        "weighted_z": -0.2479,
+        "composite": 47.5211,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 45.70538897322729,
-        "ci_hi": 49.334679748458775
+        "ci_lo": 45.7054,
+        "ci_hi": 49.3347
       },
       {
         "model_id": "gemini-3.8-flash",
-        "weighted_z": 0.2834581903250749,
-        "composite": 52.83458190325075,
+        "weighted_z": 0.2835,
+        "composite": 52.8346,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 51.27221579721892,
-        "ci_hi": 54.39398466653342
+        "ci_lo": 51.2722,
+        "ci_hi": 54.394
       },
       {
         "model_id": "glm-5.2",
-        "weighted_z": -0.8823229826296527,
+        "weighted_z": -0.8823,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3414,20 +3414,20 @@
       },
       {
         "model_id": "glm-5.3",
-        "weighted_z": 0.8629796006317576,
-        "composite": 58.62979600631758,
+        "weighted_z": 0.863,
+        "composite": 58.6298,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 56.58288204583078,
-        "ci_hi": 60.675307191721345
+        "ci_lo": 56.5829,
+        "ci_hi": 60.6753
       },
       {
         "model_id": "glm-5.3-flash",
-        "weighted_z": 0.40999963608110834,
+        "weighted_z": 0.41,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3439,7 +3439,7 @@
       },
       {
         "model_id": "gpt-5.4",
-        "weighted_z": -0.3557723592997708,
+        "weighted_z": -0.3558,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3451,7 +3451,7 @@
       },
       {
         "model_id": "gpt-5.5",
-        "weighted_z": 0.6505390322205415,
+        "weighted_z": 0.6505,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3463,85 +3463,85 @@
       },
       {
         "model_id": "gpt-5.6-luna",
-        "weighted_z": 0.005414835094269932,
-        "composite": 50.0541483509427,
+        "weighted_z": 0.0054,
+        "composite": 50.0541,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 47.81009896171482,
-        "ci_hi": 52.29655021006003
+        "ci_lo": 47.8101,
+        "ci_hi": 52.2966
       },
       {
         "model_id": "gpt-5.6-sol",
-        "weighted_z": 0.8370979434577428,
-        "composite": 58.37097943457743,
+        "weighted_z": 0.8371,
+        "composite": 58.371,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 56.206832510763114,
-        "ci_hi": 60.53292965157768
+        "ci_lo": 56.2068,
+        "ci_hi": 60.5329
       },
       {
         "model_id": "gpt-5.6-terra",
-        "weighted_z": 0.22384648271937824,
-        "composite": 52.23846482719378,
+        "weighted_z": 0.2238,
+        "composite": 52.2385,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 50.338886351045474,
-        "ci_hi": 54.14005979252395
+        "ci_lo": 50.3389,
+        "ci_hi": 54.1401
       },
       {
         "model_id": "gpt-6-astra",
-        "weighted_z": 1.5656158031866412,
-        "composite": 65.65615803186641,
+        "weighted_z": 1.5656,
+        "composite": 65.6562,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 63.802056024077295,
-        "ci_hi": 67.5069941392594
+        "ci_lo": 63.8021,
+        "ci_hi": 67.507
       },
       {
         "model_id": "grok-4.5",
-        "weighted_z": -0.5950068510979668,
-        "composite": 44.04993148902033,
+        "weighted_z": -0.595,
+        "composite": 44.0499,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 42.445783476098654,
-        "ci_hi": 45.65477933774118
+        "ci_lo": 42.4458,
+        "ci_hi": 45.6548
       },
       {
         "model_id": "grok-4.6",
-        "weighted_z": 0.11361425168497402,
-        "composite": 51.13614251684974,
+        "weighted_z": 0.1136,
+        "composite": 51.1361,
         "k": 2,
         "benchmarks_used": [
           "deepswe",
           "terminal-bench"
         ],
         "badge": "ok",
-        "ci_lo": 49.37793300529106,
-        "ci_hi": 52.89295235681008
+        "ci_lo": 49.3779,
+        "ci_hi": 52.893
       },
       {
         "model_id": "kimi-k2.7-code",
-        "weighted_z": -1.7555139412180047,
+        "weighted_z": -1.7555,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3553,7 +3553,7 @@
       },
       {
         "model_id": "kimi-k3",
-        "weighted_z": 0.7474138027205323,
+        "weighted_z": 0.7474,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3565,7 +3565,7 @@
       },
       {
         "model_id": "muse-spark-1.1",
-        "weighted_z": -0.25362549244603927,
+        "weighted_z": -0.2536,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3577,7 +3577,7 @@
       },
       {
         "model_id": "muse-spark-1.2",
-        "weighted_z": -0.15147862559230768,
+        "weighted_z": -0.1515,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3589,7 +3589,7 @@
       },
       {
         "model_id": "qwen-3.8-max",
-        "weighted_z": 0.019205493860057203,
+        "weighted_z": 0.0192,
         "composite": null,
         "k": 1,
         "benchmarks_used": [
@@ -3632,8 +3632,8 @@
           "score": 73.65,
           "on_frontier": false,
           "distance": {
-            "delta_score": 0.46999999999999886,
-            "cost_ratio": 4.9425091236551495,
+            "delta_score": 0.47,
+            "cost_ratio": 4.9425,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3643,8 +3643,8 @@
           "score": 72.67,
           "on_frontier": false,
           "distance": {
-            "delta_score": 1.4500000000000028,
-            "cost_ratio": 3.2425707379496655,
+            "delta_score": 1.45,
+            "cost_ratio": 3.2426,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3654,8 +3654,8 @@
           "score": 69.91,
           "on_frontier": false,
           "distance": {
-            "delta_score": 4.210000000000008,
-            "cost_ratio": 5.37518365799327,
+            "delta_score": 4.21,
+            "cost_ratio": 5.3752,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3665,8 +3665,8 @@
           "score": 69.62,
           "on_frontier": false,
           "distance": {
-            "delta_score": 4.3732216856645465,
-            "cost_ratio": 1.950139817052941,
+            "delta_score": 4.3732,
+            "cost_ratio": 1.9501,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3676,8 +3676,8 @@
           "score": 68.96,
           "on_frontier": false,
           "distance": {
-            "delta_score": 4.9531863102925655,
-            "cost_ratio": 1.48424095928717,
+            "delta_score": 4.9532,
+            "cost_ratio": 1.4842,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3687,8 +3687,8 @@
           "score": 68.51,
           "on_frontier": false,
           "distance": {
-            "delta_score": 5.441526756134536,
-            "cost_ratio": 1.7074268922697757,
+            "delta_score": 5.4415,
+            "cost_ratio": 1.7074,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3698,8 +3698,8 @@
           "score": 67.48,
           "on_frontier": false,
           "distance": {
-            "delta_score": 6.418058565893645,
-            "cost_ratio": 1.3961799137399877,
+            "delta_score": 6.4181,
+            "cost_ratio": 1.3962,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3709,8 +3709,8 @@
           "score": 67.19,
           "on_frontier": false,
           "distance": {
-            "delta_score": 6.654834634173724,
-            "cost_ratio": 1.0863548035451918,
+            "delta_score": 6.6548,
+            "cost_ratio": 1.0864,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3720,8 +3720,8 @@
           "score": 67.04,
           "on_frontier": false,
           "distance": {
-            "delta_score": 7.079999999999998,
-            "cost_ratio": 2.896108820323238,
+            "delta_score": 7.08,
+            "cost_ratio": 2.8961,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3764,8 +3764,8 @@
           "score": 58.97,
           "on_frontier": false,
           "distance": {
-            "delta_score": 15.150000000000006,
-            "cost_ratio": 55.32243618450515,
+            "delta_score": 15.15,
+            "cost_ratio": 55.3224,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3775,8 +3775,8 @@
           "score": 57.46,
           "on_frontier": false,
           "distance": {
-            "delta_score": 16.453275871750243,
-            "cost_ratio": 14.02910882221227,
+            "delta_score": 16.4533,
+            "cost_ratio": 14.0291,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3786,8 +3786,8 @@
           "score": 54.87,
           "on_frontier": false,
           "distance": {
-            "delta_score": 19.00675108091415,
-            "cost_ratio": 12.020152261531571,
+            "delta_score": 19.0068,
+            "cost_ratio": 12.0202,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3797,8 +3797,8 @@
           "score": 53.85,
           "on_frontier": false,
           "distance": {
-            "delta_score": 20.270000000000003,
-            "cost_ratio": 104.24272279444693,
+            "delta_score": 20.27,
+            "cost_ratio": 104.2427,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3808,8 +3808,8 @@
           "score": 53.76,
           "on_frontier": false,
           "distance": {
-            "delta_score": 18.481428571428573,
-            "cost_ratio": 9.060008956560681,
+            "delta_score": 18.4814,
+            "cost_ratio": 9.06,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3830,8 +3830,8 @@
           "score": 53.32,
           "on_frontier": false,
           "distance": {
-            "delta_score": 13.321165240289652,
-            "cost_ratio": 18.827850877192983,
+            "delta_score": 13.3212,
+            "cost_ratio": 18.8279,
             "frontier_id": "gemini-3.7-flash"
           }
         },
@@ -3841,8 +3841,8 @@
           "score": 51.77,
           "on_frontier": false,
           "distance": {
-            "delta_score": 22.242623954180466,
-            "cost_ratio": 47.729166666666664,
+            "delta_score": 22.2426,
+            "cost_ratio": 47.7292,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3852,8 +3852,8 @@
           "score": 46.68,
           "on_frontier": false,
           "distance": {
-            "delta_score": 27.258678757931385,
-            "cost_ratio": 37.770833333333336,
+            "delta_score": 27.2587,
+            "cost_ratio": 37.7708,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3863,8 +3863,8 @@
           "score": 43.78,
           "on_frontier": false,
           "distance": {
-            "delta_score": 30.160225728564214,
-            "cost_ratio": 37.979166666666664,
+            "delta_score": 30.1602,
+            "cost_ratio": 37.9792,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3874,8 +3874,8 @@
           "score": 36.06,
           "on_frontier": false,
           "distance": {
-            "delta_score": 37.83126817901061,
-            "cost_ratio": 31.385964912280702,
+            "delta_score": 37.8313,
+            "cost_ratio": 31.386,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3885,8 +3885,8 @@
           "score": 30.53,
           "on_frontier": false,
           "distance": {
-            "delta_score": 43.30696950979842,
-            "cost_ratio": 24.073464912280702,
+            "delta_score": 43.307,
+            "cost_ratio": 24.0735,
             "frontier_id": "gemini-3.8-flash"
           }
         },
@@ -3896,8 +3896,8 @@
           "score": 29.93,
           "on_frontier": false,
           "distance": {
-            "delta_score": 44.124514290527266,
-            "cost_ratio": 53.37061403508772,
+            "delta_score": 44.1245,
+            "cost_ratio": 53.3706,
             "frontier_id": "gpt-6-astra"
           }
         },
@@ -3907,8 +3907,8 @@
           "score": 11.73,
           "on_frontier": false,
           "distance": {
-            "delta_score": 55.028294930875575,
-            "cost_ratio": 18.898026315789473,
+            "delta_score": 55.0283,
+            "cost_ratio": 18.898,
             "frontier_id": "gemini-3.7-flash"
           }
         }
@@ -3997,8 +3997,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 3.740000000000009,
-              "cost_ratio": 1.0873015873015874,
+              "delta_score": 3.74,
+              "cost_ratio": 1.0873,
               "frontier_id": "claude-opus-5"
             }
           },
@@ -4008,8 +4008,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 14.680000000000007,
-              "cost_ratio": 1.1843711843711844,
+              "delta_score": 14.68,
+              "cost_ratio": 1.1844,
               "frontier_id": "claude-opus-5"
             }
           },
@@ -4019,8 +4019,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.800000000000004,
-              "cost_ratio": 2.2313797313797314,
+              "delta_score": 19.8,
+              "cost_ratio": 2.2314,
               "frontier_id": "claude-opus-5"
             }
           }
@@ -4073,8 +4073,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 3.740000000000009,
-              "cost_ratio": 1.0873015873015874,
+              "delta_score": 3.74,
+              "cost_ratio": 1.0873,
               "frontier_id": "claude-opus-5"
             }
           },
@@ -4084,8 +4084,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 14.680000000000007,
-              "cost_ratio": 1.1843711843711844,
+              "delta_score": 14.68,
+              "cost_ratio": 1.1844,
               "frontier_id": "claude-opus-5"
             }
           },
@@ -4095,8 +4095,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.800000000000004,
-              "cost_ratio": 2.2313797313797314,
+              "delta_score": 19.8,
+              "cost_ratio": 2.2314,
               "frontier_id": "claude-opus-5"
             }
           }
@@ -4149,8 +4149,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 3.740000000000009,
-              "cost_ratio": 1.0866910866910866,
+              "delta_score": 3.74,
+              "cost_ratio": 1.0867,
               "frontier_id": "claude-opus-5"
             }
           },
@@ -4160,8 +4160,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 14.680000000000007,
-              "cost_ratio": 1.1843711843711844,
+              "delta_score": 14.68,
+              "cost_ratio": 1.1844,
               "frontier_id": "claude-opus-5"
             }
           },
@@ -4171,8 +4171,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.800000000000004,
-              "cost_ratio": 2.231990231990232,
+              "delta_score": 19.8,
+              "cost_ratio": 2.232,
               "frontier_id": "claude-opus-5"
             }
           }
@@ -4225,8 +4225,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.543277310924374,
-              "cost_ratio": 1.9000000000000001,
+              "delta_score": 18.5433,
+              "cost_ratio": 1.9,
               "frontier_id": "gpt-5.6-terra"
             }
           },
@@ -4247,8 +4247,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.666666666666667,
+              "delta_score": 7.08,
+              "cost_ratio": 2.6667,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4258,8 +4258,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 1.2062331666025394,
+              "delta_score": 1.45,
+              "cost_ratio": 1.2062,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -4316,8 +4316,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.532584269662927,
-              "cost_ratio": 1.899047619047619,
+              "delta_score": 18.5326,
+              "cost_ratio": 1.899,
               "frontier_id": "gpt-5.6-terra"
             }
           },
@@ -4338,8 +4338,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.666666666666667,
+              "delta_score": 7.08,
+              "cost_ratio": 2.6667,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4349,8 +4349,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 1.2063125481139338,
+              "delta_score": 1.45,
+              "cost_ratio": 1.2063,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -4429,8 +4429,8 @@
             "score": 53.32,
             "on_frontier": false,
             "distance": {
-              "delta_score": 13.321165240289652,
-              "cost_ratio": 18.827850877192983,
+              "delta_score": 13.3212,
+              "cost_ratio": 18.8279,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -4440,8 +4440,8 @@
             "score": 11.73,
             "on_frontier": false,
             "distance": {
-              "delta_score": 55.028294930875575,
-              "cost_ratio": 18.898026315789473,
+              "delta_score": 55.0283,
+              "cost_ratio": 18.898,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -4451,8 +4451,8 @@
             "score": 53.76,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.481428571428573,
-              "cost_ratio": 9.060008956560681,
+              "delta_score": 18.4814,
+              "cost_ratio": 9.06,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4473,8 +4473,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 43.30696950979842,
-              "cost_ratio": 24.073464912280702,
+              "delta_score": 43.307,
+              "cost_ratio": 24.0735,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4484,8 +4484,8 @@
             "score": 67.19,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.654834634173724,
-              "cost_ratio": 1.0863548035451918,
+              "delta_score": 6.6548,
+              "cost_ratio": 1.0864,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4495,8 +4495,8 @@
             "score": 54.87,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.00675108091415,
-              "cost_ratio": 12.020152261531571,
+              "delta_score": 19.0068,
+              "cost_ratio": 12.0202,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4506,8 +4506,8 @@
             "score": 36.06,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.83126817901061,
-              "cost_ratio": 31.385964912280702,
+              "delta_score": 37.8313,
+              "cost_ratio": 31.386,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4517,8 +4517,8 @@
             "score": 67.48,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.418058565893645,
-              "cost_ratio": 1.3961799137399877,
+              "delta_score": 6.4181,
+              "cost_ratio": 1.3962,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4528,8 +4528,8 @@
             "score": 68.96,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.9531863102925655,
-              "cost_ratio": 1.48424095928717,
+              "delta_score": 4.9532,
+              "cost_ratio": 1.4842,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4539,8 +4539,8 @@
             "score": 57.46,
             "on_frontier": false,
             "distance": {
-              "delta_score": 16.453275871750243,
-              "cost_ratio": 14.02910882221227,
+              "delta_score": 16.4533,
+              "cost_ratio": 14.0291,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4550,8 +4550,8 @@
             "score": 46.68,
             "on_frontier": false,
             "distance": {
-              "delta_score": 27.258678757931385,
-              "cost_ratio": 37.770833333333336,
+              "delta_score": 27.2587,
+              "cost_ratio": 37.7708,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4561,8 +4561,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 30.160225728564214,
-              "cost_ratio": 37.979166666666664,
+              "delta_score": 30.1602,
+              "cost_ratio": 37.9792,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4572,8 +4572,8 @@
             "score": 68.51,
             "on_frontier": false,
             "distance": {
-              "delta_score": 5.441526756134536,
-              "cost_ratio": 1.7074268922697757,
+              "delta_score": 5.4415,
+              "cost_ratio": 1.7074,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4583,8 +4583,8 @@
             "score": 69.62,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.3732216856645465,
-              "cost_ratio": 1.950139817052941,
+              "delta_score": 4.3732,
+              "cost_ratio": 1.9501,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4594,8 +4594,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 22.242623954180466,
-              "cost_ratio": 47.729166666666664,
+              "delta_score": 22.2426,
+              "cost_ratio": 47.7292,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4605,8 +4605,8 @@
             "score": 29.93,
             "on_frontier": false,
             "distance": {
-              "delta_score": 44.124514290527266,
-              "cost_ratio": 53.37061403508772,
+              "delta_score": 44.1245,
+              "cost_ratio": 53.3706,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4627,8 +4627,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.896108820323238,
+              "delta_score": 7.08,
+              "cost_ratio": 2.8961,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4638,8 +4638,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 3.2425707379496655,
+              "delta_score": 1.45,
+              "cost_ratio": 3.2426,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4649,8 +4649,8 @@
             "score": 73.65,
             "on_frontier": false,
             "distance": {
-              "delta_score": 0.46999999999999886,
-              "cost_ratio": 4.9425091236551495,
+              "delta_score": 0.47,
+              "cost_ratio": 4.9425,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4660,8 +4660,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.210000000000008,
-              "cost_ratio": 5.37518365799327,
+              "delta_score": 4.21,
+              "cost_ratio": 5.3752,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4671,8 +4671,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 15.150000000000006,
-              "cost_ratio": 55.32243618450515,
+              "delta_score": 15.15,
+              "cost_ratio": 55.3224,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4682,8 +4682,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 20.270000000000003,
-              "cost_ratio": 104.24272279444693,
+              "delta_score": 20.27,
+              "cost_ratio": 104.2427,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -4793,8 +4793,8 @@
             "score": 53.32,
             "on_frontier": false,
             "distance": {
-              "delta_score": 13.321165240289652,
-              "cost_ratio": 18.827850877192983,
+              "delta_score": 13.3212,
+              "cost_ratio": 18.8279,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -4804,8 +4804,8 @@
             "score": 11.73,
             "on_frontier": false,
             "distance": {
-              "delta_score": 55.028294930875575,
-              "cost_ratio": 18.898026315789473,
+              "delta_score": 55.0283,
+              "cost_ratio": 18.898,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -4815,8 +4815,8 @@
             "score": 53.76,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.481428571428573,
-              "cost_ratio": 9.060008956560681,
+              "delta_score": 18.4814,
+              "cost_ratio": 9.06,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4837,8 +4837,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 43.30696950979842,
-              "cost_ratio": 24.073464912280702,
+              "delta_score": 43.307,
+              "cost_ratio": 24.0735,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4848,8 +4848,8 @@
             "score": 67.19,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.654834634173724,
-              "cost_ratio": 1.0863548035451918,
+              "delta_score": 6.6548,
+              "cost_ratio": 1.0864,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4859,8 +4859,8 @@
             "score": 54.87,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.00675108091415,
-              "cost_ratio": 12.020152261531571,
+              "delta_score": 19.0068,
+              "cost_ratio": 12.0202,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4870,8 +4870,8 @@
             "score": 36.06,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.83126817901061,
-              "cost_ratio": 31.385964912280702,
+              "delta_score": 37.8313,
+              "cost_ratio": 31.386,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4881,8 +4881,8 @@
             "score": 67.48,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.418058565893645,
-              "cost_ratio": 1.3961799137399877,
+              "delta_score": 6.4181,
+              "cost_ratio": 1.3962,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4892,8 +4892,8 @@
             "score": 68.96,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.9531863102925655,
-              "cost_ratio": 1.48424095928717,
+              "delta_score": 4.9532,
+              "cost_ratio": 1.4842,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4903,8 +4903,8 @@
             "score": 57.46,
             "on_frontier": false,
             "distance": {
-              "delta_score": 16.453275871750243,
-              "cost_ratio": 14.02910882221227,
+              "delta_score": 16.4533,
+              "cost_ratio": 14.0291,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4914,8 +4914,8 @@
             "score": 46.68,
             "on_frontier": false,
             "distance": {
-              "delta_score": 27.258678757931385,
-              "cost_ratio": 37.770833333333336,
+              "delta_score": 27.2587,
+              "cost_ratio": 37.7708,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4925,8 +4925,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 30.160225728564214,
-              "cost_ratio": 37.979166666666664,
+              "delta_score": 30.1602,
+              "cost_ratio": 37.9792,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4936,8 +4936,8 @@
             "score": 68.51,
             "on_frontier": false,
             "distance": {
-              "delta_score": 5.441526756134536,
-              "cost_ratio": 1.7074268922697757,
+              "delta_score": 5.4415,
+              "cost_ratio": 1.7074,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -4947,8 +4947,8 @@
             "score": 69.62,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.3732216856645465,
-              "cost_ratio": 1.950139817052941,
+              "delta_score": 4.3732,
+              "cost_ratio": 1.9501,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4958,8 +4958,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 22.242623954180466,
-              "cost_ratio": 47.729166666666664,
+              "delta_score": 22.2426,
+              "cost_ratio": 47.7292,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4969,8 +4969,8 @@
             "score": 29.93,
             "on_frontier": false,
             "distance": {
-              "delta_score": 44.124514290527266,
-              "cost_ratio": 53.37061403508772,
+              "delta_score": 44.1245,
+              "cost_ratio": 53.3706,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -4991,8 +4991,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.896108820323238,
+              "delta_score": 7.08,
+              "cost_ratio": 2.8961,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5002,8 +5002,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 3.2425707379496655,
+              "delta_score": 1.45,
+              "cost_ratio": 3.2426,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5013,8 +5013,8 @@
             "score": 73.65,
             "on_frontier": false,
             "distance": {
-              "delta_score": 0.46999999999999886,
-              "cost_ratio": 4.9425091236551495,
+              "delta_score": 0.47,
+              "cost_ratio": 4.9425,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5024,8 +5024,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.210000000000008,
-              "cost_ratio": 5.37518365799327,
+              "delta_score": 4.21,
+              "cost_ratio": 5.3752,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5035,8 +5035,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 15.150000000000006,
-              "cost_ratio": 55.32243618450515,
+              "delta_score": 15.15,
+              "cost_ratio": 55.3224,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5046,8 +5046,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 20.270000000000003,
-              "cost_ratio": 104.24272279444693,
+              "delta_score": 20.27,
+              "cost_ratio": 104.2427,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -5157,8 +5157,8 @@
             "score": 53.32,
             "on_frontier": false,
             "distance": {
-              "delta_score": 13.322742430890735,
-              "cost_ratio": 18.82894736842105,
+              "delta_score": 13.3227,
+              "cost_ratio": 18.8289,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -5168,8 +5168,8 @@
             "score": 11.73,
             "on_frontier": false,
             "distance": {
-              "delta_score": 55.02984642387011,
-              "cost_ratio": 18.899122807017545,
+              "delta_score": 55.0298,
+              "cost_ratio": 18.8991,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -5179,8 +5179,8 @@
             "score": 53.76,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.478117595436593,
-              "cost_ratio": 9.063620071684587,
+              "delta_score": 18.4781,
+              "cost_ratio": 9.0636,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5201,8 +5201,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 43.306969901168,
-              "cost_ratio": 24.074561403508774,
+              "delta_score": 43.307,
+              "cost_ratio": 24.0746,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5212,8 +5212,8 @@
             "score": 67.19,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.654835467205757,
-              "cost_ratio": 1.086350710900474,
+              "delta_score": 6.6548,
+              "cost_ratio": 1.0864,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5223,8 +5223,8 @@
             "score": 54.87,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.00675370619947,
-              "cost_ratio": 12.025985663082437,
+              "delta_score": 19.0068,
+              "cost_ratio": 12.026,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5234,8 +5234,8 @@
             "score": 36.06,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.83126347708895,
-              "cost_ratio": 31.385964912280702,
+              "delta_score": 37.8313,
+              "cost_ratio": 31.386,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5245,8 +5245,8 @@
             "score": 67.48,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.418054245283017,
-              "cost_ratio": 1.3961137440758296,
+              "delta_score": 6.4181,
+              "cost_ratio": 1.3961,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5256,8 +5256,8 @@
             "score": 68.96,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.953182839173408,
-              "cost_ratio": 1.4841706161137442,
+              "delta_score": 4.9532,
+              "cost_ratio": 1.4842,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5267,8 +5267,8 @@
             "score": 57.46,
             "on_frontier": false,
             "distance": {
-              "delta_score": 16.45326426325247,
-              "cost_ratio": 14.03494623655914,
+              "delta_score": 16.4533,
+              "cost_ratio": 14.0349,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5278,8 +5278,8 @@
             "score": 46.68,
             "on_frontier": false,
             "distance": {
-              "delta_score": 27.258684860736743,
-              "cost_ratio": 37.771929824561404,
+              "delta_score": 27.2587,
+              "cost_ratio": 37.7719,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5289,8 +5289,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 30.160215633423178,
-              "cost_ratio": 37.978070175438596,
+              "delta_score": 30.1602,
+              "cost_ratio": 37.9781,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5300,8 +5300,8 @@
             "score": 68.51,
             "on_frontier": false,
             "distance": {
-              "delta_score": 5.441533580413292,
-              "cost_ratio": 1.70739336492891,
+              "delta_score": 5.4415,
+              "cost_ratio": 1.7074,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5311,8 +5311,8 @@
             "score": 69.62,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.373222708894872,
-              "cost_ratio": 1.9500473933649292,
+              "delta_score": 4.3732,
+              "cost_ratio": 1.95,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5322,8 +5322,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 22.24261792452831,
-              "cost_ratio": 47.728070175438596,
+              "delta_score": 22.2426,
+              "cost_ratio": 47.7281,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5333,8 +5333,8 @@
             "score": 29.93,
             "on_frontier": false,
             "distance": {
-              "delta_score": 44.12451875561546,
-              "cost_ratio": 53.37061403508772,
+              "delta_score": 44.1245,
+              "cost_ratio": 53.3706,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5355,8 +5355,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.8960189573459716,
+              "delta_score": 7.08,
+              "cost_ratio": 2.896,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5366,8 +5366,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 3.242369668246446,
+              "delta_score": 1.45,
+              "cost_ratio": 3.2424,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5377,8 +5377,8 @@
             "score": 73.65,
             "on_frontier": false,
             "distance": {
-              "delta_score": 0.46999999999999886,
-              "cost_ratio": 4.942274881516588,
+              "delta_score": 0.47,
+              "cost_ratio": 4.9423,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5388,8 +5388,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.210000000000008,
-              "cost_ratio": 5.374976303317536,
+              "delta_score": 4.21,
+              "cost_ratio": 5.375,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5399,8 +5399,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 15.150000000000006,
-              "cost_ratio": 55.34767025089606,
+              "delta_score": 15.15,
+              "cost_ratio": 55.3477,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5410,8 +5410,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 20.270000000000003,
-              "cost_ratio": 104.2894265232975,
+              "delta_score": 20.27,
+              "cost_ratio": 104.2894,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -5545,8 +5545,8 @@
             "score": 53.32,
             "on_frontier": false,
             "distance": {
-              "delta_score": 13.32299539170507,
-              "cost_ratio": 18.828947368421055,
+              "delta_score": 13.323,
+              "cost_ratio": 18.8289,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -5556,8 +5556,8 @@
             "score": 11.73,
             "on_frontier": false,
             "distance": {
-              "delta_score": 55.028294930875575,
-              "cost_ratio": 18.898026315789473,
+              "delta_score": 55.0283,
+              "cost_ratio": 18.898,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -5567,8 +5567,8 @@
             "score": 53.76,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.483258722843978,
-              "cost_ratio": 9.064516129032258,
+              "delta_score": 18.4833,
+              "cost_ratio": 9.0645,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5589,8 +5589,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 43.30696117240798,
-              "cost_ratio": 24.07236842105263,
+              "delta_score": 43.307,
+              "cost_ratio": 24.0724,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5600,8 +5600,8 @@
             "score": 67.19,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.654826075970689,
-              "cost_ratio": 1.0863074079340254,
+              "delta_score": 6.6548,
+              "cost_ratio": 1.0863,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5611,8 +5611,8 @@
             "score": 54.87,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.006749768382043,
-              "cost_ratio": 12.025537634408604,
+              "delta_score": 19.0067,
+              "cost_ratio": 12.0255,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5622,8 +5622,8 @@
             "score": 36.06,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.83125831719025,
-              "cost_ratio": 31.38486842105263,
+              "delta_score": 37.8313,
+              "cost_ratio": 31.3849,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5633,8 +5633,8 @@
             "score": 67.48,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.418048513433831,
-              "cost_ratio": 1.396132518128821,
+              "delta_score": 6.418,
+              "cost_ratio": 1.3961,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5644,8 +5644,8 @@
             "score": 68.96,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.95319211656701,
-              "cost_ratio": 1.4842883548983363,
+              "delta_score": 4.9532,
+              "cost_ratio": 1.4843,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5655,8 +5655,8 @@
             "score": 57.46,
             "on_frontier": false,
             "distance": {
-              "delta_score": 16.453265392066037,
-              "cost_ratio": 14.034946236559142,
+              "delta_score": 16.4533,
+              "cost_ratio": 14.0349,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5666,8 +5666,8 @@
             "score": 46.68,
             "on_frontier": false,
             "distance": {
-              "delta_score": 27.258667565063583,
-              "cost_ratio": 37.76973684210527,
+              "delta_score": 27.2587,
+              "cost_ratio": 37.7697,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5677,8 +5677,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 30.160230775709593,
-              "cost_ratio": 37.98026315789474,
+              "delta_score": 30.1602,
+              "cost_ratio": 37.9803,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5688,8 +5688,8 @@
             "score": 68.51,
             "on_frontier": false,
             "distance": {
-              "delta_score": 5.441515202560424,
-              "cost_ratio": 1.7073794966586096,
+              "delta_score": 5.4415,
+              "cost_ratio": 1.7074,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5699,8 +5699,8 @@
             "score": 69.62,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.373208961509306,
-              "cost_ratio": 1.9500924214417743,
+              "delta_score": 4.3732,
+              "cost_ratio": 1.9501,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5710,8 +5710,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 22.24262696875264,
-              "cost_ratio": 47.73026315789474,
+              "delta_score": 22.2426,
+              "cost_ratio": 47.7303,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5721,8 +5721,8 @@
             "score": 29.93,
             "on_frontier": false,
             "distance": {
-              "delta_score": 44.124516129032266,
-              "cost_ratio": 53.371710526315795,
+              "delta_score": 44.1245,
+              "cost_ratio": 53.3717,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5743,8 +5743,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.8960614247120713,
+              "delta_score": 7.08,
+              "cost_ratio": 2.8961,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5754,8 +5754,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 3.2425707379496655,
+              "delta_score": 1.45,
+              "cost_ratio": 3.2426,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5765,8 +5765,8 @@
             "score": 73.65,
             "on_frontier": false,
             "distance": {
-              "delta_score": 0.46999999999999886,
-              "cost_ratio": 4.942556519266316,
+              "delta_score": 0.47,
+              "cost_ratio": 4.9426,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5776,8 +5776,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.210000000000008,
-              "cost_ratio": 5.375231053604436,
+              "delta_score": 4.21,
+              "cost_ratio": 5.3752,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5787,8 +5787,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 15.150000000000006,
-              "cost_ratio": 55.34677419354839,
+              "delta_score": 15.15,
+              "cost_ratio": 55.3468,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -5798,8 +5798,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 20.270000000000003,
-              "cost_ratio": 104.28897849462366,
+              "delta_score": 20.27,
+              "cost_ratio": 104.289,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -5909,8 +5909,8 @@
             "score": 53.32,
             "on_frontier": false,
             "distance": {
-              "delta_score": 13.320250164581957,
-              "cost_ratio": 18.82730263157895,
+              "delta_score": 13.3203,
+              "cost_ratio": 18.8273,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -5920,8 +5920,8 @@
             "score": 11.73,
             "on_frontier": false,
             "distance": {
-              "delta_score": 55.028294930875575,
-              "cost_ratio": 18.898026315789473,
+              "delta_score": 55.0283,
+              "cost_ratio": 18.898,
               "frontier_id": "gemini-3.7-flash"
             }
           },
@@ -5931,8 +5931,8 @@
             "score": 53.76,
             "on_frontier": false,
             "distance": {
-              "delta_score": 18.480513495720864,
-              "cost_ratio": 9.05775688381464,
+              "delta_score": 18.4805,
+              "cost_ratio": 9.0578,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5953,8 +5953,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 43.30697367866918,
-              "cost_ratio": 24.074013157894736,
+              "delta_score": 43.307,
+              "cost_ratio": 24.074,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5964,8 +5964,8 @@
             "score": 67.19,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.654838913455464,
-              "cost_ratio": 1.086378501350775,
+              "delta_score": 6.6548,
+              "cost_ratio": 1.0864,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5975,8 +5975,8 @@
             "score": 54.87,
             "on_frontier": false,
             "distance": {
-              "delta_score": 19.00675173720783,
-              "cost_ratio": 12.017461383478846,
+              "delta_score": 19.0068,
+              "cost_ratio": 12.0175,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5986,8 +5986,8 @@
             "score": 36.06,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.83127311012845,
-              "cost_ratio": 31.38651315789474,
+              "delta_score": 37.8313,
+              "cost_ratio": 31.3865,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -5997,8 +5997,8 @@
             "score": 67.48,
             "on_frontier": false,
             "distance": {
-              "delta_score": 6.418063592335216,
-              "cost_ratio": 1.3962036115455707,
+              "delta_score": 6.4181,
+              "cost_ratio": 1.3962,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -6008,8 +6008,8 @@
             "score": 68.96,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.953183407033066,
-              "cost_ratio": 1.4842172614815867,
+              "delta_score": 4.9532,
+              "cost_ratio": 1.4842,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -6019,8 +6019,8 @@
             "score": 57.46,
             "on_frontier": false,
             "distance": {
-              "delta_score": 16.453281111813006,
-              "cost_ratio": 14.026192075218265,
+              "delta_score": 16.4533,
+              "cost_ratio": 14.0262,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -6030,8 +6030,8 @@
             "score": 46.68,
             "on_frontier": false,
             "distance": {
-              "delta_score": 27.258684354600966,
-              "cost_ratio": 37.77138157894737,
+              "delta_score": 27.2587,
+              "cost_ratio": 37.7714,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -6041,8 +6041,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 30.16022320488524,
-              "cost_ratio": 37.97861842105263,
+              "delta_score": 30.1602,
+              "cost_ratio": 37.9786,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -6052,8 +6052,8 @@
             "score": 68.51,
             "on_frontier": false,
             "distance": {
-              "delta_score": 5.4415325331648745,
-              "cost_ratio": 1.707450590075359,
+              "delta_score": 5.4415,
+              "cost_ratio": 1.7075,
               "frontier_id": "gemini-3.8-flash"
             }
           },
@@ -6063,8 +6063,8 @@
             "score": 69.62,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.373228048010105,
-              "cost_ratio": 1.9501635148585241,
+              "delta_score": 4.3732,
+              "cost_ratio": 1.9502,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6074,8 +6074,8 @@
             "score": 51.77,
             "on_frontier": false,
             "distance": {
-              "delta_score": 22.242622446830914,
-              "cost_ratio": 47.72861842105263,
+              "delta_score": 22.2426,
+              "cost_ratio": 47.7286,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6085,8 +6085,8 @@
             "score": 29.93,
             "on_frontier": false,
             "distance": {
-              "delta_score": 44.124513371236056,
-              "cost_ratio": 53.370065789473685,
+              "delta_score": 44.1245,
+              "cost_ratio": 53.3701,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6107,8 +6107,8 @@
             "score": 67.04,
             "on_frontier": false,
             "distance": {
-              "delta_score": 7.079999999999998,
-              "cost_ratio": 2.896132518128821,
+              "delta_score": 7.08,
+              "cost_ratio": 2.8961,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6118,8 +6118,8 @@
             "score": 72.67,
             "on_frontier": false,
             "distance": {
-              "delta_score": 1.4500000000000028,
-              "cost_ratio": 3.2425707379496655,
+              "delta_score": 1.45,
+              "cost_ratio": 3.2426,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6129,8 +6129,8 @@
             "score": 73.65,
             "on_frontier": false,
             "distance": {
-              "delta_score": 0.46999999999999886,
-              "cost_ratio": 4.942485425849566,
+              "delta_score": 0.47,
+              "cost_ratio": 4.9425,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6140,8 +6140,8 @@
             "score": 69.91,
             "on_frontier": false,
             "distance": {
-              "delta_score": 4.210000000000008,
-              "cost_ratio": 5.375159960187686,
+              "delta_score": 4.21,
+              "cost_ratio": 5.3752,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6151,8 +6151,8 @@
             "score": 58.97,
             "on_frontier": false,
             "distance": {
-              "delta_score": 15.150000000000006,
-              "cost_ratio": 55.31027535258562,
+              "delta_score": 15.15,
+              "cost_ratio": 55.3103,
               "frontier_id": "gpt-6-astra"
             }
           },
@@ -6162,8 +6162,8 @@
             "score": 53.85,
             "on_frontier": false,
             "distance": {
-              "delta_score": 20.270000000000003,
-              "cost_ratio": 104.21961047683008,
+              "delta_score": 20.27,
+              "cost_ratio": 104.2196,
               "frontier_id": "gpt-6-astra"
             }
           }
@@ -6240,8 +6240,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.980000000000004,
-              "cost_ratio": 1.5797509039775008,
+              "delta_score": 37.98,
+              "cost_ratio": 1.5798,
               "frontier_id": "kimi-k3"
             }
           }
@@ -6277,8 +6277,8 @@
             "score": 30.53,
             "on_frontier": false,
             "distance": {
-              "delta_score": 37.980000000000004,
-              "cost_ratio": 1.580056179775281,
+              "delta_score": 37.98,
+              "cost_ratio": 1.5801,
               "frontier_id": "kimi-k3"
             }
           }
@@ -6325,8 +6325,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 25.179999999999993,
-              "cost_ratio": 1.1179843089921546,
+              "delta_score": 25.18,
+              "cost_ratio": 1.118,
               "frontier_id": "glm-5.3"
             }
           }
@@ -6377,8 +6377,8 @@
             "score": 43.78,
             "on_frontier": false,
             "distance": {
-              "delta_score": 25.179999999999993,
-              "cost_ratio": 1.1181141439205955,
+              "delta_score": 25.18,
+              "cost_ratio": 1.1181,
               "frontier_id": "glm-5.3"
             }
           }
@@ -6406,10 +6406,10 @@
       "model_id": "deepseek-v4-flash",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 11458586842.105263,
+      "tokens_per_month_allowance": 11458586842.1053,
       "tokens_per_task": 17417052,
-      "allowance_per_million_tokens": 0.0017454159291710218,
-      "adjusted_api_cost_per_million": 0.0017454159291710215,
+      "allowance_per_million_tokens": 0.0017,
+      "adjusted_api_cost_per_million": 0.0017,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6417,21 +6417,21 @@
       "model_id": "deepseek-v4-pro",
       "plan_id": "opencode-go",
       "blend": "3:1",
-      "tokens_per_month_allowance": 5569943752.798925,
+      "tokens_per_month_allowance": 5569943752.7989,
       "tokens_per_task": 20729474,
-      "allowance_per_million_tokens": 0.0017953502663244935,
-      "adjusted_api_cost_per_million": 0.0017953502663244933,
-      "value_multiple": 6.000000000000001,
+      "allowance_per_million_tokens": 0.0018,
+      "adjusted_api_cost_per_million": 0.0018,
+      "value_multiple": 6,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-4.6",
       "plan_id": "claude-max-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 57584439561.16202,
+      "tokens_per_month_allowance": 57584439561.162,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.0034731604843974296,
-      "adjusted_api_cost_per_million": 0.00347316048439743,
+      "allowance_per_million_tokens": 0.0035,
+      "adjusted_api_cost_per_million": 0.0035,
       "value_multiple": 127.36,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6439,10 +6439,10 @@
       "model_id": "deepseek-v4-flash",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 76390578947.36841,
+      "tokens_per_month_allowance": 76390578947.3684,
       "tokens_per_task": 17417052,
-      "allowance_per_million_tokens": 0.0026181238937565327,
-      "adjusted_api_cost_per_million": 0.0026181238937565323,
+      "allowance_per_million_tokens": 0.0026,
+      "adjusted_api_cost_per_million": 0.0026,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6450,10 +6450,10 @@
       "model_id": "gpt-5.6-luna",
       "plan_id": "chatgpt-pro-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 47030938040.05061,
+      "tokens_per_month_allowance": 47030938040.0506,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.004252519901467498,
-      "adjusted_api_cost_per_million": 0.004252519901467497,
+      "allowance_per_million_tokens": 0.0043,
+      "adjusted_api_cost_per_million": 0.0043,
       "value_multiple": 43.648,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6461,10 +6461,10 @@
       "model_id": "deepseek-v4-flash",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2864646710.5263157,
+      "tokens_per_month_allowance": 2864646710.5263,
       "tokens_per_task": 17417052,
-      "allowance_per_million_tokens": 0.0034908318583420435,
-      "adjusted_api_cost_per_million": 0.003490831858342043,
+      "allowance_per_million_tokens": 0.0035,
+      "adjusted_api_cost_per_million": 0.0035,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6472,43 +6472,43 @@
       "model_id": "kimi-k3",
       "plan_id": "kimi-code-allegretto",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2889230452.136364,
+      "tokens_per_month_allowance": 2889230452.1364,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.010161875449668798,
-      "adjusted_api_cost_per_million": 0.0101618754496688,
-      "value_multiple": 50.60298876021799,
+      "allowance_per_million_tokens": 0.0102,
+      "adjusted_api_cost_per_million": 0.0102,
+      "value_multiple": 50.603,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "deepseek-v4-pro",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 5569943752.798925,
+      "tokens_per_month_allowance": 5569943752.7989,
       "tokens_per_task": 20729474,
-      "allowance_per_million_tokens": 0.003590700532648987,
-      "adjusted_api_cost_per_million": 0.0035907005326489866,
-      "value_multiple": 3.0000000000000004,
+      "allowance_per_million_tokens": 0.0036,
+      "adjusted_api_cost_per_million": 0.0036,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-4.6",
       "plan_id": "claude-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2879221978.0581007,
+      "tokens_per_month_allowance": 2879221978.0581,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.00694632096879486,
-      "adjusted_api_cost_per_million": 0.006946320968794861,
-      "value_multiple": 63.67999999999999,
+      "allowance_per_million_tokens": 0.0069,
+      "adjusted_api_cost_per_million": 0.0069,
+      "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-4.6",
       "plan_id": "claude-max-5x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 14396109890.290504,
+      "tokens_per_month_allowance": 14396109890.2905,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.006946320968794859,
-      "adjusted_api_cost_per_million": 0.00694632096879486,
+      "allowance_per_million_tokens": 0.0069,
+      "adjusted_api_cost_per_million": 0.0069,
       "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6516,10 +6516,10 @@
       "model_id": "claude-opus-5",
       "plan_id": "claude-max-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 29906490490.017452,
+      "tokens_per_month_allowance": 29906490490.0175,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.006687511530875159,
-      "adjusted_api_cost_per_million": 0.006687511530875159,
+      "allowance_per_million_tokens": 0.0067,
+      "adjusted_api_cost_per_million": 0.0067,
       "value_multiple": 127.36,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6527,10 +6527,10 @@
       "model_id": "claude-fable-5",
       "plan_id": "claude-max-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 12158892805.812487,
+      "tokens_per_month_allowance": 12158892805.8125,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 0.016448866125737302,
-      "adjusted_api_cost_per_million": 0.016448866125737302,
+      "allowance_per_million_tokens": 0.0164,
+      "adjusted_api_cost_per_million": 0.0164,
       "value_multiple": 127.36,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6538,10 +6538,10 @@
       "model_id": "deepseek-v4-flash",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 3819528947.3684206,
+      "tokens_per_month_allowance": 3819528947.3684,
       "tokens_per_task": 17417052,
-      "allowance_per_million_tokens": 0.0052362477875130655,
-      "adjusted_api_cost_per_million": 0.005236247787513065,
+      "allowance_per_million_tokens": 0.0052,
+      "adjusted_api_cost_per_million": 0.0052,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6549,10 +6549,10 @@
       "model_id": "deepseek-v4-flash",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 11458586842.105263,
+      "tokens_per_month_allowance": 11458586842.1053,
       "tokens_per_task": 17417052,
-      "allowance_per_million_tokens": 0.0052362477875130655,
-      "adjusted_api_cost_per_million": 0.005236247787513065,
+      "allowance_per_million_tokens": 0.0052,
+      "adjusted_api_cost_per_million": 0.0052,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6560,10 +6560,10 @@
       "model_id": "gpt-5.6-terra",
       "plan_id": "chatgpt-pro-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 15614270559.665579,
+      "tokens_per_month_allowance": 15614270559.6656,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.012808795597319502,
-      "adjusted_api_cost_per_million": 0.012808795597319502,
+      "allowance_per_million_tokens": 0.0128,
+      "adjusted_api_cost_per_million": 0.0128,
       "value_multiple": 43.648,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6571,10 +6571,10 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "claude-max-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 31954676063.625694,
+      "tokens_per_month_allowance": 31954676063.6257,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.006258864887310245,
-      "adjusted_api_cost_per_million": 0.006258864887310245,
+      "allowance_per_million_tokens": 0.0063,
+      "adjusted_api_cost_per_million": 0.0063,
       "value_multiple": 127.36,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6582,10 +6582,10 @@
       "model_id": "gpt-5.4",
       "plan_id": "chatgpt-pro-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 13912297881.044823,
+      "tokens_per_month_allowance": 13912297881.0448,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.014375770394658908,
-      "adjusted_api_cost_per_million": 0.014375770394658908,
+      "allowance_per_million_tokens": 0.0144,
+      "adjusted_api_cost_per_million": 0.0144,
       "value_multiple": 43.648,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6593,10 +6593,10 @@
       "model_id": "gpt-5.6-luna",
       "plan_id": "chatgpt-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2351546902.0025306,
+      "tokens_per_month_allowance": 2351546902.0025,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.008505039802934993,
-      "adjusted_api_cost_per_million": 0.008505039802934993,
+      "allowance_per_million_tokens": 0.0085,
+      "adjusted_api_cost_per_million": 0.0085,
       "value_multiple": 21.824,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6604,10 +6604,10 @@
       "model_id": "deepseek-v4-pro",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 37132958351.992836,
+      "tokens_per_month_allowance": 37132958351.9928,
       "tokens_per_task": 20729474,
-      "allowance_per_million_tokens": 0.005386050798973481,
-      "adjusted_api_cost_per_million": 0.005386050798973481,
+      "allowance_per_million_tokens": 0.0054,
+      "adjusted_api_cost_per_million": 0.0054,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6615,21 +6615,21 @@
       "model_id": "kimi-k2.7-code",
       "plan_id": "kimi-code-allegretto",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2630970524.5467625,
+      "tokens_per_month_allowance": 2630970524.5468,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.011159380056170658,
-      "adjusted_api_cost_per_million": 0.01115938005617066,
-      "value_multiple": 19.524210985435083,
+      "allowance_per_million_tokens": 0.0112,
+      "adjusted_api_cost_per_million": 0.0112,
+      "value_multiple": 19.5242,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-6-astra",
       "plan_id": "chatgpt-pro-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1835375428.1785004,
+      "tokens_per_month_allowance": 1835375428.1785,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 0.10896953120838496,
-      "adjusted_api_cost_per_million": 0.10896953120838497,
+      "allowance_per_million_tokens": 0.109,
+      "adjusted_api_cost_per_million": 0.109,
       "value_multiple": 43.648,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6637,10 +6637,10 @@
       "model_id": "glm-5.3-flash",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1450148769.2307692,
+      "tokens_per_month_allowance": 1450148769.2308,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.013791688428359658,
-      "adjusted_api_cost_per_million": 0.013791688428359658,
+      "allowance_per_million_tokens": 0.0138,
+      "adjusted_api_cost_per_million": 0.0138,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6648,10 +6648,10 @@
       "model_id": "gpt-5.5",
       "plan_id": "chatgpt-pro-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 9561261370.29703,
+      "tokens_per_month_allowance": 9561261370.297,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.020917742152862705,
-      "adjusted_api_cost_per_million": 0.020917742152862705,
+      "allowance_per_million_tokens": 0.0209,
+      "adjusted_api_cost_per_million": 0.0209,
       "value_multiple": 43.648,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6659,21 +6659,21 @@
       "model_id": "deepseek-v4-pro",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1392485938.1997313,
+      "tokens_per_month_allowance": 1392485938.1997,
       "tokens_per_task": 20729474,
-      "allowance_per_million_tokens": 0.007181401065297974,
-      "adjusted_api_cost_per_million": 0.007181401065297973,
-      "value_multiple": 1.5000000000000002,
+      "allowance_per_million_tokens": 0.0072,
+      "adjusted_api_cost_per_million": 0.0072,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-sol",
       "plan_id": "chatgpt-pro-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 7697528158.912519,
+      "tokens_per_month_allowance": 7697528158.9125,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 0.025982366789841702,
-      "adjusted_api_cost_per_million": 0.025982366789841706,
+      "allowance_per_million_tokens": 0.026,
+      "adjusted_api_cost_per_million": 0.026,
       "value_multiple": 43.648,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6681,21 +6681,21 @@
       "model_id": "claude-opus-5",
       "plan_id": "claude-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1495324524.5008726,
+      "tokens_per_month_allowance": 1495324524.5009,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.013375023061750318,
-      "adjusted_api_cost_per_million": 0.01337502306175032,
-      "value_multiple": 63.67999999999999,
+      "allowance_per_million_tokens": 0.0134,
+      "adjusted_api_cost_per_million": 0.0134,
+      "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-opus-5",
       "plan_id": "claude-max-5x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 7476622622.504363,
+      "tokens_per_month_allowance": 7476622622.5044,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.013375023061750318,
-      "adjusted_api_cost_per_million": 0.013375023061750318,
+      "allowance_per_million_tokens": 0.0134,
+      "adjusted_api_cost_per_million": 0.0134,
       "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6703,21 +6703,21 @@
       "model_id": "claude-fable-5",
       "plan_id": "claude-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 607944640.2906243,
+      "tokens_per_month_allowance": 607944640.2906,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 0.032897732251474604,
-      "adjusted_api_cost_per_million": 0.03289773225147461,
-      "value_multiple": 63.67999999999999,
+      "allowance_per_million_tokens": 0.0329,
+      "adjusted_api_cost_per_million": 0.0329,
+      "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-fable-5",
       "plan_id": "claude-max-5x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 3039723201.4531217,
+      "tokens_per_month_allowance": 3039723201.4531,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 0.032897732251474604,
-      "adjusted_api_cost_per_million": 0.032897732251474604,
+      "allowance_per_million_tokens": 0.0329,
+      "adjusted_api_cost_per_million": 0.0329,
       "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6725,10 +6725,10 @@
       "model_id": "claude-sonnet-5",
       "plan_id": "claude-max-20x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 68715392029.69404,
+      "tokens_per_month_allowance": 68715392029.694,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.00291055604999785,
-      "adjusted_api_cost_per_million": 0.0029105560499978495,
+      "allowance_per_million_tokens": 0.0029,
+      "adjusted_api_cost_per_million": 0.0029,
       "value_multiple": 127.36,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6736,10 +6736,10 @@
       "model_id": "gpt-5.6-terra",
       "plan_id": "chatgpt-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 780713527.983279,
+      "tokens_per_month_allowance": 780713527.9833,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.025617591194639005,
-      "adjusted_api_cost_per_million": 0.025617591194639005,
+      "allowance_per_million_tokens": 0.0256,
+      "adjusted_api_cost_per_million": 0.0256,
       "value_multiple": 21.824,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6747,21 +6747,21 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "claude-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1597733803.1812844,
+      "tokens_per_month_allowance": 1597733803.1813,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.012517729774620491,
-      "adjusted_api_cost_per_million": 0.012517729774620491,
-      "value_multiple": 63.67999999999999,
+      "allowance_per_million_tokens": 0.0125,
+      "adjusted_api_cost_per_million": 0.0125,
+      "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-opus-4.8",
       "plan_id": "claude-max-5x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 7988669015.906424,
+      "tokens_per_month_allowance": 7988669015.9064,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.01251772977462049,
-      "adjusted_api_cost_per_million": 0.01251772977462049,
+      "allowance_per_million_tokens": 0.0125,
+      "adjusted_api_cost_per_million": 0.0125,
       "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6769,10 +6769,10 @@
       "model_id": "glm-5.3-flash",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 9667658461.538462,
+      "tokens_per_month_allowance": 9667658461.5385,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.020687532642539485,
-      "adjusted_api_cost_per_million": 0.02068753264253949,
+      "allowance_per_million_tokens": 0.0207,
+      "adjusted_api_cost_per_million": 0.0207,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6780,10 +6780,10 @@
       "model_id": "gpt-5.4",
       "plan_id": "chatgpt-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 695614894.0522411,
+      "tokens_per_month_allowance": 695614894.0522,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.028751540789317815,
-      "adjusted_api_cost_per_million": 0.028751540789317815,
+      "allowance_per_million_tokens": 0.0288,
+      "adjusted_api_cost_per_million": 0.0288,
       "value_multiple": 21.824,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6791,32 +6791,32 @@
       "model_id": "glm-5.3-flash",
       "plan_id": "glm-coding-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1028287309.0909091,
+      "tokens_per_month_allowance": 1028287309.0909,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.02137534889877435,
-      "adjusted_api_cost_per_million": 0.02137534889877435,
-      "value_multiple": 1.9356439738605344,
+      "allowance_per_million_tokens": 0.0214,
+      "adjusted_api_cost_per_million": 0.0214,
+      "value_multiple": 1.9356,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "glm-5.3",
       "plan_id": "glm-coding-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1075024842.105263,
+      "tokens_per_month_allowance": 1075024842.1053,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.02044603914171482,
-      "adjusted_api_cost_per_million": 0.020446039141714816,
-      "value_multiple": 14.997366026531296,
+      "allowance_per_million_tokens": 0.0204,
+      "adjusted_api_cost_per_million": 0.0204,
+      "value_multiple": 14.9974,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "deepseek-v4-pro",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1856647917.5996418,
+      "tokens_per_month_allowance": 1856647917.5996,
       "tokens_per_task": 20729474,
-      "allowance_per_million_tokens": 0.010772101597946962,
-      "adjusted_api_cost_per_million": 0.010772101597946962,
+      "allowance_per_million_tokens": 0.0108,
+      "adjusted_api_cost_per_million": 0.0108,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6824,43 +6824,43 @@
       "model_id": "deepseek-v4-pro",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 5569943752.798925,
+      "tokens_per_month_allowance": 5569943752.7989,
       "tokens_per_task": 20729474,
-      "allowance_per_million_tokens": 0.01077210159794696,
-      "adjusted_api_cost_per_million": 0.01077210159794696,
-      "value_multiple": 1.0000000000000002,
+      "allowance_per_million_tokens": 0.0108,
+      "adjusted_api_cost_per_million": 0.0108,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "glm-5.2",
       "plan_id": "glm-coding-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1100917268.292683,
+      "tokens_per_month_allowance": 1100917268.2927,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.019965169620862498,
-      "adjusted_api_cost_per_million": 0.019965169620862498,
-      "value_multiple": 15.374065114627486,
+      "allowance_per_million_tokens": 0.02,
+      "adjusted_api_cost_per_million": 0.02,
+      "value_multiple": 15.3741,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "kimi-k3",
       "plan_id": "kimi-code-andante",
       "blend": "3:1",
-      "tokens_per_month_allowance": 203484873.6818182,
+      "tokens_per_month_allowance": 203484873.6818,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.03553089656828883,
-      "adjusted_api_cost_per_million": 0.03553089656828883,
-      "value_multiple": 14.472510373443983,
+      "allowance_per_million_tokens": 0.0355,
+      "adjusted_api_cost_per_million": 0.0355,
+      "value_multiple": 14.4725,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-6-astra",
       "plan_id": "chatgpt-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 91768771.40892501,
+      "tokens_per_month_allowance": 91768771.4089,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 0.21793906241676994,
-      "adjusted_api_cost_per_million": 0.21793906241676994,
+      "allowance_per_million_tokens": 0.2179,
+      "adjusted_api_cost_per_million": 0.2179,
       "value_multiple": 21.824,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6868,10 +6868,10 @@
       "model_id": "glm-5.3-flash",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 362537192.3076923,
+      "tokens_per_month_allowance": 362537192.3077,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.027583376856719317,
-      "adjusted_api_cost_per_million": 0.027583376856719317,
+      "allowance_per_million_tokens": 0.0276,
+      "adjusted_api_cost_per_million": 0.0276,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6879,21 +6879,21 @@
       "model_id": "gpt-5.5",
       "plan_id": "chatgpt-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 478063068.5148515,
+      "tokens_per_month_allowance": 478063068.5149,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.0418354843057254,
-      "adjusted_api_cost_per_million": 0.0418354843057254,
-      "value_multiple": 21.824000000000005,
+      "allowance_per_million_tokens": 0.0418,
+      "adjusted_api_cost_per_million": 0.0418,
+      "value_multiple": 21.824,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-sol",
       "plan_id": "chatgpt-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 384876407.94562596,
+      "tokens_per_month_allowance": 384876407.9456,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 0.05196473357968341,
-      "adjusted_api_cost_per_million": 0.05196473357968341,
+      "allowance_per_million_tokens": 0.052,
+      "adjusted_api_cost_per_million": 0.052,
       "value_multiple": 21.824,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6901,43 +6901,43 @@
       "model_id": "glm-5.3-flash",
       "plan_id": "glm-coding-lite",
       "blend": "3:1",
-      "tokens_per_month_allowance": 205657461.8181818,
+      "tokens_per_month_allowance": 205657461.8182,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.03515554425344371,
-      "adjusted_api_cost_per_million": 0.035155544253443714,
-      "value_multiple": 1.1769143719351185,
+      "allowance_per_million_tokens": 0.0352,
+      "adjusted_api_cost_per_million": 0.0352,
+      "value_multiple": 1.1769,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "glm-5.3",
       "plan_id": "glm-coding-lite",
       "blend": "3:1",
-      "tokens_per_month_allowance": 215004968.42105263,
+      "tokens_per_month_allowance": 215004968.4211,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.03362712988958101,
-      "adjusted_api_cost_per_million": 0.033627129889581005,
-      "value_multiple": 9.11873043604863,
+      "allowance_per_million_tokens": 0.0336,
+      "adjusted_api_cost_per_million": 0.0336,
+      "value_multiple": 9.1187,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-5",
       "plan_id": "claude-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 3435769601.4847016,
+      "tokens_per_month_allowance": 3435769601.4847,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.0058211120999957,
-      "adjusted_api_cost_per_million": 0.0058211120999957,
-      "value_multiple": 63.67999999999999,
+      "allowance_per_million_tokens": 0.0058,
+      "adjusted_api_cost_per_million": 0.0058,
+      "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-5",
       "plan_id": "claude-max-5x",
       "blend": "3:1",
-      "tokens_per_month_allowance": 17178848007.42351,
+      "tokens_per_month_allowance": 17178848007.4235,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.0058211120999957,
-      "adjusted_api_cost_per_million": 0.005821112099995699,
+      "allowance_per_million_tokens": 0.0058,
+      "adjusted_api_cost_per_million": 0.0058,
       "value_multiple": 63.68,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6945,21 +6945,21 @@
       "model_id": "glm-5.2",
       "plan_id": "glm-coding-lite",
       "blend": "3:1",
-      "tokens_per_month_allowance": 220183453.65853658,
+      "tokens_per_month_allowance": 220183453.6585,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.03283625485869787,
-      "adjusted_api_cost_per_million": 0.03283625485869788,
-      "value_multiple": 9.347771817967141,
+      "allowance_per_million_tokens": 0.0328,
+      "adjusted_api_cost_per_million": 0.0328,
+      "value_multiple": 9.3478,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "glm-5.3-flash",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 483382923.076923,
+      "tokens_per_month_allowance": 483382923.0769,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.04137506528507898,
-      "adjusted_api_cost_per_million": 0.04137506528507898,
+      "allowance_per_million_tokens": 0.0414,
+      "adjusted_api_cost_per_million": 0.0414,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6967,10 +6967,10 @@
       "model_id": "glm-5.3-flash",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1450148769.2307692,
+      "tokens_per_month_allowance": 1450148769.2308,
       "tokens_per_task": 9425967,
-      "allowance_per_million_tokens": 0.04137506528507898,
-      "adjusted_api_cost_per_million": 0.04137506528507898,
+      "allowance_per_million_tokens": 0.0414,
+      "adjusted_api_cost_per_million": 0.0414,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -6978,32 +6978,32 @@
       "model_id": "kimi-k2.7-code",
       "plan_id": "kimi-code-andante",
       "blend": "3:1",
-      "tokens_per_month_allowance": 185295951.1942446,
+      "tokens_per_month_allowance": 185295951.1942,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.039018661516358966,
-      "adjusted_api_cost_per_million": 0.039018661516358966,
-      "value_multiple": 5.58394578942655,
+      "allowance_per_million_tokens": 0.039,
+      "adjusted_api_cost_per_million": 0.039,
+      "value_multiple": 5.5839,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gemini-3.7-flash",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 406375843.30794346,
+      "tokens_per_month_allowance": 406375843.3079,
       "tokens_per_task": 11203782,
-      "allowance_per_million_tokens": 0.04921552382936405,
-      "adjusted_api_cost_per_million": 0.04921552382936405,
-      "value_multiple": 3.0000000000000004,
+      "allowance_per_million_tokens": 0.0492,
+      "adjusted_api_cost_per_million": 0.0492,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "muse-spark-1.1",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 283145489.48809034,
+      "tokens_per_month_allowance": 283145489.4881,
       "tokens_per_task": 8103152,
-      "allowance_per_million_tokens": 0.07063506480770283,
-      "adjusted_api_cost_per_million": 0.0706350648077028,
+      "allowance_per_million_tokens": 0.0706,
+      "adjusted_api_cost_per_million": 0.0706,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7011,10 +7011,10 @@
       "model_id": "gemini-3.1-pro-preview",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 64755648.38990427,
+      "tokens_per_month_allowance": 64755648.3899,
       "tokens_per_task": 1860106,
-      "allowance_per_million_tokens": 0.30885336642105343,
-      "adjusted_api_cost_per_million": 0.30885336642105343,
+      "allowance_per_million_tokens": 0.3089,
+      "adjusted_api_cost_per_million": 0.3089,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7022,10 +7022,10 @@
       "model_id": "grok-4.5",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 98699836.88398992,
+      "tokens_per_month_allowance": 98699836.884,
       "tokens_per_task": 3327994,
-      "allowance_per_million_tokens": 0.2026345800703567,
-      "adjusted_api_cost_per_million": 0.2026345800703567,
+      "allowance_per_million_tokens": 0.2026,
+      "adjusted_api_cost_per_million": 0.2026,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7033,10 +7033,10 @@
       "model_id": "gemini-3.8-flash",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 516565846.7225935,
+      "tokens_per_month_allowance": 516565846.7226,
       "tokens_per_task": 18165038,
-      "allowance_per_million_tokens": 0.038717232521066014,
-      "adjusted_api_cost_per_million": 0.03871723252106602,
+      "allowance_per_million_tokens": 0.0387,
+      "adjusted_api_cost_per_million": 0.0387,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7044,10 +7044,10 @@
       "model_id": "kimi-k2.7-code",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 275383356.86631745,
+      "tokens_per_month_allowance": 275383356.8663,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.07262603022777746,
-      "adjusted_api_cost_per_million": 0.07262603022777746,
+      "allowance_per_million_tokens": 0.0726,
+      "adjusted_api_cost_per_million": 0.0726,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7055,10 +7055,10 @@
       "model_id": "gpt-5.6-luna",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 323251498.6257144,
+      "tokens_per_month_allowance": 323251498.6257,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.06187132955308444,
-      "adjusted_api_cost_per_million": 0.06187132955308444,
+      "allowance_per_million_tokens": 0.0619,
+      "adjusted_api_cost_per_million": 0.0619,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7066,10 +7066,10 @@
       "model_id": "gemini-3.7-flash",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2709172288.719623,
+      "tokens_per_month_allowance": 2709172288.7196,
       "tokens_per_task": 11203782,
-      "allowance_per_million_tokens": 0.07382328574404606,
-      "adjusted_api_cost_per_million": 0.07382328574404608,
+      "allowance_per_million_tokens": 0.0738,
+      "adjusted_api_cost_per_million": 0.0738,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7077,10 +7077,10 @@
       "model_id": "muse-spark-1.1",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1887636596.587269,
+      "tokens_per_month_allowance": 1887636596.5873,
       "tokens_per_task": 8103152,
-      "allowance_per_million_tokens": 0.10595259721155423,
-      "adjusted_api_cost_per_million": 0.10595259721155421,
+      "allowance_per_million_tokens": 0.106,
+      "adjusted_api_cost_per_million": 0.106,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7088,10 +7088,10 @@
       "model_id": "gemini-3.1-pro-preview",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 431704322.5993617,
+      "tokens_per_month_allowance": 431704322.5994,
       "tokens_per_task": 1860106,
-      "allowance_per_million_tokens": 0.4632800496315802,
-      "adjusted_api_cost_per_million": 0.46328004963158015,
+      "allowance_per_million_tokens": 0.4633,
+      "adjusted_api_cost_per_million": 0.4633,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7099,21 +7099,21 @@
       "model_id": "muse-spark-1.2",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 232954979.32267797,
+      "tokens_per_month_allowance": 232954979.3227,
       "tokens_per_task": 10421241,
-      "allowance_per_million_tokens": 0.08585349863802211,
-      "adjusted_api_cost_per_million": 0.08585349863802211,
-      "value_multiple": 2.9999999999999996,
+      "allowance_per_million_tokens": 0.0859,
+      "adjusted_api_cost_per_million": 0.0859,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gemini-3.5-flash",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 120800558.97149245,
+      "tokens_per_month_allowance": 120800558.9715,
       "tokens_per_task": 5762992,
-      "allowance_per_million_tokens": 0.16556214781025783,
-      "adjusted_api_cost_per_million": 0.16556214781025783,
+      "allowance_per_million_tokens": 0.1656,
+      "adjusted_api_cost_per_million": 0.1656,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7121,10 +7121,10 @@
       "model_id": "grok-4.6",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 96823477.4933804,
+      "tokens_per_month_allowance": 96823477.4934,
       "tokens_per_task": 4753710,
-      "allowance_per_million_tokens": 0.20656147163653935,
-      "adjusted_api_cost_per_million": 0.20656147163653935,
+      "allowance_per_million_tokens": 0.2066,
+      "adjusted_api_cost_per_million": 0.2066,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7132,10 +7132,10 @@
       "model_id": "grok-4.5",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 657998912.5599328,
+      "tokens_per_month_allowance": 657998912.5599,
       "tokens_per_task": 3327994,
-      "allowance_per_million_tokens": 0.30395187010553504,
-      "adjusted_api_cost_per_million": 0.30395187010553504,
+      "allowance_per_million_tokens": 0.304,
+      "adjusted_api_cost_per_million": 0.304,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7143,21 +7143,21 @@
       "model_id": "glm-5.3",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 195671273.47043046,
+      "tokens_per_month_allowance": 195671273.4704,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.10221224426702762,
-      "adjusted_api_cost_per_million": 0.10221224426702762,
-      "value_multiple": 3.0000000000000004,
+      "allowance_per_million_tokens": 0.1022,
+      "adjusted_api_cost_per_million": 0.1022,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "qwen-3.8-max",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 196383886.1046382,
+      "tokens_per_month_allowance": 196383886.1046,
       "tokens_per_task": 10253530,
-      "allowance_per_million_tokens": 0.10184134959700057,
-      "adjusted_api_cost_per_million": 0.10184134959700059,
+      "allowance_per_million_tokens": 0.1018,
+      "adjusted_api_cost_per_million": 0.1018,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7165,21 +7165,21 @@
       "model_id": "gemini-3.8-flash",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 3443772311.483957,
+      "tokens_per_month_allowance": 3443772311.484,
       "tokens_per_task": 18165038,
-      "allowance_per_million_tokens": 0.05807584878159902,
-      "adjusted_api_cost_per_million": 0.058075848781599014,
-      "value_multiple": 2.0000000000000004,
+      "allowance_per_million_tokens": 0.0581,
+      "adjusted_api_cost_per_million": 0.0581,
+      "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "kimi-k2.7-code",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1835889045.7754498,
+      "tokens_per_month_allowance": 1835889045.7754,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.10893904534166618,
-      "adjusted_api_cost_per_million": 0.1089390453416662,
+      "allowance_per_million_tokens": 0.1089,
+      "adjusted_api_cost_per_million": 0.1089,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7187,21 +7187,21 @@
       "model_id": "gemini-3.7-flash",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 101593960.82698587,
+      "tokens_per_month_allowance": 101593960.827,
       "tokens_per_task": 11203782,
-      "allowance_per_million_tokens": 0.0984310476587281,
-      "adjusted_api_cost_per_million": 0.0984310476587281,
-      "value_multiple": 1.5000000000000002,
+      "allowance_per_million_tokens": 0.0984,
+      "adjusted_api_cost_per_million": 0.0984,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "muse-spark-1.1",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 70786372.37202258,
+      "tokens_per_month_allowance": 70786372.372,
       "tokens_per_task": 8103152,
-      "allowance_per_million_tokens": 0.14127012961540567,
-      "adjusted_api_cost_per_million": 0.1412701296154056,
+      "allowance_per_million_tokens": 0.1413,
+      "adjusted_api_cost_per_million": 0.1413,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7209,10 +7209,10 @@
       "model_id": "gpt-5.6-luna",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 2155009990.838096,
+      "tokens_per_month_allowance": 2155009990.8381,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.09280699432962666,
-      "adjusted_api_cost_per_million": 0.09280699432962666,
+      "allowance_per_million_tokens": 0.0928,
+      "adjusted_api_cost_per_million": 0.0928,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7220,21 +7220,21 @@
       "model_id": "gemini-3.6-flash",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 157385171.4227654,
+      "tokens_per_month_allowance": 157385171.4228,
       "tokens_per_task": 9035745,
-      "allowance_per_million_tokens": 0.1270767748905412,
-      "adjusted_api_cost_per_million": 0.12707677489054123,
-      "value_multiple": 2.9999999999999996,
+      "allowance_per_million_tokens": 0.1271,
+      "adjusted_api_cost_per_million": 0.1271,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gemini-3.1-pro-preview",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 16188912.097476067,
+      "tokens_per_month_allowance": 16188912.0975,
       "tokens_per_task": 1860106,
-      "allowance_per_million_tokens": 0.6177067328421069,
-      "adjusted_api_cost_per_million": 0.6177067328421069,
+      "allowance_per_million_tokens": 0.6177,
+      "adjusted_api_cost_per_million": 0.6177,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7242,10 +7242,10 @@
       "model_id": "glm-5.2",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 195474238.53105062,
+      "tokens_per_month_allowance": 195474238.5311,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.10231527259190754,
-      "adjusted_api_cost_per_million": 0.10231527259190754,
+      "allowance_per_million_tokens": 0.1023,
+      "adjusted_api_cost_per_million": 0.1023,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7253,10 +7253,10 @@
       "model_id": "kimi-k3",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 116681287.9944483,
+      "tokens_per_month_allowance": 116681287.9944,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.17140708972077512,
-      "adjusted_api_cost_per_million": 0.17140708972077512,
+      "allowance_per_million_tokens": 0.1714,
+      "adjusted_api_cost_per_million": 0.1714,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7264,21 +7264,21 @@
       "model_id": "muse-spark-1.2",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1553033195.48452,
+      "tokens_per_month_allowance": 1553033195.4845,
       "tokens_per_task": 10421241,
-      "allowance_per_million_tokens": 0.12878024795703313,
-      "adjusted_api_cost_per_million": 0.12878024795703316,
-      "value_multiple": 1.9999999999999998,
+      "allowance_per_million_tokens": 0.1288,
+      "adjusted_api_cost_per_million": 0.1288,
+      "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "grok-4.5",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 24674959.22099748,
+      "tokens_per_month_allowance": 24674959.221,
       "tokens_per_task": 3327994,
-      "allowance_per_million_tokens": 0.4052691601407134,
-      "adjusted_api_cost_per_million": 0.4052691601407134,
+      "allowance_per_million_tokens": 0.4053,
+      "adjusted_api_cost_per_million": 0.4053,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7286,10 +7286,10 @@
       "model_id": "gpt-5.6-terra",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 107319491.56661643,
+      "tokens_per_month_allowance": 107319491.5666,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.18635943674393388,
-      "adjusted_api_cost_per_million": 0.18635943674393388,
+      "allowance_per_million_tokens": 0.1864,
+      "adjusted_api_cost_per_million": 0.1864,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7297,10 +7297,10 @@
       "model_id": "gemini-3.8-flash",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 129141461.68064837,
+      "tokens_per_month_allowance": 129141461.6806,
       "tokens_per_task": 18165038,
-      "allowance_per_million_tokens": 0.07743446504213203,
-      "adjusted_api_cost_per_million": 0.07743446504213204,
+      "allowance_per_million_tokens": 0.0774,
+      "adjusted_api_cost_per_million": 0.0774,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7308,10 +7308,10 @@
       "model_id": "gemini-3.5-flash",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 805337059.8099496,
+      "tokens_per_month_allowance": 805337059.8099,
       "tokens_per_task": 5762992,
-      "allowance_per_million_tokens": 0.24834322171538672,
-      "adjusted_api_cost_per_million": 0.24834322171538672,
+      "allowance_per_million_tokens": 0.2483,
+      "adjusted_api_cost_per_million": 0.2483,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7319,10 +7319,10 @@
       "model_id": "gpt-5.4",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 95621548.85248914,
+      "tokens_per_month_allowance": 95621548.8525,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.20915787539535735,
-      "adjusted_api_cost_per_million": 0.20915787539535735,
+      "allowance_per_million_tokens": 0.2092,
+      "adjusted_api_cost_per_million": 0.2092,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7330,10 +7330,10 @@
       "model_id": "kimi-k2.7-code",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 68845839.21657936,
+      "tokens_per_month_allowance": 68845839.2166,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.14525206045555492,
-      "adjusted_api_cost_per_million": 0.14525206045555492,
+      "allowance_per_million_tokens": 0.1453,
+      "adjusted_api_cost_per_million": 0.1453,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7341,21 +7341,21 @@
       "model_id": "grok-4.6",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 645489849.9558694,
+      "tokens_per_month_allowance": 645489849.9559,
       "tokens_per_task": 4753710,
-      "allowance_per_million_tokens": 0.30984220745480895,
-      "adjusted_api_cost_per_million": 0.30984220745480895,
-      "value_multiple": 2.0000000000000004,
+      "allowance_per_million_tokens": 0.3098,
+      "adjusted_api_cost_per_million": 0.3098,
+      "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-luna",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 80812874.6564286,
+      "tokens_per_month_allowance": 80812874.6564,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.12374265910616888,
-      "adjusted_api_cost_per_million": 0.12374265910616888,
+      "allowance_per_million_tokens": 0.1237,
+      "adjusted_api_cost_per_million": 0.1237,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7363,10 +7363,10 @@
       "model_id": "glm-5.3",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1304475156.4695363,
+      "tokens_per_month_allowance": 1304475156.4695,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.15331836640054144,
-      "adjusted_api_cost_per_million": 0.15331836640054144,
+      "allowance_per_million_tokens": 0.1533,
+      "adjusted_api_cost_per_million": 0.1533,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7374,10 +7374,10 @@
       "model_id": "qwen-3.8-max",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1309225907.3642547,
+      "tokens_per_month_allowance": 1309225907.3643,
       "tokens_per_task": 10253530,
-      "allowance_per_million_tokens": 0.15276202439550085,
-      "adjusted_api_cost_per_million": 0.15276202439550088,
+      "allowance_per_million_tokens": 0.1528,
+      "adjusted_api_cost_per_million": 0.1528,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7385,21 +7385,21 @@
       "model_id": "claude-sonnet-4.6",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 135641738.91605374,
+      "tokens_per_month_allowance": 135641738.9161,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.14744723976428556,
-      "adjusted_api_cost_per_million": 0.1474472397642856,
-      "value_multiple": 2.9999999999999996,
+      "allowance_per_million_tokens": 0.1474,
+      "adjusted_api_cost_per_million": 0.1474,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gemini-3.7-flash",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 135458614.43598115,
+      "tokens_per_month_allowance": 135458614.436,
       "tokens_per_task": 11203782,
-      "allowance_per_million_tokens": 0.14764657148809213,
-      "adjusted_api_cost_per_million": 0.14764657148809215,
+      "allowance_per_million_tokens": 0.1476,
+      "adjusted_api_cost_per_million": 0.1476,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7407,21 +7407,21 @@
       "model_id": "gemini-3.7-flash",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 406375843.30794346,
+      "tokens_per_month_allowance": 406375843.3079,
       "tokens_per_task": 11203782,
-      "allowance_per_million_tokens": 0.14764657148809213,
-      "adjusted_api_cost_per_million": 0.14764657148809213,
-      "value_multiple": 1.0000000000000002,
+      "allowance_per_million_tokens": 0.1476,
+      "adjusted_api_cost_per_million": 0.1476,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "muse-spark-1.1",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 94381829.82936347,
+      "tokens_per_month_allowance": 94381829.8294,
       "tokens_per_task": 8103152,
-      "allowance_per_million_tokens": 0.21190519442310843,
-      "adjusted_api_cost_per_million": 0.21190519442310843,
+      "allowance_per_million_tokens": 0.2119,
+      "adjusted_api_cost_per_million": 0.2119,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7429,10 +7429,10 @@
       "model_id": "muse-spark-1.1",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 283145489.48809034,
+      "tokens_per_month_allowance": 283145489.4881,
       "tokens_per_task": 8103152,
-      "allowance_per_million_tokens": 0.21190519442310848,
-      "adjusted_api_cost_per_million": 0.21190519442310843,
+      "allowance_per_million_tokens": 0.2119,
+      "adjusted_api_cost_per_million": 0.2119,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7440,10 +7440,10 @@
       "model_id": "gemini-3.6-flash",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1049234476.1517694,
+      "tokens_per_month_allowance": 1049234476.1518,
       "tokens_per_task": 9035745,
-      "allowance_per_million_tokens": 0.1906151623358118,
-      "adjusted_api_cost_per_million": 0.19061516233581183,
+      "allowance_per_million_tokens": 0.1906,
+      "adjusted_api_cost_per_million": 0.1906,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7451,10 +7451,10 @@
       "model_id": "gemini-3.1-pro-preview",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 21585216.129968088,
+      "tokens_per_month_allowance": 21585216.13,
       "tokens_per_task": 1860106,
-      "allowance_per_million_tokens": 0.9265600992631603,
-      "adjusted_api_cost_per_million": 0.9265600992631603,
+      "allowance_per_million_tokens": 0.9266,
+      "adjusted_api_cost_per_million": 0.9266,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7462,10 +7462,10 @@
       "model_id": "gemini-3.1-pro-preview",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 64755648.38990427,
+      "tokens_per_month_allowance": 64755648.3899,
       "tokens_per_task": 1860106,
-      "allowance_per_million_tokens": 0.9265600992631603,
-      "adjusted_api_cost_per_million": 0.9265600992631603,
+      "allowance_per_million_tokens": 0.9266,
+      "adjusted_api_cost_per_million": 0.9266,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7473,10 +7473,10 @@
       "model_id": "glm-5.2",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1303161590.207004,
+      "tokens_per_month_allowance": 1303161590.207,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.1534729088878613,
-      "adjusted_api_cost_per_million": 0.1534729088878613,
+      "allowance_per_million_tokens": 0.1535,
+      "adjusted_api_cost_per_million": 0.1535,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7484,21 +7484,21 @@
       "model_id": "muse-spark-1.2",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 58238744.83066949,
+      "tokens_per_month_allowance": 58238744.8307,
       "tokens_per_task": 10421241,
-      "allowance_per_million_tokens": 0.17170699727604422,
-      "adjusted_api_cost_per_million": 0.17170699727604422,
-      "value_multiple": 1.4999999999999998,
+      "allowance_per_million_tokens": 0.1717,
+      "adjusted_api_cost_per_million": 0.1717,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "kimi-k3",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 777875253.296322,
+      "tokens_per_month_allowance": 777875253.2963,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.2571106345811627,
-      "adjusted_api_cost_per_million": 0.2571106345811627,
+      "allowance_per_million_tokens": 0.2571,
+      "adjusted_api_cost_per_million": 0.2571,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7506,10 +7506,10 @@
       "model_id": "gpt-6-astra",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 12614842.110830966,
+      "tokens_per_month_allowance": 12614842.1108,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 1.5854340327278624,
-      "adjusted_api_cost_per_million": 1.5854340327278624,
+      "allowance_per_million_tokens": 1.5854,
+      "adjusted_api_cost_per_million": 1.5854,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7517,10 +7517,10 @@
       "model_id": "gemini-3.5-flash",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 30200139.742873114,
+      "tokens_per_month_allowance": 30200139.7429,
       "tokens_per_task": 5762992,
-      "allowance_per_million_tokens": 0.33112429562051565,
-      "adjusted_api_cost_per_million": 0.33112429562051565,
+      "allowance_per_million_tokens": 0.3311,
+      "adjusted_api_cost_per_million": 0.3311,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7528,10 +7528,10 @@
       "model_id": "grok-4.6",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 24205869.3733451,
+      "tokens_per_month_allowance": 24205869.3733,
       "tokens_per_task": 4753710,
-      "allowance_per_million_tokens": 0.4131229432730787,
-      "adjusted_api_cost_per_million": 0.4131229432730787,
+      "allowance_per_million_tokens": 0.4131,
+      "adjusted_api_cost_per_million": 0.4131,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7539,10 +7539,10 @@
       "model_id": "grok-4.5",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 32899945.627996642,
+      "tokens_per_month_allowance": 32899945.628,
       "tokens_per_task": 3327994,
-      "allowance_per_million_tokens": 0.60790374021107,
-      "adjusted_api_cost_per_million": 0.6079037402110701,
+      "allowance_per_million_tokens": 0.6079,
+      "adjusted_api_cost_per_million": 0.6079,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7550,10 +7550,10 @@
       "model_id": "grok-4.5",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 98699836.88398992,
+      "tokens_per_month_allowance": 98699836.884,
       "tokens_per_task": 3327994,
-      "allowance_per_million_tokens": 0.6079037402110701,
-      "adjusted_api_cost_per_million": 0.6079037402110701,
+      "allowance_per_million_tokens": 0.6079,
+      "adjusted_api_cost_per_million": 0.6079,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7561,10 +7561,10 @@
       "model_id": "gpt-5.5",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 65716147.61476147,
+      "tokens_per_month_allowance": 65716147.6148,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.3043392031627171,
-      "adjusted_api_cost_per_million": 0.3043392031627171,
+      "allowance_per_million_tokens": 0.3043,
+      "adjusted_api_cost_per_million": 0.3043,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7572,10 +7572,10 @@
       "model_id": "gpt-5.6-terra",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 715463277.1107763,
+      "tokens_per_month_allowance": 715463277.1108,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.2795391551159008,
-      "adjusted_api_cost_per_million": 0.27953915511590083,
+      "allowance_per_million_tokens": 0.2795,
+      "adjusted_api_cost_per_million": 0.2795,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7583,21 +7583,21 @@
       "model_id": "glm-5.3",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 48917818.367607616,
+      "tokens_per_month_allowance": 48917818.3676,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.20442448853405523,
-      "adjusted_api_cost_per_million": 0.20442448853405523,
-      "value_multiple": 1.5000000000000002,
+      "allowance_per_million_tokens": 0.2044,
+      "adjusted_api_cost_per_million": 0.2044,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "qwen-3.8-max",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 49095971.52615955,
+      "tokens_per_month_allowance": 49095971.5262,
       "tokens_per_task": 10253530,
-      "allowance_per_million_tokens": 0.20368269919400114,
-      "adjusted_api_cost_per_million": 0.20368269919400117,
+      "allowance_per_million_tokens": 0.2037,
+      "adjusted_api_cost_per_million": 0.2037,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7605,10 +7605,10 @@
       "model_id": "gemini-3.8-flash",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 172188615.5741978,
+      "tokens_per_month_allowance": 172188615.5742,
       "tokens_per_task": 18165038,
-      "allowance_per_million_tokens": 0.11615169756319807,
-      "adjusted_api_cost_per_million": 0.11615169756319806,
+      "allowance_per_million_tokens": 0.1162,
+      "adjusted_api_cost_per_million": 0.1162,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7616,10 +7616,10 @@
       "model_id": "gemini-3.8-flash",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 516565846.7225935,
+      "tokens_per_month_allowance": 516565846.7226,
       "tokens_per_task": 18165038,
-      "allowance_per_million_tokens": 0.11615169756319804,
-      "adjusted_api_cost_per_million": 0.11615169756319806,
+      "allowance_per_million_tokens": 0.1162,
+      "adjusted_api_cost_per_million": 0.1162,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7627,10 +7627,10 @@
       "model_id": "gpt-5.4",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 637476992.3499277,
+      "tokens_per_month_allowance": 637476992.3499,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.313736813093036,
-      "adjusted_api_cost_per_million": 0.313736813093036,
+      "allowance_per_million_tokens": 0.3137,
+      "adjusted_api_cost_per_million": 0.3137,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7638,10 +7638,10 @@
       "model_id": "kimi-k2.7-code",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 91794452.2887725,
+      "tokens_per_month_allowance": 91794452.2888,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.2178780906833324,
-      "adjusted_api_cost_per_million": 0.2178780906833324,
+      "allowance_per_million_tokens": 0.2179,
+      "adjusted_api_cost_per_million": 0.2179,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7649,10 +7649,10 @@
       "model_id": "kimi-k2.7-code",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 275383356.86631745,
+      "tokens_per_month_allowance": 275383356.8663,
       "tokens_per_task": 10076736,
-      "allowance_per_million_tokens": 0.2178780906833324,
-      "adjusted_api_cost_per_million": 0.2178780906833324,
+      "allowance_per_million_tokens": 0.2179,
+      "adjusted_api_cost_per_million": 0.2179,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7660,10 +7660,10 @@
       "model_id": "gpt-5.6-sol",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 52906397.71979829,
+      "tokens_per_month_allowance": 52906397.7198,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 0.3780261152143369,
-      "adjusted_api_cost_per_million": 0.37802611521433693,
+      "allowance_per_million_tokens": 0.378,
+      "adjusted_api_cost_per_million": 0.378,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7671,21 +7671,21 @@
       "model_id": "gpt-5.6-luna",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 107750499.5419048,
+      "tokens_per_month_allowance": 107750499.5419,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.18561398865925333,
-      "adjusted_api_cost_per_million": 0.1856139886592533,
-      "value_multiple": 1.0000000000000002,
+      "allowance_per_million_tokens": 0.1856,
+      "adjusted_api_cost_per_million": 0.1856,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-luna",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 323251498.6257144,
+      "tokens_per_month_allowance": 323251498.6257,
       "tokens_per_task": 12348746,
-      "allowance_per_million_tokens": 0.18561398865925333,
-      "adjusted_api_cost_per_million": 0.18561398865925333,
+      "allowance_per_million_tokens": 0.1856,
+      "adjusted_api_cost_per_million": 0.1856,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7693,21 +7693,21 @@
       "model_id": "gemini-3.6-flash",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 39346292.85569135,
+      "tokens_per_month_allowance": 39346292.8557,
       "tokens_per_task": 9035745,
-      "allowance_per_million_tokens": 0.2541535497810824,
-      "adjusted_api_cost_per_million": 0.25415354978108246,
-      "value_multiple": 1.4999999999999998,
+      "allowance_per_million_tokens": 0.2542,
+      "adjusted_api_cost_per_million": 0.2542,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "glm-5.2",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 48868559.632762656,
+      "tokens_per_month_allowance": 48868559.6328,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.20463054518381507,
-      "adjusted_api_cost_per_million": 0.20463054518381507,
+      "allowance_per_million_tokens": 0.2046,
+      "adjusted_api_cost_per_million": 0.2046,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7715,10 +7715,10 @@
       "model_id": "kimi-k3",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 29170321.998612076,
+      "tokens_per_month_allowance": 29170321.9986,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.34281417944155024,
-      "adjusted_api_cost_per_million": 0.34281417944155024,
+      "allowance_per_million_tokens": 0.3428,
+      "adjusted_api_cost_per_million": 0.3428,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7726,10 +7726,10 @@
       "model_id": "claude-sonnet-4.6",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 904278259.4403583,
+      "tokens_per_month_allowance": 904278259.4404,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.22117085964642835,
-      "adjusted_api_cost_per_million": 0.22117085964642835,
+      "allowance_per_million_tokens": 0.2212,
+      "adjusted_api_cost_per_million": 0.2212,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7737,10 +7737,10 @@
       "model_id": "muse-spark-1.2",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 77651659.774226,
+      "tokens_per_month_allowance": 77651659.7742,
       "tokens_per_task": 10421241,
-      "allowance_per_million_tokens": 0.2575604959140663,
-      "adjusted_api_cost_per_million": 0.25756049591406627,
+      "allowance_per_million_tokens": 0.2576,
+      "adjusted_api_cost_per_million": 0.2576,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7748,21 +7748,21 @@
       "model_id": "muse-spark-1.2",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 232954979.32267797,
+      "tokens_per_month_allowance": 232954979.3227,
       "tokens_per_task": 10421241,
-      "allowance_per_million_tokens": 0.2575604959140663,
-      "adjusted_api_cost_per_million": 0.2575604959140663,
-      "value_multiple": 0.9999999999999999,
+      "allowance_per_million_tokens": 0.2576,
+      "adjusted_api_cost_per_million": 0.2576,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-terra",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 26829872.891654108,
+      "tokens_per_month_allowance": 26829872.8917,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.37271887348786775,
-      "adjusted_api_cost_per_million": 0.37271887348786775,
+      "allowance_per_million_tokens": 0.3727,
+      "adjusted_api_cost_per_million": 0.3727,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7770,21 +7770,21 @@
       "model_id": "gpt-6-astra",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 84098947.40553978,
+      "tokens_per_month_allowance": 84098947.4055,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 2.3781510490917936,
-      "adjusted_api_cost_per_million": 2.378151049091793,
-      "value_multiple": 2.0000000000000004,
+      "allowance_per_million_tokens": 2.3782,
+      "adjusted_api_cost_per_million": 2.3782,
+      "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gemini-3.5-flash",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 40266852.990497485,
+      "tokens_per_month_allowance": 40266852.9905,
       "tokens_per_task": 5762992,
-      "allowance_per_million_tokens": 0.49668644343077345,
-      "adjusted_api_cost_per_million": 0.49668644343077345,
+      "allowance_per_million_tokens": 0.4967,
+      "adjusted_api_cost_per_million": 0.4967,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7792,10 +7792,10 @@
       "model_id": "gemini-3.5-flash",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 120800558.97149245,
+      "tokens_per_month_allowance": 120800558.9715,
       "tokens_per_task": 5762992,
-      "allowance_per_million_tokens": 0.49668644343077345,
-      "adjusted_api_cost_per_million": 0.49668644343077345,
+      "allowance_per_million_tokens": 0.4967,
+      "adjusted_api_cost_per_million": 0.4967,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7803,10 +7803,10 @@
       "model_id": "gpt-5.4",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 23905387.213122286,
+      "tokens_per_month_allowance": 23905387.2131,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.4183157507907147,
-      "adjusted_api_cost_per_million": 0.4183157507907147,
+      "allowance_per_million_tokens": 0.4183,
+      "adjusted_api_cost_per_million": 0.4183,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7814,10 +7814,10 @@
       "model_id": "grok-4.6",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 32274492.49779347,
+      "tokens_per_month_allowance": 32274492.4978,
       "tokens_per_task": 4753710,
-      "allowance_per_million_tokens": 0.619684414909618,
-      "adjusted_api_cost_per_million": 0.619684414909618,
+      "allowance_per_million_tokens": 0.6197,
+      "adjusted_api_cost_per_million": 0.6197,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7825,10 +7825,10 @@
       "model_id": "grok-4.6",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 96823477.4933804,
+      "tokens_per_month_allowance": 96823477.4934,
       "tokens_per_task": 4753710,
-      "allowance_per_million_tokens": 0.619684414909618,
-      "adjusted_api_cost_per_million": 0.619684414909618,
+      "allowance_per_million_tokens": 0.6197,
+      "adjusted_api_cost_per_million": 0.6197,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7836,10 +7836,10 @@
       "model_id": "gpt-5.5",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 438107650.7650765,
+      "tokens_per_month_allowance": 438107650.7651,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.4565088047440756,
-      "adjusted_api_cost_per_million": 0.4565088047440757,
+      "allowance_per_million_tokens": 0.4565,
+      "adjusted_api_cost_per_million": 0.4565,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7847,10 +7847,10 @@
       "model_id": "glm-5.3",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 65223757.823476814,
+      "tokens_per_month_allowance": 65223757.8235,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.3066367328010829,
-      "adjusted_api_cost_per_million": 0.3066367328010829,
+      "allowance_per_million_tokens": 0.3066,
+      "adjusted_api_cost_per_million": 0.3066,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7858,21 +7858,21 @@
       "model_id": "glm-5.3",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 195671273.47043046,
+      "tokens_per_month_allowance": 195671273.4704,
       "tokens_per_task": 10212736,
-      "allowance_per_million_tokens": 0.3066367328010829,
-      "adjusted_api_cost_per_million": 0.30663673280108283,
-      "value_multiple": 1.0000000000000002,
+      "allowance_per_million_tokens": 0.3066,
+      "adjusted_api_cost_per_million": 0.3066,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "qwen-3.8-max",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 65461295.36821273,
+      "tokens_per_month_allowance": 65461295.3682,
       "tokens_per_task": 10253530,
-      "allowance_per_million_tokens": 0.3055240487910017,
-      "adjusted_api_cost_per_million": 0.30552404879100176,
+      "allowance_per_million_tokens": 0.3055,
+      "adjusted_api_cost_per_million": 0.3055,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7880,10 +7880,10 @@
       "model_id": "qwen-3.8-max",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 196383886.1046382,
+      "tokens_per_month_allowance": 196383886.1046,
       "tokens_per_task": 10253530,
-      "allowance_per_million_tokens": 0.3055240487910017,
-      "adjusted_api_cost_per_million": 0.30552404879100176,
+      "allowance_per_million_tokens": 0.3055,
+      "adjusted_api_cost_per_million": 0.3055,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7891,21 +7891,21 @@
       "model_id": "claude-sonnet-4.6",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 33910434.729013436,
+      "tokens_per_month_allowance": 33910434.729,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.2948944795285711,
-      "adjusted_api_cost_per_million": 0.2948944795285712,
-      "value_multiple": 1.4999999999999998,
+      "allowance_per_million_tokens": 0.2949,
+      "adjusted_api_cost_per_million": 0.2949,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-sol",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 352709318.13198864,
+      "tokens_per_month_allowance": 352709318.132,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 0.5670391728215053,
-      "adjusted_api_cost_per_million": 0.5670391728215054,
+      "allowance_per_million_tokens": 0.567,
+      "adjusted_api_cost_per_million": 0.567,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7913,10 +7913,10 @@
       "model_id": "gemini-3.6-flash",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 52461723.80758847,
+      "tokens_per_month_allowance": 52461723.8076,
       "tokens_per_task": 9035745,
-      "allowance_per_million_tokens": 0.38123032467162365,
-      "adjusted_api_cost_per_million": 0.38123032467162365,
+      "allowance_per_million_tokens": 0.3812,
+      "adjusted_api_cost_per_million": 0.3812,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7924,21 +7924,21 @@
       "model_id": "gemini-3.6-flash",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 157385171.4227654,
+      "tokens_per_month_allowance": 157385171.4228,
       "tokens_per_task": 9035745,
-      "allowance_per_million_tokens": 0.38123032467162365,
-      "adjusted_api_cost_per_million": 0.3812303246716237,
-      "value_multiple": 0.9999999999999999,
+      "allowance_per_million_tokens": 0.3812,
+      "adjusted_api_cost_per_million": 0.3812,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "glm-5.2",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 65158079.510350205,
+      "tokens_per_month_allowance": 65158079.5104,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.3069458177757226,
-      "adjusted_api_cost_per_million": 0.3069458177757226,
+      "allowance_per_million_tokens": 0.3069,
+      "adjusted_api_cost_per_million": 0.3069,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7946,10 +7946,10 @@
       "model_id": "glm-5.2",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 195474238.53105062,
+      "tokens_per_month_allowance": 195474238.5311,
       "tokens_per_task": 11284402,
-      "allowance_per_million_tokens": 0.3069458177757226,
-      "adjusted_api_cost_per_million": 0.3069458177757226,
+      "allowance_per_million_tokens": 0.3069,
+      "adjusted_api_cost_per_million": 0.3069,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7957,10 +7957,10 @@
       "model_id": "claude-opus-5",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 70445564.91053106,
+      "tokens_per_month_allowance": 70445564.9105,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.2839071561907534,
-      "adjusted_api_cost_per_million": 0.2839071561907534,
+      "allowance_per_million_tokens": 0.2839,
+      "adjusted_api_cost_per_million": 0.2839,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7968,10 +7968,10 @@
       "model_id": "kimi-k3",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 38893762.664816104,
+      "tokens_per_month_allowance": 38893762.6648,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.5142212691623254,
-      "adjusted_api_cost_per_million": 0.5142212691623254,
+      "allowance_per_million_tokens": 0.5142,
+      "adjusted_api_cost_per_million": 0.5142,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7979,10 +7979,10 @@
       "model_id": "kimi-k3",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 116681287.9944483,
+      "tokens_per_month_allowance": 116681287.9944,
       "tokens_per_task": 7005739,
-      "allowance_per_million_tokens": 0.5142212691623254,
-      "adjusted_api_cost_per_million": 0.5142212691623254,
+      "allowance_per_million_tokens": 0.5142,
+      "adjusted_api_cost_per_million": 0.5142,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -7990,21 +7990,21 @@
       "model_id": "claude-fable-5",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 28640608.05389248,
+      "tokens_per_month_allowance": 28640608.0539,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 0.698309196591301,
-      "adjusted_api_cost_per_million": 0.6983091965913009,
-      "value_multiple": 3.0000000000000004,
+      "allowance_per_million_tokens": 0.6983,
+      "adjusted_api_cost_per_million": 0.6983,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-6-astra",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 3153710.5277077416,
+      "tokens_per_month_allowance": 3153710.5277,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 3.170868065455725,
-      "adjusted_api_cost_per_million": 3.170868065455725,
+      "allowance_per_million_tokens": 3.1709,
+      "adjusted_api_cost_per_million": 3.1709,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8012,10 +8012,10 @@
       "model_id": "gpt-5.5",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 16429036.903690368,
+      "tokens_per_month_allowance": 16429036.9037,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.6086784063254342,
-      "adjusted_api_cost_per_million": 0.6086784063254342,
+      "allowance_per_million_tokens": 0.6087,
+      "adjusted_api_cost_per_million": 0.6087,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8023,10 +8023,10 @@
       "model_id": "gpt-5.6-terra",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 35773163.855538815,
+      "tokens_per_month_allowance": 35773163.8555,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.5590783102318015,
-      "adjusted_api_cost_per_million": 0.5590783102318017,
+      "allowance_per_million_tokens": 0.5591,
+      "adjusted_api_cost_per_million": 0.5591,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8034,10 +8034,10 @@
       "model_id": "gpt-5.6-terra",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 107319491.56661643,
+      "tokens_per_month_allowance": 107319491.5666,
       "tokens_per_task": 7359613,
-      "allowance_per_million_tokens": 0.5590783102318017,
-      "adjusted_api_cost_per_million": 0.5590783102318017,
+      "allowance_per_million_tokens": 0.5591,
+      "adjusted_api_cost_per_million": 0.5591,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8045,21 +8045,21 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 75270122.63730927,
+      "tokens_per_month_allowance": 75270122.6373,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.2657096773492776,
-      "adjusted_api_cost_per_million": 0.2657096773492776,
-      "value_multiple": 3.0000000000000004,
+      "allowance_per_million_tokens": 0.2657,
+      "adjusted_api_cost_per_million": 0.2657,
+      "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.4",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 31873849.61749638,
+      "tokens_per_month_allowance": 31873849.6175,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.627473626186072,
-      "adjusted_api_cost_per_million": 0.627473626186072,
+      "allowance_per_million_tokens": 0.6275,
+      "adjusted_api_cost_per_million": 0.6275,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8067,10 +8067,10 @@
       "model_id": "gpt-5.4",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 95621548.85248914,
+      "tokens_per_month_allowance": 95621548.8525,
       "tokens_per_task": 6937184,
-      "allowance_per_million_tokens": 0.627473626186072,
-      "adjusted_api_cost_per_million": 0.627473626186072,
+      "allowance_per_million_tokens": 0.6275,
+      "adjusted_api_cost_per_million": 0.6275,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8078,10 +8078,10 @@
       "model_id": "gpt-5.6-sol",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 13226599.429949572,
+      "tokens_per_month_allowance": 13226599.4299,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 0.7560522304286738,
-      "adjusted_api_cost_per_million": 0.7560522304286739,
+      "allowance_per_million_tokens": 0.7561,
+      "adjusted_api_cost_per_million": 0.7561,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8089,10 +8089,10 @@
       "model_id": "claude-sonnet-4.6",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 45213912.972017914,
+      "tokens_per_month_allowance": 45213912.972,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.44234171929285665,
-      "adjusted_api_cost_per_million": 0.4423417192928567,
+      "allowance_per_million_tokens": 0.4423,
+      "adjusted_api_cost_per_million": 0.4423,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8100,32 +8100,32 @@
       "model_id": "claude-sonnet-4.6",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 135641738.91605374,
+      "tokens_per_month_allowance": 135641738.9161,
       "tokens_per_task": 11003710,
-      "allowance_per_million_tokens": 0.44234171929285665,
-      "adjusted_api_cost_per_million": 0.44234171929285676,
-      "value_multiple": 0.9999999999999999,
+      "allowance_per_million_tokens": 0.4423,
+      "adjusted_api_cost_per_million": 0.4423,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-opus-5",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 469637099.40354043,
+      "tokens_per_month_allowance": 469637099.4035,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.4258607342861301,
-      "adjusted_api_cost_per_million": 0.42586073428613,
-      "value_multiple": 2.0000000000000004,
+      "allowance_per_million_tokens": 0.4259,
+      "adjusted_api_cost_per_million": 0.4259,
+      "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-fable-5",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 190937387.02594984,
+      "tokens_per_month_allowance": 190937387.0259,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 1.0474637948869514,
-      "adjusted_api_cost_per_million": 1.0474637948869514,
+      "allowance_per_million_tokens": 1.0475,
+      "adjusted_api_cost_per_million": 1.0475,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8133,10 +8133,10 @@
       "model_id": "gpt-6-astra",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 4204947.3702769885,
+      "tokens_per_month_allowance": 4204947.3703,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 4.756302098183588,
-      "adjusted_api_cost_per_million": 4.756302098183587,
+      "allowance_per_million_tokens": 4.7563,
+      "adjusted_api_cost_per_million": 4.7563,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8144,10 +8144,10 @@
       "model_id": "gpt-6-astra",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 12614842.110830966,
+      "tokens_per_month_allowance": 12614842.1108,
       "tokens_per_task": 1192460,
-      "allowance_per_million_tokens": 4.756302098183587,
-      "adjusted_api_cost_per_million": 4.756302098183587,
+      "allowance_per_million_tokens": 4.7563,
+      "adjusted_api_cost_per_million": 4.7563,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8155,10 +8155,10 @@
       "model_id": "gpt-5.5",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 21905382.538253825,
+      "tokens_per_month_allowance": 21905382.5383,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.9130176094881514,
-      "adjusted_api_cost_per_million": 0.9130176094881514,
+      "allowance_per_million_tokens": 0.913,
+      "adjusted_api_cost_per_million": 0.913,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8166,10 +8166,10 @@
       "model_id": "gpt-5.5",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 65716147.61476147,
+      "tokens_per_month_allowance": 65716147.6148,
       "tokens_per_task": 6692642,
-      "allowance_per_million_tokens": 0.9130176094881515,
-      "adjusted_api_cost_per_million": 0.9130176094881514,
+      "allowance_per_million_tokens": 0.913,
+      "adjusted_api_cost_per_million": 0.913,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8177,21 +8177,21 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 501800817.5820617,
+      "tokens_per_month_allowance": 501800817.5821,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.3985645160239164,
-      "adjusted_api_cost_per_million": 0.39856451602391646,
-      "value_multiple": 1.9999999999999998,
+      "allowance_per_million_tokens": 0.3986,
+      "adjusted_api_cost_per_million": 0.3986,
+      "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "gpt-5.6-sol",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 17635465.90659943,
+      "tokens_per_month_allowance": 17635465.9066,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 1.1340783456430108,
-      "adjusted_api_cost_per_million": 1.1340783456430108,
+      "allowance_per_million_tokens": 1.1341,
+      "adjusted_api_cost_per_million": 1.1341,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8199,10 +8199,10 @@
       "model_id": "gpt-5.6-sol",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 52906397.71979829,
+      "tokens_per_month_allowance": 52906397.7198,
       "tokens_per_task": 6032652,
-      "allowance_per_million_tokens": 1.1340783456430106,
-      "adjusted_api_cost_per_million": 1.1340783456430108,
+      "allowance_per_million_tokens": 1.1341,
+      "adjusted_api_cost_per_million": 1.1341,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8210,10 +8210,10 @@
       "model_id": "claude-opus-5",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 17611391.227632765,
+      "tokens_per_month_allowance": 17611391.2276,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.5678143123815068,
-      "adjusted_api_cost_per_million": 0.5678143123815068,
+      "allowance_per_million_tokens": 0.5678,
+      "adjusted_api_cost_per_million": 0.5678,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8221,21 +8221,21 @@
       "model_id": "claude-fable-5",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 7160152.01347312,
+      "tokens_per_month_allowance": 7160152.0135,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 1.396618393182602,
-      "adjusted_api_cost_per_million": 1.3966183931826017,
-      "value_multiple": 1.5000000000000002,
+      "allowance_per_million_tokens": 1.3966,
+      "adjusted_api_cost_per_million": 1.3966,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-5",
       "plan_id": "ollama-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 161861005.09507075,
+      "tokens_per_month_allowance": 161861005.0951,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.12356280617590873,
-      "adjusted_api_cost_per_million": 0.1235628061759087,
+      "allowance_per_million_tokens": 0.1236,
+      "adjusted_api_cost_per_million": 0.1236,
       "value_multiple": 3,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8243,21 +8243,21 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 18817530.659327317,
+      "tokens_per_month_allowance": 18817530.6593,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.5314193546985552,
-      "adjusted_api_cost_per_million": 0.5314193546985552,
-      "value_multiple": 1.5000000000000002,
+      "allowance_per_million_tokens": 0.5314,
+      "adjusted_api_cost_per_million": 0.5314,
+      "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-opus-5",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 23481854.97017702,
+      "tokens_per_month_allowance": 23481854.9702,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.8517214685722602,
-      "adjusted_api_cost_per_million": 0.8517214685722603,
+      "allowance_per_million_tokens": 0.8517,
+      "adjusted_api_cost_per_million": 0.8517,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8265,10 +8265,10 @@
       "model_id": "claude-opus-5",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 70445564.91053106,
+      "tokens_per_month_allowance": 70445564.9105,
       "tokens_per_task": 12243674,
-      "allowance_per_million_tokens": 0.8517214685722603,
-      "adjusted_api_cost_per_million": 0.8517214685722603,
+      "allowance_per_million_tokens": 0.8517,
+      "adjusted_api_cost_per_million": 0.8517,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8276,10 +8276,10 @@
       "model_id": "claude-fable-5",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 9546869.351297492,
+      "tokens_per_month_allowance": 9546869.3513,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 2.0949275897739033,
-      "adjusted_api_cost_per_million": 2.094927589773903,
+      "allowance_per_million_tokens": 2.0949,
+      "adjusted_api_cost_per_million": 2.0949,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8287,21 +8287,21 @@
       "model_id": "claude-fable-5",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 28640608.05389248,
+      "tokens_per_month_allowance": 28640608.0539,
       "tokens_per_task": 5413600,
-      "allowance_per_million_tokens": 2.094927589773903,
-      "adjusted_api_cost_per_million": 2.0949275897739024,
-      "value_multiple": 1.0000000000000002,
+      "allowance_per_million_tokens": 2.0949,
+      "adjusted_api_cost_per_million": 2.0949,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-5",
       "plan_id": "cursor-ultra",
       "blend": "3:1",
-      "tokens_per_month_allowance": 1079073367.3004718,
+      "tokens_per_month_allowance": 1079073367.3005,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.18534420926386305,
-      "adjusted_api_cost_per_million": 0.18534420926386305,
+      "allowance_per_million_tokens": 0.1853,
+      "adjusted_api_cost_per_million": 0.1853,
       "value_multiple": 2,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8309,10 +8309,10 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 25090040.879103087,
+      "tokens_per_month_allowance": 25090040.8791,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.7971290320478328,
-      "adjusted_api_cost_per_million": 0.7971290320478328,
+      "allowance_per_million_tokens": 0.7971,
+      "adjusted_api_cost_per_million": 0.7971,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8320,21 +8320,21 @@
       "model_id": "claude-opus-4.8",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 75270122.63730927,
+      "tokens_per_month_allowance": 75270122.6373,
       "tokens_per_task": 15497491,
-      "allowance_per_million_tokens": 0.7971290320478327,
-      "adjusted_api_cost_per_million": 0.7971290320478326,
-      "value_multiple": 1.0000000000000002,
+      "allowance_per_million_tokens": 0.7971,
+      "adjusted_api_cost_per_million": 0.7971,
+      "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
     {
       "model_id": "claude-sonnet-5",
       "plan_id": "github-copilot-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 40465251.27376769,
+      "tokens_per_month_allowance": 40465251.2738,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.24712561235181746,
-      "adjusted_api_cost_per_million": 0.2471256123518174,
+      "allowance_per_million_tokens": 0.2471,
+      "adjusted_api_cost_per_million": 0.2471,
       "value_multiple": 1.5,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8342,10 +8342,10 @@
       "model_id": "claude-sonnet-5",
       "plan_id": "cursor-pro",
       "blend": "3:1",
-      "tokens_per_month_allowance": 53953668.36502359,
+      "tokens_per_month_allowance": 53953668.365,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.3706884185277261,
-      "adjusted_api_cost_per_million": 0.3706884185277261,
+      "allowance_per_million_tokens": 0.3707,
+      "adjusted_api_cost_per_million": 0.3707,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     },
@@ -8353,10 +8353,10 @@
       "model_id": "claude-sonnet-5",
       "plan_id": "cursor-pro-plus",
       "blend": "3:1",
-      "tokens_per_month_allowance": 161861005.09507075,
+      "tokens_per_month_allowance": 161861005.0951,
       "tokens_per_task": 62795056,
-      "allowance_per_million_tokens": 0.37068841852772616,
-      "adjusted_api_cost_per_million": 0.3706884185277261,
+      "allowance_per_million_tokens": 0.3707,
+      "adjusted_api_cost_per_million": 0.3707,
       "value_multiple": 1,
       "cache_caveat": "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
     }
