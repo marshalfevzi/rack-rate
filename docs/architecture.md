@@ -128,7 +128,11 @@ The custom-domain switch changes exactly these two options:
 ```
 
 Commit `public/CNAME` only when the custom domain is live. Tasks 3.9 and 6.2
-own that file. No other line in the config moves.
+own that file. The `base` option stays in the config object when it is
+`undefined`: Astro normalises that to `/` — measured, `BASE_URL` becomes `/`
+and assets drop the prefix — while deleting the line instead would turn the
+switch into a one-liner that hides half the deployment target. No other line
+in the config moves.
 
 The origin is written down once. Measured against a built page: `Astro.site` is
 `https://marshalfevzi.github.io/` — origin, no base — while
