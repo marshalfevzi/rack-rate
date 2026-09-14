@@ -275,9 +275,9 @@ verbatim Awesome Coding Plan attribution required by
 `docs/data-sources.md` belongs to `/sources`, rendered from
 `data/sources.json` in task 3.11; it is not duplicated in the layout.
 
-`Base` deliberately omits a favicon link; task 3.9 owns
-`public/favicon.svg`. It also omits analytics, emoji, dashed borders,
-gradients, and shadows.
+`Base` links one icon and no more: the `favicon.svg` from task 3.9, with no
+raster `apple-touch-icon` and no web manifest (see "Crawl and discovery files").
+It also omits analytics, emoji, dashed borders, gradients, and shadows.
 
 ## Routes and data access
 
