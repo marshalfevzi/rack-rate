@@ -111,6 +111,37 @@ This index keeps the load-bearing rules visible at the architecture boundary:
     [CAVEATS.md §1](../CAVEATS.md#1-artificial-analysis--the-unresolved-one)
     for the repository owner's unresolved position.
 
+## Site configuration
+
+`apps/site/astro.config.mjs` owns the deployment target. It emits static
+output with `output: "static"` and no adapter. `site` is the origin Astro
+uses to build canonical and Open Graph URLs. `base: "/rack-rate"` prefixes
+page and asset paths for the GitHub Pages project page.
+
+The custom-domain switch changes exactly these two options:
+
+```diff
+-  site: "https://marshalfevzi.github.io",
+-  base: "/rack-rate",
++  site: "https://rackrate.dev",
++  base: undefined,
+```
+
+Commit `public/CNAME` only when the custom domain is live. Tasks 3.9 and 6.2
+own that file. No other line in the config moves.
+
+The origin is written down once. Measured against a built page: `Astro.site` is
+`https://marshalfevzi.github.io/` — origin, no base — while
+`import.meta.env.BASE_URL` is `/rack-rate` with no trailing slash, so a consumer
+joining it to a path supplies the separator itself. `Astro.url.pathname` and
+`Astro.url.href` already include the base. Under the custom domain they become
+`/` and `https://rackrate.dev/`. Internal links go through the `href()` helper
+from task 3.3; nothing hardcodes `/rack-rate`.
+
+The Tailwind v4 Vite plugin is registered in this config. There is no
+`tailwind.config.js`. Task 3.2 adds the single CSS entry that imports
+`tailwindcss`.
+
 ## TypeScript configuration
 
 TypeScript uses a single root `tsconfig.json` with no project references. Its

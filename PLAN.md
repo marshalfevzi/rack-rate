@@ -82,7 +82,7 @@ the design system in place and one real page rendering real numbers.
 
 ### Tasks
 
-- [ ] 3.1 `apps/site/astro.config.mjs`: `output: 'static'`, `site`/`base` for
+- [x] 3.1 `apps/site/astro.config.mjs`: `output: 'static'`, `site`/`base` for
   the GitHub Pages project page (`site: 'https://marshalfevzi.github.io'`,
   `base: '/rack-rate'`), the Tailwind Vite plugin, and a single place where
   switching to the custom domain (`site: 'https://rackrate.dev'`, no `base`)
@@ -622,3 +622,50 @@ No stage was opened. Stage 3 is still untouched.
 - The plan-level checks in this review covered the pipeline, env wiring and site
   scaffold; `/` and the chart surfaces do not exist yet, so no Stage 4 rendering
   claim has been tested.
+
+### 2026-09-14 — Stage 3.1: Astro config, Pages base, Tailwind Vite plugin
+
+**Landed**
+
+- `apps/site/astro.config.mjs` (new): `output: "static"` with no adapter,
+  `site: "https://marshalfevzi.github.io"`, `base: "/rack-rate"` for the GitHub
+  Pages project page, and `@tailwindcss/vite` registered as the Vite plugin. The
+  deployment target lives in that config object and nowhere else; the
+  custom-domain switch is two changed lines. `site` and `base` are options
+  rather than lifted constants — no build-time consumer reads them outside
+  Astro.
+- `docs/architecture.md` gained a `## Site configuration` section recording the
+  switch, the single-writer rule, the Tailwind entry point, and the measured
+  `Astro.site` / `import.meta.env.BASE_URL` / `Astro.url` values.
+
+**Verified**
+
+- Throwaway page plus an `@import "tailwindcss"` stylesheet, built with
+  `bun run --filter @rack-rate/site build` (exit 0, 1 page): under the shipped
+  config `import.meta.env.BASE_URL` is `/rack-rate` — **no trailing slash, so a
+  joiner supplies the separator** — `Astro.site` is
+  `https://marshalfevzi.github.io/`, `Astro.url.pathname` is
+  `/rack-rate/smoke31/`, and the stylesheet lands at
+  `/rack-rate/_astro/smoke31.<hash>.css` carrying the `.hidden` utility, so the
+  plugin really does scan and emit. Identical 4178-byte CSS across three
+  consecutive builds.
+- The same page with only those two options changed: `BASE_URL` `/`, `Astro.site`
+  `https://rackrate.dev/`, stylesheet at `/_astro/…`; `diff` shows exactly two
+  changed lines. The config was restored byte-identical and the throwaway page,
+  stylesheet and `dist/` were deleted.
+- `bun run check` exit 0 (typecheck, oxlint, oxfmt, astro check), `bun test` 17
+  pass / 0 fail, `bun run data:check` exit 0 — `data/derived.json` is still
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`, so no
+  published number moved. `bun run quality` still exits 1 on pre-existing
+  findings in `tools/oxlint/anti-slop` and `packages/data-cli`; it reports no
+  finding in `apps/site` and remains out of the `bun run check` gate.
+- The anti-slop `require-readable-spacing` rule rejected two adjacent
+  module-level constants; inlining them into the config object is what removed
+  the padding requirement.
+
+**Still open**
+
+- 3.2–3.11 remain in Stage 3. `astro check` still warns `Missing pages
+  directory: src/pages` until 3.4 lands, and `bun run og` still fails until 3.8.
+- The measured `BASE_URL` value contradicts nothing in the plan, but it does fix
+  the contract for 3.3: `href()` must join `/rack-rate` with a separator itself.
