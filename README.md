@@ -5,7 +5,7 @@
 API list pricing is the same instrument: published, high, and often unlike what
 people actually pay through a subscription quota.
 
-**[Open the GitHub Pages site](https://marshalfevzi.github.io/rack-rate/)** ·
+**[GitHub Pages site (planned)](https://marshalfevzi.github.io/rack-rate/)** ·
 [method](#the-method) · [data sources and licensing](docs/data-sources.md) ·
 [caveats](CAVEATS.md) · [contributing](CONTRIBUTING.md)
 
@@ -24,15 +24,19 @@ vendor rate card. Every published figure traces to a citation in
    allowance, then show cost per task, break-even volume, and full-run time
    under the plan's caps.
 
-The site is the reader-facing view of this comparison. It keeps benchmark
-provenance, pricing basis, confidence, and unresolved gaps visible instead of
-turning them into a single unexplained ranking.
+The planned site is the reader-facing view of this comparison. It keeps
+benchmark provenance, pricing basis, confidence, and unresolved gaps visible
+instead of turning them into a single unexplained ranking.
 
 ## Where this stands
 
-The live DeepSWE leaderboard is blocked by this build environment's network
-egress. Scores in `data/models.json` come from a directly supplied snapshot
-recorded as `src-deepswe-data` in `data/sources.json`; they are not a live pull.
+DeepSWE v1.1 and Terminal-Bench board 4-0-0 are live pulls.
+`fetch:plans` remains fail-closed because seven vendor pages are JavaScript
+shells that return 200 without quoted limit text, so `data/plans.json` remains
+at its Stage 1 revision.
+Artificial Analysis is off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set;
+the site itself does not exist yet, with stages 3–6 still ahead (see
+[`PLAN.md`](PLAN.md)).
 The repository does not mirror benchmark tasks, prompts, verifiers, or patches.
 
 ## The method
@@ -47,24 +51,24 @@ basis, confidence, and any unresolved limitation. The join then compares each
 model's API cost with each compatible plan, preserving model scope so a plan
 cannot be used to price a model it does not support.
 
-The site imports committed JSON at build time. It never fetches from the
-browser, so the built site has no data requests and can be built offline.
+The planned site will import committed JSON at build time. It will never fetch
+from the browser, so its built output will have no data requests and can be
+built offline.
 
 ## Quickstart
 
-Install dependencies, start the Astro development server, and run the checks:
+Install dependencies and run the checks. Stage 3 will add the Astro development
+server and site pages:
 
 ```bash
 bun install
-bun run dev
+bun run dev                 # planned Stage 3; no site pages yet
 bun run check
 bun test
 ```
 
-`bun run dev` prints the local address to open in a browser. The first two
-commands are the normal path for viewing the site; the last two are the gates,
-and `bun run check` itself runs `tsc`, oxlint, a formatting check, and
-`astro check`.
+`bun run check` and `bun test` are the current gates; `bun run check` itself
+runs `tsc`, oxlint, a formatting check, and `astro check`.
 
 ## Data commands
 
@@ -79,14 +83,14 @@ bun run fetch:artificial-analysis
 bun run validate
 bun run compute
 bun run data:build
-bun run og
+bun run og                 # planned Stage 3.8; currently exits 1 until apps/site/scripts/og.ts lands
 bun run build
 bun run check
 bun run lint
 bun run format
 bun run quality
 bun run test
-bun run dev
+bun run dev                 # planned Stage 3; no site pages yet
 ```
 
 - `fetch` refreshes all source inputs; the source-specific commands refresh one
@@ -94,8 +98,8 @@ bun run dev
 - `validate` checks schemas, citations, versions, and data-quality rules.
 - `compute` joins the validated inputs and writes derived data;
   `data:build` runs validation and computation together.
-- `build` builds the data and Astro site. `og` generates the social card with
-  satori → resvg via `apps/site/scripts/og.ts`.
+- `build` runs `data:build`, then the site build, then `og`; the site build
+  currently has no Astro config or pages, and `og` is planned Stage 3.8 work.
 - `lint` runs oxlint with every rule at error severity; `lint:fix` applies its
   safe autofixes.
 - `format` rewrites files with oxfmt; `format:check` is the non-writing gate
@@ -105,6 +109,22 @@ bun run dev
 - Artificial Analysis is disabled unless both `AA_API_KEY` and
   `AA_PUBLISH=1` are explicitly set. See [CAVEATS.md](CAVEATS.md) before
   enabling it.
+
+## Environment variables
+
+Local configuration lives in a gitignored `.env` at the repository root. The
+data CLI loads it on every invocation regardless of working directory; a real
+environment variable wins over the file. `.env.example` is the committed
+template.
+
+- `AA_API_KEY` — optional key needed only for `fetch:artificial-analysis`.
+- `AA_PUBLISH` — enables publication only at the exact value `1`; committed AA
+  rows with any other value make `validate` fail.
+- `HARBOR_BIN` — optional path to the `harbor` executable for the Terminal-Bench
+  fallback after the flight-data path fails; when unset or empty, `PATH` is
+  searched.
+
+`HARBOR_API_KEY` belongs to the `harbor` CLI and is not read here.
 
 ## Layout
 

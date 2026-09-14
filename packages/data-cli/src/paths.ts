@@ -1,12 +1,22 @@
+import { existsSync } from "node:fs"
 import { mkdir } from "node:fs/promises"
 import { dirname, join } from "node:path"
 
 import type { z } from "zod"
 
-import { BenchmarksFile, type Benchmark } from "@rack-rate/core"
+import { Benchmark, BenchmarksFile } from "@rack-rate/core"
 
 /** Repository root. This module lives at `packages/data-cli/src/`, so the root is three levels up. */
 const REPO_ROOT = dirname(dirname(dirname(import.meta.dir)))
+
+// Root scripts go through `bun run --filter` with cwd `packages/data-cli`, so
+// Bun's cwd-relative `.env` autoload never sees the repository root. Variables
+// already set in the environment win over the file.
+const envFile = join(REPO_ROOT, ".env")
+
+if (existsSync(envFile)) {
+  process.loadEnvFile(envFile)
+}
 
 export const DATA_DIR = join(REPO_ROOT, "data")
 
@@ -111,21 +121,32 @@ export function sha256Hex(text: string): string {
  */
 export async function upsertBenchmarkEntry(entry: Benchmark): Promise<void> {
   const path = dataPath("benchmarks.json")
-  const serialized = JSON.stringify(entry)
+  const parsed = Benchmark.safeParse(entry)
+
+  if (!parsed.success) {
+    const issues = parsed.error.issues
+      .slice(0, 5)
+      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+      .join("\n")
+
+    throw new Error(`${path} does not match the Benchmark schema:\n${issues}`)
+  }
+
+  const serialized = JSON.stringify(parsed.data)
 
   for (let attempt = 0; attempt < 5; attempt += 1) {
     const file = await readJsonAs(path, BenchmarksFile)
-    const index = file.benchmarks.findIndex((candidate) => candidate.id === entry.id)
+    const index = file.benchmarks.findIndex((candidate) => candidate.id === parsed.data.id)
 
     const benchmarks =
       index === -1
-        ? [...file.benchmarks, entry]
-        : file.benchmarks.map((candidate, at) => (at === index ? entry : candidate))
+        ? [...file.benchmarks, parsed.data]
+        : file.benchmarks.map((candidate, at) => (at === index ? parsed.data : candidate))
 
     await writeJson(path, { benchmarks })
 
     const verified = await readJsonAs(path, BenchmarksFile)
-    const stored = verified.benchmarks.find((candidate) => candidate.id === entry.id)
+    const stored = verified.benchmarks.find((candidate) => candidate.id === parsed.data.id)
 
     if (stored !== undefined && JSON.stringify(stored) === serialized) {
       return
@@ -134,5 +155,5 @@ export async function upsertBenchmarkEntry(entry: Benchmark): Promise<void> {
     await Bun.sleep(200)
   }
 
-  throw new Error(`could not write benchmark "${entry.id}" into ${path}`)
+  throw new Error(`could not write benchmark "${parsed.data.id}" into ${path}`)
 }

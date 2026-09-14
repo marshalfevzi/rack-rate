@@ -8,7 +8,9 @@ Two files are authoritative and this one summarises them. If they disagree,
 **they win, and this file is the bug**:
 
 - `docs/data-sources.md` — per-source licensing and redistribution verdicts.
-- `PLAN.md` — stages, acceptance criteria, and the `known_gaps` backlog.
+- `PLAN.md` — live stages, the `known_gaps` backlog, and the newest log entry.
+  A closed stage's task list, acceptance criteria and history are in
+  `docs/archive/stages-1-2.md`.
 
 Nothing here is legal advice. The Artificial Analysis position in particular is
 the repository owner's risk decision, not a legal conclusion.
@@ -132,7 +134,17 @@ In every state:
 ### 1.6 The open decision
 
 **Not yet resolved, and it is a risk-tolerance call for the repository owner,
-not a technical one.** The options:
+not a technical one.**
+
+**Verified 2026-09-14.** The gated path now runs end to end against the live API
+on the free tier with `AA_API_KEY` from the gitignored root `.env` plus
+`AA_PUBLISH=1`, using `--diff` only: 4 pages were paginated, 26 model rows
+resolved against committed model ids at Intelligence Index v4.3 (`task_count`
+10 is the evaluation count recorded for that index), and no file was written.
+This changes nothing about the licensing analysis above; it means only that
+state 3 is now known to be mechanically reachable by one command.
+
+The options:
 
 - **Ship state 1.** Zero exposure. Loses the AA axis entirely.
 - **Ship state 2 (chart-only).** Best-supported published variant on the

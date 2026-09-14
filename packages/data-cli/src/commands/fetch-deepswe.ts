@@ -320,7 +320,7 @@ function reduceArtifact(raw: RawArtifact, retrievedAt: string, version: string):
   }
 }
 
-async function fetchArtifact(): Promise<{
+async function fetchArtifact(diff: boolean): Promise<{
   endpoint: Endpoint
   snapshot: JsonSnapshot<RawArtifact>
 }> {
@@ -329,7 +329,7 @@ async function fetchArtifact(): Promise<{
   for (const [index, endpoint] of ENDPOINTS.entries()) {
     try {
       const snapshot = await fetchJsonAs(
-        { source: "deepswe", url: endpoint.url },
+        { source: "deepswe", url: endpoint.url, persistSnapshot: !diff },
         RawArtifactSchema,
       )
 
@@ -533,13 +533,22 @@ export async function run(args: string[]): Promise<number> {
     }
   }
 
+  const diff = args.includes("--diff")
+
   try {
     const retrievedAt = today()
-    const { endpoint, snapshot } = await fetchArtifact()
+    const { endpoint, snapshot } = await fetchArtifact(diff)
+
+    if (snapshot.fromSnapshot) {
+      warn("live fetch failed; same-day snapshot fallback is not verified")
+
+      return 1
+    }
+
     const reduction = reduceArtifact(snapshot.value, retrievedAt, endpoint.version)
     const previousModels = await readJsonAs(dataPath("models.json"), ModelsFile)
 
-    if (args.includes("--diff")) {
+    if (diff) {
       return printDiff(previousModels, reduction, endpoint.url)
     }
 

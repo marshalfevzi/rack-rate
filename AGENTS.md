@@ -73,6 +73,7 @@ apps/site/            @rack-rate/site        ← Astro; imports core + data/*.js
 data/                 models.json, plans.json, benchmarks.json, sources.json, derived.json
 data/raw/             raw upstream snapshots (gitignored; provenance for diffs)
 docs/research/        cited findings from the 2026-09-14 research pass
+docs/archive/         closed stages and session history (append-only)
 ```
 
 ### Boundary rules
@@ -83,6 +84,17 @@ docs/research/        cited findings from the 2026-09-14 research pass
 - `packages/data-cli` owns all network and filesystem access.
 - `apps/site` never fetches. It imports committed JSON and `@rack-rate/core`.
   The browser gets zero data requests.
+
+## Environment and secrets
+
+Never commit a secret: `.env` is gitignored, and `.env.example` is the only
+tracked template and carries placeholders, never values.
+The data CLI loads the repository-root `.env` on every invocation, regardless
+of working directory; a real environment variable wins over the file.
+`AA_PUBLISH` enables Artificial Analysis only at exactly `1`. The Sources page
+always states one publication-gate state.
+Secrets are never logged. `apps/site` and `packages/core` never read
+environment values.
 
 ## Commands
 

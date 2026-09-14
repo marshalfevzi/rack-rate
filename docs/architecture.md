@@ -28,7 +28,10 @@ binary:
 
 - `fetch [deepswe|terminal-bench|plans|artificial-analysis|all] [--diff]`
   refreshes one source, or all four sequentially in that order. A bare
-  `fetch` means `all`; `--diff` performs the source fetcher's dry run.
+  `fetch` means `all`; `--diff` performs the source fetcher's dry run. It writes
+  no file whatsoever, including gitignored `data/raw/*` snapshots, and exits
+  `1` when the source would change committed data. This also applies to
+  `fetch plans --diff`.
 - `validate [--help]` checks the committed source, model, plan and benchmark
   documents without writing.
 - `compute [--help]` deterministically writes `data/derived.json` from the
@@ -43,11 +46,40 @@ binary:
 - `help` and `--help` print the command list and descriptions.
 
 Successful commands exit `0`. Invalid arguments and operational failures exit
-`1`; `fetch --diff` also exits `1` when a source would change committed data.
-The fetch posture is fail-closed: a missing research anchor or unreachable
+`1`. The fetch posture is fail-closed: a missing research anchor or unreachable
 vendor page keeps the last-good plans and sources and exits non-zero. Doctor
 reports unreachable sites as findings but exits `0` when all probes and data
 checks could be performed; data read/parse failures still exit `1`.
+
+`upsertBenchmarkEntry` is a write boundary: it parses the candidate through the
+`Benchmark` schema before touching `data/benchmarks.json`, so a mapping bug
+cannot clobber the file.
+
+Terminal-Bench first tries the flight-data path. Only after that path fails does
+it resolve `harbor`, preferring a non-empty `HARBOR_BIN` and then an executable
+on `PATH`; the resolved binary is logged before the fallback runs.
+
+Artificial Analysis validation is fail-closed in one direction and loud in the
+other: committed `artificial-analysis` rows while `AA_PUBLISH` is not exactly
+`1` are an error (`validate` exits `1`), while `AA_PUBLISH=1` with committed AA
+rows is downgraded to a loud warning.
+
+## Environment
+
+At import time, after computing the repository root, the CLI checks for the
+root `.env` and calls `process.loadEnvFile` only when it exists. Root scripts
+run through `bun run --filter` with cwd `packages/data-cli`; Bun's
+cwd-relative autoload would otherwise miss the root file. A variable already
+present in the environment wins over the file.
+
+The CLI reads:
+
+- `AA_API_KEY`
+- `AA_PUBLISH`
+- `HARBOR_BIN`
+
+`packages/core` and `apps/site` read none of these variables, so no secret can
+reach a built asset.
 
 `check` is the CI gate for stale derived data. The root `bun run check` remains
 the code-quality gate (typecheck, lint, formatting and site checks).

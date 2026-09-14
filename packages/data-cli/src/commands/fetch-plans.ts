@@ -495,12 +495,13 @@ function buildTargets(sources: readonly Source[], plans: readonly Plan[]): Fetch
   return targets
 }
 
-async function fetchTarget(target: FetchTarget): Promise<TargetResult> {
+async function fetchTarget(target: FetchTarget, persistSnapshot: boolean): Promise<TargetResult> {
   try {
     const snapshot = await fetchText({
       source: target.source,
       url: target.url,
       accept: "text/html, text/plain;q=0.9, */*;q=0.8",
+      persistSnapshot,
     })
 
     if (snapshot.fromSnapshot) {
@@ -763,7 +764,7 @@ export async function run(args: string[]): Promise<number> {
   }
 
   const targets = buildTargets(sourcesDocument.sources, plansDocument.plans)
-  const results = await Promise.all(targets.map((target) => fetchTarget(target)))
+  const results = await Promise.all(targets.map((target) => fetchTarget(target, !diff)))
   const failures = checkAnchors(plansDocument.plans, targets, results)
 
   printPlanTable(plansDocument.plans, failures, results)
@@ -831,7 +832,7 @@ export async function run(args: string[]): Promise<number> {
   if (diff) {
     info("diff mode: verified refresh not written")
 
-    return 0
+    return planChanges.length > 0 || sourceChanges.length > 0 ? 1 : 0
   }
 
   await writeJson(plansPath, candidatePlans)

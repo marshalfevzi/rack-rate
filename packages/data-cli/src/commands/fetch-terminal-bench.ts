@@ -281,19 +281,20 @@ function extractFlightPayload(html: string): TerminalBenchPayload {
 }
 
 function harborUnavailable(reason: string): Error {
-  const override = process.env.HARBOR_BIN ?? "(not set)"
+  const override = process.env.HARBOR_BIN
+  const overrideDisplay = override !== undefined && override.length > 0 ? override : "(not set)"
   const pathValue = process.env.PATH ?? "(not set)"
 
   return new Error(
     `harbor binary unavailable after flight data failure: ${reason}; ` +
-      `HARBOR_BIN=${override}; PATH=${pathValue}`,
+      `HARBOR_BIN=${overrideDisplay}; PATH=${pathValue}`,
   )
 }
 
 async function resolveHarbor(): Promise<string> {
   const override = process.env.HARBOR_BIN
 
-  if (override !== undefined) {
+  if (override !== undefined && override.length > 0) {
     try {
       await access(override, constants.X_OK)
     } catch (error) {
@@ -527,12 +528,13 @@ function parseTaskCount(text: string): number {
   return total
 }
 
-async function fetchTaskCount(payload: TerminalBenchPayload): Promise<TaskCount> {
+async function fetchTaskCount(payload: TerminalBenchPayload, diff: boolean): Promise<TaskCount> {
   try {
     const snapshot = await fetchText({
       source: "terminal-bench-tasks",
       url: TASKS_URL,
       accept: "text/html",
+      persistSnapshot: !diff,
     })
 
     return { count: parseTaskCount(snapshot.text), url: TASKS_URL }
@@ -895,7 +897,14 @@ export async function run(args: string[]): Promise<number> {
         source: BENCHMARK_ID,
         url: BOARD_URL,
         accept: "text/html",
+        persistSnapshot: !diff,
       })
+
+      if (snapshot.fromSnapshot) {
+        warn("live fetch failed; same-day snapshot fallback is not verified")
+
+        return 1
+      }
 
       payload = extractFlightPayload(snapshot.text)
       extractionPath = "flight data"
@@ -923,7 +932,7 @@ export async function run(args: string[]): Promise<number> {
       throw new Error("board has no dataset_version_ids; refusing to publish unpinned rows")
     }
 
-    const taskCount = await fetchTaskCount(payload)
+    const taskCount = await fetchTaskCount(payload, diff)
     const models = await readJsonAs(dataPath("models.json"), ModelsFile)
     const selection = selectRows(payload.rows, models.models, payload, taskCount)
 

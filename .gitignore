@@ -4,5 +4,6 @@ dist/
 data/raw/
 .env
 .env.*
+!.env.example
 *.tsbuildinfo
 .DS_Store
