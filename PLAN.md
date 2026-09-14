@@ -6,8 +6,8 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 3.11.** Stages 1 and 2 are landed and green, and Stage 3.1–3.10
-landed (see the progress log). The Stage 1–2 task lists,
+**Next stage: 4.1.** Stages 1 and 2 are landed and green, and Stage 3 landed
+in full (3.1–3.11; see the progress log). The Stage 1–2 task lists,
 acceptance criteria, handover contracts and session history live in
 [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
 live stages, the data contract, the open questions and the newest log entry.
@@ -134,9 +134,12 @@ the design system in place and one real page rendering real numbers.
   `bun run check`, `bun test`, `bun run data:build`, and a check that
   re-running compute leaves `data/derived.json` unchanged (stale-output guard).
   Delete any Vercel-specific config.
-- [ ] 3.11 `/method` and the sources page render the real formulas and the full
+- [x] 3.11 `/method` and the sources page render the real formulas and the full
   attribution block from Stage 1's docs, so the honesty commitments ship with
-  the first pages, not later.
+  the first pages, not later. **Amended while landing:** the sources page also
+  states which Artificial Analysis state the build is in and lists the figures
+  deliberately left out, both read from committed data at build time, because
+  `apps/site` never reads an environment value.
 
 ### Acceptance
 
@@ -1567,3 +1570,127 @@ No stage was opened. Stage 3 is still untouched.
   deploy workflow buys it.
 - CI's `validate`/`compute` run with Artificial Analysis unset, so the
   AA-enabled publication path remains exercised by hand only.
+
+### 2026-09-14 — Stage 3.11: the method and sources pages, and the template-whitespace repair
+
+**Landed**
+
+- `apps/site/src/pages/method.astro` went from a 12-line skeleton to 386 lines
+  and five sections — "Cost per task", "The three cost bases", "Score
+  normalization and the composite", "Pareto frontier", "Missing data,
+  confidence and freshness" — carrying the quota conversion branches with the
+  committed field names read from `quotaModelDocs`, the route-cost and
+  rolling-window day formulas, the token-allowance view with
+  `DEFAULT_INPUT_OUTPUT_BLEND` and `CACHE_TIER_CAVEAT`, the committed weights
+  joined to their benchmark id/version/title, the composite coverage counts,
+  the Pareto domination and distance definitions with the committed API-list
+  frontier size, the four confidence levels, and the freshness rule with its
+  reference moment. Every figure is a core export or a value read from a
+  committed document at build time; nothing on the page is typed.
+- `apps/site/src/pages/sources.astro` (145 lines) renders the Artificial
+  Analysis state first, then all 11 committed sources with licence, URL,
+  retrieval date judged by the one freshness rule, `covers`, `changes`,
+  credited contributor, notes and a contribution verdict, then the verbatim
+  attribution block, the 7 committed plan known-gaps as "deliberately left
+  out", and the standing commitments.
+- `packages/core` gained the identifiers the pages would otherwise retype:
+  `COMPOSITE_CENTER = 50` and `COMPOSITE_SPREAD = 10` in `normalize.ts` (now
+  used by the composite and both CI endpoints), `DAYS_PER_MONTH = 30` and
+  `HOURS_PER_DAY = 24` in `cost.ts`, and `ARTIFICIAL_ANALYSIS_BENCHMARK_ID`,
+  `ARTIFICIAL_ANALYSIS_SOURCE_ID` and `BENCHMARK_SOURCE_IDS` in `schema.ts`.
+- `packages/data-cli`'s AA publication gate (`validate.ts`) and `sources.ts`
+  compare against those constants; `sources.ts` lost its private `AA_SOURCE_ID`
+  and its three hard-coded benchmark branches.
+- `apps/site/src/lib/provenance.ts` gained `requiredAttribution` (returns the
+  licence's attribution string or throws naming the id) and
+  `artificialAnalysisState` (derives the build's AA state from whether a
+  committed benchmark carries the AA id, because `apps/site` cannot read
+  `AA_PUBLISH`); `data.ts` gained `contributingSourceIds`, built once from
+  `models[].evidence`, `plans[].evidence`, `plans[].sources` and the
+  benchmark→source map. `provenance.test.ts` grew by four synthetic-input
+  cases.
+- `docs/architecture.md` gained `## Method and sources pages` (lines 517–605)
+  and `## Template whitespace` (lines 628–681).
+
+**The whitespace repair (incidental, pre-existing defect)**
+
+Astro drops a whitespace run that contains a newline between a text node and an
+adjacent tag — it is not collapsed to one space, it disappears. The rule was
+measured on a throwaway probe page with eight boundary cases and is recorded in
+`docs/architecture.md`. Three consequences were found and fixed:
+
+- `Base.astro`'s attribution footer rendered
+  `Datacurve) —<a …>https://deepswe.datacurve.ai/</a>— and Terminal-Bench` with
+  both em-dash boundaries glued, on all 52 built pages. That is the footer
+  invariant 8 leans on; six element starts were merged onto their text line and
+  two closing-anchor boundaries got an explicit space.
+- `FreshnessBadge` rendered `Freshretrieved 2026-09-09` and `CostBasisChip`
+  `API list/task`; both carry an explicit space now, and the chips read
+  `API list /task` — the reading the Stage 3.7 probe recorded as intended.
+- The new `/method` had 15 of its own glued boundaries; all were fixed before
+  the page was verified.
+
+A rescan of every built `index.html` after the repair leaves only intentional
+adjacencies (`Committed field:<code class="ml-1">`, `<a class="ml-1 …">`, and
+`SourceLink`'s `sr-only` suffix), and the built-HTML gate now asserts the
+absence of `<code>`/`<span>`/`<a>` glue.
+
+**Accuracy clauses the page review added**
+
+Reading the shipped code against the drafted copy turned up three places where
+the page would have documented the arithmetic imprecisely, all corrected before
+verification: the pair gates (`available` plus `model_scope` plus a positive
+task count, not "every model-and-plan combination"), the standard deviation
+being a population SD, and the composite CI being reported only when every
+contributing benchmark supplies an interval.
+
+**Verified**
+
+- `bun run check` exits 0: typecheck, oxlint with every rule at error severity,
+  `oxfmt --check` clean over 46 files, `astro check` over 28 files with 0
+  errors, 0 warnings, 0 hints.
+- `bun test` reports 76 pass, 0 fail, 239 assertions in 7 files (72 pass and
+  231 assertions at 3.10; the four new cases are the two helpers' coverage).
+- `bun run data:check` exits 0 and `data/derived.json` is still sha256
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: **the
+  constant extraction moved no published byte.**
+- `bun run build` exits 0 with 53 routes, and `dist/og.png` is still sha256
+  `23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed` at
+  1200×630 — the social card is deterministic across the stage.
+- A throwaway built-HTML gate (67 assertions, deleted afterwards) read
+  `data/*.json` independently of the site modules and compared it with the
+  emitted HTML: the verbatim attribution appears exactly once with its three
+  lines intact, all 11 sources render with their own URL and licence and the
+  independently computed contribution verdict, the shipped AA branch states the
+  disabled state, the two-key gate and links `CAVEATS.md`, and `/method`
+  carries `50 + 10 × weighted_z`, `tasks_per_month / 30`, `3:1`,
+  `stale after 14 days`, the two committed weights, 12 composites, 16
+  suppressed rows, 28 API-list points, 6 frontier ids and `113 committed
+  tasks`. The gate is falsifiable: it failed on the missing `CAVEATS.md` link
+  before that link was added, and mutating the emitted badge or chip whitespace
+  makes its whitespace assertions fail (0 → 2 glued sites).
+- Browser, headless Chromium against `astro preview` on the built `dist/` at
+  the real `/rack-rate` prefix: at 360 px both pages report
+  `documentElement.scrollWidth` 360 with `clientWidth` 360, zero elements past
+  the viewport, one `<main>`, one `<h1>`, zero `<script>`; `/sources`'s
+  attribution block measures 3 text lines. At 1280 px `/sources` renders 11
+  cards and a 992 px attribution block with no overflow. Rendered text was read
+  back from the DOM, which is how the badge and chip glue was caught.
+- `bun run quality` (report-only, out of the gate) exits 1 on the pre-existing
+  findings but improves on the 3.10 baseline: dead-code 26 → 17, dupes 10
+  unchanged, health 143 above threshold over 623 analysed files,
+  maintainability 89.8 → 90.5.
+
+**Still open**
+
+- Stage 4 (4.1–4.15) is next: the charts, tables, and the model, plan, compare
+  and explore pages. `/method` and `/sources` were the two pages that could
+  land before them, and they now do.
+- Every Stage 4 template inherits the whitespace obligation in
+  `docs/architecture.md`: a visible space at a line boundary between text and a
+  tag stays on that line or is written `{" "}`.
+- The 404 route still carries a canonical for a path with no page and no
+  `noindex`; that is 6.4's, unchanged by this stage.
+- `bun run quality` stays report-only; it is not a gate.
+- The `push: branches: [main]` CI trigger has still not fired: local `main` is
+  unpushed, so the first live use of that trigger is the owner's next push.

@@ -328,11 +328,11 @@ synthesized. The id indexes are `modelsById`, `plansById`, `benchmarksById`, and
 `sourcesById`. The relation indexes are `routesByModel`, `routesByPlan`,
 `bestRouteByModel`, `compositeByModel`, `compositeWeights`, `apiFrontier`,
 `frontierByPlan`, `tokenAllowances`, `tokenAllowanceByPair`, `badgeByPair`,
-`crossCheck`, and `derivedKnownGaps`. `pairKey(modelId, planId)` is the single
-place the `(model, plan)` map key is built, using a separator absent from either
-kebab-case id. `derivedGeneratedAt` is the one scalar: the newest upstream
-`generated_at` `compute` wrote into the file, which every freshness badge is
-measured against instead of the wall clock.
+`crossCheck`, `derivedKnownGaps`, and `contributingSourceIds`. `pairKey(modelId,
+planId)` is the single place the `(model, plan)` map key is built, using a
+separator absent from either kebab-case id. `derivedGeneratedAt` is the one
+scalar: the newest upstream `generated_at` `compute` wrote into the file, which
+every freshness badge is measured against instead of the wall clock.
 
 The computed sections `composites`, `frontiers`, `token_allowances`, and
 `badges` are optional in the `DerivedFile` schema but always present in the
@@ -513,6 +513,172 @@ obligations follow instead: any table needs that wrapper, and a `CiBar` needs at
 least its `min-w-16` floor (64 px) of room — inside a 32 px box it renders 64 px
 and overhangs its parent by 32 px rather than shrinking, because the floor is a
 `min-width`, not a hint.
+
+## Method and sources pages
+
+Stage 3.11 landed `/method` and `/sources` as real content rather than route
+skeletons. `method.astro` renders "Cost per task", "The three cost bases",
+"Score normalization and the composite", "Pareto frontier", and "Missing data,
+confidence and freshness"; `sources.astro` renders "Artificial Analysis
+state", "Every source", "Required attribution, verbatim", "Deliberately left
+out", and "Closing commitments". Both pages build only from committed data and
+code: no fetch, no environment read, and no `<script>` tag reaches either
+built page. Figures come from core exports or committed documents, never typed
+copy.
+
+| New export | Structural use |
+|---|---|
+| `packages/core/src/normalize.ts`: `COMPOSITE_CENTER = 50` and `COMPOSITE_SPREAD = 10` | the composite and both CI endpoints use the same identifiers, so the page can print `50 + 10 × weighted_z` from the math it describes |
+| `packages/core/src/cost.ts`: `DAYS_PER_MONTH = 30` and `HOURS_PER_DAY = 24` | `daysForFullRun` owns the quota-to-days conversion constants |
+| `packages/core/src/schema.ts`: `ARTIFICIAL_ANALYSIS_BENCHMARK_ID = "artificial-analysis"` and `ARTIFICIAL_ANALYSIS_SOURCE_ID = "src-artificial-analysis"` | the AA identity decides the licensing gate and the source identity keeps attribution on one spelling |
+| `packages/core/src/schema.ts`: `BENCHMARK_SOURCE_IDS: ReadonlyMap<string, string>` | `deepswe` maps to `src-deepswe-data`, `terminal-bench` to `src-terminal-bench`, and `artificial-analysis` to `src-artificial-analysis`, so attribution follows one benchmark-to-source relation |
+
+The map is a `ReadonlyMap`, not an object annotated with an open dictionary
+type: the repository's `no-known-value-widening` anti-slop rule rejects that
+shape, and a map reads better at the three lookup sites. Its consumers are
+`apps/site/src/lib/data.ts`, `apps/site/src/pages/method.astro`, and
+`packages/data-cli/src/commands/sources.ts`. The AA publication gate in
+`packages/data-cli/src/commands/validate.ts` and `sources.ts` now compare
+against the shared constants; `sources.ts` has no private `AA_SOURCE_ID` or
+three hard-coded benchmark branches. Behaviour is unchanged. The extraction is
+value-preserving: `bun run data:check` exits `0`, and `data/derived.json`
+remains sha256
+`7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`, so no
+published byte moved.
+
+The AA state on `/sources` is derived from the committed benchmark document,
+because `apps/site` cannot read `AA_PUBLISH`: `artificialAnalysisState<T
+extends { id: string }>(benchmarks: readonly T[]): ArtificialAnalysisState<T>`
+returns `{ published, entry }`, with `published` true exactly when a committed
+benchmark carries `ARTIFICIAL_ANALYSIS_BENCHMARK_ID`;
+`ArtificialAnalysisState<T>` is a named interface. The AA state section is
+first because invariant 10 requires the page to say which state this build is
+in. Both branches are implemented; the disabled branch ships today because no
+AA row is committed. It says AA is not published here, the fetcher is skipped,
+and AA is excluded from every composite and axis unless both `AA_API_KEY` and
+`AA_PUBLISH=1` are set; it also says no redistribution right has been granted
+and links Artificial Analysis and `CAVEATS.md` for the recorded position and
+open decision. The published branch states the exception and the owner's risk,
+keeps AA on a separately labelled axis, requires `Source: Artificial Analysis
+(artificialanalysis.ai)`, prints the committed entry's version and
+`retrieved_at`, and links `CAVEATS.md`.
+
+`requiredAttribution(source: Source | undefined, id: string)` returns the
+licence attribution string verbatim and throws naming `id` when the source is
+missing or its attribution is absent or blank. `validate` retains the
+exact-match attribution check, while the page calls this accessor for the
+committed `data/sources.json` value inside a whitespace-preserving block. The
+string is neither retyped nor duplicated on the site: a missing attribution
+fails the build before an unattributed licence record can reach a reader. Both
+helpers have synthetic-input coverage in
+`apps/site/src/lib/provenance.test.ts`, with no JSON import, so a data refresh
+cannot redden those checks.
+
+`contributingSourceIds` is a `ReadonlySet<string>` built once at module load
+from `models[].evidence`, `plans[].evidence`, `plans[].sources`, and
+`BENCHMARK_SOURCE_IDS` for every committed benchmark. It is the same
+contribution semantics as the data-cli `sources` command, so whether a source
+feeds this build has one definition. `/sources` renders all 11 committed
+sources with each licence, URL, retrieval date under
+`freshnessOf(source.retrieved, derivedGeneratedAt)`, `covers`, `changes`, any
+credited contributor, optional notes, and this contribution verdict. The AA
+record remains visible while publication is disabled and says so rather than
+claiming publication. The page also renders the 7 committed plan known-gaps as
+"deliberately left out", then closes with the standing commitments: no
+benchmark task content, no annual, promotional, regional, or affiliate
+pricing, aggregator-only figures never become computed rows, and every
+published number traces to a record on this page.
+
+`/method` reads the four quota-conversion branches and committed field names
+from `quotaModelDocs`, including its `_note` and `model_scope` prose verbatim.
+It also renders the route-cost and rolling-window day formula, the
+token-allowance view with `DEFAULT_INPUT_OUTPUT_BLEND` and
+`CACHE_TIER_CAVEAT`, the three labels and descriptions from
+`COST_BASIS_TERMS`, composite arithmetic with committed weights joined to
+benchmark id, version, and title, committed composite coverage counts, Pareto
+domination and distance definitions with the committed API-list frontier size,
+the four confidence levels from `CONFIDENCE_TERMS`, and freshness using
+`STALE_AFTER_DAYS` against `derivedGeneratedAt`. Each committed benchmark
+version gets a `SourceLink` and freshness badge. No number on the page is
+typed: every value is a core export or a value read from a committed document.
+
+Measured verification is complete. `bun run check` exits `0`: typecheck,
+oxlint with every rule at error severity, `oxfmt --check` clean over 46 files,
+and `astro check` over 28 files with 0 errors, 0 warnings, and 0 hints. `bun
+test` reports 76 pass, 0 fail, and 239 assertions in 7 files, versus 72 pass
+and 231 assertions before the two new suites containing the four helper tests.
+`bun run build` exits `0` with 53 routes and `dist/og.png` at 1200×630. The
+deleted throwaway built-HTML gate made 63 assertions: it found the verbatim
+attribution exactly once with its three lines intact, checked all 11 source
+URLs and licences and the independently computed contribution verdicts,
+checked the disabled two-key AA branch and its visible record, and checked
+`/method` for `50 + 10 × weighted_z`, `tasks_per_month / 30`, `3:1`, stale
+after 14 days, the two committed weights, 12 composite rows, 16 suppressed
+rows, 28 API-list points, 6 frontier ids, and 113 committed tasks. It also
+checked exactly one `<main>`, one `<h1>`, and no `<script>` on both pages; the
+gate failed before the `CAVEATS.md` link was added to the shipped AA branch.
+
+Headless Chromium against `astro preview` at the real `/rack-rate` prefix
+measured both pages at 360 px with `documentElement.scrollWidth` and
+`clientWidth` both 360, zero elements past the viewport, one `<main>`, one
+`<h1>`, and 0 `<script>` tags; the `/sources` attribution block was 3 text
+lines. At 1280 px, `/sources` had 11 source cards, a 992 px attribution block,
+and no horizontal overflow.
+
+## Template whitespace
+
+Astro has a measured whitespace rule: a whitespace run containing a newline
+between a text node and an adjacent tag disappears from output entirely. The
+space is not collapsed to one space; it is dropped. Same-line whitespace
+survives. This is a property of the template language, not of CSS.
+
+| Source | Emitted |
+|---|---|
+| `text1` newline `<code>A</code>` | `text1<code>A</code>` |
+| `text2 {" "}` newline `<code>B</code>` | `text2  <code>B</code>` (the explicit expression's space survives; the newline-indent run collapses, so the source carries two spaces where a reader sees one) |
+| `text3 <code>C</code>` (one line) | `text3 <code>C</code>` |
+| `<code>D</code>` newline `text4` | `<code>D</code>text4` |
+| `<code` newline `>E</code` newline `>` newline `text5` | `<code>E</code>text5` |
+| `<code>F</code>{" "}` newline `text6` | `<code>F</code> text6` |
+| `<code` newline `>G</code>{" "}` newline `text7` | `<code>G</code> text7` |
+| `{label}&nbsp;<code>H</code>` | preserved |
+
+The rule has two directions: it drops the run before an opening tag and after
+a closing tag. The two safe forms are a same-line space and the explicit
+`{" "}` expression. The repository's long-code-span wrapping style,
+`<code` newline `>value</code` newline `>`, has the closing-tag form on its
+own line, which is exactly where the after-space gets dropped.
+
+In `apps/site/src/layouts/Base.astro`, the attribution footer rendered
+`Datacurve) —<a …>https://deepswe.datacurve.ai/</a>— and Terminal-Bench` with
+both em-dash boundaries glued, on all 52 built pages. Six element starts were
+merged onto their preceding text line and two closing-anchor boundaries got an
+explicit space. `apps/site/src/pages/method.astro` rendered 15 glued
+boundaries: `The route cost is<code>…`, `in<code>data/plans.json</code>`,
+`z-score is<code>…`, `marked<code>single-source</code>`, and the wrapped-span
+forms `</code>renormalizes`, `</code>and`, and `</code>through`. Twenty element
+starts were merged onto their preceding line and five closing-tag boundaries
+got an explicit space.
+
+`apps/site/src/components/FreshnessBadge.astro` rendered
+`Freshretrieved 2026-09-09` (the label and dated span were siblings across a
+newline), and `apps/site/src/components/CostBasisChip.astro` rendered
+`API list/task` and `Claude Pro route /mo`. Both now carry an explicit space.
+Measured in headless Chromium against the built pages, the badges read
+`Fresh retrieved 2026-09-09`, and the chips read `API list /task`,
+`Claude Pro route /mo`, and `Claude Pro route /task` — the intended reading
+recorded by the Stage 3.7 probe. The chip's unit space lives inside its
+conditional (`{unit ? <> <span …>…</span></> : null}`), so a unitless chip
+carries no trailing space.
+
+Stage 4 must keep any visible space at a line boundary between text and a tag
+on that line or write it as `{" "}`. The intentional exceptions are
+`Committed field:<code class="ml-1">` and
+`<a class="ml-1 text-api-ink …">`, where the margin does the spacing, and
+`<span class="sr-only"> (opens in a new tab)` inside `SourceLink`'s
+accessible-name suffix. A rescan of all 52 built `index.html` files found
+exactly two pages still carrying a text-then-tag adjacency, and every hit is
+intentional.
 
 ## Design tokens
 
