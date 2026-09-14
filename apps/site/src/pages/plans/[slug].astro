@@ -1,0 +1,27 @@
+---
+import type { Plan } from "@rack-rate/core"
+
+import Page from "../../layouts/Page.astro"
+import { plans } from "../../lib/data.ts"
+
+export function getStaticPaths() {
+  return plans.map((plan) => ({ params: { slug: plan.id }, props: { plan } }))
+}
+
+interface Props {
+  plan: Plan
+}
+
+const { plan } = Astro.props
+---
+
+<Page
+  title={plan.name}
+  description={`${plan.name}: quota model, cost per task, confidence, and the models this plan can run.`}
+  heading={plan.name}
+  lede={plan.provider}
+>
+  <p class="mt-6 text-meta text-dim">
+    Route skeleton — the quota model, value multiple, confidence badge and the models this plan unlocks land in Stage 4 of the build plan.
+  </p>
+</Page>

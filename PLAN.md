@@ -6,8 +6,8 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 3.4.** Stages 1 and 2 are landed and green, and Stage 3.1–3.3b
-landed in this session (see the progress log). The Stage 1–2 task lists,
+**Next stage: 3.5.** Stages 1 and 2 are landed and green, and Stage 3.1–3.4
+landed (see the progress log). The Stage 1–2 task lists,
 acceptance criteria, handover contracts and session history live in
 [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
 live stages, the data contract, the open questions and the newest log entry.
@@ -108,7 +108,7 @@ the design system in place and one real page rendering real numbers.
   `prefers-reduced-motion` honoured, and a two-scheme palette. Record the tokens
   and the reasoning in `docs/architecture.md` so Stage 4 does not re-invent
   them.
-- [ ] 3.4 Routing skeleton for the page set (content lands in Stage 4, wizard
+- [x] 3.4 Routing skeleton for the page set (content lands in Stage 4, wizard
   content in Stage 5): `/`, `/models`, `/models/[slug]`, `/plans`,
   `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`, `/sources`,
   `404`. Uses `getStaticPaths` from the committed data.
@@ -845,5 +845,88 @@ No stage was opened. Stage 3 is still untouched.
 - The flat chart-marker rule, the `getComputedStyle` token read and the
   "amber only for the plan-adjusted basis" rule are recorded in
   `docs/architecture.md` for Stage 4 but are unenforced until chart code exists.
+
+### 2026-09-14 — Stage 3.4: routing skeleton, seeded data accessor
+
+**Landed**
+
+- `apps/site/src/pages/` (11 new files) — the whole route set: `index.astro`,
+  `models/index.astro`, `models/[slug].astro`, `plans/index.astro`,
+  `plans/[slug].astro`, `compare.astro`, `explore.astro`, `start.astro`,
+  `method.astro`, `sources.astro`, `404.astro`. Every page renders through
+  `Page.astro`, so each route has exactly one `<main id="main">` and one `h1`.
+- Both dynamic routes build `getStaticPaths` from committed rows: 28
+  `/models/<id>` pages from `data/models.json`, 16 `/plans/<id>` pages from
+  `data/plans.json` — 53 pages in total. The slug is the row `id`, so no second
+  slug mapping exists to drift; `google-ai-pro` gets a page despite its
+  unresolved quota, and the two provider-null models render "Provider not
+  identified by the upstream source." rather than a blank or an invented vendor.
+- `apps/site/src/lib/data.ts` (new) — the site's only importer of `data/*.json`,
+  parsing `models.json` and `plans.json` through the core zod schemas and
+  re-exporting the rows.
+- Root `tsconfig.json` gained `resolveJsonModule: true`, which those imports
+  need. No layout, stylesheet, or data file changed.
+- Each route carries one honest skeleton line ("Route skeleton — … lands in
+  Stage N of the build plan") instead of shipping an empty page; Stage 4 and 5
+  delete them as content arrives. No score, cost, badge or attribution string
+  was invented: those wait for the components that carry their basis.
+- `docs/architecture.md` gained `## Routes and data access` (the route table,
+  the slug rule, the skeleton-note convention and the accessor's boundaries).
+
+**Verified**
+
+- `bun run typecheck` exit 0, `bun run lint` exit 0, `bun run format:check` exit
+  0 (37 files), `astro check` 17 files with 0 errors / 0 warnings / 0 hints —
+  the `Missing pages directory: src/pages` warning is gone — `bun test` 17 pass /
+  0 fail, `bun run data:check` exit 0 with `data/derived.json` still
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: **no
+  published number moved in this session.**
+- `bun run --filter @rack-rate/site build` exit 0, 53 pages. Serving the `dist`
+  tree from a static server with the build mounted at its real `/rack-rate`
+  prefix returned 200 for all 53 routes, and every base-prefixed `href`/`src` in
+  the built HTML (eight nav links plus one stylesheet) resolved — no dangling
+  link, so the nav that 404'd through 3.3 now lands.
+- Headless Chromium at a 360 px viewport across all eleven route shapes plus a
+  second model and the 404: `scrollWidth` 360 on every page (no horizontal
+  scroll), one `<main>` and one `h1` each, `aria-current="page"` on Models at
+  `/models/gpt-6-astra/` and on Plans at `/plans/claude-pro/`, none on the 404,
+  and canonical URLs under `/rack-rate`.
+- Title mapping checked across all 44 detail pages rather than sampled: every
+  `/models/<id>` and `/plans/<id>` page's `h1` and `title` equal its own row's
+  `name`, every lede equals its own row's `provider`, no page carries the other
+  type's name, and both null-provider models render "Provider not identified by
+  the upstream source." instead of a blank or an invented vendor.
+- `bun run quality` (report-only, out of the gate) still exits 1 on pre-existing
+  findings and flags nothing in `src/pages` or `src/lib`: dead-code 8 (was 9 at
+  3.3) is one unused export in `tools/oxlint/anti-slop`, one duplicate `run`
+  export across `packages/data-cli`, and six dependencies `apps/site` declares
+  for later stages; dupes 10 and health 140 are unchanged from the 3.3 baseline.
+
+**Decisions taken this session**
+
+- 3.4 reads committed data through a seeded `src/lib/data.ts` rather than
+  importing JSON inside the two dynamic routes. The plan puts the accessor at
+  3.5, but `getStaticPaths` needs the rows now, and 3.3 had already refused to
+  front-run the accessor by importing raw JSON. 3.5 stays open and extends the
+  module with the derived, benchmark and source views; its task text is
+  unchanged.
+- The page set is a skeleton, not a first draft of content: a heading, one
+  honest skeleton note, and nothing numeric. A figure cannot ship before the
+  cost-basis, confidence and provenance badges that label it.
+- The 404 route links to the overview, models and plans instead of stating a
+  bare error.
+
+**Still open**
+
+- 3.5–3.11 remain. `src/lib/data.ts` holds `models` and `plans` only; the
+  derived, benchmark and source views are 3.5's.
+- `bun run build` still cannot complete: `bun run og` fails until 3.8, so
+  `og:image` points at `/rack-rate/og.png`, which no build writes yet.
+- The 404 route's canonical is `…/rack-rate/404/`, a path with no page.
+  `Base.astro` owns the head (3.3); the fix — no canonical on the 404 plus
+  `<meta name="robots" content="noindex">` — belongs with 6.4's index hygiene.
+- `/method` still owes the real formulas and `/sources` the verbatim attribution
+  block plus the Artificial Analysis build-state line (3.11). Neither page
+  duplicates attribution text in the meantime.
 
 

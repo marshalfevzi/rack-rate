@@ -1,0 +1,19 @@
+---
+import Page from "../layouts/Page.astro"
+import { href } from "../lib/url.ts"
+---
+
+<Page
+  title="Not found"
+  description="This page does not exist. Links back to the overview, the models table and the plans table."
+  heading="Page not found"
+  lede="Nothing is served at this path."
+>
+  <p class="mt-6 text-body">
+    <a class="text-ink underline" href={href("/")}>Overview</a>
+    ·
+    <a class="text-ink underline" href={href("/models")}>Models</a>
+    ·
+    <a class="text-ink underline" href={href("/plans")}>Plans</a>
+  </p>
+</Page>

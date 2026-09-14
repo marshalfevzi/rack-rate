@@ -224,6 +224,60 @@ verbatim Awesome Coding Plan attribution required by
 `public/favicon.svg`. It also omits analytics, emoji, dashed borders,
 gradients, and shadows.
 
+## Routes and data access
+
+`apps/site/src/pages/` holds the whole route set. `output: "static"` with
+Astro's default `build.format: "directory"` emits one directory per route, so a
+route URL ends in `/` and is served from `<route>/index.html` — `href()` supplies
+that trailing slash. The 404 route is the exception: it builds to
+`dist/404.html`, which GitHub Pages serves for any unmatched path.
+
+| Route | File | Content stage |
+|---|---|---|
+| `/` | `index.astro` | 4.12 |
+| `/models` | `models/index.astro` | 4.8 |
+| `/models/[slug]` | `models/[slug].astro` | 4.9 |
+| `/plans` | `plans/index.astro` | 4.10 |
+| `/plans/[slug]` | `plans/[slug].astro` | 4.10 |
+| `/compare` | `compare.astro` | 4.11 |
+| `/explore` | `explore.astro` | 4.13 |
+| `/start` | `start.astro` | 5.3 |
+| `/method` | `method.astro` | 3.11 |
+| `/sources` | `sources.astro` | 3.11 |
+| `404` | `404.astro` | — |
+
+Both dynamic routes build `getStaticPaths` from committed rows — 28
+`/models/<id>` pages from `data/models.json`, 16 `/plans/<id>` pages from
+`data/plans.json`, the row `id` being the slug. A row added upstream becomes a
+page on the next commit with no code change. The whole set is 53 built pages:
+28 + 16 + eight static routes + the 404. Every page renders exactly one
+`<main id="main" tabindex="-1">` and one `h1`, both from `Page.astro`; nav
+`aria-current="page"` is prefix-based, so `/models/<id>` marks Models.
+
+Skeleton-note convention: each route carries one
+`<p class="mt-6 text-meta text-dim">Route skeleton — …</p>` line naming what
+lands there and in which stage, so an unfinished route is honest rather than
+blank. Stages 4 and 5 delete them as content arrives; the 404 route has none.
+No figure, badge or attribution string may be invented to fill a route: scores,
+costs and licence text wait for the components that carry their basis.
+
+`apps/site/src/lib/data.ts` is the only module under `apps/site` that imports
+`data/*.json`. It parses each document with the `@rack-rate/core` zod schema and
+re-exports the rows, so a committed file that drifts from the schema fails the
+build rather than a page. Task 3.4 seeded it with `models` and `plans`, the only
+views the route skeleton needs; task 3.5 adds the derived, benchmark and source
+views. Its JSON imports work because the root `tsconfig.json` sets
+`resolveJsonModule: true`. Vite bundles the files at build time and the module
+reaches no browser bundle: only Astro frontmatter imports it. `Model.id` and
+`Plan.id` are used as slugs directly, so no second slug mapping exists to drift.
+
+Measured on the Stage 3.4 build: 53 pages; a static server with the `dist` tree
+mounted at `/rack-rate` returned 200 for all 53 routes, and every base-prefixed
+`href`/`src` in the built HTML (eight nav links plus one stylesheet) resolved.
+Headless Chromium at a 360 px viewport reported `scrollWidth` 360 on all eleven
+route shapes, one `<main>` and one `h1` per page, correct `aria-current`, and
+canonical URLs under `/rack-rate`.
+
 ## Design tokens
 
 `apps/site/src/styles/global.css` is the single CSS entry: one

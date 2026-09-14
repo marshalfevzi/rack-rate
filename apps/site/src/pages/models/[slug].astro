@@ -1,0 +1,27 @@
+---
+import type { Model } from "@rack-rate/core"
+
+import Page from "../../layouts/Page.astro"
+import { models } from "../../lib/data.ts"
+
+export function getStaticPaths() {
+  return models.map((model) => ({ params: { slug: model.id }, props: { model } }))
+}
+
+interface Props {
+  model: Model
+}
+
+const { model } = Astro.props
+---
+
+<Page
+  title={model.name}
+  description={`${model.name}: benchmark scores, priced plan routes, and the provenance of every figure.`}
+  heading={model.name}
+  lede={model.provider ?? "Provider not identified by the upstream source."}
+>
+  <p class="mt-6 text-meta text-dim">
+    Route skeleton — the score profile, effort ladder, priced plan routes and provenance rail land in Stage 4 of the build plan.
+  </p>
+</Page>
