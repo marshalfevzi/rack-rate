@@ -1,0 +1,22 @@
+---
+import Base from "./Base.astro"
+
+interface Props {
+  title: string
+  description: string
+  heading?: string
+  lede?: string
+}
+
+const { title, description, heading, lede } = Astro.props
+---
+
+<Base title={title} description={description}>
+  <main id="main" tabindex="-1">
+    <div class="mx-auto w-full max-w-5xl px-4 py-8">
+      <h1 class="text-display">{heading ?? title}</h1>
+      {lede ? <p class="text-body text-dim">{lede}</p> : null}
+      <slot />
+    </div>
+  </main>
+</Base>

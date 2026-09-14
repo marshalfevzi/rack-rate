@@ -143,94 +143,205 @@ joining it to a path supplies the separator itself. `Astro.url.pathname` and
 from task 3.3; nothing hardcodes `/rack-rate`.
 
 The Tailwind v4 Vite plugin is registered in this config. There is no
-`tailwind.config.js`. Task 3.2 adds the single CSS entry that imports
-`tailwindcss`.
+`tailwind.config.js`. `src/styles/global.css` is the single CSS entry that
+imports `tailwindcss`; task 3.2 created it and 3.3b extended it with the type,
+spacing and motion tokens.
+
+## Layouts and links
+
+`apps/site/src/layouts/Base.astro` accepts `title` and `description`.
+`apps/site/src/layouts/Page.astro` accepts `title`, `description`, optional
+`heading`, and optional `lede`. `Base` renders the skip link, sticky header,
+and footer; the header computes `position: sticky`. `Page` is the only layout
+that renders `<main id="main" tabindex="-1">`; `Base` renders no main landmark.
+
+`apps/site/src/lib/url.ts` exports three typed helpers:
+
+- `href(path: \`/${string}\`): string` is the route builder. It joins the
+  path to `import.meta.env.BASE_URL` and adds a trailing slash except for the
+  root.
+- `asset(path: \`/${string}\`): string` is the file builder. It joins the
+  path to `import.meta.env.BASE_URL` without adding a trailing slash. `Base`
+  uses it for the OG and Twitter image path.
+- `absoluteUrl(relativePath: string, site: URL | undefined): string` turns an
+  already base-relative path from `href()`, `asset()`, or `Astro.url.pathname`
+  into an absolute URL using `site.origin`. With `site === undefined`, it
+  returns the input unchanged; all base handling belongs to the two path
+  builders.
+
+The module reads `import.meta.env.BASE_URL` once at module scope. Measured
+helper outputs are:
+
+| Call | Project page (`base: "/rack-rate"`) | Custom domain (`base === "/"`) |
+|---|---|---|
+| `href("/")` | `/rack-rate/` | `/` |
+| `href("/models")` | `/rack-rate/models/` | `/models/` |
+| `asset("/og.png")` | `/rack-rate/og.png` | `/og.png` |
+
+Measured `absoluteUrl("/rack-rate/models/", site)` as
+`https://marshalfevzi.github.io/rack-rate/models/` and
+`absoluteUrl("/rack-rate/og.png", site)` as
+`https://marshalfevzi.github.io/rack-rate/og.png`; with
+`site === undefined`, it returns `/rack-rate/models/` unchanged.
+
+Astro's `build.format: "directory"` gives route links their trailing slash;
+`asset()` deliberately does not. A built project page measured
+`https://marshalfevzi.github.io/rack-rate/models/` as both its canonical URL
+and `og:url`, with `og:image` at
+`https://marshalfevzi.github.io/rack-rate/og.png`. With `base: "/"` and
+`site: https://rackrate.dev`, the corresponding URLs are
+`https://rackrate.dev/models/` and `https://rackrate.dev/og.png`.
+
+`Base` emits head metadata in this order: charset, viewport, title
+(`{title} · rack-rate`), description, canonical, generator, two media-scoped
+`theme-color` values (`#0a0e15` dark and `#f7f8fa` light), Open Graph type,
+site name, title, description, URL, image, image dimensions and image alt,
+then Twitter card (`summary_large_image`), title, description and image.
+
+The navigation routes are `/`, `/models`, `/plans`, `/compare`, `/explore`,
+`/start`, `/method`, and `/sources`. `aria-current="page"` is exact for the
+root route and prefix-based for the other routes: Overview is current at
+`/rack-rate/`, Models at `/rack-rate/models/`, and no item is current at
+`/rack-rate/smoke33/`.
+
+The skip link is 1 by 1 px and clipped with `clip-path: inset(50%)` until
+focused. Headless Chromium measured its focused state at 138 by 42 px at the
+top left with the 2 px ink outline. The global focus ring is
+`:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px }`;
+interaction chrome spends no accent hue. `.tabular` sets
+`font-variant-numeric: tabular-nums`.
+
+The footer has two static paragraphs. The credit paragraph names
+DeepSWE/Datacurve, Terminal-Bench/Harbor Hub, Awesome Coding Plan by mahonzhan
+under CC BY 4.0, real-api-pricing by FeiZhuLulu, and the Sources page. The
+Artificial Analysis paragraph states that it is excluded unless publication
+is explicitly enabled and that Sources states which state this build is in. The
+verbatim Awesome Coding Plan attribution required by
+`docs/data-sources.md` belongs to `/sources`, rendered from
+`data/sources.json` in task 3.11; it is not duplicated in the layout.
+
+`Base` deliberately omits a favicon link; task 3.9 owns
+`public/favicon.svg`. It also omits analytics, emoji, dashed borders,
+gradients, and shadows.
 
 ## Design tokens
 
-`apps/site/src/styles/global.css` is the single CSS entry, imported by the
-layout task 3.3 adds. There is no `tailwind.config.js`; `@theme` makes
-`--color-x` do double duty as the `:root` custom property and the
-`bg-x`/`text-x`/`border-x` utilities. Stage 4 chart code reads it at runtime
-with `getComputedStyle` instead of duplicating hexes in TS. The legacy `bg`
-role is renamed to `canvas` because `--color-bg` yields `bg-bg`.
+`apps/site/src/styles/global.css` is the single CSS entry: one
+`@import "tailwindcss"`, one `@theme`, and one `@layer base`. The dark scheme
+is the default. `@theme` emits the custom properties and their Tailwind
+utilities, and utilities continue to read `var(--color-*)` when the light
+scheme re-declares the values.
 
-| Token | Hex | Semantic role |
-|---|---|---|
-| `--color-canvas` | `#0a0e15` | page background |
-| `--color-panel` | `#111825` | raised surface: cards, tables, nav |
-| `--color-rule` | `#1d2735` | hairline border / divider |
-| `--color-ink` | `#eaeef5` | primary text |
-| `--color-dim` | `#a3b0c4` | secondary text |
-| `--color-adjusted` | `#ffb020` | plan-adjusted cost basis |
-| `--color-measured` | `#45d97f` | measured quota basis |
-| `--color-api` | `#5c6a80` | API-list cost basis, marker/stroke only |
-| `--color-api-ink` | `#8a97ab` | API-list cost basis, text-safe on the dark canvas |
+| Token | Dark hex | Light hex | Semantic role |
+|---|---|---|---|
+| `--color-canvas` | `#0a0e15` | `#f7f8fa` | page background |
+| `--color-panel` | `#111825` | `#ffffff` | raised surface: cards, tables, nav |
+| `--color-rule` | `#1d2735` | `#dce2ea` | hairline border / divider |
+| `--color-ink` | `#eaeef5` | `#0f141d` | primary text |
+| `--color-dim` | `#a3b0c4` | `#4f5b73` | secondary text |
+| `--color-adjusted` | `#ffb020` | `#8a5a00` | plan-adjusted cost basis |
+| `--color-measured` | `#45d97f` | `#1a7a45` | measured quota basis |
+| `--color-api` | `#5c6a80` | `#5c6a80` | API-list cost basis, marker/stroke |
+| `--color-api-ink` | `#8a97ab` | `#55627a` | API-list cost basis, text |
 
 ### Dark scheme contrast
 
-| Pair | Ratio | AA threshold | Verdict |
-|---|---:|---:|---|
-| ink/canvas | 16.61:1 | 4.5:1 text | PASS |
-| ink/panel | 15.28:1 | 4.5:1 text | PASS |
-| dim/canvas | 8.80:1 | 4.5:1 text | PASS |
-| dim/panel | 8.10:1 | 4.5:1 text | PASS |
-| adjusted/canvas | 10.57:1 | 4.5:1 text | PASS |
-| adjusted/panel | 9.72:1 | 4.5:1 text | PASS |
-| measured/canvas | 10.57:1 | 4.5:1 text | PASS |
-| measured/panel | 9.72:1 | 4.5:1 text | PASS |
-| api/canvas | 3.52:1 | 3:1 UI | PASS |
-| api/panel | 3.24:1 | 3:1 UI | PASS |
-| api-ink/canvas | 6.53:1 | 4.5:1 text | PASS |
-| api-ink/panel | 6.01:1 | 4.5:1 text | PASS |
-| rule/canvas | 1.28:1 | — | measured |
+| Pair | Canvas | Panel | AA threshold | Verdict |
+|---|---:|---:|---:|---|
+| ink | 16.61:1 | 15.28:1 | 4.5:1 text | PASS |
+| dim | 8.80:1 | 8.10:1 | 4.5:1 text | PASS |
+| adjusted | 10.57:1 | 9.72:1 | 4.5:1 text | PASS |
+| measured | 10.57:1 | 9.72:1 | 4.5:1 text | PASS |
+| api | 3.52:1 | 3.24:1 | 3:1 UI | PASS |
+| api-ink | 6.53:1 | 6.01:1 | 4.5:1 text | PASS |
+| rule | 1.28:1 | 1.18:1 | — | measured |
 
-Every dark text pair passes 4.5:1. `api` passes only the 3:1 non-text/UI
-threshold (`3.52:1` on canvas; `3.24:1` on panel), so `--color-api` is
-marker/stroke only and must never be used for text; `--color-api-ink` is
-text-safe (`6.53:1` on canvas; `6.01:1` on panel). `--color-rule` is hairline
-decoration; its `1.28:1` ratio is measured without an invented threshold.
+The dark text roles pass 4.5:1. `api` passes the 3:1 non-text/UI threshold
+and is marker/stroke only; `api-ink` is text-safe. `rule` is hairline
+decoration and carries no threshold.
 
-### Light scheme: considered, not implemented
+### Light scheme contrast
 
-| Pair | Ratio | AA threshold | Verdict |
-|---|---:|---:|---|
-| ink/canvas | 19.33:1 | 4.5:1 text | PASS |
-| ink/panel | 17.86:1 | 4.5:1 text | PASS |
-| dim/canvas | 7.53:1 | 4.5:1 text | PASS |
-| dim/panel | 6.96:1 | 4.5:1 text | PASS |
-| adjusted/canvas | 1.83:1 | 4.5:1 text | FAIL |
-| adjusted/panel | 1.69:1 | 4.5:1 text | FAIL |
-| measured/canvas | 1.83:1 | 4.5:1 text | FAIL |
-| measured/panel | 1.69:1 | 4.5:1 text | FAIL |
-| api/canvas | 5.49:1 | 3:1 UI | PASS |
-| api/panel | 5.07:1 | 3:1 UI | PASS |
-| api-ink/canvas | 2.96:1 | 4.5:1 text | FAIL |
-| api-ink/panel | 2.74:1 | 4.5:1 text | FAIL |
-| rule/canvas | 1.36:1 | — | measured |
+| Pair | Canvas | Panel | AA threshold | Verdict |
+|---|---:|---:|---:|---|
+| ink | 17.36:1 | 18.45:1 | 4.5:1 text | PASS |
+| dim | 6.42:1 | 6.83:1 | 4.5:1 text | PASS |
+| adjusted | 5.58:1 | 5.93:1 | 4.5:1 text | PASS |
+| measured | 5.05:1 | 5.37:1 | 4.5:1 text | PASS |
+| api | 5.16:1 | 5.49:1 | 4.5:1 text | PASS |
+| api-ink | 5.79:1 | 6.15:1 | 4.5:1 text | PASS |
+| rule | 1.23:1 | 1.30:1 | — | measured |
 
-Under the light candidate, `adjusted` and `measured` fail as accents
-(`1.83:1` on canvas; `1.69:1` on panel), and `--color-api-ink` fails as text
-(`2.96:1` on canvas; `2.74:1` on panel). The API basis text role is satisfied
-by a slate at least as dark as `#5c6a80`: `api` `#5c6a80` is `5.49:1` on
-white and `5.07:1` on panel.
+Every text role clears 4.5:1 in the light scheme. `api` also clears 4.5:1
+there, but remains the marker/stroke token so chart code does not branch on
+scheme. The token split is kept in both schemes. `rule` remains hairline
+decoration without a threshold.
 
-The required light-scheme accents preserve hue within each role's family:
-`adjusted` → `#8a5a00` (`5.93:1` on white; `5.48:1` on panel), `measured` →
-`#1a7a45` (`5.37:1` on white; `4.96:1` on panel), and the API text role →
-`#55627a` (`6.15:1` on white; `5.68:1` on panel). A minimal-decrement search
-over the sRGB cube reaches 4.5:1 with `#c55420` / `#45807f` / `#8a68ab` but
-shifts the hue out of the role's family (orange-red for amber, teal for
-green, purple for slate); role hue is what makes the accent legible as a
-cost basis, so those optima are rejected (AGENTS.md invariant 4: every cost
-figure carries its basis).
+### Type scale
 
-Decision: 3.2 ships the dark scheme only. Task 3.3b implements the light
-scheme as the two-scheme palette with these hexes. The swap is a token
-re-declaration (one line per changed token), so nothing in 3.2 has to change.
+`--text-*: initial` removes the default Tailwind font-size namespace. The
+shipped scale is:
 
-Numbers: a throwaway Bun script applied WCAG 2.x relative luminance; it was
-deleted after the run. Ratios are computed, not estimated.
+| Token | Rem / line height | Computed size | Use |
+|---|---|---:|---|
+| `--text-meta` | 0.8125rem / 1.45 | 13 px | badges, table metadata, nav, footer |
+| `--text-body` | 0.9375rem / 1.6 | 15 px | paragraphs and table cells |
+| `--text-title` | 1.375rem / 1.25 | 22 px | section headings and subpage h1 |
+| `--text-display` | 2rem / 1.15 | 32 px | `/` hero h1 |
+
+`--font-sans` is the native UI stack and is the body default. `--font-mono`
+is the native mono stack, opt-in for code and identifiers only. Measured
+verification-page CSS is 8.5 KB; `--text-sm`, `--text-base`, `--text-lg`, and
+`--text-xl` are absent from the output.
+
+### Spacing
+
+`--spacing: 0.25rem` is the single spacing unit. Values are integer
+multiples only.
+
+### Motion
+
+The single transition contract is `--default-transition-duration: 150ms` and
+`--default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1)`. A bare
+`transition-colors` therefore carries the duration and easing.
+`--ease-standard: cubic-bezier(0.2, 0, 0, 1)` is also the named utility for
+explicit easing use. Tailwind v4 prunes theme variables that no emitted
+utility references, so `--ease-standard` is expected to be absent from
+today's CSS output until a utility uses it.
+
+Under `prefers-reduced-motion: reduce`, transition and animation durations
+become `0.01ms`, animation iteration count is capped at one, and
+`scroll-behavior` is forced to `auto` for `*`, `::before`, and `::after`.
+`0.01ms` preserves end events.
+
+### Scheme mechanism
+
+The light scheme is a token re-declaration only:
+`@media (prefers-color-scheme: light) { :root { … } }` appears in
+`@layer base`, which wins over Tailwind's `theme` layer. Dark is the default.
+There is no `.dark` class, toggle, or pre-paint script, so there is no FOUC
+avoidance toggle to document; a toggle is deferred to task 5.1.
+
+### Anti-signals
+
+| Predecessor signal | Shipped replacement |
+|---|---|
+| 3D glossy ball chart markers | Flat filled circles with a 1 px `--color-rule` stroke; no gradient, glow, or shadow |
+| Amber for everything / a second accent hue | One accent per cost-basis role, plus an ink focus ring |
+| Monospace for everything | Sans body, mono opt-in, and `tabular-nums` for figures |
+| Dashed-rule noise | One solid 1 px `--color-rule` hairline |
+| Four competing animation durations | One 150 ms duration and one easing |
+| Emoji empty state | Text-only empty states, rendered by Stage 4 |
+| Dead analytics snippet | None exists; task 1.5 deleted it and nothing re-adds it |
+
+Stage 4 receives three load-bearing rules: chart markers are flat filled
+circles with a 1 px `--color-rule` stroke and no gradient, glow, or shadow;
+chart code reads tokens at runtime with `getComputedStyle` instead of
+duplicating hexes in TypeScript; and amber is reserved for the
+plan-adjusted cost basis.
+
+Numbers are recomputed from the shipped hexes with WCAG 2.x relative
+luminance; they are not estimates.
 
 ## TypeScript configuration
 

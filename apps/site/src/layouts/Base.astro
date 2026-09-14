@@ -1,0 +1,111 @@
+---
+import "../styles/global.css"
+
+import { absoluteUrl, asset, href } from "../lib/url.ts"
+
+interface Props {
+  title: string
+  description: string
+}
+
+const { title, description } = Astro.props
+
+const navItems = [
+  { path: "/", label: "Overview" },
+  { path: "/models", label: "Models" },
+  { path: "/plans", label: "Plans" },
+  { path: "/compare", label: "Compare" },
+  { path: "/explore", label: "Explore" },
+  { path: "/start", label: "Get started" },
+  { path: "/method", label: "Method" },
+  { path: "/sources", label: "Sources" },
+] as const
+
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · rack-rate</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={absoluteUrl(Astro.url.pathname, Astro.site)} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0a0e15" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="rack-rate" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={absoluteUrl(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={absoluteUrl(asset("/og.png"), Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteUrl(asset("/og.png"), Astro.site)} />
+  </head>
+  <body class="min-h-screen bg-canvas font-sans text-ink">
+    <!-- In-page fragments bypass the helper. -->
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="sticky top-0 z-10 border-b border-rule bg-canvas">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <a class="text-title text-ink" href={href("/")}>rack-rate</a>
+        <nav aria-label="Primary">
+          <ul class="flex flex-wrap justify-end gap-3">
+            {
+              navItems.map(({ path, label }) => {
+                const isCurrent =
+                  path === "/"
+                    ? Astro.url.pathname === href(path)
+                    : Astro.url.pathname.startsWith(href(path))
+
+                return (
+                  <li>
+                    <a
+                      class:list={[
+                        "text-meta text-dim transition-colors hover:text-ink",
+                        isCurrent && "text-ink",
+                      ]}
+                      href={href(path)}
+                      aria-current={isCurrent ? "page" : undefined}
+                    >
+                      {label}
+                    </a>
+                  </li>
+                )
+              })
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="border-t border-rule text-meta text-dim">
+      <div class="mx-auto w-full max-w-6xl space-y-2 px-4 py-6">
+        <!-- Static credits; 3.11 renders the verbatim CC BY 4.0 attribution from data/sources.json on /sources. -->
+        <p>
+          Model scores from DeepSWE (Datacurve) —
+          <a class="text-ink underline" href="https://deepswe.datacurve.ai/" rel="noreferrer">https://deepswe.datacurve.ai/</a>
+          — and Terminal-Bench (Harbor Hub) —
+          <a class="text-ink underline" href="https://www.tbench.ai/" rel="noreferrer">https://www.tbench.ai/</a>.
+          Plan quotas from Awesome Coding Plan by mahonzhan —
+          <a class="text-ink underline" href="https://github.com/mahonzhan/awesome-coding-plan" rel="noreferrer">https://github.com/mahonzhan/awesome-coding-plan</a>
+          — used under CC BY 4.0 —
+          <a class="text-ink underline" href="https://creativecommons.org/licenses/by/4.0/" rel="noreferrer">https://creativecommons.org/licenses/by/4.0/</a>.
+          Prior art: real-api-pricing by FeiZhuLulu —
+          <a class="text-ink underline" href="https://github.com/FeiZhuLulu/real-api-pricing" rel="noreferrer">https://github.com/FeiZhuLulu/real-api-pricing</a>.
+          Prices are read from vendor pricing pages and dated. Full attribution, licensing and freshness: the
+          <a class="text-ink underline" href={href("/sources")}>Sources</a> page.
+        </p>
+        <p>
+          Artificial Analysis data is excluded from this build unless publication is explicitly enabled; the Sources page states which state this build is in.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
