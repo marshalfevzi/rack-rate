@@ -6,7 +6,7 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 3.9.** Stages 1 and 2 are landed and green, and Stage 3.1–3.8
+**Next stage: 3.10.** Stages 1 and 2 are landed and green, and Stage 3.1–3.9
 landed (see the progress log). The Stage 1–2 task lists,
 acceptance criteria, handover contracts and session history live in
 [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
@@ -124,9 +124,12 @@ the design system in place and one real page rendering real numbers.
 - [x] 3.8 `scripts/og.ts` — build-time 1200×630 social card via satori → resvg,
   replacing the Pillow script. One bundled OFL font with its license file kept
   in-repo. Runs after `astro build`, writes into `dist/`.
-- [ ] 3.9 `@astrojs/sitemap`, `public/robots.txt`, `public/favicon.svg`, and a
+- [x] 3.9 `@astrojs/sitemap`, `public/robots.txt`, `public/favicon.svg`, and a
   `public/CNAME` placeholder path documented (not committed until the domain is
-  live).
+  live). **Amended while landing:** `robots.txt` is a generated route
+  (`src/pages/robots.txt.ts`), not a static `public/` file, because its
+  `Sitemap:` line is absolute and a static copy would write the origin a second
+  time.
 - [ ] 3.10 CI: `.github/workflows/ci.yml` running `bun install --frozen-lockfile`,
   `bun run check`, `bun test`, `bun run data:build`, and a check that
   re-running compute leaves `data/derived.json` unchanged (stale-output guard).
@@ -1336,3 +1339,90 @@ No stage was opened. Stage 3 is still untouched.
 - `bun run build` now completes end to end, including the generated social card.
 - Stage 3.9 is next: sitemap, `robots.txt`, favicon, and the `CNAME` path.
 - Stages 3.10 and 3.11 remain.
+
+### 2026-09-14 — Stage 3.9: sitemap, generated robots.txt, favicon
+
+**Landed**
+
+- `apps/site/astro.config.mjs` (+4): `integrations: [sitemap()]` from
+  `@astrojs/sitemap` 3.7.4, which was already a declared dependency, with a
+  two-line comment recording that 404/500 exclusion is the integration's default
+  (`STATUS_CODE_PAGES`), so the absent `filter` is a decision rather than an
+  oversight. `site`, `base`, `output` and `vite` are byte-identical.
+- `apps/site/src/pages/robots.txt.ts` (new, 20 lines): a prerendered endpoint
+  returning `text/plain; charset=utf-8` with `User-agent: *`, `Allow: /` and
+  `Sitemap: <absolute sitemap index URL>`, the URL built as
+  `absoluteUrl(asset("/sitemap-index.xml"), site)` through the 3.3 helpers.
+  **Amended against the task text:** the plan asked for `public/robots.txt`. The
+  `Sitemap:` line is necessarily absolute, so a static copy would write the
+  origin a second time and turn the custom-domain switch into three lines; the
+  route keeps it at two. Recorded in PLAN.md's 3.9 line and in
+  `docs/architecture.md`.
+- `apps/site/public/favicon.svg` (new, 428 bytes, 7 lines): a standalone 32×32
+  SVG in the token palette — `canvas` rounded square, 1.5 px `rule` border so it
+  keeps an edge on dark browser chrome, three ascending bars in `adjusted`. No
+  raster `apple-touch-icon`, no manifest.
+- `apps/site/src/layouts/Base.astro` (+1): the favicon link, through
+  `asset("/favicon.svg")` with `type="image/svg+xml"`; nothing else in the head
+  moved.
+- `docs/architecture.md` gained `## Crawl and discovery files` (line 156) and
+  its `## Site configuration` CNAME paragraph now names the path, the content
+  and why that file is committed last. `AGENTS.md`'s layout block lists
+  `apps/site/public/`.
+
+**Verified**
+
+- `bun run build` exit 0: 53 built routes, `dist/sitemap-index.xml`,
+  `dist/sitemap-0.xml`, `dist/robots.txt`, `dist/favicon.svg`, and the unchanged
+  45,413-byte `dist/og.png` at sha256 `23677cc0…`.
+- Sitemap contents were compared as a **set**, not sampled: 52 URLs against the
+  52 built `index.html` directories, empty difference in both directions, every
+  URL under `https://marshalfevzi.github.io/rack-rate/` ending in `/`, and no
+  entry containing `404` or `robots` — the 404 is excluded by the integration's
+  default and the `robots.txt` route never enters the list. `robots.txt` reads
+  `Sitemap: https://marshalfevzi.github.io/rack-rate/sitemap-index.xml`, which
+  is the index file the build actually wrote (the chunk is `sitemap-0.xml`).
+- Custom-domain mode measured by copying the config, changing only the two
+  documented lines, building, and restoring it (sha256 checked equal afterwards):
+  exit 0, `Sitemap: https://rackrate.dev/sitemap-index.xml`, all 52 URLs under
+  `https://rackrate.dev/`, and the icon link unprefixed as `/favicon.svg`.
+- Favicon: parses as XML, `viewBox="0 0 32 32"`, four `rect`s, rasterised and
+  inspected at 32×32; all 53 built HTML pages carry
+  `<link rel="icon" href="/rack-rate/favicon.svg" type="image/svg+xml">` with no
+  page carrying a differently-prefixed href.
+- `bun run check` exit 0 (typecheck, oxlint, oxfmt clean over 45 files, `astro
+  check` 28 files with 0 errors / 0 warnings / 0 hints) after one `bun run
+  format` pass, which rewrapped the endpoint's `new Response(…)` call. `bun test`
+  72 pass / 0 fail. `bun run data:check` exit 0 with `data/derived.json` still
+  `7425a331…` — **no published number moved in this session.** Re-building after
+  the format pass produced byte-identical `robots.txt` (`518368b9…`) and
+  `sitemap-0.xml` (`79943148…`), so formatting changed no output.
+- `bun run quality` (report-only, still out of the gate) exits 1 on pre-existing
+  findings and is one better than the 3.8 baseline: dead-code 27 → 26 (the new
+  route is a reachable entry point; the six Stage-4 components and `data.ts`'s
+  awaiting-3.x views are still listed), dupes 10 and health 143 unchanged,
+  maintainability 89.7 → 89.8 over 606 analysed files.
+
+**Decisions taken this session**
+
+- `robots.txt` is generated from `site`/`base` rather than committed as a static
+  file; a produced file that must agree with the build's own sitemap URL should
+  not be a second place the origin is written down.
+- The sitemap integration is configured with no options: no `filter` (404/500 are
+  already excluded by default and nothing else qualifies), no `lastmod` (it would
+  claim a per-page freshness the data cannot support — freshness is a badge dated
+  against `derivedGeneratedAt`), and no `changefreq`/`priority`, which crawlers
+  ignore.
+- `robots.txt` allows everything. Every route is public, no path is
+  authenticated, and the 404 is left crawlable: it is absent from the sitemap
+  already, and its `noindex` belongs with 6.4's index hygiene.
+- The favicon is SVG-only: no raster `apple-touch-icon`, no manifest. Both would
+  be new build assets with no requirement behind them in this stage.
+
+**Still open**
+
+- 3.10 and 3.11 remain. 3.10 owns CI and the stale-output guard; the deployed
+  base-path check for `robots.txt` and the sitemap is 6.4's, which the new
+  architecture section states as an obligation.
+- The favicon and sitemap are build outputs; only `public/favicon.svg` is
+  committed. `apps/site/public/CNAME` still does not exist, by design.

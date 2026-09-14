@@ -127,8 +127,14 @@ The custom-domain switch changes exactly these two options:
 +  base: undefined,
 ```
 
-Commit `public/CNAME` only when the custom domain is live. Tasks 3.9 and 6.2
-own that file. The `base` option stays in the config object when it is
+`apps/site/public/CNAME` — containing the bare domain, `rackrate.dev` — is the
+third step of that switch and the one file that must not be committed early: a
+`CNAME` file makes GitHub Pages serve the custom domain immediately, which is a
+broken site for everyone while DNS still points elsewhere. Tasks 3.9 and 6.2
+own that path; the directory exists as of 3.9 (it holds `favicon.svg`), so the
+file lands at the root of `dist/` when it is finally added, together with the
+two lines above and after the domain resolves. The `base` option stays in the
+config object when it is
 `undefined`: Astro normalises that to `/` — measured, `BASE_URL` becomes `/`
 and assets drop the prefix — while deleting the line instead would turn the
 switch into a one-liner that hides half the deployment target. No other line
@@ -146,6 +152,51 @@ The Tailwind v4 Vite plugin is registered in this config. There is no
 `tailwind.config.js`. `src/styles/global.css` is the single CSS entry that
 imports `tailwindcss`; task 3.2 created it and 3.3b extended it with the type,
 spacing and motion tokens.
+
+## Crawl and discovery files
+
+`apps/site/astro.config.mjs` registers `@astrojs/sitemap` 3.7.4 in
+`integrations`. The integration builds absolute URLs from `site` + `base`, so
+this section hardcodes no origin and no prefix. It writes
+`dist/sitemap-index.xml` and the chunk `dist/sitemap-0.xml`; the index lists the
+chunk, so a `Sitemap:` directive must name the **index**, not the chunk.
+
+Measured on the committed config: 53 built routes, 52 sitemap URLs — the
+difference is `404`, which the integration excludes by default (`404` and `500`
+are `STATUS_CODE_PAGES` in `@astrojs/sitemap/dist/index.js`). No `filter` is
+configured because nothing else needs excluding: the `robots.txt` route never
+enters the list, and neither do `og.png`, `favicon.svg` or `_astro/*`. The 52
+URLs were compared as a **set** against the built `index.html` directories —
+empty difference in both directions — each under
+`https://marshalfevzi.github.io/rack-rate/` with a trailing slash. `lastmod`,
+`changefreq` and `priority` are deliberately unset: `lastmod` would claim a
+per-page freshness the data cannot support, since freshness is a badge dated
+against `derivedGeneratedAt` and page content also changes with code.
+
+`robots.txt` is a generated route, `apps/site/src/pages/robots.txt.ts`, not
+`public/robots.txt`. The `Sitemap:` line is necessarily absolute, so a static
+file would write the origin a second time and add a third line to the
+custom-domain switch; the route derives it as
+`absoluteUrl(asset("/sitemap-index.xml"), site)`. Measured: the committed config
+emits `Sitemap: https://marshalfevzi.github.io/rack-rate/sitemap-index.xml`, and
+the same build with the two-line switch emits
+`https://rackrate.dev/sitemap-index.xml` with no edit to the route. The response
+is `Content-Type: text/plain; charset=utf-8`. The policy is `User-agent: *` plus
+`Allow: /`: every route is public, there is nothing authenticated to keep out,
+and the 404 is not disallowed — it is already absent from the sitemap, and task
+6.4 owns noindex. Task 6.4 also verifies both files against the deployed base
+path.
+
+`apps/site/public/favicon.svg` is the tab icon: a standalone 32×32 SVG (428
+bytes) using only the three token hexes — a `#0A0E15` (`canvas`) rounded square,
+a 1.5 px `#1D2735` (`rule`) border so the mark keeps an edge against dark
+browser chrome, and three ascending bars in `#FFB020` (`adjusted`). The amber is
+wordmark chrome, not a cost basis: a favicon carries no number, so invariant 4
+has nothing to label here. `Base.astro` links it as `asset("/favicon.svg")` with
+`type="image/svg+xml"`, so the prefix comes from the builder; measured, all 53
+built HTML pages carry the prefixed link, and it becomes `/favicon.svg` under
+the custom domain. No raster `apple-touch-icon` and no web manifest ship with
+this stage.
 
 ## Layouts and links
 

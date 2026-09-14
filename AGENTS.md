@@ -68,6 +68,7 @@ apps/site/            @rack-rate/site        ← Astro; imports core + data/*.js
   src/lib/charts/       ECharts option builders (pure functions → option objects)
   src/lib/prefs.ts      nanostores persistent stores
   src/styles/global.css Tailwind entry + @theme tokens
+  public/               favicon.svg; CNAME only when the domain is live
   scripts/og.ts         build-time social card (satori → resvg)
 
 data/                 models.json, plans.json, benchmarks.json, sources.json, derived.json
