@@ -1510,8 +1510,15 @@ No stage was opened. Stage 3 is still untouched.
   post-steps. It was triggered by a temporary draft PR (#1) opened to fire
   the `pull_request` event, because the `push` trigger only fires on `main`
   and local `main` has not been pushed (`origin/main` is still `104c618`).
-  The branch and the draft PR are scaffolding, removed after this entry
-  lands.
+  Both verification branches and their draft PRs are scaffolding, removed
+  after this entry lands.
+- The reorder was re-verified on
+  [run 34802795461](https://github.com/marshalfevzi/rack-rate/actions/runs/34802795461)
+  (`ci/3.10-verify2` at `a9ed386`, job `03:29:48Z` → `03:30:08Z`, 20 s,
+  **success**): the run's own step list reads `Derived data is not stale`
+  (7) then `Data build (validate + compute)` (8) then
+  `Compute left committed data unchanged` (9), so the ordering in the
+  committed file is what executed, not just what was written.
 - Repo gates after landing: `bun run check` exit 0 (typecheck, oxlint, oxfmt
   clean over 46 files, `astro check` 28 files 0 errors / 0 warnings /
   0 hints), `bun test` 72 pass / 0 fail / 231 assertions in 7 files,
