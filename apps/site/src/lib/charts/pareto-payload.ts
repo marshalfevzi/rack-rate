@@ -1,5 +1,6 @@
 import type { Benchmark, DerivedParetoFrontier, Model, Plan } from "@rack-rate/core"
 
+import { costBasisTerm } from "../provenance.ts"
 import type { CostBasisKind } from "../provenance.ts"
 
 // DeepSWE is the benchmark whose rows[].score feeds the composite and frontier.
@@ -46,6 +47,19 @@ export interface ParetoBasisView {
   readonly frontier: readonly string[]
   readonly trails: readonly ParetoTrail[]
   readonly note: string
+}
+
+function countOf(count: number, singular: string, plural: string): string {
+  return `${count} ${count === 1 ? singular : plural}`
+}
+
+// The server template and client rebuild share this function so they cannot drift.
+export function chartAriaLabel(view: ParetoBasisView): string {
+  const basisLabel = costBasisTerm(view.basis, view.planName ?? undefined).label
+  const models = countOf(view.points.length, "committed model", "committed models")
+  const frontier = countOf(view.frontier.length, "frontier model", "frontier models")
+
+  return `${models} plotted against ${basisLabel} cost per task; ${frontier}; JavaScript is required to draw this chart.`
 }
 
 export interface ParetoPayload {

@@ -8,7 +8,11 @@ import {
   models,
   plansById,
 } from "../lib/data.ts"
-import { buildParetoPayload, encodeParetoPayload } from "../lib/charts/pareto-payload.ts"
+import {
+  buildParetoPayload,
+  chartAriaLabel,
+  encodeParetoPayload,
+} from "../lib/charts/pareto-payload.ts"
 import { costBasisTerm } from "../lib/provenance.ts"
 import { href } from "../lib/url.ts"
 
@@ -38,7 +42,6 @@ const firstPlanView = planViews[0]
 
 const selectedPlanId = firstPlanView?.planId ?? ""
 
-const chartAriaLabel = `${apiView.points.length} committed models plotted against ${apiBasis.label} cost per task; ${apiView.frontier.length} frontier models; JavaScript is required to draw this chart.`
 ---
 
 <Page
@@ -69,7 +72,7 @@ const chartAriaLabel = `${apiView.points.length} committed models plotted agains
       id="pareto-chart"
       class="mt-4 h-80 w-full sm:h-[26rem]"
       role="img"
-      aria-label={chartAriaLabel}
+      aria-label={chartAriaLabel(apiView)}
     ></div>
     <p id="pareto-note" class="mt-2 text-meta text-dim">{apiView.note}</p>
 

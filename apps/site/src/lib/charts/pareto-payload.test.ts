@@ -1,7 +1,12 @@
 import { describe, expect, test } from "bun:test"
 
 import { apiFrontier, benchmarks, frontierByPlan, models, plansById } from "../data.ts"
-import { buildParetoPayload, decodeParetoPayload, encodeParetoPayload } from "./pareto-payload.ts"
+import {
+  buildParetoPayload,
+  chartAriaLabel,
+  decodeParetoPayload,
+  encodeParetoPayload,
+} from "./pareto-payload.ts"
 
 function buildPayload() {
   return buildParetoPayload({
@@ -96,6 +101,32 @@ describe("Pareto payload", () => {
     expect(ollama?.trails).toHaveLength(0)
     expect(ollama?.note).toContain(ollama?.planName ?? "ollama-pro")
     expect(ollama?.note).toContain("Effort trails are priced on the API list basis only")
+  })
+
+  test("keeps chart accessible names aligned across API and plan views", () => {
+    const payload = buildPayload()
+    const api = required(payload.bases[0], "API payload basis")
+
+    const plan = required(
+      payload.bases.find((view) => view.planId === "chatgpt-plus"),
+      "chatgpt-plus plan basis",
+    )
+
+    expect(chartAriaLabel(api)).toBe(
+      "28 committed models plotted against API list cost per task; 6 frontier models; JavaScript is required to draw this chart.",
+    )
+    expect(chartAriaLabel(plan)).toBe(
+      "6 committed models plotted against ChatGPT Plus route cost per task; 3 frontier models; JavaScript is required to draw this chart.",
+    )
+
+    const single = required(
+      payload.bases.find((view) => view.planId === "opencode-go"),
+      "opencode-go plan basis",
+    )
+
+    expect(chartAriaLabel(single)).toBe(
+      "1 committed model plotted against OpenCode Go route cost per task; 1 frontier model; JavaScript is required to draw this chart.",
+    )
   })
 
   test("round-trips safely for an embedded script payload", () => {

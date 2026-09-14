@@ -1,7 +1,6 @@
 import type { CostBasisKind } from "../provenance.ts"
-import { costBasisTerm } from "../provenance.ts"
 import type { ParetoBasisView, ParetoPayload } from "./pareto-payload.ts"
-import { decodeParetoPayload } from "./pareto-payload.ts"
+import { chartAriaLabel, decodeParetoPayload } from "./pareto-payload.ts"
 import { mountChart } from "./mount.ts"
 import { paretoScatter } from "./pareto.ts"
 import { readChartTokens } from "./theme.ts"
@@ -40,10 +39,6 @@ function viewFor(
   }
 
   return apiView
-}
-
-function chartAriaLabel(view: ParetoBasisView): string {
-  return `${view.points.length} committed models plotted against ${costBasisTerm(view.basis, view.planName ?? undefined).label} cost per task; ${view.frontier.length} frontier models; JavaScript is required to draw this chart.`
 }
 
 export function startParetoChart(host: HTMLElement): void {
