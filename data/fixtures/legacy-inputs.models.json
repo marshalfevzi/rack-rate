@@ -6,7 +6,7 @@
   "task_count": 113,
   "generated_at": "2026-09-03T22:24:37.984682+00:00",
   "harness": "mini-swe-agent",
-  "note": "One row per model: the highest-scoring reasoning-effort configuration available for it in this snapshot, per CONTRIBUTING item 7. api_cost_per_task_usd, output_tokens_per_task, input_tokens_per_task and agent_steps_per_task are medians over scored attempts, not means, to resist a few very expensive stuck runs skewing the figure. gpt-6-astra's cost figures are DeepSWE-reported *expected launch pricing* ($12/M uncached input, $15/M cache writes, $1.20/M cache reads, $50/M output, $2/M compute units), not confirmed GA API pricing — treat its cost_per_task numbers as provisional until the model ships.",
+  "note": "One row per model: the highest-scoring reasoning-effort configuration available for it in this snapshot, per CONTRIBUTING item 7. api_cost_per_task_usd, output_tokens_per_task, input_tokens_per_task and agent_steps_per_task are medians over scored attempts, not means, to resist a few very expensive stuck runs skewing the figure. gpt-6-astra's cost figures are DeepSWE-reported *expected launch pricing* ($12/M uncached input, $15/M cache writes, $1.20/M cache reads, $50/M output, $2/M compute units), not confirmed GA API pricing \u2014 treat its cost_per_task numbers as provisional until the model ships.",
   "models": [
     {
       "id": "gpt-6-astra",
@@ -17,9 +17,9 @@
       "score_pass_at_4_pct": 80.53,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 5.6717,
-      "input_tokens_per_task": 1163918,
       "output_tokens_per_task": 28542,
-      "agent_steps_per_task": 26,
+      "input_tokens_per_task": 1163918,
+      "agent_steps_per_task": 26.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -31,7 +31,7 @@
           "api_cost_per_task_usd": 5.6717,
           "output_tokens_per_task": 28542,
           "input_tokens_per_task": 1163918,
-          "agent_steps_per_task": 26
+          "agent_steps_per_task": 26.0
         },
         {
           "reasoning_effort": "high",
@@ -39,7 +39,7 @@
           "api_cost_per_task_usd": 4.9623,
           "output_tokens_per_task": 25414,
           "input_tokens_per_task": 995020,
-          "agent_steps_per_task": 25
+          "agent_steps_per_task": 25.0
         },
         {
           "reasoning_effort": "max",
@@ -47,7 +47,7 @@
           "api_cost_per_task_usd": 11.0369,
           "output_tokens_per_task": 58618,
           "input_tokens_per_task": 1767876,
-          "agent_steps_per_task": 26
+          "agent_steps_per_task": 26.0
         },
         {
           "reasoning_effort": "medium",
@@ -55,7 +55,7 @@
           "api_cost_per_task_usd": 3.7133,
           "output_tokens_per_task": 19006,
           "input_tokens_per_task": 779601,
-          "agent_steps_per_task": 24
+          "agent_steps_per_task": 24.0
         },
         {
           "reasoning_effort": "low",
@@ -63,15 +63,12 @@
           "api_cost_per_task_usd": 1.721,
           "output_tokens_per_task": 9488,
           "input_tokens_per_task": 310994,
-          "agent_steps_per_task": 17
+          "agent_steps_per_task": 17.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.7124964807371247,
-      "ci_hi": 0.7698044042186275,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "expected-launch",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.8-flash",
@@ -82,9 +79,9 @@
       "score_pass_at_4_pct": 85.84,
       "reasoning_effort": "high",
       "api_cost_per_task_usd": 2.1099,
-      "input_tokens_per_task": 18026661,
       "output_tokens_per_task": 138377,
-      "agent_steps_per_task": 161,
+      "input_tokens_per_task": 18026661,
+      "agent_steps_per_task": 161.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -96,7 +93,7 @@
           "api_cost_per_task_usd": 2.1099,
           "output_tokens_per_task": 138377,
           "input_tokens_per_task": 18026661,
-          "agent_steps_per_task": 161
+          "agent_steps_per_task": 161.0
         },
         {
           "reasoning_effort": "medium",
@@ -104,15 +101,12 @@
           "api_cost_per_task_usd": 1.7343,
           "output_tokens_per_task": 120488,
           "input_tokens_per_task": 13458718,
-          "agent_steps_per_task": 140
+          "agent_steps_per_task": 140.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.7240819014906883,
-      "ci_hi": 0.7524281656234058,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-opus-5",
@@ -123,8 +117,8 @@
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 10.4282,
-      "input_tokens_per_task": 12130308,
       "output_tokens_per_task": 113366,
+      "input_tokens_per_task": 12130308,
       "agent_steps_per_task": 90.5,
       "n_tasks_attempted": 113,
       "evidence": [
@@ -145,7 +139,7 @@
           "api_cost_per_task_usd": 7.9288,
           "output_tokens_per_task": 87322,
           "input_tokens_per_task": 8932820,
-          "agent_steps_per_task": 80
+          "agent_steps_per_task": 80.0
         },
         {
           "reasoning_effort": "high",
@@ -153,7 +147,7 @@
           "api_cost_per_task_usd": 4.9688,
           "output_tokens_per_task": 59856,
           "input_tokens_per_task": 5212804,
-          "agent_steps_per_task": 64
+          "agent_steps_per_task": 64.0
         },
         {
           "reasoning_effort": "medium",
@@ -161,7 +155,7 @@
           "api_cost_per_task_usd": 2.482,
           "output_tokens_per_task": 33436,
           "input_tokens_per_task": 2211638,
-          "agent_steps_per_task": 43
+          "agent_steps_per_task": 43.0
         },
         {
           "reasoning_effort": "low",
@@ -169,15 +163,12 @@
           "api_cost_per_task_usd": 1.2163,
           "output_tokens_per_task": 17613,
           "input_tokens_per_task": 872162,
-          "agent_steps_per_task": 29
+          "agent_steps_per_task": 29.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6977633822227692,
-      "ci_hi": 0.7752095907502038,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.6-sol",
@@ -188,9 +179,9 @@
       "score_pass_at_4_pct": 85.84,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 6.8415,
-      "input_tokens_per_task": 5973866,
       "output_tokens_per_task": 58786,
-      "agent_steps_per_task": 53,
+      "input_tokens_per_task": 5973866,
+      "agent_steps_per_task": 53.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -202,7 +193,7 @@
           "api_cost_per_task_usd": 6.8415,
           "output_tokens_per_task": 58786,
           "input_tokens_per_task": 5973866,
-          "agent_steps_per_task": 53
+          "agent_steps_per_task": 53.0
         },
         {
           "reasoning_effort": "xhigh",
@@ -210,7 +201,7 @@
           "api_cost_per_task_usd": 4.117,
           "output_tokens_per_task": 39449,
           "input_tokens_per_task": 3343837,
-          "agent_steps_per_task": 39
+          "agent_steps_per_task": 39.0
         },
         {
           "reasoning_effort": "high",
@@ -218,7 +209,7 @@
           "api_cost_per_task_usd": 2.9794,
           "output_tokens_per_task": 27700,
           "input_tokens_per_task": 1979416,
-          "agent_steps_per_task": 32
+          "agent_steps_per_task": 32.0
         },
         {
           "reasoning_effort": "medium",
@@ -226,7 +217,7 @@
           "api_cost_per_task_usd": 1.5454,
           "output_tokens_per_task": 17645,
           "input_tokens_per_task": 1064552,
-          "agent_steps_per_task": 26
+          "agent_steps_per_task": 26.0
         },
         {
           "reasoning_effort": "low",
@@ -234,15 +225,12 @@
           "api_cost_per_task_usd": 0.9446,
           "output_tokens_per_task": 10062,
           "input_tokens_per_task": 541018,
-          "agent_steps_per_task": 21
+          "agent_steps_per_task": 21.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6983684441682949,
-      "ci_hi": 0.7549648891650385,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-fable-5",
@@ -253,8 +241,8 @@
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 11.3411,
-      "input_tokens_per_task": 5337564,
       "output_tokens_per_task": 76036,
+      "input_tokens_per_task": 5337564,
       "agent_steps_per_task": 61.5,
       "n_tasks_attempted": 113,
       "evidence": [
@@ -275,7 +263,7 @@
           "api_cost_per_task_usd": 19.2346,
           "output_tokens_per_task": 115631,
           "input_tokens_per_task": 9769438,
-          "agent_steps_per_task": 79
+          "agent_steps_per_task": 79.0
         },
         {
           "reasoning_effort": "high",
@@ -283,7 +271,7 @@
           "api_cost_per_task_usd": 7.3227,
           "output_tokens_per_task": 52624,
           "input_tokens_per_task": 3075198,
-          "agent_steps_per_task": 49
+          "agent_steps_per_task": 49.0
         },
         {
           "reasoning_effort": "medium",
@@ -291,7 +279,7 @@
           "api_cost_per_task_usd": 4.6222,
           "output_tokens_per_task": 35970,
           "input_tokens_per_task": 1732620,
-          "agent_steps_per_task": 41
+          "agent_steps_per_task": 41.0
         },
         {
           "reasoning_effort": "low",
@@ -299,15 +287,12 @@
           "api_cost_per_task_usd": 2.7559,
           "output_tokens_per_task": 22339,
           "input_tokens_per_task": 815862,
-          "agent_steps_per_task": 29
+          "agent_steps_per_task": 29.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6666658684930744,
-      "ci_hi": 0.7315642200025008,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.6-terra",
@@ -318,9 +303,9 @@
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 4.1146,
-      "input_tokens_per_task": 7288778,
       "output_tokens_per_task": 70835,
-      "agent_steps_per_task": 71,
+      "input_tokens_per_task": 7288778,
+      "agent_steps_per_task": 71.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -332,7 +317,7 @@
           "api_cost_per_task_usd": 4.1146,
           "output_tokens_per_task": 70835,
           "input_tokens_per_task": 7288778,
-          "agent_steps_per_task": 71
+          "agent_steps_per_task": 71.0
         },
         {
           "reasoning_effort": "xhigh",
@@ -340,7 +325,7 @@
           "api_cost_per_task_usd": 1.867,
           "output_tokens_per_task": 38006,
           "input_tokens_per_task": 2490234,
-          "agent_steps_per_task": 39
+          "agent_steps_per_task": 39.0
         },
         {
           "reasoning_effort": "high",
@@ -348,7 +333,7 @@
           "api_cost_per_task_usd": 1.0317,
           "output_tokens_per_task": 20866,
           "input_tokens_per_task": 1249366,
-          "agent_steps_per_task": 31
+          "agent_steps_per_task": 31.0
         },
         {
           "reasoning_effort": "medium",
@@ -356,7 +341,7 @@
           "api_cost_per_task_usd": 0.5461,
           "output_tokens_per_task": 11453,
           "input_tokens_per_task": 628495,
-          "agent_steps_per_task": 24
+          "agent_steps_per_task": 24.0
         },
         {
           "reasoning_effort": "low",
@@ -364,15 +349,12 @@
           "api_cost_per_task_usd": 0.399,
           "output_tokens_per_task": 8265,
           "input_tokens_per_task": 405397,
-          "agent_steps_per_task": 20
+          "agent_steps_per_task": 20.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6706612091651647,
-      "ci_hi": 0.7217999881740815,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "glm-5.3",
@@ -383,19 +365,16 @@
       "score_pass_at_4_pct": 87.61,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 3.1316,
-      "input_tokens_per_task": 10137783,
       "output_tokens_per_task": 74953,
-      "agent_steps_per_task": 114,
+      "input_tokens_per_task": 10137783,
+      "agent_steps_per_task": 114.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6593922012533708,
-      "ci_hi": 0.7197652266845449,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "kimi-k3",
@@ -406,19 +385,16 @@
       "score_pass_at_4_pct": 89.38,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 3.6025,
-      "input_tokens_per_task": 6930356,
       "output_tokens_per_task": 75383,
-      "agent_steps_per_task": 88,
+      "input_tokens_per_task": 6930356,
+      "agent_steps_per_task": 88.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6397739833756912,
-      "ci_hi": 0.7305142649613376,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "grok-4.6",
@@ -429,9 +405,9 @@
       "score_pass_at_4_pct": 84.07,
       "reasoning_effort": "medium",
       "api_cost_per_task_usd": 2.9458,
-      "input_tokens_per_task": 4705124,
       "output_tokens_per_task": 48586,
-      "agent_steps_per_task": 66,
+      "input_tokens_per_task": 4705124,
+      "agent_steps_per_task": 66.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -443,7 +419,7 @@
           "api_cost_per_task_usd": 2.9458,
           "output_tokens_per_task": 48586,
           "input_tokens_per_task": 4705124,
-          "agent_steps_per_task": 66
+          "agent_steps_per_task": 66.0
         },
         {
           "reasoning_effort": "xhigh",
@@ -451,7 +427,7 @@
           "api_cost_per_task_usd": 4.6394,
           "output_tokens_per_task": 71285,
           "input_tokens_per_task": 7667197,
-          "agent_steps_per_task": 81
+          "agent_steps_per_task": 81.0
         },
         {
           "reasoning_effort": "high",
@@ -459,7 +435,7 @@
           "api_cost_per_task_usd": 3.6936,
           "output_tokens_per_task": 60060,
           "input_tokens_per_task": 6003946,
-          "agent_steps_per_task": 72
+          "agent_steps_per_task": 72.0
         },
         {
           "reasoning_effort": "low",
@@ -467,15 +443,12 @@
           "api_cost_per_task_usd": 0.7426,
           "output_tokens_per_task": 14937,
           "input_tokens_per_task": 1089649,
-          "agent_steps_per_task": 39
+          "agent_steps_per_task": 39.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6519707153331677,
-      "ci_hi": 0.697586806790726,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.6-luna",
@@ -486,8 +459,8 @@
       "score_pass_at_4_pct": 90.27,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 2.2921,
-      "input_tokens_per_task": 12278493,
       "output_tokens_per_task": 70253,
+      "input_tokens_per_task": 12278493,
       "agent_steps_per_task": 92.5,
       "n_tasks_attempted": 113,
       "evidence": [
@@ -508,7 +481,7 @@
           "api_cost_per_task_usd": 1.2449,
           "output_tokens_per_task": 42374,
           "input_tokens_per_task": 5550213,
-          "agent_steps_per_task": 63
+          "agent_steps_per_task": 63.0
         },
         {
           "reasoning_effort": "high",
@@ -516,7 +489,7 @@
           "api_cost_per_task_usd": 0.6636,
           "output_tokens_per_task": 24818,
           "input_tokens_per_task": 2538826,
-          "agent_steps_per_task": 44
+          "agent_steps_per_task": 44.0
         },
         {
           "reasoning_effort": "medium",
@@ -524,7 +497,7 @@
           "api_cost_per_task_usd": 0.1995,
           "output_tokens_per_task": 7918,
           "input_tokens_per_task": 517201,
-          "agent_steps_per_task": 22
+          "agent_steps_per_task": 22.0
         },
         {
           "reasoning_effort": "low",
@@ -532,15 +505,12 @@
           "api_cost_per_task_usd": 0.0698,
           "output_tokens_per_task": 3059,
           "input_tokens_per_task": 143435,
-          "agent_steps_per_task": 12
+          "agent_steps_per_task": 12.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6319549876432895,
-      "ci_hi": 0.7117950123567105,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.5",
@@ -551,8 +521,8 @@
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 6.1105,
-      "input_tokens_per_task": 6648150,
       "output_tokens_per_task": 44492,
+      "input_tokens_per_task": 6648150,
       "agent_steps_per_task": 76.5,
       "n_tasks_attempted": 113,
       "evidence": [
@@ -573,7 +543,7 @@
           "api_cost_per_task_usd": 4.5829,
           "output_tokens_per_task": 30378,
           "input_tokens_per_task": 3860162,
-          "agent_steps_per_task": 60
+          "agent_steps_per_task": 60.0
         },
         {
           "reasoning_effort": "medium",
@@ -581,7 +551,7 @@
           "api_cost_per_task_usd": 2.4369,
           "output_tokens_per_task": 18737,
           "input_tokens_per_task": 1983652,
-          "agent_steps_per_task": 43
+          "agent_steps_per_task": 43.0
         },
         {
           "reasoning_effort": "low",
@@ -589,15 +559,12 @@
           "api_cost_per_task_usd": 1.1081,
           "output_tokens_per_task": 9020,
           "input_tokens_per_task": 645288,
-          "agent_steps_per_task": 27
+          "agent_steps_per_task": 27.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.6056975188917963,
-      "ci_hi": 0.7350104457099735,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.7-flash",
@@ -608,9 +575,9 @@
       "score_pass_at_4_pct": 83.19,
       "reasoning_effort": "medium",
       "api_cost_per_task_usd": 1.6542,
-      "input_tokens_per_task": 11116142,
       "output_tokens_per_task": 87640,
-      "agent_steps_per_task": 108,
+      "input_tokens_per_task": 11116142,
+      "agent_steps_per_task": 108.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -622,7 +589,7 @@
           "api_cost_per_task_usd": 1.6542,
           "output_tokens_per_task": 87640,
           "input_tokens_per_task": 11116142,
-          "agent_steps_per_task": 108
+          "agent_steps_per_task": 108.0
         },
         {
           "reasoning_effort": "high",
@@ -630,7 +597,7 @@
           "api_cost_per_task_usd": 1.9044,
           "output_tokens_per_task": 99819,
           "input_tokens_per_task": 13967882,
-          "agent_steps_per_task": 120
+          "agent_steps_per_task": 120.0
         },
         {
           "reasoning_effort": "low",
@@ -642,11 +609,8 @@
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.624001933873013,
-      "ci_hi": 0.6857325794013234,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "glm-5.3-flash",
@@ -657,19 +621,16 @@
       "score_pass_at_4_pct": 84.96,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 0.39,
-      "input_tokens_per_task": 9358476,
       "output_tokens_per_task": 67491,
-      "agent_steps_per_task": 110,
+      "input_tokens_per_task": 9358476,
+      "agent_steps_per_task": 110.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.590148863911635,
-      "ci_hi": 0.6777082789455078,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "deepseek-v4-pro",
@@ -680,19 +641,16 @@
       "score_pass_at_4_pct": 88.5,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 0.2233,
-      "input_tokens_per_task": 20628260,
       "output_tokens_per_task": 101214,
-      "agent_steps_per_task": 146,
+      "input_tokens_per_task": 20628260,
+      "agent_steps_per_task": 146.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.5649842780985077,
-      "ci_hi": 0.6916528900430852,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-opus-4.8",
@@ -703,9 +661,9 @@
       "score_pass_at_4_pct": 79.28,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 12.3535,
-      "input_tokens_per_task": 15368311,
       "output_tokens_per_task": 129180,
-      "agent_steps_per_task": 116,
+      "input_tokens_per_task": 15368311,
+      "agent_steps_per_task": 116.0,
       "n_tasks_attempted": 111,
       "evidence": [
         "src-deepswe-data"
@@ -717,7 +675,7 @@
           "api_cost_per_task_usd": 12.3535,
           "output_tokens_per_task": 129180,
           "input_tokens_per_task": 15368311,
-          "agent_steps_per_task": 116
+          "agent_steps_per_task": 116.0
         },
         {
           "reasoning_effort": "xhigh",
@@ -725,7 +683,7 @@
           "api_cost_per_task_usd": 7.0494,
           "output_tokens_per_task": 77961,
           "input_tokens_per_task": 8117323,
-          "agent_steps_per_task": 90
+          "agent_steps_per_task": 90.0
         },
         {
           "reasoning_effort": "high",
@@ -733,7 +691,7 @@
           "api_cost_per_task_usd": 3.6635,
           "output_tokens_per_task": 44476,
           "input_tokens_per_task": 3814284,
-          "agent_steps_per_task": 67
+          "agent_steps_per_task": 67.0
         },
         {
           "reasoning_effort": "medium",
@@ -741,7 +699,7 @@
           "api_cost_per_task_usd": 2.8404,
           "output_tokens_per_task": 36648,
           "input_tokens_per_task": 2851276,
-          "agent_steps_per_task": 60
+          "agent_steps_per_task": 60.0
         },
         {
           "reasoning_effort": "low",
@@ -749,15 +707,12 @@
           "api_cost_per_task_usd": 1.824,
           "output_tokens_per_task": 25291,
           "input_tokens_per_task": 1658113,
-          "agent_steps_per_task": 47
+          "agent_steps_per_task": 47.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.5720954362692973,
-      "ci_hi": 0.6073917432178823,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "qwen-3.8-max",
@@ -768,19 +723,16 @@
       "score_pass_at_4_pct": 83.19,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 3.1327,
-      "input_tokens_per_task": 10163801,
       "output_tokens_per_task": 89729,
-      "agent_steps_per_task": 102,
+      "input_tokens_per_task": 10163801,
+      "agent_steps_per_task": 102.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.5479823182637887,
-      "ci_hi": 0.6012381717139396,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "muse-spark-1.2",
@@ -791,19 +743,16 @@
       "score_pass_at_4_pct": 81.42,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 2.6841,
-      "input_tokens_per_task": 10339991,
       "output_tokens_per_task": 81250,
-      "agent_steps_per_task": 94,
+      "input_tokens_per_task": 10339991,
+      "agent_steps_per_task": 94.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.5274295943524101,
-      "ci_hi": 0.5699155383909527,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-sonnet-5",
@@ -814,9 +763,9 @@
       "score_pass_at_4_pct": 78.76,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 23.2774,
-      "input_tokens_per_task": 62591138,
       "output_tokens_per_task": 203918,
-      "agent_steps_per_task": 260,
+      "input_tokens_per_task": 62591138,
+      "agent_steps_per_task": 260.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -828,7 +777,7 @@
           "api_cost_per_task_usd": 23.2774,
           "output_tokens_per_task": 203918,
           "input_tokens_per_task": 62591138,
-          "agent_steps_per_task": 260
+          "agent_steps_per_task": 260.0
         },
         {
           "reasoning_effort": "xhigh",
@@ -836,7 +785,7 @@
           "api_cost_per_task_usd": 9.9654,
           "output_tokens_per_task": 113150,
           "input_tokens_per_task": 24771332,
-          "agent_steps_per_task": 174
+          "agent_steps_per_task": 174.0
         },
         {
           "reasoning_effort": "high",
@@ -844,7 +793,7 @@
           "api_cost_per_task_usd": 5.8336,
           "output_tokens_per_task": 77993,
           "input_tokens_per_task": 13842595,
-          "agent_steps_per_task": 138
+          "agent_steps_per_task": 138.0
         },
         {
           "reasoning_effort": "medium",
@@ -860,15 +809,12 @@
           "api_cost_per_task_usd": 1.6765,
           "output_tokens_per_task": 31478,
           "input_tokens_per_task": 3126877,
-          "agent_steps_per_task": 70
+          "agent_steps_per_task": 70.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.4960923737597946,
-      "ci_hi": 0.5808307031632823,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "grok-4.5",
@@ -879,19 +825,16 @@
       "score_pass_at_4_pct": 77.88,
       "reasoning_effort": "high",
       "api_cost_per_task_usd": 2.0231,
-      "input_tokens_per_task": 3293744,
       "output_tokens_per_task": 34250,
-      "agent_steps_per_task": 56,
+      "input_tokens_per_task": 3293744,
+      "agent_steps_per_task": 56.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.5148025737402474,
-      "ci_hi": 0.5604186651978057,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "deepseek-v4-flash",
@@ -902,19 +845,16 @@
       "score_pass_at_4_pct": 80.53,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 0.0912,
-      "input_tokens_per_task": 17312560,
       "output_tokens_per_task": 104492,
-      "agent_steps_per_task": 148,
+      "input_tokens_per_task": 17312560,
+      "agent_steps_per_task": 148.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.4975163385576403,
-      "ci_hi": 0.5688553428582889,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "muse-spark-1.1",
@@ -925,19 +865,16 @@
       "score_pass_at_4_pct": 79.65,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 1.7171,
-      "input_tokens_per_task": 8037064,
       "output_tokens_per_task": 66088,
-      "agent_steps_per_task": 86,
+      "input_tokens_per_task": 8037064,
+      "agent_steps_per_task": 86.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.5028324161686275,
-      "ci_hi": 0.5635392652473017,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gpt-5.4",
@@ -948,19 +885,16 @@
       "score_pass_at_4_pct": 77.88,
       "reasoning_effort": "xhigh",
       "api_cost_per_task_usd": 4.3529,
-      "input_tokens_per_task": 6869950,
       "output_tokens_per_task": 67234,
-      "agent_steps_per_task": 63,
+      "input_tokens_per_task": 6869950,
+      "agent_steps_per_task": 63.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.502678065476865,
-      "ci_hi": 0.5327201646116306,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.6-flash",
@@ -971,19 +905,16 @@
       "score_pass_at_4_pct": 75.22,
       "reasoning_effort": "high",
       "api_cost_per_task_usd": 3.4447,
-      "input_tokens_per_task": 8949018,
       "output_tokens_per_task": 86727,
-      "agent_steps_per_task": 108,
+      "input_tokens_per_task": 8949018,
+      "agent_steps_per_task": 108.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.4297656202995626,
-      "ci_hi": 0.5038626982845081,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "glm-5.2",
@@ -994,9 +925,9 @@
       "score_pass_at_4_pct": 76.99,
       "reasoning_effort": "max",
       "api_cost_per_task_usd": 3.4637,
-      "input_tokens_per_task": 11208642,
       "output_tokens_per_task": 75760,
-      "agent_steps_per_task": 123,
+      "input_tokens_per_task": 11208642,
+      "agent_steps_per_task": 123.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
@@ -1008,7 +939,7 @@
           "api_cost_per_task_usd": 3.4637,
           "output_tokens_per_task": 75760,
           "input_tokens_per_task": 11208642,
-          "agent_steps_per_task": 123
+          "agent_steps_per_task": 123.0
         },
         {
           "reasoning_effort": "high",
@@ -1016,15 +947,12 @@
           "api_cost_per_task_usd": 2.2501,
           "output_tokens_per_task": 48956,
           "input_tokens_per_task": 7049446,
-          "agent_steps_per_task": 112
+          "agent_steps_per_task": 112.0
         }
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.42052148157196967,
-      "ci_hi": 0.45503407398358586,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.5-flash",
@@ -1035,19 +963,16 @@
       "score_pass_at_4_pct": 63.72,
       "reasoning_effort": "high",
       "api_cost_per_task_usd": 2.8624,
-      "input_tokens_per_task": 5694082,
       "output_tokens_per_task": 68910,
-      "agent_steps_per_task": 97,
+      "input_tokens_per_task": 5694082,
+      "agent_steps_per_task": 97.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.3209564389213443,
-      "ci_hi": 0.40028249913175307,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "kimi-k2.7-code",
@@ -1058,19 +983,16 @@
       "score_pass_at_4_pct": 61.06,
       "reasoning_effort": null,
       "api_cost_per_task_usd": 2.1955,
-      "input_tokens_per_task": 10022682,
       "output_tokens_per_task": 54054,
-      "agent_steps_per_task": 139,
+      "input_tokens_per_task": 10022682,
+      "agent_steps_per_task": 139.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.3003027179908134,
-      "ci_hi": 0.31031675103573525,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "claude-sonnet-4.6",
@@ -1081,19 +1003,16 @@
       "score_pass_at_4_pct": 56.64,
       "reasoning_effort": "high",
       "api_cost_per_task_usd": 4.8674,
-      "input_tokens_per_task": 10933709,
       "output_tokens_per_task": 70001,
-      "agent_steps_per_task": 124,
+      "input_tokens_per_task": 10933709,
+      "agent_steps_per_task": 124.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.2584133988380421,
-      "ci_hi": 0.34025622422182483,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     },
     {
       "id": "gemini-3.1-pro-preview",
@@ -1104,19 +1023,16 @@
       "score_pass_at_4_pct": 28.32,
       "reasoning_effort": "high",
       "api_cost_per_task_usd": 1.7235,
-      "input_tokens_per_task": 1834116,
       "output_tokens_per_task": 25990,
-      "agent_steps_per_task": 70,
+      "input_tokens_per_task": 1834116,
+      "agent_steps_per_task": 70.0,
       "n_tasks_attempted": 113,
       "evidence": [
         "src-deepswe-data"
       ],
       "benchmark_version": "deepswe@1.1",
-      "ci_lo": 0.10244568255705315,
-      "ci_hi": 0.13206759177923005,
-      "ci_method": "95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))",
       "cost_basis": "list",
-      "retrieved_at": "2026-09-14"
+      "retrieved_at": "2026-09-10"
     }
   ]
 }

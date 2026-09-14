@@ -23,6 +23,30 @@
       "summary": "Score, cost, tokens and steps for all 28 models."
     },
     {
+      "id": "src-terminal-bench",
+      "title": "Terminal-Bench 4.0 leaderboard (Harbor Hub)",
+      "url": "https://www.tbench.ai/",
+      "license": "Apache-2.0 for the harness and task repositories (harbor-framework/harbor, harbor-framework/terminal-bench); the leaderboard's numeric results are factual measurements with no separate data license found",
+      "retrieved": "2026-09-14",
+      "covers": "Per-(model, agent, reasoning effort, date) resolution rates on the pinned Terminal-Bench 4.0 board (terminal-bench/terminal-bench, board slug 4-0-0), with a 95% confidence half-width, trial counts, total cost and total tokens per entry.",
+      "changes": "One row per model, selected by the rule stated in the row's provenance: latest entry date, highest accuracy at the best effort. Rows whose model label does not resolve to a model in data/models.json are omitted rather than guessed, and the run reports how many were skipped. display_accuracy and display_cost are presentation strings and are never parsed; metrics.accuracy and metrics.total_cost_usd are used instead.",
+      "notes": "The machine-readable payload is an undocumented Next.js flight-data blob embedded in the board page, addressed by queryKey [\"leaderboard\",\"terminal-bench/terminal-bench\",\"4-0-0\"], with `harbor hub leaderboard show` as the documented no-auth fallback. The board slug, board id and dataset_version_ids UUID are recorded per row so a board move is visible rather than silent. The benchmark is never re-run here: one board entry costs hundreds to thousands of dollars in model inference alone.",
+      "summary": "Terminal-Bench 4.0 resolution rates, CI, cost and tokens per model.",
+      "license_short": "Apache-2.0"
+    },
+    {
+      "id": "src-artificial-analysis",
+      "title": "Artificial Analysis Language Models API (free tier)",
+      "url": "https://artificialanalysis.ai/api/v2/language/models/free",
+      "license": "Proprietary. Data Platform Terms v1.1; no redistribution right granted on the free or Pro tier, and the terms arguably make this project a restricted Competitive Product",
+      "retrieved": "2026-09-14",
+      "covers": "Intelligence, coding and agentic index scores per model, the index cost per task, and input/output/cache pricing. Free tier only: 100 requests per fixed 24-hour window, server-fixed page size 200, `page` the only accepted query parameter.",
+      "changes": "Not published by default. AA is excluded from data/benchmarks.json, from every composite and from the site unless both AA_API_KEY and AA_PUBLISH=1 are set, because no redistribution right exists. When publication is enabled the index is a separate labelled axis carrying its own intelligence_index_version, and it is never averaged into a number that hides its origin.",
+      "notes": "The unresolved legal exception is stated in CAVEATS.md section 1 and in docs/data-sources.md. This record exists so the sources page can always say which of the two states the build is in, and so that the endpoint, its terms and the disabled-by-default decision are documented even when no AA value ships.",
+      "summary": "Artificial Analysis indices. Not published unless explicitly enabled.",
+      "license_short": "Proprietary"
+    },
+    {
       "id": "src-awesome-coding-plan",
       "title": "Awesome Coding Plan, by mahonzhan",
       "url": "https://github.com/mahonzhan/awesome-coding-plan",
@@ -30,7 +54,7 @@
       "retrieved": "2026-09-09",
       "covers": "Measured monthly quotas and their value at API rates for Claude Pro, ChatGPT Plus, Ollama Pro, OpenCode Go, Kimi Code Andante, Kimi Code Allegretto, GLM Coding Plan Lite, GLM Coding Plan Pro, Cursor Pro (floor value) and GitHub Copilot Pro.",
       "changes": "Selected rows were converted from the source's table into this project's plan schema (price_usd_month, quota_usd_month or requests_month, confidence, method). CNY figures were kept as reported by the source and are not independently re-measured in USD here. Higher-tier plans (Claude Max 5x/20x, ChatGPT Pro) are this project's own scaling of the measured entry-tier row by the vendor's advertised multiplier, not a value from this source.",
-      "attribution": "Identification of the creator: mahonzhan@gmail.com. License notice: Licensed under the Creative Commons Attribution 4.0 International License. Link to the license: https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Identification of the creator: mahonzhan@gmail.com\nLicense Notice: Licensed under the Creative Commons Attribution 4.0 International License.\nLink to the License: https://creativecommons.org/licenses/by/4.0/",
       "credited_contributor": "mahonzhan",
       "summary": "Measured monthly quotas for 9 of the 16 plans here."
     },

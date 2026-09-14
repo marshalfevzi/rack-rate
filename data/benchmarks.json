@@ -9,8 +9,810 @@
       "task_count": 113,
       "unit": "pass@1",
       "scale": "0-100",
-      "retrieved_at": "2026-09-10",
-      "rows": []
+      "retrieved_at": "2026-09-14",
+      "rows": [
+        {
+          "model_id": "gpt-6-astra",
+          "score": 74.12,
+          "ci_lo": 71.24964807371246,
+          "ci_hi": 76.98044042186275,
+          "cost_per_task_usd": 5.6717,
+          "cost_basis": "expected-launch",
+          "tokens_input": 1163918,
+          "tokens_output": 28542,
+          "steps": 26,
+          "provenance": {
+            "config": "mini_swe_agent_gpt_6_astra_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gemini-3.8-flash",
+          "score": 73.83,
+          "ci_lo": 72.40819014906883,
+          "ci_hi": 75.24281656234058,
+          "cost_per_task_usd": 2.1099,
+          "cost_basis": "list",
+          "tokens_input": 18026661,
+          "tokens_output": 138377,
+          "steps": 161,
+          "provenance": {
+            "config": "mini_swe_agent_gemini_3_8_flash_high",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "high",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "claude-opus-5",
+          "score": 73.65,
+          "ci_lo": 69.77633822227692,
+          "ci_hi": 77.52095907502039,
+          "cost_per_task_usd": 10.4282,
+          "cost_basis": "list",
+          "tokens_input": 12130308,
+          "tokens_output": 113366,
+          "steps": 90.5,
+          "provenance": {
+            "config": "mini_swe_agent_claude_opus_5_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gpt-5.6-sol",
+          "score": 72.67,
+          "ci_lo": 69.83684441682949,
+          "ci_hi": 75.49648891650385,
+          "cost_per_task_usd": 6.8415,
+          "cost_basis": "list",
+          "tokens_input": 5973866,
+          "tokens_output": 58786,
+          "steps": 53,
+          "provenance": {
+            "config": "mini_swe_agent_gpt_5_6_sol_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "claude-fable-5",
+          "score": 69.91,
+          "ci_lo": 66.66658684930744,
+          "ci_hi": 73.15642200025007,
+          "cost_per_task_usd": 11.3411,
+          "cost_basis": "list",
+          "tokens_input": 5337564,
+          "tokens_output": 76036,
+          "steps": 61.5,
+          "provenance": {
+            "config": "mini_swe_agent_claude_fable_5_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gpt-5.6-terra",
+          "score": 69.62,
+          "ci_lo": 67.06612091651647,
+          "ci_hi": 72.17999881740815,
+          "cost_per_task_usd": 4.1146,
+          "cost_basis": "list",
+          "tokens_input": 7288778,
+          "tokens_output": 70835,
+          "steps": 71,
+          "provenance": {
+            "config": "mini_swe_agent_gpt_5_6_terra_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "glm-5.3",
+          "score": 68.96,
+          "ci_lo": 65.93922012533709,
+          "ci_hi": 71.97652266845449,
+          "cost_per_task_usd": 3.1316,
+          "cost_basis": "list",
+          "tokens_input": 10137783,
+          "tokens_output": 74953,
+          "steps": 114,
+          "provenance": {
+            "config": "mini_swe_agent_glm_5_3_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "kimi-k3",
+          "score": 68.51,
+          "ci_lo": 63.97739833756913,
+          "ci_hi": 73.05142649613376,
+          "cost_per_task_usd": 3.6025,
+          "cost_basis": "list",
+          "tokens_input": 6930356,
+          "tokens_output": 75383,
+          "steps": 88,
+          "provenance": {
+            "config": "mini_swe_agent_kimi_k3_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "grok-4.6",
+          "score": 67.48,
+          "ci_lo": 65.19707153331677,
+          "ci_hi": 69.7586806790726,
+          "cost_per_task_usd": 2.9458,
+          "cost_basis": "list",
+          "tokens_input": 4705124,
+          "tokens_output": 48586,
+          "steps": 66,
+          "provenance": {
+            "config": "mini_swe_agent_grok_4_6_medium",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "medium",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gpt-5.6-luna",
+          "score": 67.19,
+          "ci_lo": 63.19549876432895,
+          "ci_hi": 71.17950123567105,
+          "cost_per_task_usd": 2.2921,
+          "cost_basis": "list",
+          "tokens_input": 12278493,
+          "tokens_output": 70253,
+          "steps": 92.5,
+          "provenance": {
+            "config": "mini_swe_agent_gpt_5_6_luna_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gpt-5.5",
+          "score": 67.04,
+          "ci_lo": 60.569751889179635,
+          "ci_hi": 73.50104457099735,
+          "cost_per_task_usd": 6.1105,
+          "cost_basis": "list",
+          "tokens_input": 6648150,
+          "tokens_output": 44492,
+          "steps": 76.5,
+          "provenance": {
+            "config": "mini_swe_agent_gpt_5_5_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gemini-3.7-flash",
+          "score": 65.49,
+          "ci_lo": 62.40019338730129,
+          "ci_hi": 68.57325794013234,
+          "cost_per_task_usd": 1.6542,
+          "cost_basis": "list",
+          "tokens_input": 11116142,
+          "tokens_output": 87640,
+          "steps": 108,
+          "provenance": {
+            "config": "mini_swe_agent_gemini_3_7_flash_medium",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "medium",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "glm-5.3-flash",
+          "score": 63.39,
+          "ci_lo": 59.0148863911635,
+          "ci_hi": 67.77082789455078,
+          "cost_per_task_usd": 0.39,
+          "cost_basis": "list",
+          "tokens_input": 9358476,
+          "tokens_output": 67491,
+          "steps": 110,
+          "provenance": {
+            "config": "mini_swe_agent_glm_5_3_flash_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "deepseek-v4-pro",
+          "score": 62.83,
+          "ci_lo": 56.49842780985077,
+          "ci_hi": 69.16528900430852,
+          "cost_per_task_usd": 0.2233,
+          "cost_basis": "list",
+          "tokens_input": 20628260,
+          "tokens_output": 101214,
+          "steps": 146,
+          "provenance": {
+            "config": "mini_swe_agent_deepseek_v4_pro_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "claude-opus-4.8",
+          "score": 58.97,
+          "ci_lo": 57.20954362692973,
+          "ci_hi": 60.73917432178823,
+          "cost_per_task_usd": 12.3535,
+          "cost_basis": "list",
+          "tokens_input": 15368311,
+          "tokens_output": 129180,
+          "steps": 116,
+          "provenance": {
+            "config": "mini_swe_agent_claude_opus_4_8_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "qwen-3.8-max",
+          "score": 57.46,
+          "ci_lo": 54.798231826378874,
+          "ci_hi": 60.12381717139396,
+          "cost_per_task_usd": 3.1327,
+          "cost_basis": "list",
+          "tokens_input": 10163801,
+          "tokens_output": 89729,
+          "steps": 102,
+          "provenance": {
+            "config": "mini_swe_agent_qwen3_8_max_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "muse-spark-1.2",
+          "score": 54.87,
+          "ci_lo": 52.74295943524101,
+          "ci_hi": 56.99155383909527,
+          "cost_per_task_usd": 2.6841,
+          "cost_basis": "list",
+          "tokens_input": 10339991,
+          "tokens_output": 81250,
+          "steps": 94,
+          "provenance": {
+            "config": "mini_swe_agent_muse_spark_1_2_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "claude-sonnet-5",
+          "score": 53.85,
+          "ci_lo": 49.60923737597946,
+          "ci_hi": 58.08307031632823,
+          "cost_per_task_usd": 23.2774,
+          "cost_basis": "list",
+          "tokens_input": 62591138,
+          "tokens_output": 203918,
+          "steps": 260,
+          "provenance": {
+            "config": "mini_swe_agent_claude_sonnet_5_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "grok-4.5",
+          "score": 53.76,
+          "ci_lo": 51.48025737402474,
+          "ci_hi": 56.04186651978057,
+          "cost_per_task_usd": 2.0231,
+          "cost_basis": "list",
+          "tokens_input": 3293744,
+          "tokens_output": 34250,
+          "steps": 56,
+          "provenance": {
+            "config": "mini_swe_agent_grok_4_5_high",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "high",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "deepseek-v4-flash",
+          "score": 53.32,
+          "ci_lo": 49.751633855764034,
+          "ci_hi": 56.88553428582889,
+          "cost_per_task_usd": 0.0912,
+          "cost_basis": "list",
+          "tokens_input": 17312560,
+          "tokens_output": 104492,
+          "steps": 148,
+          "provenance": {
+            "config": "mini_swe_agent_deepseek_v4_flash_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "muse-spark-1.1",
+          "score": 53.32,
+          "ci_lo": 50.28324161686275,
+          "ci_hi": 56.35392652473017,
+          "cost_per_task_usd": 1.7171,
+          "cost_basis": "list",
+          "tokens_input": 8037064,
+          "tokens_output": 66088,
+          "steps": 86,
+          "provenance": {
+            "config": "mini_swe_agent_muse_spark_1_1_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gpt-5.4",
+          "score": 51.77,
+          "ci_lo": 50.2678065476865,
+          "ci_hi": 53.27201646116306,
+          "cost_per_task_usd": 4.3529,
+          "cost_basis": "list",
+          "tokens_input": 6869950,
+          "tokens_output": 67234,
+          "steps": 63,
+          "provenance": {
+            "config": "mini_swe_agent_gpt_5_4_xhigh",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "xhigh",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gemini-3.6-flash",
+          "score": 46.68,
+          "ci_lo": 42.97656202995626,
+          "ci_hi": 50.386269828450814,
+          "cost_per_task_usd": 3.4447,
+          "cost_basis": "list",
+          "tokens_input": 8949018,
+          "tokens_output": 86727,
+          "steps": 108,
+          "provenance": {
+            "config": "mini_swe_agent_gemini_3_6_flash_high",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "high",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "glm-5.2",
+          "score": 43.78,
+          "ci_lo": 42.05214815719697,
+          "ci_hi": 45.50340739835859,
+          "cost_per_task_usd": 3.4637,
+          "cost_basis": "list",
+          "tokens_input": 11208642,
+          "tokens_output": 75760,
+          "steps": 123,
+          "provenance": {
+            "config": "mini_swe_agent_glm_5_2_max",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "max",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gemini-3.5-flash",
+          "score": 36.06,
+          "ci_lo": 32.095643892134426,
+          "ci_hi": 40.02824991317531,
+          "cost_per_task_usd": 2.8624,
+          "cost_basis": "list",
+          "tokens_input": 5694082,
+          "tokens_output": 68910,
+          "steps": 97,
+          "provenance": {
+            "config": "mini_swe_agent_gemini_3_5_flash_high",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "high",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "kimi-k2.7-code",
+          "score": 30.53,
+          "ci_lo": 30.030271799081337,
+          "ci_hi": 31.031675103573527,
+          "cost_per_task_usd": 2.1955,
+          "cost_basis": "list",
+          "tokens_input": 10022682,
+          "tokens_output": 54054,
+          "steps": 139,
+          "provenance": {
+            "config": "mini_swe_agent_kimi_k2_7_code_default",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "default",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "claude-sonnet-4.6",
+          "score": 29.93,
+          "ci_lo": 25.84133988380421,
+          "ci_hi": 34.02562242218249,
+          "cost_per_task_usd": 4.8674,
+          "cost_basis": "list",
+          "tokens_input": 10933709,
+          "tokens_output": 70001,
+          "steps": 124,
+          "provenance": {
+            "config": "mini_swe_agent_claude_sonnet_4_6_high",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "high",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        },
+        {
+          "model_id": "gemini-3.1-pro-preview",
+          "score": 11.73,
+          "ci_lo": 10.244568255705316,
+          "ci_hi": 13.206759177923006,
+          "cost_per_task_usd": 1.7235,
+          "cost_basis": "list",
+          "tokens_input": 1834116,
+          "tokens_output": 25990,
+          "steps": 70,
+          "provenance": {
+            "config": "mini_swe_agent_gemini_3_1_pro_preview_high",
+            "harness": "mini-swe-agent",
+            "reasoning_effort": "high",
+            "generated_at": "2026-09-03T22:24:37.984682+00:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "terminal-bench",
+      "version": "4.0.0",
+      "title": "Terminal-Bench 4.0",
+      "url": "https://www.tbench.ai/",
+      "generated_at": "2026-09-10T21:58:00.001022+00:00",
+      "task_count": 66,
+      "unit": "accuracy",
+      "scale": "0-100",
+      "retrieved_at": "2026-09-14",
+      "rows": [
+        {
+          "model_id": "gpt-6-astra",
+          "score": 58.18,
+          "ci_lo": 55.39,
+          "ci_hi": 60.97,
+          "tokens_input": 2949141032,
+          "tokens_output": 23988992,
+          "provenance": {
+            "total_cost_usd": "3267.18",
+            "total_tokens": "1529778322",
+            "n_trials": "330",
+            "successes": "192",
+            "rank": "1",
+            "agent": "Codex",
+            "effort": "max",
+            "date": "2026-09-03",
+            "row_id": "5c537be4-7fc3-449b-8bfc-ceb9061c2535",
+            "model_url": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "claude-opus-5",
+          "score": 51.82,
+          "ci_lo": 48.43,
+          "ci_hi": 55.21,
+          "tokens_input": 12733045437,
+          "tokens_output": 66012156,
+          "provenance": {
+            "total_cost_usd": "5969.11",
+            "total_tokens": "6527147637",
+            "n_trials": "330",
+            "successes": "171",
+            "rank": "6",
+            "agent": "Claude Code",
+            "effort": "max",
+            "date": "2026-07-24",
+            "row_id": "d71ac3d0-da36-49cb-89d9-323136e77111",
+            "model_url": "https://www.anthropic.com/news/claude-opus-5",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "glm-5.3",
+          "score": 41.82,
+          "ci_lo": 38.59,
+          "ci_hi": 45.05,
+          "tokens_input": 17052420926,
+          "tokens_output": 68660047,
+          "provenance": {
+            "total_cost_usd": "2727.63",
+            "total_tokens": "8677039373",
+            "n_trials": "330",
+            "successes": "138",
+            "rank": "9",
+            "agent": "Claude Code",
+            "effort": "max",
+            "date": "2026-08-14",
+            "row_id": "d72e8775-f4f1-4313-99e7-35b1cb499f24",
+            "model_url": "https://docs.z.ai/guides/llm/glm-5.3",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "gpt-5.6-sol",
+          "score": 37.27,
+          "ci_lo": 33.49,
+          "ci_hi": 41.050000000000004,
+          "tokens_input": 8702952020,
+          "tokens_output": 23451415,
+          "provenance": {
+            "total_cost_usd": "2541.7",
+            "total_tokens": "4409948969",
+            "n_trials": "330",
+            "successes": "123",
+            "rank": "10",
+            "agent": "Codex",
+            "effort": "max",
+            "date": "2026-06-26",
+            "row_id": "0e349bde-b264-494d-a853-fada9c696192",
+            "model_url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "claude-opus-4.8",
+          "score": 23.64,
+          "ci_lo": 20.080000000000002,
+          "ci_hi": 27.2,
+          "tokens_input": 12463284966,
+          "tokens_output": 88813309,
+          "provenance": {
+            "total_cost_usd": "6481.26",
+            "total_tokens": "6415823126",
+            "n_trials": "330",
+            "successes": "78",
+            "rank": "11",
+            "agent": "Claude Code",
+            "effort": "max",
+            "date": "2026-05-28",
+            "row_id": "952b4217-421f-4d14-849b-9968fcb2063b",
+            "model_url": "https://www.anthropic.com/news/claude-opus-4-8",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "gpt-5.6-terra",
+          "score": 21.52,
+          "ci_lo": 18.27,
+          "ci_hi": 24.77,
+          "tokens_input": 11211488741,
+          "tokens_output": 33224833,
+          "provenance": {
+            "total_cost_usd": "1733.52",
+            "total_tokens": "5683805798",
+            "n_trials": "330",
+            "successes": "71",
+            "rank": "12",
+            "agent": "Codex",
+            "effort": "max",
+            "date": "2026-06-26",
+            "row_id": "e53da412-5e92-408c-b369-c767924c7c1c",
+            "model_url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "grok-4.6",
+          "score": 20.3,
+          "ci_lo": 17.21,
+          "ci_hi": 23.39,
+          "tokens_input": 7846943735,
+          "tokens_output": 32618221,
+          "provenance": {
+            "total_cost_usd": "3591.58",
+            "total_tokens": "4001923428",
+            "n_trials": "330",
+            "successes": "67",
+            "rank": "13",
+            "agent": "Grok Build",
+            "effort": "high",
+            "date": "2026-08-12",
+            "row_id": "26354542-edc0-40cd-8f8d-9fe6fbe92ac3",
+            "model_url": "https://docs.x.ai/developers/models/grok-4.6",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "gemini-3.8-flash",
+          "score": 19.09,
+          "ci_lo": 15.73,
+          "ci_hi": 22.45,
+          "tokens_input": 33814560419,
+          "tokens_output": 68056484,
+          "provenance": {
+            "total_cost_usd": "1828.77",
+            "total_tokens": "17189729495",
+            "n_trials": "330",
+            "successes": "63",
+            "rank": "14",
+            "agent": "mini-SWE-agent",
+            "effort": "high",
+            "date": "2026-09-02",
+            "row_id": "06850434-507d-4dbd-b74a-09d52519ee35",
+            "model_url": "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "gpt-5.6-luna",
+          "score": 17.27,
+          "ci_lo": 14.42,
+          "ci_hi": 20.12,
+          "tokens_input": 22801393819,
+          "tokens_output": 61282672,
+          "provenance": {
+            "total_cost_usd": "346.67",
+            "total_tokens": "11557463640",
+            "n_trials": "330",
+            "successes": "57",
+            "rank": "15",
+            "agent": "Codex",
+            "effort": "max",
+            "date": "2026-06-26",
+            "row_id": "51c6d76e-5baa-48c1-97b3-88656c620eef",
+            "model_url": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "grok-4.5",
+          "score": 12.42,
+          "ci_lo": 9.8,
+          "ci_hi": 15.04,
+          "tokens_input": 6618760527,
+          "tokens_output": 32389328,
+          "provenance": {
+            "total_cost_usd": "2094.11",
+            "total_tokens": "3402536479",
+            "n_trials": "330",
+            "successes": "41",
+            "rank": "16",
+            "agent": "Grok Build",
+            "effort": "high",
+            "date": "2026-07-16",
+            "row_id": "0eed5a0d-96b6-491b-aeb7-cd5e4700c2d7",
+            "model_url": "https://docs.x.ai/developers/models/grok-4.5",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "claude-sonnet-5",
+          "score": 12.42,
+          "ci_lo": 9.36,
+          "ci_hi": 15.48,
+          "tokens_input": 42472744340,
+          "tokens_output": 116598866,
+          "provenance": {
+            "total_cost_usd": "9603.86",
+            "total_tokens": "21562180742",
+            "n_trials": "330",
+            "successes": "41",
+            "rank": "16",
+            "agent": "Claude Code",
+            "effort": "max",
+            "date": "2026-06-30",
+            "row_id": "8180b9e4-4990-43d0-b906-cd8b43adaaa2",
+            "model_url": "https://www.anthropic.com/news/claude-sonnet-5",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        },
+        {
+          "model_id": "gemini-3.7-flash",
+          "score": 11.21,
+          "ci_lo": 8.760000000000002,
+          "ci_hi": 13.66,
+          "tokens_input": 21821981152,
+          "tokens_output": 52134001,
+          "provenance": {
+            "total_cost_usd": "1261.87",
+            "total_tokens": "11137189802",
+            "n_trials": "330",
+            "successes": "37",
+            "rank": "18",
+            "agent": "mini-SWE-agent",
+            "effort": "high",
+            "date": "2026-08-13",
+            "row_id": "14f4da14-b86a-4dca-92d7-11178d4fe064",
+            "model_url": "https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash",
+            "selection_rule": "latest metadata.date, then highest metrics.accuracy (effort/agent tuple preserved)",
+            "board": "4-0-0",
+            "board_id": "9f966760-00f1-424e-90f5-c964fb6f6091",
+            "dataset_version_id": "1922072f-a433-429a-8929-350d5e1bcf02",
+            "board_updated_at": "2026-09-10T21:58:00.001022+00:00",
+            "task_count_url": "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
+          }
+        }
+      ]
     }
   ]
 }

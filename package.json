@@ -29,6 +29,7 @@
     "validate": "bun run --filter @rack-rate/data-cli cli -- validate",
     "compute": "bun run --filter @rack-rate/data-cli cli -- compute",
     "data:build": "bun run validate && bun run compute",
+    "data:check": "bun run --filter @rack-rate/data-cli cli -- check",
     "og": "bun run --filter @rack-rate/site og"
   },
   "devDependencies": {

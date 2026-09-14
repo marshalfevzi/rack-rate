@@ -97,6 +97,7 @@ bun run fetch:artificial-analysis
 bun run validate            # schema + citation + version + staleness checks
 bun run compute             # data/derived.json (join, metrics, frontiers)
 bun run data:build          # validate && compute
+bun run data:check          # validate + recompute in memory + fail if derived.json is stale
 bun run build               # data:build → astro build → og image → dist/
 bun run typecheck           # tsc --build --force
 bun run lint                # oxlint, every rule at error severity

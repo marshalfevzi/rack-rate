@@ -1,3 +1,10 @@
+import type { TokenAllowanceRow as CostTokenAllowanceRow } from "./cost.ts"
+import type { CompositeRow as NormalizeCompositeRow } from "./normalize.ts"
+import type {
+  FrontierDistance as ParetoFrontierDistance,
+  FrontierPoint as ParetoFrontierPoint,
+  ParetoFrontier as ParetoFrontierDocument,
+} from "./pareto.ts"
 import { z } from "zod"
 
 const ReasoningEffort = z.enum(["low", "medium", "high", "xhigh", "max"])
@@ -66,6 +73,14 @@ export const Model = z.strictObject({
   ci_method: z.string().min(1).optional(),
   cost_basis: CostBasis,
   retrieved_at: z.iso.date(),
+  // Vendor list rate card, USD per 1M tokens. The credits conversion branch
+  // (PLAN 2.7, ported from the legacy compute.py) needs the output:input weight
+  // these two fields define, so the branch exists for the data contract even
+  // though no committed row carries a rate today — none of the fetched sources
+  // publishes one, and PLAN 2.7b derives its blended rate from measured tokens
+  // instead rather than inventing a rate.
+  input_rate_per_mtok_usd: z.number().nonnegative().optional(),
+  output_rate_per_mtok_usd: z.number().nonnegative().optional(),
 })
 
 export type Model = z.infer<typeof Model>
@@ -125,6 +140,12 @@ export const Plan = z.strictObject({
   rolling_window_usd: z.number().nonnegative().optional(),
   measured_against_model: z.string().min(1).optional(),
   cross_check_tokens_month: z.number().nonnegative().optional(),
+  // Fallback named by PLAN 2.7 and data/plans.json#quota_model_docs._note for a
+  // model DeepSWE has not measured, so the requests branch can still price a pair.
+  agent_steps_per_task_assumed: z.number().positive().optional(),
+  // PLAN 2.6: an unavailable plan must say why. Required by validation when
+  // available is false; omitted on every currently committed plan.
+  unavailable_reason: z.string().min(1).optional(),
   fx: Fx.optional(),
   price_status: z.enum(["list", "disputed"]).optional(),
   retrieved_at: z.iso.date(),
@@ -203,7 +224,7 @@ export const DerivedPair = z.strictObject({
   api_cost_per_task_usd: z.number().nonnegative(),
   tasks_per_month: z.number().nonnegative(),
   cost_per_task_usd: z.number().nonnegative(),
-  days_for_full_run: z.number().nonnegative(),
+  days_for_full_run: z.number().nonnegative().nullable(),
   quota_method: QuotaModel,
   confidence: Confidence,
 })
@@ -251,12 +272,104 @@ export const DerivedKnownGap = z.strictObject({
 
 export type DerivedKnownGap = z.infer<typeof DerivedKnownGap>
 
+export const DerivedCompositeRow: z.ZodType<NormalizeCompositeRow> = z.strictObject({
+  model_id: z.string().min(1),
+  weighted_z: z.number(),
+  composite: z.number().nullable(),
+  k: z.number().int().nonnegative(),
+  benchmarks_used: z.array(z.string().min(1)),
+  badge: z.enum(["ok", "single-source"]),
+  ci_lo: z.number().nullable(),
+  ci_hi: z.number().nullable(),
+})
+
+export type DerivedCompositeRow = z.infer<typeof DerivedCompositeRow>
+
+export const DerivedComposites = z.strictObject({
+  weights: z.record(z.string().min(1), z.number()),
+  rows: z.array(DerivedCompositeRow),
+})
+
+export type DerivedComposites = z.infer<typeof DerivedComposites>
+
+export const DerivedFrontierDistance: z.ZodType<ParetoFrontierDistance> = z.strictObject({
+  delta_score: z.number().nonnegative(),
+  cost_ratio: z.number().nonnegative(),
+  frontier_id: z.string().min(1).nullable(),
+})
+
+export type DerivedFrontierDistance = z.infer<typeof DerivedFrontierDistance>
+
+export const DerivedFrontierPoint: z.ZodType<ParetoFrontierPoint> = z.strictObject({
+  id: z.string().min(1),
+  cost: z.number().nonnegative(),
+  score: z.number(),
+  on_frontier: z.boolean(),
+  distance: DerivedFrontierDistance,
+})
+
+export type DerivedFrontierPoint = z.infer<typeof DerivedFrontierPoint>
+
+export const DerivedParetoFrontier: z.ZodType<ParetoFrontierDocument> = z.strictObject({
+  points: z.array(DerivedFrontierPoint),
+  frontier: z.array(z.string().min(1)),
+  groups: z.array(z.array(z.string().min(1))),
+  dominated: z.array(z.string().min(1)),
+})
+
+export type DerivedParetoFrontier = z.infer<typeof DerivedParetoFrontier>
+
+export const DerivedFrontiers = z.strictObject({
+  api: DerivedParetoFrontier,
+  plan_adjusted: z.record(z.string().min(1), DerivedParetoFrontier),
+})
+
+export type DerivedFrontiers = z.infer<typeof DerivedFrontiers>
+
+export const DerivedTokenAllowanceRow: z.ZodType<CostTokenAllowanceRow> = z.strictObject({
+  model_id: z.string().min(1),
+  plan_id: z.string().min(1),
+  blend: z.string().min(1),
+  tokens_per_month_allowance: z.number().nonnegative(),
+  tokens_per_task: z.number().nonnegative(),
+  allowance_per_million_tokens: z.number().nonnegative(),
+  adjusted_api_cost_per_million: z.number().nonnegative(),
+  value_multiple: z.number().nonnegative(),
+  cache_caveat: z.string().min(1),
+})
+
+export type DerivedTokenAllowanceRow = z.infer<typeof DerivedTokenAllowanceRow>
+
+export const PairBadge = z.strictObject({
+  model_id: z.string().min(1),
+  plan_id: z.string().min(1),
+  confidence: Confidence,
+  freshness: z.enum(["fresh", "stale"]),
+  price_status: z.enum(["list", "disputed"]),
+  ci: z.enum(["reported", "absent"]),
+  match: z.enum(["any", "exact", "provider"]),
+  coverage: z.enum(["ok", "single-source"]),
+})
+
+export type PairBadge = z.infer<typeof PairBadge>
+
+export const DerivedBadges = z.strictObject({
+  per_pair: z.array(PairBadge),
+})
+
+export type DerivedBadges = z.infer<typeof DerivedBadges>
+
 export const DerivedFile = z.strictObject({
   generated_from: DerivedGeneratedFrom,
   pairs: z.array(DerivedPair),
   best_routes: z.array(DerivedBestRoute),
   cross_check: CrossCheck,
   known_gaps: z.array(DerivedKnownGap),
+  generated_at: z.iso.datetime({ offset: true }).optional(),
+  composites: DerivedComposites.optional(),
+  frontiers: DerivedFrontiers.optional(),
+  token_allowances: z.array(DerivedTokenAllowanceRow).optional(),
+  badges: DerivedBadges.optional(),
 })
 
 export type DerivedFile = z.infer<typeof DerivedFile>

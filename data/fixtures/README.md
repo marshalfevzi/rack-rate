@@ -4,6 +4,13 @@
 the legacy Python pipeline, copied before Stage 1.5 deleted it. They are the
 regression oracle for the TypeScript port: the ported `compute` must reproduce
 these numbers.
+`legacy-inputs.models.json` and `legacy-inputs.plans.json` are the pinned parity
+inputs for the TypeScript port. They are exact blobs from revision
+`97b99cadacf510c5970807ed80ffd05f349fa35c` (the Stage-1 revision whose additive
+data migration still preserves the legacy pipeline's inputs). They remain frozen
+rather than symlinked to `data/` so a future live fetch cannot move the parity
+oracle underneath the regression assertion.
+
 
 Produced by, from the repository root, with the inputs at these hashes:
 

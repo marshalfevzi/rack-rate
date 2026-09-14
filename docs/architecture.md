@@ -17,8 +17,40 @@ graph LR
 - `@rack-rate/data-cli` owns all network and filesystem access.
 - `@rack-rate/site` never fetches. The browser makes zero data requests, and
   the build works offline from committed data.
-- The CLI surface is `rack-rate-data <command>`. Commands are listed here as
-  they land in Stage 2.
+- The CLI surface is `rack-rate-data <command>`. The dispatcher in
+  `packages/data-cli/src/main.ts` statically routes commands and never guesses
+  an exit code.
+
+## Data CLI
+
+The root scripts call the same dispatcher as the installed `rack-rate-data`
+binary:
+
+- `fetch [deepswe|terminal-bench|plans|artificial-analysis|all] [--diff]`
+  refreshes one source, or all four sequentially in that order. A bare
+  `fetch` means `all`; `--diff` performs the source fetcher's dry run.
+- `validate [--help]` checks the committed source, model, plan and benchmark
+  documents without writing.
+- `compute [--help]` deterministically writes `data/derived.json` from the
+  committed inputs.
+- `check [--help]` validates inputs, recomputes the derived document in memory,
+  and compares its deterministic bytes with the committed file. This is the CI
+  staleness gate.
+- `sources [--help]` lists source metadata, attribution requirements, freshness
+  and whether each source contributes to published data.
+- `doctor [--help]` probes source and plan/vendor URLs, reports AA environment
+  state and data-file parsing, and counts same-day raw snapshots.
+- `help` and `--help` print the command list and descriptions.
+
+Successful commands exit `0`. Invalid arguments and operational failures exit
+`1`; `fetch --diff` also exits `1` when a source would change committed data.
+The fetch posture is fail-closed: a missing research anchor or unreachable
+vendor page keeps the last-good plans and sources and exits non-zero. Doctor
+reports unreachable sites as findings but exits `0` when all probes and data
+checks could be performed; data read/parse failures still exit `1`.
+
+`check` is the CI gate for stale derived data. The root `bun run check` remains
+the code-quality gate (typecheck, lint, formatting and site checks).
 
 ## Invariant index
 
