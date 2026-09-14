@@ -1842,6 +1842,41 @@ the mount helper's global `animation: !prefers-reduced-motion` because ECharts
 resolves own-before-parent — is recorded as a constraint on builders; no series
 exists in 4.1, so it changes no code.
 
+**Third review finding: the guard belongs in the registry, not in `getModel()`**
+
+The correction above left registration enforced only by review, and proposed
+that each builder stage prove it in its own browser probe with
+`chart.getModel().getSeries().length`. That is the wrong shape twice over:
+`getModel()` is private in ECharts' declarations, so the check would need an
+assertion plus a defensive fallback that silently disables itself on upgrade,
+and a per-stage probe is a convention rather than a guard.
+
+It is now guarded with public data only. `registry.ts` holds `SERIES_INSTALLS`,
+one row per family pairing the install object `use()` receives with the
+`series[].type` string an option must use, and `use()` is fed from those rows —
+so registering a family and teaching the guard its name are the same edit — and
+`unregisteredSeriesTypes(option)` compares an option's declared types against
+them. `mount.ts` calls it before `setOption` and throws `the option declares the
+unregistered series type scatter: add it to SERIES_INSTALLS in
+src/lib/charts/registry.ts`; the refused mount disposes its instance, so a retry
+reports the real problem instead of "already holds a chart instance".
+`registry.test.ts` covers the pure half in five cases (a missing type named once
+for two series, no series at all, a series with no `type` field, a single series
+object rather than an array), and the table starts empty, so the guard rejects
+every named family until 4.2 adds the scatter row.
+
+Verified on the built site in both directions. Unregistered: the frame option
+mounts and paints 12,229 pixels; the same option plus
+`{ type: "scatter", data: [24 points] }` throws the guard's message, leaves the
+host with zero `<canvas>` elements and zero instances behind, after which
+mounting the frame option on that same element succeeds. Registered: with a
+temporary `{ install: ScatterChart, type: "scatter" }` row the same option
+mounts silently and paints 19,000 pixels against the frame's 12,227; the row was
+then removed and the build re-verified without it. The earlier `getOption()`
+divergence (one series echoed in a production build, zero in a dev build) is
+kept in `docs/architecture.md` as the reason the option echo is not a usable
+detector either.
+
 **Still open**
 
 - 4.2 is the first consumer of the platform: until it lands, `mount.ts` and

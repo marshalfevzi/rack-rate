@@ -678,6 +678,11 @@ applies the option with `notMerge: true`, and returns a handle:
   option, `Model.js` `getShallow` returns the own value when present), so one
   animated series would animate for a reader who asked for no motion. A builder
   must leave per-series animation unset.
+- An option whose `series[].type` is in no `SERIES_INSTALLS` row is refused
+  before `setOption`, with an error naming the type and the registry. The
+  refused mount disposes the instance it created, so the element is free and a
+  retry reports the real problem instead of "already holds a chart instance".
+  ECharts itself would render axes around an empty plot and stay silent.
 - `update(option)` after `dispose()` throws `the chart was disposed; mount a
   new one`. A silent no-op would hide a page that threw its handle away.
 - `dispose()` is idempotent, disconnects the observer and the listener, and
@@ -689,18 +694,28 @@ registered component keys: `{ grid: { outerBoundsContain: "nope" } }` and
 unregistered key — `ComposeOption` keeps `ECBasicOption`'s string index
 signature (`shared.d.ts`: `ECUnitOption` ends in `| unknown`), and measured with
 `tsc --build`, `series`, `dataZoom`, and an invented component key all compile.
-So registration is a discipline, not a typed guarantee: `registry.ts` is the
-only `use()` site, and the check that a builder's series actually registered is
-a runtime measurement, not a type. ECharts 6 makes that measurement necessary —
-it drops a series whose type nobody registered without throwing or logging
-anything: mounting `{ series: [{ type: "scatter", data: [[1, 2]] }] }` against
-the 4.1 registry left `getModel().getSeries()` empty while `getOption()` still
-echoed one series in a production build and zero in a dev build, and no console
-message appeared in either. The example is deliberately not a fair use of the
-public API — `getModel()` is private in the ECharts declarations — so
-`mount.ts` does not call it. Each stage that lands a family builder checks its
-own option in the browser probe instead: `chart.getModel().getSeries().length`
-must equal the number of series the builder declares. A chart that renders axes
+Registration is therefore checked by name at runtime, not by the compiler:
+`registry.ts` holds `SERIES_INSTALLS`, one row per family pairing the thing
+`use()` receives with the `series[].type` string an option must use to refer to
+it. `use()` is fed from the same rows, so a stage cannot register a family
+without teaching the guard that family's name — which is the failure this
+guards against, because ECharts 6 drops a series whose type nobody registered
+in silence: mounting `{ series: [{ type: "scatter", data: [[1, 2]] }] }` against
+the 4.1 registry (no series rows) threw nothing, logged nothing in a production
+or a development build, and left no trace in the rendered option — `getOption()`
+echoed one series in the production build and zero in the dev build, so the
+public option echo is not a usable detector either.
+
+`mount.ts` calls `unregisteredSeriesTypes(option)` before `setOption` and throws
+`the option declares the unregistered series type …: add it to SERIES_INSTALLS
+in src/lib/charts/registry.ts`. Measured on the built site: the frame option
+mounts (12,229 painted pixels); the same option plus a `scatter` series throws
+that message, leaves the host with no `<canvas>`, and leaves no instance behind
+— a following mount of the frame option on the same element succeeds. With a
+temporary `{ install: ScatterChart, type: "scatter" }` row the same option
+mounts without a word and paints 19,000 pixels against the frame's 12,227, so
+the guard rejects the unregistered case without false-positiving the registered
+one. The pure half is covered by `registry.test.ts`; a chart that renders axes
 around an empty plot reads as "no data", which is the one meaning this site must
 never produce by accident.
 

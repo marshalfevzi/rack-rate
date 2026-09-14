@@ -1,5 +1,5 @@
 // Browser-only module: it is loaded only from dynamically imported client scripts.
-import { getInstanceByDom, init } from "./registry.ts"
+import { getInstanceByDom, init, unregisteredSeriesTypes } from "./registry.ts"
 import type { ChartOption } from "./registry.ts"
 
 export interface ChartHandle {
@@ -17,7 +17,17 @@ export function mountChart(target: HTMLElement, option: ChartOption): ChartHandl
   let lastOption = option
   let disposed = false
 
+  // Checked before `setOption`, so an option that cannot render is not left on
+  // screen: ECharts drops an unregistered series in silence (see registry.ts).
   function applyOption(): void {
+    const missing = unregisteredSeriesTypes(lastOption)
+
+    if (missing.length > 0) {
+      throw new Error(
+        `the option declares the unregistered series type ${missing.join(", ")}: add it to SERIES_INSTALLS in src/lib/charts/registry.ts`,
+      )
+    }
+
     chart.setOption({ ...lastOption, animation: !motion.matches }, { notMerge: true })
   }
 
@@ -35,7 +45,21 @@ export function mountChart(target: HTMLElement, option: ChartOption): ChartHandl
 
   resizeObserver.observe(target)
 
-  applyOption()
+  function disposeChart(): void {
+    resizeObserver.disconnect()
+    motion.removeEventListener("change", onMotionChange)
+    chart.dispose()
+  }
+
+  // A rejected first option must not leave a live instance behind: the caller
+  // gets no handle, and a retry would hit the double-mount error above instead
+  // of the real one.
+  try {
+    applyOption()
+  } catch (error) {
+    disposeChart()
+    throw error
+  }
 
   return {
     update(nextOption: ChartOption): void {
@@ -54,9 +78,7 @@ export function mountChart(target: HTMLElement, option: ChartOption): ChartHandl
       }
 
       disposed = true
-      resizeObserver.disconnect()
-      motion.removeEventListener("change", onMotionChange)
-      chart.dispose()
+      disposeChart()
     },
   }
 }
