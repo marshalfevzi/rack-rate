@@ -643,7 +643,7 @@ adapter:
 | `theme.ts` | `ChartTokens` and the two ways to build them: `chartTokensFrom(lookup, rootFontSizePx)` is pure and tested, `readChartTokens(element)` reads the live element. Plus one accent per cost basis (`costBasisColor`, `basisTextColor`), so invariant 4's three quantities stay three colours. |
 | `frame.ts` | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. `input.gridBottom` lets a builder reserve room under the plot for a control of its own (the Pareto slider). |
 | `mount.ts` | `mountChart(target, option)` → `{ update, dispose }`, plus `ChartHandle`. |
-| `pareto-payload.ts` | Builds the inline `ParetoPayload` from committed derived frontiers and source data, and encodes/decodes the JSON boundary. |
+| `pareto-payload.ts` | Builds the inline `ParetoPayload` from committed derived frontiers and source data, encodes/decodes the JSON boundary, and owns `chartAriaLabel(view)` — the chart's accessible name, shared by the server template and the client rebuild so the two cannot drift. |
 | `pareto.ts` | Pure Pareto scatter option and tooltip builders: axes, frontier, dominated region, labels, effort trails, zoom, and tokens. |
 | `pareto-page.ts` | Browser-only adapter that decodes the inline payload, resolves controls, mounts the option, and rebuilds the title, note, and accessible name. |
 | `*.test.ts` | The pure halves: token parsing, frame layout, axis formatters, basis titles, marker geometry. |
@@ -679,11 +679,11 @@ other points carry `label: { show: false }`.
 The frontier polyline follows the derived frontier order (ascending cost) and
 extends to the x-axis maximum at the last frontier point's score. That extension
 shows the region the last frontier model keeps dominating. It is drawn in
-`tokens.ink`; its dominated-region `areaStyle` uses `tokens.rule` at 0.55
-opacity. Effort variants are dashed 4 px line series, one per model with at
-least two variants, sorted by cost, and are drawn only for the API-list basis.
-Plan views carry `trails: []` and say so in their note because an effort
-variant's plan cost is not a published figure.
+`tokens.ink`; the same line series' `areaStyle: { origin: "start" }` uses
+`tokens.rule` at 0.55 opacity. Effort variants are dashed 4 px line series, one
+per model with at least two variants, sorted by cost, and are drawn only for the
+API-list basis. Plan views carry `trails: []` and say so in their note because
+an effort variant's plan cost is not a published figure.
 
 The x-axis has ECharts' `inside` zoom and a slider. Every slider colour —
 border, background, filler, handles, move handle, data background, selected data
@@ -697,7 +697,13 @@ basis and plan select, mounts the chart, and rebuilds on every control change.
 Each rebuild rewrites `#pareto-title`, `#pareto-note`, and the host's
 `aria-label`. `explore.astro` supplies the inline payload, two basis radios,
 the 15-plan select, the chart host, and a `/method` noscript link; its page
-script dynamically imports the adapter.
+script dynamically imports the adapter. Both sides take the accessible name
+from one function, `chartAriaLabel(view)` in `pareto-payload.ts`: the template
+writes it into the initial attribute and the adapter rewrites it on every
+rebuild, so the sentence cannot survive a basis switch only on one side. It did
+once — the attribute kept claiming 28 models and an API-list basis after the
+reader switched to a plan route, because the two copies were written
+independently.
 
 **Label layout is a feature registration.** The scatter sets
 `labelLayout: { hideOverlap: true }`, but ECharts silently ignores it unless
