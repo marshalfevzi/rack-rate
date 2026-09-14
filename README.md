@@ -35,8 +35,8 @@ DeepSWE v1.1 and Terminal-Bench board 4-0-0 are live pulls.
 shells that return 200 without quoted limit text, so `data/plans.json` remains
 at its Stage 1 revision.
 Artificial Analysis is off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set;
-the site itself does not exist yet, with stages 3–6 still ahead (see
-[`PLAN.md`](PLAN.md)).
+the site builds as static output with skeleton routes; content and charts
+arrive in Stages 4–5, and deployment in Stage 6 (see [`PLAN.md`](PLAN.md)).
 The repository does not mirror benchmark tasks, prompts, verifiers, or patches.
 
 ## The method
@@ -62,7 +62,7 @@ server and site pages:
 
 ```bash
 bun install
-bun run dev                 # planned Stage 3; no site pages yet
+bun run dev                 # dev server; skeleton routes pending Stage 4 content
 bun run check
 bun test
 ```
@@ -83,14 +83,14 @@ bun run fetch:artificial-analysis
 bun run validate
 bun run compute
 bun run data:build
-bun run og                 # planned Stage 3.8; currently exits 1 until apps/site/scripts/og.ts lands
+bun run og                 # render the build-time social card
 bun run build
 bun run check
 bun run lint
 bun run format
 bun run quality
 bun run test
-bun run dev                 # planned Stage 3; no site pages yet
+bun run dev                 # dev server; skeleton routes pending Stage 4 content
 ```
 
 - `fetch` refreshes all source inputs; the source-specific commands refresh one
@@ -98,8 +98,8 @@ bun run dev                 # planned Stage 3; no site pages yet
 - `validate` checks schemas, citations, versions, and data-quality rules.
 - `compute` joins the validated inputs and writes derived data;
   `data:build` runs validation and computation together.
-- `build` runs `data:build`, then the site build, then `og`; the site build
-  currently has no Astro config or pages, and `og` is planned Stage 3.8 work.
+- `build` runs `data:build` → Astro build → `og`, writing `dist/`
+  including the social card.
 - `lint` runs oxlint with every rule at error severity; `lint:fix` applies its
   safe autofixes.
 - `format` rewrites files with oxfmt; `format:check` is the non-writing gate
@@ -160,6 +160,10 @@ including the Artificial Analysis position.
   > License Notice: Licensed under the Creative Commons Attribution 4.0
   > International License.
   > Link to the License: https://creativecommons.org/licenses/by/4.0/
+
+- The social card uses Lato, vendored in `apps/site/assets/fonts/` under the SIL
+  Open Font License 1.1; `OFL.txt` is kept beside the fonts. It is used only
+  to render the build-time social card.
 
 - [`real-api-pricing`](https://github.com/FeiZhuLulu/real-api-pricing) by
   FeiZhuLulu reached a related idea first: pricing usable model work against

@@ -15,5 +15,5 @@
     "noEmit": true,
     "types": ["bun"]
   },
-  "include": ["packages/core/src", "packages/data-cli/src", "apps/site/src"]
+  "include": ["packages/core/src", "packages/data-cli/src", "apps/site/src", "apps/site/scripts"]
 }

@@ -578,6 +578,69 @@ plan-adjusted cost basis.
 Numbers are recomputed from the shipped hexes with WCAG 2.x relative
 luminance; they are not estimates.
 
+## Social card
+
+The root `bun run build` sequence is `data:build` → Astro build → `og`.
+Astro's build clears `dist/`, so `apps/site/scripts/og.ts` renders the card
+last. It refuses to run when `apps/site/dist/index.html` is absent and exits
+`1` with `Missing built site at …/dist/index.html; run the site build first`
+instead of writing a card into a `dist/` that the next build would discard.
+
+`satori` 0.33.4 turns the element tree into SVG. `@resvg/resvg-js` 2.6.2
+rasterises that SVG to `apps/site/dist/og.png` at 1200×630. The rejected
+alternative, `astro-og-canvas`, pulls `canvaskit-wasm` into the build for a
+less flexible renderer. Both packages are build-time only, under MPL-2.0; no
+package code ships to the browser.
+
+The size is a contract. `Base.astro` already declares `og:image:width` 1200
+and `og:image:height` 630. Before writing, the script asserts the PNG magic
+bytes and the IHDR width and height, and throws if either assertion fails.
+
+Lato 400 and 700 are vendored under `apps/site/assets/fonts/`, with `OFL.txt`
+beside them. The licence is SIL OFL 1.1:
+`Copyright (c) 2010-2014 by tyPoland Lukasz Dziedzic
+(team@latofonts.com) with Reserved Font Name "Lato"`. `README.md` credits the
+font. The weights are static because satori does not synthesise bold; nothing
+is fetched at build time (invariant 9).
+
+Satori emits glyph outlines as SVG paths rather than `<text>`. The raster step
+therefore uses `loadSystemFonts: false`, so the image does not depend on the
+machine's fonts.
+
+The palette is read at build time from the `@theme` block in
+`apps/site/src/styles/global.css`. A renamed or missing
+`--color-canvas`, `--color-ink`, `--color-dim`, or `--color-rule` fails the
+build with the token named. This is a Node-side stylesheet read, unlike Stage
+4 chart code, which reads tokens from the document with `getComputedStyle`.
+`--color-adjusted`, `--color-measured`, and `--color-api*` name a cost basis
+(invariant 4) and are never spent on card decoration.
+
+The card carries the wordmark, the questions `Which model should I use?` and
+`Which subscription pays for itself?`, structural counts read through
+`apps/site/src/lib/data.ts` (the site's only reader of `data/*.json`), and the
+origin. The counts are `28 models · 16 plans · 2 benchmark versions`.
+It deliberately carries no score, cost, quota, or confidence figure: an image
+cannot carry the basis, confidence, or freshness badge that invariants 4 and
+5 require of a published number. Figures stay on pages where a component can
+label them. This is also the rule Stage 4/5 cards would have to follow.
+
+The printed URL is the `<link rel="canonical">` of the built
+`dist/index.html`. The deployment target therefore stays written down once,
+in `apps/site/astro.config.mjs`; the custom-domain switch changes the card
+with no second edit.
+
+The pipeline uses no network, clock, or environment value. Two consecutive
+`bun run build` runs produced byte-identical `dist/og.png`: sha256
+`23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed`, 45,413
+bytes. `dist/` is gitignored, so the card is an artifact, never a committed
+fixture.
+
+The root `tsconfig.json` `include` now lists `apps/site/scripts`, so
+`bun run typecheck` covers build scripts as well as `src`. One API trap is
+measured here: `satori/jsx`'s `createElement` does not typecheck for this card
+(TS2345 on variadic children), so the script imports `jsx` and `jsxs` from
+`satori/jsx/jsx-runtime`.
+
 ## TypeScript configuration
 
 TypeScript uses a single root `tsconfig.json` with no project references. Its

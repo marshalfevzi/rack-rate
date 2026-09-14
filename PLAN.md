@@ -6,7 +6,7 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 3.8.** Stages 1 and 2 are landed and green, and Stage 3.1–3.7
+**Next stage: 3.9.** Stages 1 and 2 are landed and green, and Stage 3.1–3.8
 landed (see the progress log). The Stage 1–2 task lists,
 acceptance criteria, handover contracts and session history live in
 [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
@@ -121,7 +121,7 @@ the design system in place and one real page rendering real numbers.
   `<FreshnessBadge>`, `<CostBasisChip>`, `<CiBar>`. Every published number is
   wrapped in at least one, so "where did this come from" is structural rather
   than a footer paragraph.
-- [ ] 3.8 `scripts/og.ts` — build-time 1200×630 social card via satori → resvg,
+- [x] 3.8 `scripts/og.ts` — build-time 1200×630 social card via satori → resvg,
   replacing the Pillow script. One bundled OFL font with its license file kept
   in-repo. Runs after `astro build`, writes into `dist/`.
 - [ ] 3.9 `@astrojs/sitemap`, `public/robots.txt`, `public/favicon.svg`, and a
@@ -498,9 +498,6 @@ reason; do not guess a number to close one.
   anchor). Fixing them means finding live replacements for the *same* fact,
   updating `sources.json` and the fetcher anchor together, bumping `retrieved`,
   and re-running `compute` — not a hand-edit of a number.
-- **`bun run og` fails until Stage 3.8** — `apps/site/scripts/og.ts` does not
-  exist yet, so `bun run build` cannot complete even once the Astro config and
-  pages land. Stage 3.8 owns it; nothing else may assume a social card exists.
 - **`HARBOR_API_KEY` is inert here** — the `harbor` CLI reads it
   (`harbor/auth/credentials.py`, `sk-harbor-…` prefix) for authenticated Hub
   operations, but this repository never reads it and the public leaderboard read
@@ -1268,3 +1265,74 @@ No stage was opened. Stage 3 is still untouched.
   removed afterwards.
 
 
+
+### 2026-09-14 — Stage 3.8: build-time social card (satori → resvg, vendored OFL font)
+
+**Landed**
+
+- `apps/site/scripts/og.ts` (212 lines) now renders the build-time 1200×630
+  social card with `satori` and `@resvg/resvg-js`, replacing the old Pillow
+  path. It writes `apps/site/dist/og.png` after the Astro build.
+- The root `bun run og` command dispatches to `@rack-rate/site`'s `og` script,
+  which runs `scripts/og.ts` from `apps/site`; root `bun run build` now runs
+  `data:build` → Astro build → `og`, so the card is written last after Astro
+  clears `dist/`.
+- The bundled font files are verbatim in `apps/site/assets/fonts/`:
+  `Lato-Regular.ttf` (656,568 bytes, sha256
+  `d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251`),
+  `Lato-Bold.ttf` (656,544 bytes, sha256
+  `8a0aace75d33794eece4b28187bfc1df0bbd2888b5d8a56e01788c8d65d16be1`), and
+  `OFL.txt` (4,407 bytes, sha256
+  `74ba064d03f1f1c4a952da936c3eb71866c34404916734de3cae73b34357e59e`).
+  The license is SIL Open Font License 1.1 and stays beside the font files;
+  satori receives Lato at weights 400 and 700 without synthesising bold.
+- The script reads `canvas`, `ink`, `dim`, and `rule` from the `@theme` block
+  in `apps/site/src/styles/global.css`; a missing token fails the build. It
+  reads the `28 models · 16 plans · 2 benchmark versions` counts through
+  `apps/site/src/lib/data.ts`, and prints the origin from the built
+  `dist/index.html` canonical link (`marshalfevzi.github.io/rack-rate`).
+- The composition is one content stack at the top — wordmark, the two questions
+  at 58 px, the counts — above a footer band. The first render spread three
+  zones with `space-between`, which stranded the wordmark on its own; the stack
+  was regrouped and the type enlarged, and the numbers below are from that
+  final card.
+
+**Verified**
+
+- The script asserts that the rendered bytes are a PNG (minimum length and PNG
+  signature) and that the IHDR width and height are exactly 1200×630 before
+  writing the file.
+- Missing `dist/index.html` is fail-closed: the script exits 1 with
+  `Missing built site at …/dist/index.html; run the site build first`. The
+  restored built index then allows the normal path to run.
+- `apps/site/dist/og.png` is 1200×630 and 45,413 bytes, with sha256
+  `23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed`.
+  Consecutive full `bun run build` runs produced byte-identical cards.
+- `bun run check` exits 0 (typecheck, oxlint with every rule at error severity,
+  oxfmt clean over 44 files, and `astro check` over 27 files with 0 errors,
+  0 warnings, and 0 hints). `bun test` is 72 pass / 0 fail / 231 assertions
+  in 7 files. `bun run data:check` exits 0 with `data/derived.json` unchanged
+  at sha256 `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
+  `bun run build` exits 0, produces all 53 routes, and writes `dist/og.png`.
+- `bun run quality` remains report-only and exits 1 on pre-existing findings:
+  dead-code 27, dupes 10, health 143 above threshold over 605 analysed files,
+  and maintainability 89.7. `apps/site/scripts/og.ts` is reported as an
+  unreached entry point with its internal helpers, like the Stage-4-pending
+  exports in `data.ts`.
+
+**Decisions taken this session**
+
+- The card carries no score or cost figure: an image cannot carry a basis or
+  confidence badge, so invariants 4 and 5 would be violated.
+- Only `canvas`, `ink`, `dim`, and `rule` are spent in the card. Accent tokens
+  name a cost basis and are not used as decorative card chrome.
+- The deployment target remains written once in `apps/site/astro.config.mjs`;
+  switching to the custom domain does not require a second social-card edit.
+- `apps/site/scripts` is now included in the root `tsconfig.json` typecheck
+  `include`.
+
+**Still open**
+
+- `bun run build` now completes end to end, including the generated social card.
+- Stage 3.9 is next: sitemap, `robots.txt`, favicon, and the `CNAME` path.
+- Stages 3.10 and 3.11 remain.
