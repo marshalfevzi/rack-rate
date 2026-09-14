@@ -300,6 +300,63 @@ Headless Chromium at a 360 px viewport reported `scrollWidth` 360 on all eleven
 route shapes, one `<main>` and one `h1` per page, correct `aria-current`, and
 canonical URLs under `/rack-rate`.
 
+## Formatting
+
+Display formatting has one rounding rule per unit, owned by the module. Call
+sites supply no precision argument, so a figure reads identically on every
+page. `apps/site/src/lib/format.ts` is pure TypeScript: no `import.meta.env`,
+DOM, or Astro import, so `.astro` frontmatter and `bun test` use the same
+function.
+
+| Export | Unit in the data | Rule | Example |
+|---|---|---|---|
+| `MISSING` | absent value | the single placeholder | `"—"` |
+| `formatPercent(v)` | percent units, 0–100 (`score_pct`, `composites.rows[].composite`, `benchmarks[].rows[].score`, `benchmarks[].rows[].ci_*`, `score_pass_at_4_pct`; display-only: pass@4 never feeds a score or a composite — invariant 3) | half-even to 1 dp, `%` suffix, no space | `74.12 → "74.1%"`, `0 → "0.0%"` |
+| `formatFractionAsPercent(v)` | fraction, 0–1 (`models[].ci_lo`/`ci_hi`, utilization `U = T_actual / Q`) | ×100, then the percent rule | `0.7124964807371247 → "71.2%"` |
+| `formatPoints(v)` | percentage-point delta (`Δy = Y_frontier(x) − y`) | always-signed, half-even to 1 dp, `" pp"` suffix | `4.2 → "+4.2 pp"`, `-1.06 → "-1.1 pp"`, `0 → "+0.0 pp"` |
+| `formatPercentRange(lo, hi)` | percent units, 0–100 | the percent rule on both ends, en dash `–` between, one `%` at the end; either end missing → `MISSING` | `71.25, 76.98 → "71.2–77.0%"` |
+| `formatFractionAsPercentRange(lo, hi)` | fractions, 0–1 | the fraction rule on both ends, as above | `0.7124964807371247, 0.7698044042186275 → "71.2–77.0%"` |
+| `formatUsd(v)` | USD **amount**: `price_usd_month`, `quota_usd_month`, `rolling_window_usd`, a measured run total | up to 2 dp half-even, trailing zeros trimmed, thousands grouped, `$` prefix | `20 → "$20"`, `7.23 → "$7.23"`, `9603.86 → "$9,603.86"`, `25472 → "$25,472"` |
+| `formatUsdPerTask(v)` | USD / task, **both** bases (`cost_per_task_usd`, `api_cost_per_task_usd`) | half-even to 4 dp (fixed), thousands grouped, `$` prefix | `0.0304 → "$0.0304"`, `23.2774 → "$23.2774"` |
+| `formatUsdPerMillionTokens(v)` | USD / 1M tokens (`allowance_per_million_tokens`, `adjusted_api_cost_per_million`) | half-even to 4 dp (fixed), `$` prefix | `0.0017 → "$0.0017"`, `4.7563 → "$4.7563"` |
+| `formatTasksPerMonth(v)` | tasks / month (`tasks_per_month`, `tasks_by_dollars`, `tasks_by_tokens`) | half-even to 1 dp, grouped | `5233.18 → "5,233.2"`, `0.64 → "0.6"` |
+| `formatDays(v)` | days (`days_for_full_run`) | half-even to 1 dp, grouped | `5.15 → "5.2"`, `5260.69 → "5,260.7"` |
+| `formatCount(v)` | integer count (`agent_steps_per_task`, `steps`, `task_count`, `n_tasks_attempted`, `k`, `pair_count`, `requests_month`, `rolling_window_hours`) | half-even to **up to 1 dp**, trailing zeros trimmed, grouped | `113 → "113"`, `90.5 → "90.5"`, `2400 → "2,400"` |
+| `formatTokens(v)` | token quantity (`input_tokens_per_task`, `tokens_input`, `tokens_month`, `tokens_per_task`, `tokens_per_month_allowance`, `cross_check_tokens_month`) | **three significant digits** with a `K`/`M`/`B` suffix (base 1000), trailing zeros trimmed; below 1000 the grouped integer | `1163918 → "1.16M"`, `62795056 → "62.8M"`, `76390578947 → "76.4B"`, `616 → "616"`, `999999 → "1M"` |
+| `formatTokensExact(v)` | token quantity, tooltip/table detail | half-even to 0 dp, grouped | `1163918 → "1,163,918"` |
+| `formatMultiple(v)` | unitless multiplier (`value_multiple`, `cross_check.pairs[].ratio`, `cross_check.summary.*_ratio`) | up to 2 dp half-even, trailing zeros trimmed, `×` suffix (U+00D7), no space | `3 → "3×"`, `127.36 → "127.36×"`, `1.601 → "1.6×"`, `1.006 → "1.01×"` |
+| `formatZ(v)` | z-score (`composites.rows[].weighted_z`, `normalize` z) | always-signed, half-even to 2 dp, no suffix | `1.5656 → "+1.57"`, `-2.9945 → "-2.99"`, `0 → "+0.00"` |
+| `formatFxRate(v)` | CNY→USD spot rate (`plans[].fx.rate`) | half-even to 4 dp (fixed), no symbol, grouped | `6.7787 → "6.7787"` |
+
+Display rounding follows the `PLAN`'s Stage 2 precision rule: round what this
+repo computes, keep upstream precision in the data, and let the format layer
+own display rounding. Every formatter applies `roundHalfEven` from
+`@rack-rate/core` before string conversion, reusing the same Python-parity
+semantics as the derived data.
+`Intl.NumberFormat` is pinned to `en-US`, so the runtime locale can never reach
+a published figure. Percentages use 1 dp because the published CIs are several
+points wide and every upstream board shows 1 dp; 2 dp would be false precision.
+`composites.weights` holds control inputs for 4.13's sliders rather than
+published figures, so the module ships no rule for them; a page that needs to
+print one adds the rule here first.
+A one-sided range is not a reported interval: `formatPercentRange` and
+`formatFractionAsPercentRange` return `MISSING` unless both endpoints are
+present, so a half-range cannot read as a figure. Nulls render as `MISSING`,
+not `0` or `N/A` (invariant 6), while a genuine `0` never renders as missing.
+The formatter never appends a unit word, so `CostBasisChip` and headers own
+`/task`, `/mo`, `days`, and `tokens`; two spellings cannot drift.
+
+The two-convention trap is explicit: `data/models.json` carries `ci_lo`/`ci_hi`
+as 0–1 fractions, while `score_pct`, `data/benchmarks.json` rows, and
+`derived.json` composites use 0–100 percent scale. The module therefore ships
+both `formatPercent`/`formatFractionAsPercent` and both range variants; a page
+must pick by the units its row actually carries.
+
+Stage 4 consumers—charts, tables, and badge components—import this module and
+never call `toFixed`, `Intl`, or a template literal for a published number.
+`CiBar` (3.7) uses the range formatters; `CostBasisChip` (3.7) owns the basis
+label that keeps invariant 4 visible.
+
 ## Design tokens
 
 `apps/site/src/styles/global.css` is the single CSS entry: one
