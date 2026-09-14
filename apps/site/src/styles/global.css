@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/*
+ * This is the only CSS entry. @theme emits both the :root custom properties
+ * and utilities named after them. The API basis needs two tokens because
+ * --color-api does not reach 4.5:1 as text; the numbers live in
+ * docs/architecture.md.
+ */
+@theme {
+  --color-canvas: #0a0e15;
+  --color-panel: #111825;
+  --color-rule: #1d2735;
+  --color-ink: #eaeef5;
+  --color-dim: #a3b0c4;
+  --color-adjusted: #ffb020; /* plan-adjusted cost basis */
+  --color-measured: #45d97f; /* measured quota basis */
+  --color-api: #5c6a80; /* API-list basis marker/stroke */
+  --color-api-ink: #8a97ab; /* API-list basis text */
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+  }
+}

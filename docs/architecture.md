@@ -146,6 +146,92 @@ The Tailwind v4 Vite plugin is registered in this config. There is no
 `tailwind.config.js`. Task 3.2 adds the single CSS entry that imports
 `tailwindcss`.
 
+## Design tokens
+
+`apps/site/src/styles/global.css` is the single CSS entry, imported by the
+layout task 3.3 adds. There is no `tailwind.config.js`; `@theme` makes
+`--color-x` do double duty as the `:root` custom property and the
+`bg-x`/`text-x`/`border-x` utilities. Stage 4 chart code reads it at runtime
+with `getComputedStyle` instead of duplicating hexes in TS. The legacy `bg`
+role is renamed to `canvas` because `--color-bg` yields `bg-bg`.
+
+| Token | Hex | Semantic role |
+|---|---|---|
+| `--color-canvas` | `#0a0e15` | page background |
+| `--color-panel` | `#111825` | raised surface: cards, tables, nav |
+| `--color-rule` | `#1d2735` | hairline border / divider |
+| `--color-ink` | `#eaeef5` | primary text |
+| `--color-dim` | `#a3b0c4` | secondary text |
+| `--color-adjusted` | `#ffb020` | plan-adjusted cost basis |
+| `--color-measured` | `#45d97f` | measured quota basis |
+| `--color-api` | `#5c6a80` | API-list cost basis, marker/stroke only |
+| `--color-api-ink` | `#8a97ab` | API-list cost basis, text-safe on the dark canvas |
+
+### Dark scheme contrast
+
+| Pair | Ratio | AA threshold | Verdict |
+|---|---:|---:|---|
+| ink/canvas | 16.61:1 | 4.5:1 text | PASS |
+| ink/panel | 15.28:1 | 4.5:1 text | PASS |
+| dim/canvas | 8.80:1 | 4.5:1 text | PASS |
+| dim/panel | 8.10:1 | 4.5:1 text | PASS |
+| adjusted/canvas | 10.57:1 | 4.5:1 text | PASS |
+| adjusted/panel | 9.72:1 | 4.5:1 text | PASS |
+| measured/canvas | 10.57:1 | 4.5:1 text | PASS |
+| measured/panel | 9.72:1 | 4.5:1 text | PASS |
+| api/canvas | 3.52:1 | 3:1 UI | PASS |
+| api/panel | 3.24:1 | 3:1 UI | PASS |
+| api-ink/canvas | 6.53:1 | 4.5:1 text | PASS |
+| api-ink/panel | 6.01:1 | 4.5:1 text | PASS |
+| rule/canvas | 1.28:1 | — | measured |
+
+Every dark text pair passes 4.5:1. `api` passes only the 3:1 non-text/UI
+threshold (`3.52:1` on canvas; `3.24:1` on panel), so `--color-api` is
+marker/stroke only and must never be used for text; `--color-api-ink` is
+text-safe (`6.53:1` on canvas; `6.01:1` on panel). `--color-rule` is hairline
+decoration; its `1.28:1` ratio is measured without an invented threshold.
+
+### Light scheme: considered, not implemented
+
+| Pair | Ratio | AA threshold | Verdict |
+|---|---:|---:|---|
+| ink/canvas | 19.33:1 | 4.5:1 text | PASS |
+| ink/panel | 17.86:1 | 4.5:1 text | PASS |
+| dim/canvas | 7.53:1 | 4.5:1 text | PASS |
+| dim/panel | 6.96:1 | 4.5:1 text | PASS |
+| adjusted/canvas | 1.83:1 | 4.5:1 text | FAIL |
+| adjusted/panel | 1.69:1 | 4.5:1 text | FAIL |
+| measured/canvas | 1.83:1 | 4.5:1 text | FAIL |
+| measured/panel | 1.69:1 | 4.5:1 text | FAIL |
+| api/canvas | 5.49:1 | 3:1 UI | PASS |
+| api/panel | 5.07:1 | 3:1 UI | PASS |
+| api-ink/canvas | 2.96:1 | 4.5:1 text | FAIL |
+| api-ink/panel | 2.74:1 | 4.5:1 text | FAIL |
+| rule/canvas | 1.36:1 | — | measured |
+
+Under the light candidate, `adjusted` and `measured` fail as accents
+(`1.83:1` on canvas; `1.69:1` on panel), and `--color-api-ink` fails as text
+(`2.96:1` on canvas; `2.74:1` on panel). The API basis text role is satisfied
+by a slate at least as dark as `#5c6a80`: `api` `#5c6a80` is `5.49:1` on
+white and `5.07:1` on panel.
+
+The required light-scheme accents preserve hue within each role's family:
+`adjusted` → `#8a5a00` (`5.93:1` on white; `5.48:1` on panel), `measured` →
+`#1a7a45` (`5.37:1` on white; `4.96:1` on panel), and the API text role →
+`#55627a` (`6.15:1` on white; `5.68:1` on panel). A minimal-decrement search
+over the sRGB cube reaches 4.5:1 with `#c55420` / `#45807f` / `#8a68ab` but
+shifts the hue out of the role's family (orange-red for amber, teal for
+green, purple for slate); role hue is what makes the accent legible as a
+cost basis, so those optima are rejected (AGENTS.md invariant 4: every cost
+figure carries its basis).
+
+Decision: 3.2 ships the dark scheme only. Task 3.3b implements the light
+scheme as the two-scheme palette with these hexes. The swap is a token
+re-declaration (one line per changed token), so nothing in 3.2 has to change.
+
+Numbers: a throwaway Bun script applied WCAG 2.x relative luminance; it was
+deleted after the run. Ratios are computed, not estimated.
+
 ## TypeScript configuration
 
 TypeScript uses a single root `tsconfig.json` with no project references. Its
