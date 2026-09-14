@@ -1706,11 +1706,14 @@ pure halves. 4.1 registered `CanvasRenderer`, `GridComponent`,
 frame and the preserved chart features use — and each series type is registered
 by the stage that lands its first builder (4.2 scatter, 4.3 line, 4.4 heatmap
 and `visualMap`, 4.5 line, 4.6 bar, 4.7 radar). `ChartOption` is
-`ComposeOption<FrameComponentOption>`, so an option object cannot carry a series
-type no stage registered: a missing `use()` is a type error rather than a blank
-chart. Builders stay pure — `(data) => ChartOption`, no `use()`, no DOM, no
-clock — and `mount.ts` is the only module in the directory that touches
-`window`.
+`ComposeOption<FrameComponentOption>`. The sentence this entry originally
+carried here — that an option object therefore cannot carry a series type no
+stage registered, and a missing `use()` is a type error rather than a blank
+chart — is false and is superseded by "Second review finding" and "Third review
+finding" below; the option type accepts any extra key, and the registry checks
+series names at mount time instead. Builders stay pure — `(data) => ChartOption`,
+no `use()`, no DOM, no clock — and `mount.ts` is the only module in the
+directory that touches `window`.
 
 **The mount contract.** `mountChart(target, option)` refuses an element that
 already holds an instance (`the element already holds a chart instance; dispose
@@ -1844,12 +1847,12 @@ exists in 4.1, so it changes no code.
 
 **Third review finding: the guard belongs in the registry, not in `getModel()`**
 
-The correction above left registration enforced only by review, and proposed
-that each builder stage prove it in its own browser probe with
-`chart.getModel().getSeries().length`. That is the wrong shape twice over:
-`getModel()` is private in ECharts' declarations, so the check would need an
-assertion plus a defensive fallback that silently disables itself on upgrade,
-and a per-stage probe is a convention rather than a guard.
+The correction above left registration enforced only by review, and proposed —
+superseded by this paragraph — that each builder stage prove it in its own
+browser probe with `chart.getModel().getSeries().length`. That is the wrong
+shape twice over: `getModel()` is private in ECharts' declarations, so the check
+would need an assertion plus a defensive fallback that silently disables itself
+on upgrade, and a per-stage probe is a convention rather than a guard.
 
 It is now guarded with public data only. `registry.ts` holds `SERIES_INSTALLS`,
 one row per family pairing the install object `use()` receives with the
