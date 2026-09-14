@@ -38,6 +38,17 @@ export const SourcesFile = z.strictObject({
 
 export type SourcesFile = z.infer<typeof SourcesFile>
 
+// These ids decide the licensing gate and benchmark→source attribution mapping and must have one home.
+export const ARTIFICIAL_ANALYSIS_BENCHMARK_ID = "artificial-analysis"
+
+export const ARTIFICIAL_ANALYSIS_SOURCE_ID = "src-artificial-analysis"
+
+export const BENCHMARK_SOURCE_IDS: ReadonlyMap<string, string> = new Map([
+  ["deepswe", "src-deepswe-data"],
+  ["terminal-bench", "src-terminal-bench"],
+  [ARTIFICIAL_ANALYSIS_BENCHMARK_ID, ARTIFICIAL_ANALYSIS_SOURCE_ID],
+])
+
 export const EffortVariant = z.strictObject({
   reasoning_effort: ReasoningEffort,
   score_pct: z.number().min(0).max(100),

@@ -20,6 +20,10 @@ export const DEFAULT_INPUT_OUTPUT_BLEND = 3
 export const CACHE_TIER_CAVEAT =
   "Cached reads price far below list, so a blend ignoring cache tiers misprices cache-heavy models; DeepSWE medians show 10-40:1 input:output ratios."
 
+export const DAYS_PER_MONTH = 30
+
+export const HOURS_PER_DAY = 24
+
 export type QuotaModel = Plan["quota_model"]
 
 export interface CostedPair {
@@ -213,7 +217,7 @@ export function daysForFullRun(
   tasksPerMonthValue: number,
   taskCount: number,
 ): number | null {
-  const monthlyTasksPerDay = tasksPerMonthValue / 30
+  const monthlyTasksPerDay = tasksPerMonthValue / DAYS_PER_MONTH
 
   if (!isPositiveTasks(monthlyTasksPerDay)) {
     return null
@@ -226,7 +230,7 @@ export function daysForFullRun(
 
   if (isPositiveFinite(windowHours) && isPositiveFinite(windowUsd) && isPositiveFinite(cost)) {
     const tasksPerWindow = windowUsd / cost
-    const windowsPerDay = 24 / windowHours
+    const windowsPerDay = HOURS_PER_DAY / windowHours
     tasksPerDay = Math.min(tasksPerDay, tasksPerWindow * windowsPerDay)
   }
 

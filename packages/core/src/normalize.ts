@@ -8,6 +8,11 @@
  * a model-level record). zScores carries benchmark-unit intervals unchanged;
  * composite converts them to z-space through each benchmark's mean and SD.
  */
+
+export const COMPOSITE_CENTER = 50
+
+export const COMPOSITE_SPREAD = 10
+
 export interface BenchmarkSample {
   model_id: string
   score: number
@@ -179,7 +184,10 @@ function modelComposite(model_id: string, coverage: ModelCoverage): CompositeRow
   }
 
   const weighted_z = weightSum > 0 ? weightedZSum / weightSum : 0
-  const compositeValue = coverage.k >= 2 && weightSum > 0 ? 50 + 10 * weighted_z : null
+
+  const compositeValue =
+    coverage.k >= 2 && weightSum > 0 ? COMPOSITE_CENTER + COMPOSITE_SPREAD * weighted_z : null
+
   const benchmarks_used = Array.from(benchmarkIds).sort(compareStrings)
   let ci_lo: number | null = null
   let ci_hi: number | null = null
@@ -208,8 +216,8 @@ function modelComposite(model_id: string, coverage: ModelCoverage): CompositeRow
     }
 
     if (ciCount === coverage.weighted_rows.length && ciWeightSum > 0) {
-      const lowerComposite = 50 + 10 * (ciLoSum / ciWeightSum)
-      const upperComposite = 50 + 10 * (ciHiSum / ciWeightSum)
+      const lowerComposite = COMPOSITE_CENTER + COMPOSITE_SPREAD * (ciLoSum / ciWeightSum)
+      const upperComposite = COMPOSITE_CENTER + COMPOSITE_SPREAD * (ciHiSum / ciWeightSum)
       ci_lo = Math.min(lowerComposite, compositeValue, upperComposite)
       ci_hi = Math.max(lowerComposite, compositeValue, upperComposite)
     }

@@ -1,6 +1,16 @@
 import { describe, expect, test } from "bun:test"
 
-import { COST_BASIS_TERMS, ciGeometry, costBasisQualifier, costBasisTerm } from "./provenance.ts"
+import { ARTIFICIAL_ANALYSIS_BENCHMARK_ID } from "@rack-rate/core"
+import type { Source } from "@rack-rate/core"
+
+import {
+  COST_BASIS_TERMS,
+  artificialAnalysisState,
+  ciGeometry,
+  costBasisQualifier,
+  costBasisTerm,
+  requiredAttribution,
+} from "./provenance.ts"
 
 describe("costBasisTerm", () => {
   test("names the plan for a plan route", () => {
@@ -89,5 +99,61 @@ describe("ciGeometry", () => {
       widthPct: 0,
       valuePct: 100,
     })
+  })
+})
+
+describe("requiredAttribution", () => {
+  const sourceWithoutAttribution = {
+    id: "src-example",
+    title: "Example source",
+    url: "https://example.com/source",
+    license: "Example license",
+    retrieved: "2026-01-01",
+    covers: "Example data",
+    changes: "Example changes",
+    summary: "Example summary",
+  } satisfies Source
+
+  test("returns attribution verbatim", () => {
+    const attribution = "© Example contributor\nUsed under Example license."
+    const source = { ...sourceWithoutAttribution, attribution }
+
+    expect(requiredAttribution(source, source.id)).toBe(attribution)
+  })
+
+  test("rejects missing or blank attribution", () => {
+    expect(() => requiredAttribution(undefined, "missing-source")).toThrow(/missing-source/)
+    expect(() => requiredAttribution(sourceWithoutAttribution, "missing-attribution")).toThrow(
+      /missing-attribution/,
+    )
+    expect(() =>
+      requiredAttribution(
+        { ...sourceWithoutAttribution, attribution: " \n\t " },
+        "blank-attribution",
+      ),
+    ).toThrow(/blank-attribution/)
+  })
+})
+
+describe("artificialAnalysisState", () => {
+  test("reports unpublished for empty and unrelated benchmark lists", () => {
+    expect(artificialAnalysisState([])).toEqual({ published: false, entry: null })
+
+    const otherBenchmark = { id: "other-benchmark", score: 91 }
+
+    expect(artificialAnalysisState([otherBenchmark])).toEqual({ published: false, entry: null })
+  })
+
+  test("returns the committed Artificial Analysis entry and preserves its fields", () => {
+    const entry = {
+      id: ARTIFICIAL_ANALYSIS_BENCHMARK_ID,
+      score: 91,
+      note: "committed",
+    }
+
+    const state = artificialAnalysisState([entry])
+
+    expect(state).toEqual({ published: true, entry })
+    expect(state.entry?.note).toBe("committed")
   })
 })

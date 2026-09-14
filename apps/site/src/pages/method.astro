@@ -1,12 +1,386 @@
 ---
 import Page from "../layouts/Page.astro"
+
+import CostBasisChip from "../components/CostBasisChip.astro"
+import FreshnessBadge from "../components/FreshnessBadge.astro"
+import SourceLink from "../components/SourceLink.astro"
+
+import {
+  apiFrontier,
+  benchmarks,
+  compositeWeights,
+  derived,
+  derivedGeneratedAt,
+  plans,
+  quotaModelDocs,
+} from "../lib/data.ts"
+import {
+  artificialAnalysisState,
+  CONFIDENCE_TERMS,
+  costBasisTerm,
+} from "../lib/provenance.ts"
+import { formatCount } from "../lib/format.ts"
+import { href } from "../lib/url.ts"
+import {
+  BENCHMARK_SOURCE_IDS,
+  CACHE_TIER_CAVEAT,
+  COMPOSITE_CENTER,
+  COMPOSITE_SPREAD,
+  DAYS_PER_MONTH,
+  DEFAULT_INPUT_OUTPUT_BLEND,
+  freshnessOf,
+  HOURS_PER_DAY,
+  STALE_AFTER_DAYS,
+} from "@rack-rate/core"
+
+const routePlan = plans[0]
+
+if (routePlan === undefined) {
+  throw new Error("Method page needs a committed plan for the plan-route basis")
+}
+
+const compositeDocument = derived.composites
+
+if (compositeDocument === undefined) {
+  throw new Error("Method page needs data/derived.json composites")
+}
+
+const compositeRows = compositeDocument.rows
+
+const compositeCount = compositeRows.filter((row) => row.composite !== null).length
+
+const suppressedCount = compositeRows.filter((row) => row.composite === null).length
+
+const benchmarkDetails = benchmarks.map((benchmark) => {
+  const sourceId = BENCHMARK_SOURCE_IDS.get(benchmark.id)
+
+  if (sourceId === undefined) {
+    throw new Error(`Method page has no source mapping for benchmark "${benchmark.id}"`)
+  }
+
+  return {
+    benchmark,
+    sourceId,
+    freshness: freshnessOf(benchmark.retrieved_at, derivedGeneratedAt),
+  }
+})
+
+const weightedBenchmarks = benchmarkDetails.flatMap((detail) => {
+  const weight = compositeWeights[detail.benchmark.id]
+
+  if (weight === undefined) {
+    return []
+  }
+
+  return [{ ...detail, weight }]
+})
+
+const aaState = artificialAnalysisState(benchmarks)
+
+const apiBasis = costBasisTerm("api-list")
+
+const routeBasis = costBasisTerm("plan-route", routePlan.name)
+
+const aaBasis = costBasisTerm("aa-index")
 ---
 
 <Page
   title="Method"
-  description="The arithmetic behind every figure: quota conversion, per-benchmark z-scores and the composite, Pareto frontiers, and what each cost basis means."
+  description="The arithmetic behind quota conversion, cost bases, score normalization, composite coverage, and Pareto distances."
   heading="Method"
-  lede="Every published number comes from one of the formulas on this page, with its inputs, its assumptions, and the cases where the number is suppressed instead of estimated."
+  lede="Every published figure is the result of a named formula over committed inputs. This page keeps quota assumptions, benchmark identity, confidence, freshness, and cost basis visible instead of filling gaps with estimates."
 >
-  <p class="mt-6 text-meta text-dim">Route skeleton — the real formulas and the missing-data rules land in Stage 3.11 of the build plan.</p>
+  <div class="mt-8 space-y-10">
+    <section>
+      <h2 class="text-title">Cost per task</h2>
+      <div class="mt-4 space-y-5 text-body">
+        <p>
+          Each available model-and-plan route starts with exactly one quota conversion branch. The
+          required plan field names below are read verbatim from <code>quotaModelDocs</code> in <code>data/plans.json</code>.
+        </p>
+        <p>
+          A route exists only when the plan is <code>available</code> and its <code>model_scope</code> admits the model — the string <code>any</code>, the exact model
+          id, or the model's provider — and only when a conversion branch yields a positive task
+          count. A plan that does not serve a model contributes no pair at all rather than a
+          zero-cost row.
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <article class="border border-rule bg-panel p-4">
+            <h3 class="font-semibold">budget</h3>
+            <p class="mt-2 text-meta text-dim">
+              Committed field:
+              {quotaModelDocs.budget.map((field) => <code class="ml-1">{field}</code>)}
+            </p>
+            <p class="mt-3 break-words">
+              <code>tasks = {quotaModelDocs.budget.join(" / ")} / api_cost_per_task_usd</code>
+            </p>
+          </article>
+
+          <article class="border border-rule bg-panel p-4">
+            <h3 class="font-semibold">credits</h3>
+            <p class="mt-2 text-meta text-dim">
+              Committed field:
+              {quotaModelDocs.credits.map((field) => <code class="ml-1">{field}</code>)}
+            </p>
+            <p class="mt-3 break-words">
+              <code>outputWeight = output_rate_per_mtok_usd / input_rate_per_mtok_usd</code>
+            </p>
+            <p class="mt-2 break-words">
+              <code>creditsPerTask = (input_tokens + output_tokens × outputWeight) / 10_000</code>
+            </p>
+            <p class="mt-2 break-words">
+              <code>tasks = {quotaModelDocs.credits.join(" / ")} / creditsPerTask</code>
+            </p>
+            <p class="mt-2 text-meta text-dim">
+              The model inputs are <code>input_tokens_per_task</code> and <code>output_tokens_per_task</code>; a missing rate leaves this branch unavailable.
+            </p>
+          </article>
+
+          <article class="border border-rule bg-panel p-4">
+            <h3 class="font-semibold">requests</h3>
+            <p class="mt-2 text-meta text-dim">
+              Committed field:
+              {quotaModelDocs.requests.map((field) => <code class="ml-1">{field}</code>)}
+            </p>
+            <p class="mt-3 break-words">
+              <code>tasks = {quotaModelDocs.requests.join(" / ")} / agent_steps_per_task</code>
+            </p>
+            <p class="mt-2 text-meta text-dim">
+              If the model does not provide <code>agent_steps_per_task</code>, the branch falls back
+              to the plan's <code>agent_steps_per_task_assumed</code>.
+            </p>
+          </article>
+
+          <article class="border border-rule bg-panel p-4">
+            <h3 class="font-semibold">tokens_total</h3>
+            <p class="mt-2 text-meta text-dim">
+              Committed field:
+              {quotaModelDocs.tokens_total.map((field) => <code class="ml-1">{field}</code>)}
+            </p>
+            <p class="mt-3 break-words">
+              <code>tasks = {quotaModelDocs.tokens_total.join(" / ")} / (input_tokens + output_tokens)</code>
+            </p>
+          </article>
+        </div>
+
+        <p>{quotaModelDocs._note}</p>
+
+        <p>{quotaModelDocs.model_scope}</p>
+
+        <p>
+          The route cost is <code class="mx-1">cost_per_task_usd = price_usd_month / tasks_per_month</code>,
+          rounded with the core <code>roundHalfEven</code> operation to four decimal places.
+        </p>
+        <p class="flex flex-wrap items-center gap-2">
+          <span><code>api_cost_per_task_usd</code></span>
+          <CostBasisChip basis="api-list" unit="per-task" />
+          <span><code>price_usd_month</code></span>
+          <CostBasisChip basis="plan-route" planName={routePlan.name} unit="per-month" />
+          <span><code>cost_per_task_usd</code></span>
+          <CostBasisChip basis="plan-route" planName={routePlan.name} unit="per-task" />
+        </p>
+
+        <p class="break-words">
+          <code
+            >tasks_per_day = min(tasks_per_month / {DAYS_PER_MONTH}, (rolling_window_usd /
+            api_cost_per_task_usd) × ({HOURS_PER_DAY} / rolling_window_hours))</code
+          >{" "}
+          and <code>days_for_full_run = task_count / tasks_per_day</code>. The rolling-window
+          branch applies only when a plan publishes both <code>rolling_window_hours</code> and <code>rolling_window_usd</code>. The run's <code>task_count</code> is <code>data/derived.json</code>'s <code>generated_from.task_count</code>{" "}
+          ({formatCount(derived.generated_from.task_count)} committed tasks), not an inferred
+          count.
+        </p>
+
+        <div class="border-l-2 border-rule pl-4">
+          <h3 class="font-semibold">Token-allowance view</h3>
+          <p class="mt-2 break-words">
+            <code
+              >tokens_per_month_allowance = tasks_per_month × (input_tokens +
+              output_tokens)</code
+            >
+          </p>
+          <p class="mt-2 break-words">
+            <code
+              >value_multiple = (tasks_per_month × api_cost_per_task_usd) /
+              price_usd_month</code
+            >
+          </p>
+          <p class="mt-2">
+            The blend is <code>{DEFAULT_INPUT_OUTPUT_BLEND}:1</code> input to output. Its API-list
+            operand and plan-route operand retain their separate labels: <CostBasisChip basis="api-list" unit="per-task" />
+            <CostBasisChip basis="plan-route" planName={routePlan.name} unit="per-month" />.
+          </p>
+          <blockquote class="mt-3 border-l-2 border-rule pl-3 text-dim">
+            “{CACHE_TIER_CAVEAT}”
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-title">The three cost bases</h2>
+      <div class="mt-4 space-y-4 text-body">
+        <p>
+          <CostBasisChip basis="api-list" /> <span class="ml-2">{apiBasis.description}</span>
+        </p>
+        <p>
+          <CostBasisChip basis="plan-route" planName={routePlan.name} />
+          <span class="ml-2">{routeBasis.description}</span>
+        </p>
+        <p>
+          <CostBasisChip basis="aa-index" /> <span class="ml-2">{aaBasis.description}</span>
+        </p>
+        <p>
+          These are three different quantities: they are never plotted on one axis and are never
+          compared without their basis label.
+        </p>
+        <p>
+          {aaState.published
+            ? "Artificial Analysis is published in this build; its index remains a separate cost basis."
+            : "Artificial Analysis is not published in this build."}
+          <a
+            class="ml-1 text-api-ink underline decoration-rule underline-offset-2"
+            href={href("/sources")}>See Sources for the build state.</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-title">Score normalization and the composite</h2>
+      <div class="mt-4 space-y-4 text-body">
+        <p>
+          Z-scores are computed within one <code>benchmark_version</code>; the version is part of
+          row identity, so versions are never mixed in one table or composite. For each version,
+          a model's z-score is <code class="mx-1">(score − mean) / sd</code>, where the mean and SD are taken over the
+          models present in that version and the SD is a population SD — it divides by the count
+          of models in the version, not by one less.
+        </p>
+        <p class="break-words">
+          For the benchmarks a model actually has, <code
+            >weighted_z = Σ(weight_b × z_b) / Σ(weight_b)</code
+          >{" "}
+          renormalizes the committed weights. The composite is <code class="mx-1"
+            >{COMPOSITE_CENTER} + {COMPOSITE_SPREAD} × weighted_z</code
+          >. A model with fewer than two benchmarks is suppressed and gets the <code>single-source</code> badge.
+        </p>
+
+        <p>
+          The table joins <code>compositeWeights</code> from <code>data/derived.json</code> to the committed benchmark rows, so every displayed
+          weight belongs to the benchmark id, version, and title beside it.
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-full text-left text-meta">
+            <thead class="border-b border-rule text-dim">
+              <tr>
+                <th class="px-2 py-2 font-medium">id</th>
+                <th class="px-2 py-2 font-medium">version</th>
+                <th class="px-2 py-2 font-medium">title</th>
+                <th class="px-2 py-2 text-right font-medium">committed weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              {weightedBenchmarks.map(({ benchmark, weight }) => (
+                <tr class="border-b border-rule last:border-b-0">
+                  <td class="px-2 py-2">{benchmark.id}</td>
+                  <td class="px-2 py-2 tabular">{benchmark.version}</td>
+                  <td class="px-2 py-2">{benchmark.title}</td>
+                  <td class="px-2 py-2 text-right tabular">{formatCount(weight)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          The same interval conversion sends benchmark <code>ci_lo</code>/<code>ci_hi</code>{" "}
+          through the version's mean and SD, weights those z intervals the same way, and unions
+          the result with the point estimate. That interval is only reported when every
+          contributing benchmark supplies one: a partial set leaves the composite's own CI <code>null</code> rather than merging half an interval into a published range.
+        </p>
+        <p>
+          Only <code>pass@1</code> feeds this normalization and composite. <code>pass@4</code> is
+          display-only: the two metrics never share a field, axis, or formula.
+        </p>
+        <p>
+          From <code>composites.rows</code> in <code>data/derived.json</code>, this build has <span class="tabular">{formatCount(compositeCount)}</span> models with a composite and <span class="tabular">{formatCount(suppressedCount)}</span> suppressed models.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-title">Pareto frontier</h2>
+      <div class="mt-4 space-y-4 text-body">
+        <p>
+          A point is dominated when another point has cost no greater and score no lower, with at
+          least one strict improvement. Both epsilon bands default to zero, so exact and near ties
+          stay co-frontier.
+        </p>
+        <p>
+          For a dominated point, <code>delta_score</code> is the non-negative score gap from the
+          frontier polyline at that cost. The polyline linearly interpolates between vertices and
+          clamps at both ends.
+        </p>
+        <p>
+          <code>cost_ratio</code> divides the point's cost by the lowest frontier cost reaching
+          its score. If no frontier point reaches that score, the highest frontier cost is the
+          finite reference instead; a zero denominator never causes a division by zero.
+        </p>
+        <p>
+          <CostBasisChip basis="api-list" />
+          <span class="ml-2"
+            >The committed <code>apiFrontier</code> has <span class="tabular">{formatCount(apiFrontier.points.length)}</span> input points
+            and <span class="tabular">{formatCount(apiFrontier.frontier.length)}</span> co-frontier
+            ids. These counts come from <code>data/derived.json</code>.</span
+          >
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-title">Missing data, confidence and freshness</h2>
+      <div class="mt-4 space-y-4 text-body">
+        <p>
+          Missing data stays missing: it is never replaced with zero or last place. A composite
+          requires at least two benchmarks; otherwise it is suppressed and marked <code>single-source</code>. Nulls stay null.
+        </p>
+        <p>
+          <code>pass@1</code> and <code>pass@4</code> never share a field, axis, or formula; <code>pass@4</code> remains display-only.
+        </p>
+
+        <dl class="space-y-3">
+          {Object.entries(CONFIDENCE_TERMS).map(([level, term]) => (
+            <div class="border-l-2 border-rule pl-3">
+              <dt class="font-semibold">{term.label} <span class="text-meta text-dim">({level})</span></dt>
+              <dd class="text-dim">{term.description}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <p>
+          Freshness uses <code>freshnessOf(retrieved_at, derivedGeneratedAt)</code>: a row is stale
+          after {STALE_AFTER_DAYS} days against <code>data/derived.json</code>'s <code>derivedGeneratedAt</code>{" "}
+          ({derivedGeneratedAt}), the newest upstream <code>generated_at</code> in this build.
+          It never uses the wall clock.
+        </p>
+
+        <div>
+          <h3 class="font-semibold">Benchmark versions in this build</h3>
+          <ul class="mt-3 space-y-3">
+            {benchmarkDetails.map(({ benchmark, sourceId, freshness }) => (
+              <li class="flex flex-wrap items-center gap-2">
+                <span class="break-words"
+                  >{benchmark.title} · <code>{benchmark.id}</code> v{benchmark.version}</span
+                >
+                <SourceLink id={sourceId} label={sourceId} />
+                <FreshnessBadge freshness={freshness} retrievedAt={benchmark.retrieved_at} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
 </Page>

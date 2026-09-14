@@ -8,7 +8,13 @@ import type {
   Source,
   SourcesFile as SourcesDocument,
 } from "@rack-rate/core"
-import { BenchmarksFile, ModelsFile, PlansFile, SourcesFile } from "@rack-rate/core"
+import {
+  BenchmarksFile,
+  ModelsFile,
+  PlansFile,
+  SourcesFile,
+  ARTIFICIAL_ANALYSIS_BENCHMARK_ID,
+} from "@rack-rate/core"
 import { dataPath, parseJsonAs, readTextIfExists, today } from "../paths.ts"
 
 const DATA_FILES = ["models.json", "plans.json", "sources.json", "benchmarks.json"] as const
@@ -343,7 +349,7 @@ function checkBenchmarks(
       addProblem(problems, "benchmarks.json", `${row} has zero rows`, "warning")
     }
 
-    if (benchmark.id === "artificial-analysis") {
+    if (benchmark.id === ARTIFICIAL_ANALYSIS_BENCHMARK_ID) {
       if (process.env.AA_PUBLISH === "1") {
         addProblem(
           problems,

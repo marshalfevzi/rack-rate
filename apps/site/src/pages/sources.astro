@@ -1,12 +1,147 @@
 ---
+import {
+  ARTIFICIAL_ANALYSIS_BENCHMARK_ID,
+  ARTIFICIAL_ANALYSIS_SOURCE_ID,
+  freshnessOf,
+} from "@rack-rate/core"
+
 import Page from "../layouts/Page.astro"
+import { benchmarks, contributingSourceIds, derivedGeneratedAt, planKnownGaps, sources, sourcesById } from "../lib/data.ts"
+import { artificialAnalysisState, requiredAttribution } from "../lib/provenance.ts"
+import { href } from "../lib/url.ts"
+import FreshnessBadge from "../components/FreshnessBadge.astro"
+import SourceLink from "../components/SourceLink.astro"
+
+const artificialAnalysis = artificialAnalysisState(benchmarks)
+
+const artificialAnalysisEntry =
+  artificialAnalysis.entry?.id === ARTIFICIAL_ANALYSIS_BENCHMARK_ID
+    ? artificialAnalysis.entry
+    : null
+
+const awesomeCodingPlanAttribution = requiredAttribution(
+  sourcesById.get("src-awesome-coding-plan"),
+  "src-awesome-coding-plan",
+)
+
 ---
 
 <Page
   title="Sources"
-  description="Every upstream source with its licence, retrieval date and the figures it covers, plus which Artificial Analysis state this build is in."
+  description="The committed upstream records behind every published figure, their licences, retrieval freshness, deliberate gaps, and the Artificial Analysis build state."
   heading="Sources"
-  lede="Each upstream dataset with its licence and retrieval date, whether it contributes figures to this build, and what was deliberately left out."
+  lede="Read the upstream records behind this build: what each source covers, how it was changed, whether it contributes figures, and which facts remain deliberately unpublished."
 >
-  <p class="mt-6 text-meta text-dim">Route skeleton — the verbatim attribution block and the Artificial Analysis build-state line land in Stage 3.11 of the build plan.</p>
+  <div class="mt-8 space-y-10">
+    <section aria-labelledby="artificial-analysis-heading" class="space-y-4">
+      <h2 id="artificial-analysis-heading" class="text-title">Artificial Analysis state</h2>
+
+      {artificialAnalysis.published && artificialAnalysisEntry !== null ? (
+        <div class="space-y-3 text-body">
+          <p>
+            This build is the exception: no redistribution right has been granted, and the Artificial Analysis figures are included at the repository owner's risk.
+          </p>
+          <p>
+            The AA index is always a separate labelled axis carrying its own <code>intelligence_index_version</code>; it is never averaged into a composite that hides its origin. Every AA figure is labelled <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" class="text-api-ink underline decoration-rule underline-offset-2">Source: Artificial Analysis (artificialanalysis.ai)</a>.
+          </p>
+          <p class="text-meta text-dim">
+            Committed entry: version <span class="tabular">{artificialAnalysisEntry.version}</span>; retrieved_at <span class="tabular">{artificialAnalysisEntry.retrieved_at}</span>. The recorded position is in <a href="https://github.com/marshalfevzi/rack-rate/blob/main/CAVEATS.md" target="_blank" rel="noopener noreferrer" class="text-api-ink underline decoration-rule underline-offset-2">CAVEATS.md</a>. The source record is <SourceLink id={ARTIFICIAL_ANALYSIS_SOURCE_ID} label="Artificial Analysis" />.
+          </p>
+        </div>
+      ) : (
+        <div class="space-y-3 text-body">
+          <p>No Artificial Analysis value is published in this build.</p>
+          <p>
+            The fetcher is skipped and AA is excluded from every composite and axis unless BOTH <code>AA_API_KEY</code> and <code>AA_PUBLISH=1</code> are set. No redistribution right has been granted. See <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener noreferrer" class="text-api-ink underline decoration-rule underline-offset-2">Artificial Analysis</a> for the upstream service.
+          </p>
+          <p class="text-meta text-dim">
+            The terms this rests on, the open decision it needs, and the states a build can ship in are recorded in <a href="https://github.com/marshalfevzi/rack-rate/blob/main/CAVEATS.md" target="_blank" rel="noopener noreferrer" class="text-api-ink underline decoration-rule underline-offset-2">CAVEATS.md</a>. The source record is <SourceLink id={ARTIFICIAL_ANALYSIS_SOURCE_ID} label="Artificial Analysis" />.
+          </p>
+        </div>
+      )}
+    </section>
+
+    <section aria-labelledby="every-source-heading" class="space-y-4">
+      <h2 id="every-source-heading" class="text-title">Every source</h2>
+      <div class="space-y-4">
+        {sources.map((source) => (
+          <article class="min-w-0 break-words space-y-3 border border-rule bg-panel p-4" aria-labelledby={`source-${source.id}`}>
+            <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <h3 id={`source-${source.id}`} class="text-body font-medium">
+                <SourceLink id={source.id} />
+              </h3>
+              <FreshnessBadge
+                freshness={freshnessOf(source.retrieved, derivedGeneratedAt)}
+                retrievedAt={source.retrieved}
+              />
+            </div>
+            <p class="text-meta text-dim">
+              <span class="font-medium text-ink">Licence:</span> {source.license_short ?? source.license}
+            </p>
+            <p class="text-body">{source.summary}</p>
+            <dl class="space-y-2 text-meta text-dim">
+              <div>
+                <dt class="font-medium text-ink">Covers</dt>
+                <dd>{source.covers}</dd>
+              </div>
+              <div>
+                <dt class="font-medium text-ink">Changes</dt>
+                <dd>{source.changes}</dd>
+              </div>
+              {source.credited_contributor ? (
+                <div>
+                  <dt class="font-medium text-ink">Credited contributor</dt>
+                  <dd>{source.credited_contributor}</dd>
+                </div>
+              ) : null}
+              {source.notes ? (
+                <div>
+                  <dt class="font-medium text-ink">Notes</dt>
+                  <dd>{source.notes}</dd>
+                </div>
+              ) : null}
+            </dl>
+            <p class="text-meta text-dim">
+              {contributingSourceIds.has(source.id)
+                ? "Contributes figures to this build."
+                : "Does not contribute figures to this build."}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section aria-labelledby="required-attribution-heading" class="space-y-4">
+      <h2 id="required-attribution-heading" class="text-title">Required attribution, verbatim</h2>
+      <p class="text-body">
+        The attribution required by <SourceLink id="src-awesome-coding-plan" /> is reproduced exactly:
+      </p>
+      <pre class="whitespace-pre-wrap break-words font-sans text-meta"><code>{awesomeCodingPlanAttribution}</code></pre>
+      <p class="text-meta text-dim">
+        Converting that source's tables into this project's plan schema is a modification, which CC BY 4.0 requires be indicated.
+      </p>
+    </section>
+
+    <section aria-labelledby="left-out-heading" class="space-y-4">
+      <h2 id="left-out-heading" class="text-title">Deliberately left out</h2>
+      <p class="text-body">
+        An unresolvable upstream fact is recorded rather than guessed. These plan figures were not published:
+      </p>
+      <ul class="space-y-4">
+        {planKnownGaps.map((gap) => (
+          <li class="border-l-2 border-rule pl-4 text-body">
+            <p class="font-medium">{gap.plan} <span class="text-dim">({gap.provider})</span></p>
+            <p class="text-meta text-dim">{gap.reason}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="commitments-heading" class="space-y-4">
+      <h2 id="commitments-heading" class="text-title">Closing commitments</h2>
+      <p class="text-body">
+        No benchmark task content is ever vendored here (DeepSWE's canary would be contaminated); no annual, promotional, regional or affiliate pricing is used; aggregator-only figures never become computed rows; and every published number traces to a record on this page. See the <a href={href("/method")} class="text-api-ink underline decoration-rule underline-offset-2">method</a> for the arithmetic.
+      </p>
+    </section>
+  </div>
 </Page>

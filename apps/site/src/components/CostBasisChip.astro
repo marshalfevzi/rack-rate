@@ -35,6 +35,6 @@ const title = qualifier
 
 <Badge tone={TONE_BY_BASIS[basis]} title={title}>
   {term.label}
-  {unit ? <span class="tabular">{COST_UNIT_LABELS[unit]}</span> : null}
+  {unit ? <> <span class="tabular">{COST_UNIT_LABELS[unit]}</span></> : null}
   {qualifier ? <> · {qualifier.label}</> : null}
 </Badge>

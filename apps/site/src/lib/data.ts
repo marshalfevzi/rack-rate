@@ -4,7 +4,14 @@
 //
 // Parsed, not cast: the committed files are a trust boundary even though the
 // data CLI validated them, so a shape change fails the build, not a page.
-import { BenchmarksFile, DerivedFile, ModelsFile, PlansFile, SourcesFile } from "@rack-rate/core"
+import {
+  BENCHMARK_SOURCE_IDS,
+  BenchmarksFile,
+  DerivedFile,
+  ModelsFile,
+  PlansFile,
+  SourcesFile,
+} from "@rack-rate/core"
 import type {
   Benchmark,
   CrossCheck,
@@ -90,6 +97,34 @@ for (const source of sources) {
 }
 
 export const sourcesById: ReadonlyMap<string, Source> = sourcesByIdIndex
+
+const contributingSourceIdsIndex = new Set<string>()
+
+for (const model of models) {
+  for (const sourceId of model.evidence) {
+    contributingSourceIdsIndex.add(sourceId)
+  }
+}
+
+for (const plan of plans) {
+  for (const sourceId of plan.evidence) {
+    contributingSourceIdsIndex.add(sourceId)
+  }
+
+  for (const sourceId of plan.sources) {
+    contributingSourceIdsIndex.add(sourceId)
+  }
+}
+
+for (const benchmark of benchmarks) {
+  const sourceId = BENCHMARK_SOURCE_IDS.get(benchmark.id)
+
+  if (sourceId !== undefined) {
+    contributingSourceIdsIndex.add(sourceId)
+  }
+}
+
+export const contributingSourceIds: ReadonlySet<string> = contributingSourceIdsIndex
 
 // `::` cannot occur in the kebab-case model and plan ids, so the two key
 // components cannot bleed into each other.

@@ -3,6 +3,8 @@ import {
   ModelsFile,
   PlansFile,
   SourcesFile,
+  ARTIFICIAL_ANALYSIS_SOURCE_ID,
+  BENCHMARK_SOURCE_IDS,
   type BenchmarksFile as BenchmarksDocument,
   type ModelsFile as ModelsDocument,
   type PlansFile as PlansDocument,
@@ -11,8 +13,6 @@ import {
 } from "@rack-rate/core"
 import type { z } from "zod"
 import { dataPath, info, readJsonAs, today, warn } from "../paths.ts"
-
-const AA_SOURCE_ID = "src-artificial-analysis"
 
 type ContributionRefs = {
   readonly models: Set<string>
@@ -68,16 +68,10 @@ async function contributionRefs(): Promise<ContributionRefs> {
 
   if (benchmarks !== null) {
     for (const benchmark of benchmarks.benchmarks) {
-      if (benchmark.id === "deepswe") {
-        benchmarkRefs.add("src-deepswe-data")
-      }
+      const sourceId = BENCHMARK_SOURCE_IDS.get(benchmark.id)
 
-      if (benchmark.id === "terminal-bench") {
-        benchmarkRefs.add("src-terminal-bench")
-      }
-
-      if (benchmark.id === "artificial-analysis") {
-        benchmarkRefs.add(AA_SOURCE_ID)
+      if (sourceId !== undefined) {
+        benchmarkRefs.add(sourceId)
       }
     }
   }
@@ -86,7 +80,7 @@ async function contributionRefs(): Promise<ContributionRefs> {
 }
 
 function contributionLabel(source: Source, refs: ContributionRefs, aaOn: boolean): string {
-  if (source.id === AA_SOURCE_ID) {
+  if (source.id === ARTIFICIAL_ANALYSIS_SOURCE_ID) {
     if (!aaOn) {
       return "no (AA gate closed; not published)"
     }

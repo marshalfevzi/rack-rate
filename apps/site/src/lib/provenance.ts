@@ -4,8 +4,8 @@
 //
 // Pure TypeScript — no Astro import, no `import.meta.env`, no DOM — so `.astro`
 // frontmatter and `bun test` call the same function.
-import type { Model, PairBadge, Plan } from "@rack-rate/core"
-import { STALE_AFTER_DAYS } from "@rack-rate/core"
+import type { Model, PairBadge, Plan, Source } from "@rack-rate/core"
+import { ARTIFICIAL_ANALYSIS_BENCHMARK_ID, STALE_AFTER_DAYS } from "@rack-rate/core"
 
 /** The four levels are `data/plans.json`'s `confidence` (invariant 5). */
 export type Confidence = Plan["confidence"]
@@ -29,6 +29,38 @@ export type CostBasisStatus = Model["cost_basis"] | NonNullable<Plan["price_stat
 
 /** What a figure is per. `format.ts` emits no unit word, so the chip adds it. */
 export type CostUnit = "per-task" | "per-month" | "per-million-tokens"
+
+/**
+ * Requires attribution to remain attached to every rendered source, because
+ * attribution is load-bearing and an unattributed licence must fail the build.
+ */
+export function requiredAttribution(source: Source | undefined, id: string): string {
+  const attribution = source?.attribution
+
+  if (attribution === undefined || attribution.trim() === "") {
+    throw new Error(`provenance: source "${id}" has no attribution`)
+  }
+
+  return attribution
+}
+
+/** Invariant 10's two states, read from committed benchmarks rather than env. */
+export interface ArtificialAnalysisState<T extends { id: string }> {
+  published: boolean
+  entry: T | null
+}
+
+/**
+ * Reads Artificial Analysis' publication state from committed benchmarks: the
+ * site cannot read `AA_PUBLISH`, so a committed entry is the source of truth.
+ */
+export function artificialAnalysisState<T extends { id: string }>(
+  benchmarks: readonly T[],
+): ArtificialAnalysisState<T> {
+  const entry = benchmarks.find((benchmark) => benchmark.id === ARTIFICIAL_ANALYSIS_BENCHMARK_ID)
+
+  return { published: entry !== undefined, entry: entry ?? null }
+}
 
 /** Which units `ci_lo`/`ci_hi` are in — the two-convention trap in docs/architecture.md. */
 export type CiScale = "fraction" | "percent"
