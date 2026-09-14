@@ -739,6 +739,14 @@ The 16 Terminal-Bench 4.0 gaps render as 16 distinct hollow markers inside
 the gap column's band, each individually hoverable. This spread held at both
 900 px and 360 px; at 360 px the markers stayed inside the canvas and the
 page had no horizontal overflow.
+The pitch is fixed at 8.5 px because the option builder sees no layout at
+option-build time—no canvas or column width—to scale against the band; the
+committed 16-marker row is contained at both 900 px and 360 px as measured,
+but that bound is not general: past roughly 16 gaps in one column, the fixed
+pitch can overflow the column's band at narrow viewports, while clamping it
+would make adjacent hollow markers overlap. A band-relative spread needs a
+data-space x (a hidden value x axis aligned to the category centres), which
+4.13 can adopt when it replaces this fixed chart.
 
 The committed data makes every gap trailing: DeepSWE 1.1 carries all 28
 models, while Terminal-Bench 4.0 carries 12. Consequently, changing
