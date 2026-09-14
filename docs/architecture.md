@@ -715,9 +715,14 @@ pushes to `main`, pull requests, and manual dispatches.
 | Install | `bun install --frozen-lockfile` | Dependencies match the committed `bun.lock`. |
 | Code checks | `bun run check` | Typecheck, lint, format check and Astro check pass. |
 | Tests | `bun test` | The test suite passes. |
-| Data build | `bun run data:build` | Validation passes, then `compute` derives the data file. |
 | Data staleness | `bun run data:check` | In-memory re-derivation matches the committed bytes. |
+| Data build | `bun run data:build` | Validation passes, then `compute` derives the data file. |
 | Compute guard | `changes="$(git status --porcelain -- data/)"` | The compute write path leaves `data/` unchanged. |
+
+`data:check` runs before `data:build` on purpose: `compute` rewrites
+`data/derived.json`, so running it first would repair a stale committed file
+and hide it from the in-memory comparison. The staleness diagnostic comes
+first; the write path is asserted afterwards.
 
 The final guard covers the write path that `bun run compute` exercises. It
 prints any changed paths, emits an error and exits `1` when the status is

@@ -1458,7 +1458,7 @@ No stage was opened. Stage 3 is still untouched.
   `ubuntu-latest` with `timeout-minutes: 15`. Its eight steps, in order:
   `actions/checkout@v7`; `oven-sh/setup-bun@v2` with no `with:` block;
   `bun install --frozen-lockfile`; `bun run check`; `bun test`;
-  `bun run data:build`; `bun run data:check`; and
+  `bun run data:check`; `bun run data:build`; and
   `Compute left committed data unchanged`, whose script is
   `changes="$(git status --porcelain -- data/)"` → print the changes,
   `echo "::error::bun run compute changed data/; commit the regenerated
@@ -1534,6 +1534,13 @@ No stage was opened. Stage 3 is still untouched.
 - `bun run data:check` stays beside the guard: it is the staleness gate the
   docs already advertise and it exercises the CLI's own in-memory
   re-derivation, while the guard covers the `compute` write path.
+- `data:check` runs **before** `data:build`, not after. `compute` rewrites
+  `data/derived.json`, so checking afterwards would compare a file the job had
+  just repaired and report a stale commit as current — the staleness would
+  survive only as a guard failure with a less direct message. The order was
+  caught in review of the first draft, which had the two steps the other way
+  round; the guard still covers the write path, and the in-memory comparison
+  now sees the committed bytes.
 - The Bun version has one home, `package.json`'s `packageManager`, read by
   `setup-bun`; the workflow carries no second copy.
 - No dependency-cache step: `bun install --frozen-lockfile` is a small share

@@ -30,11 +30,11 @@ jobs:
         run: bun run check
       - name: Unit tests
         run: bun test
-      - name: Data build (validate + compute)
-        run: bun run data:build
-      # Keep data:check beside the guard for in-memory re-derivation, as advertised by CONTRIBUTING.md.
+      # Staleness first: compute rewrites data/derived.json, which would mask a stale committed file.
       - name: Derived data is not stale
         run: bun run data:check
+      - name: Data build (validate + compute)
+        run: bun run data:build
       # The guard ensures compute is idempotent against the committed bytes.
       - name: Compute left committed data unchanged
         run: |
