@@ -56,6 +56,15 @@ describe("cartesian frame", () => {
     expect(() => cartesianFrame({ ...baseInput, basis: "plan-route" })).toThrow()
   })
 
+  test("allows the Pareto chart to reserve space below the plot", () => {
+    const gridWithSlider = onlyOption(cartesianFrame({ ...baseInput, gridBottom: 44 }).option.grid)
+
+    const defaultGrid = onlyOption(cartesianFrame(baseInput).option.grid)
+
+    expect(gridWithSlider.bottom).toBe(44)
+    expect(defaultGrid.bottom).toBe(16)
+  })
+
   test("uses the caller's value-axis formatter", () => {
     const value = 0.0304
     const frame = cartesianFrame(baseInput)

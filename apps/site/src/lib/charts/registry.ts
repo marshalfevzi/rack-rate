@@ -1,8 +1,16 @@
-import { GridComponent, LegendComponent, TooltipComponent } from "echarts/components"
+import { LineChart, ScatterChart } from "echarts/charts"
+import {
+  DataZoomComponent,
+  GridComponent,
+  LegendComponent,
+  TooltipComponent,
+} from "echarts/components"
 import { getInstanceByDom, init, use } from "echarts/core"
+import { LabelLayout } from "echarts/features"
 import { CanvasRenderer } from "echarts/renderers"
 import type { ComposeOption } from "echarts/core"
 import type {
+  DataZoomComponentOption,
   GridComponentOption,
   LegendComponentOption,
   TooltipComponentOption,
@@ -25,18 +33,28 @@ interface SeriesInstall {
 // option can use to refer to it. Keeping both in one row is what makes
 // `unregisteredSeriesTypes` trustworthy — a stage cannot register a family
 // without teaching the check that family's name. Growth rule: the stage that
-// lands a family's first builder adds its row (4.2 scatter, 4.3 line, 4.4
-// heatmap, 4.5 line, 4.6 bar, 4.7 radar), never a page or a builder module.
-const SERIES_INSTALLS: readonly SeriesInstall[] = []
+// lands a family's first builder adds its row (4.2 scatter + line, 4.4
+// heatmap, 4.6 bar, 4.7 radar; 4.3 and 4.5 reuse line), never a page or a
+// builder module.
+const SERIES_INSTALLS: readonly SeriesInstall[] = [
+  { install: ScatterChart, type: "scatter" },
+  { install: LineChart, type: "line" },
+]
 
-// Canvas is the only renderer the site uses. Grid, tooltip, and legend are the
-// components used by the shared cartesian frame and the plan's preserved chart
-// features (legend + tooltips, cost-basis toggle).
+// Canvas is the only renderer the site uses. Grid, tooltip, legend, and
+// data-zoom are the components the shared cartesian frame and the Pareto
+// scatter's window control use.
+// LabelLayout is load-bearing for Stage 4.2's Pareto scatter option: without it,
+// ECharts silently ignores `labelLayout`, measured as overlapping data labels at
+// 360 px. Growth rule: the stage whose option first relies on a feature adds its
+// registration here.
 use([
   CanvasRenderer,
   GridComponent,
   LegendComponent,
   TooltipComponent,
+  DataZoomComponent,
+  LabelLayout,
   ...SERIES_INSTALLS.map((series) => series.install),
 ])
 
@@ -45,11 +63,11 @@ const REGISTERED_SERIES = new Set(SERIES_INSTALLS.map((series) => series.type))
 export { getInstanceByDom, init }
 
 export type FrameComponentOption =
+  | DataZoomComponentOption
   | GridComponentOption
   | LegendComponentOption
   | TooltipComponentOption
 
-// ChartOption types the frame's component keys and their option values, so
 // `{ grid: { outerBoundsContain: "nope" } }` is a compile error. It does NOT
 // reject an unregistered key: ComposeOption keeps ECBasicOption's string index
 // signature, so `series` and invented keys compile whether or not anything

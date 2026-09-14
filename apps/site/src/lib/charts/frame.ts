@@ -20,6 +20,7 @@ export interface CartesianFrameInput {
   readonly x: AxisSpec
   readonly y: AxisSpec
   readonly format: (value: number) => string
+  readonly gridBottom?: number
 }
 
 export interface CartesianFrame {
@@ -71,7 +72,8 @@ export function cartesianFrame(input: CartesianFrameInput): CartesianFrame {
       left: gridMargin,
       right: gridMargin,
       top: gridMargin,
-      bottom: gridMargin,
+      // The Pareto builder reserves room under the plot for the dataZoom slider.
+      bottom: input.gridBottom ?? gridMargin,
       // `containLabel` is deprecated in ECharts 6; this is its documented
       // equivalent. `outerBoundsContain: "all"` is load-bearing: with
       // `"axisLabel"` ECharts skips axis-name layout during estimation

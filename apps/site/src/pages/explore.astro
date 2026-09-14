@@ -1,12 +1,100 @@
 ---
 import Page from "../layouts/Page.astro"
+
+import {
+  apiFrontier,
+  benchmarks,
+  frontierByPlan,
+  models,
+  plansById,
+} from "../lib/data.ts"
+import { buildParetoPayload, encodeParetoPayload } from "../lib/charts/pareto-payload.ts"
+import { costBasisTerm } from "../lib/provenance.ts"
+import { href } from "../lib/url.ts"
+
+const payload = buildParetoPayload({
+  models,
+  benchmarks,
+  apiFrontier,
+  planFrontiers: frontierByPlan,
+  plansById,
+})
+
+const encodedPayload = encodeParetoPayload(payload)
+
+const apiView = payload.bases.find((view) => view.basis === "api-list")
+
+if (apiView === undefined) {
+  throw new Error("Explore page needs an API-list Pareto view")
+}
+
+const apiBasis = costBasisTerm("api-list")
+
+const apiTitle = `${apiBasis.label} $/task`
+
+const planViews = payload.bases.filter((view) => view.basis === "plan-route")
+
+const firstPlanView = planViews[0]
+
+const selectedPlanId = firstPlanView?.planId ?? ""
+
+const chartAriaLabel = `${apiView.points.length} committed models plotted against ${apiBasis.label} cost per task; ${apiView.frontier.length} frontier models; JavaScript is required to draw this chart.`
 ---
 
 <Page
   title="Explore"
-  description="Build your own chart: choose the metrics, the filters and the chart type, and share the configuration by URL."
+  description="Explore model score versus cost per task on API list prices or a selected plan route, with the Pareto frontier and reasoning-effort trails."
   heading="Explore"
-  lede="Pick a y metric, an x metric and a chart type; the whole configuration is encoded in the URL so a view can be linked and revisited."
+  lede="Compare model scores with cost per task across the committed models, then switch between API list prices and a selected plan route."
 >
-  <p class="mt-6 text-meta text-dim">Route skeleton — the chart builder and its composite weight sliders land in Stage 4 of the build plan.</p>
+  <section class="mt-8" aria-labelledby="pareto-title">
+    <h2 id="pareto-title" class="text-title">{apiTitle}</h2>
+    <p class="mt-2 text-body">
+      Every committed model is a point; score is plotted against cost per task on the chosen basis, the line is the Pareto frontier, the shaded region is dominated, and dashed trails are one model at other reasoning efforts.
+    </p>
+
+    <fieldset class="mt-4 flex flex-wrap items-center gap-4">
+      <legend class="text-meta text-dim">Cost basis</legend>
+      <label class="text-body"><input type="radio" name="pareto-basis" value="api-list" checked />{" "}API list</label>
+      <label class="text-body"><input type="radio" name="pareto-basis" value="plan-route" />{" "}Plan route</label>
+      <label for="pareto-plan" class="text-body">Plan</label>
+      <select id="pareto-plan" class="text-body" aria-label="Plan for the route cost basis">
+        {planViews.map((view) => (
+          <option value={view.planId} selected={view.planId === selectedPlanId}>{view.planName}</option>
+        ))}
+      </select>
+    </fieldset>
+
+    <div
+      id="pareto-chart"
+      class="mt-4 h-80 w-full sm:h-[26rem]"
+      role="img"
+      aria-label={chartAriaLabel}
+    ></div>
+    <p id="pareto-note" class="mt-2 text-meta text-dim">{apiView.note}</p>
+
+    <script id="pareto-data" type="application/json" is:inline set:html={encodedPayload}></script>
+
+    <noscript>
+      <p class="mt-2 text-body">The chart is drawn in the browser; the frontier and its distances are documented on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+    </noscript>
+  </section>
+
+  <p class="mt-6 text-meta text-dim">Route skeleton — the metric pickers, filters, chart-type switch, URL-shared configuration and composite weight sliders land in Stage 4.13 of the build plan.</p>
 </Page>
+
+<script>
+  const host = document.getElementById("pareto-chart")
+
+  if (host !== null) {
+    void import("../lib/charts/pareto-page.ts")
+      .then((chart) => chart.startParetoChart(host))
+      .catch(() => {
+        const note = document.getElementById("pareto-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+</script>
