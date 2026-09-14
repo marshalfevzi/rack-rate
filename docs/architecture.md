@@ -262,14 +262,36 @@ No figure, badge or attribution string may be invented to fill a route: scores,
 costs and licence text wait for the components that carry their basis.
 
 `apps/site/src/lib/data.ts` is the only module under `apps/site` that imports
-`data/*.json`. It parses each document with the `@rack-rate/core` zod schema and
-re-exports the rows, so a committed file that drifts from the schema fails the
-build rather than a page. Task 3.4 seeded it with `models` and `plans`, the only
-views the route skeleton needs; task 3.5 adds the derived, benchmark and source
-views. Its JSON imports work because the root `tsconfig.json` sets
-`resolveJsonModule: true`. Vite bundles the files at build time and the module
-reaches no browser bundle: only Astro frontmatter imports it. `Model.id` and
-`Plan.id` are used as slugs directly, so no second slug mapping exists to drift.
+`data/*.json`. It parses all five committed documents (`models.json`,
+`plans.json`, `benchmarks.json`, `sources.json`, and `derived.json`) with the
+corresponding `@rack-rate/core` zod schemas, then exports the parsed rows and
+documents plus prebuilt indexes. The identity rows and documents are `models`,
+`plans`, `planKnownGaps`, `quotaModelDocs`, `benchmarks`, `sources`, and
+`derived`; `benchmarks` has one entry per committed benchmark version, with
+Artificial Analysis absent unless publication is enabled rather than
+synthesized. The id indexes are `modelsById`, `plansById`, `benchmarksById`, and
+`sourcesById`. The relation indexes are `routesByModel`, `routesByPlan`,
+`bestRouteByModel`, `compositeByModel`, `compositeWeights`, `apiFrontier`,
+`frontierByPlan`, `tokenAllowances`, `tokenAllowanceByPair`, `badgeByPair`,
+`crossCheck`, and `derivedKnownGaps`. `pairKey(modelId, planId)` is the single
+place the `(model, plan)` map key is built, using a separator absent from either
+kebab-case id.
+
+The computed sections `composites`, `frontiers`, `token_allowances`, and
+`badges` are optional in the `DerivedFile` schema but always present in the
+committed document; `bun run data:check` fails when they are missing. The
+module reads each section once through a local check that throws with the
+section name and `data/derived.json`, then exports the non-optional view, so an
+incomplete committed document fails the build instead of rendering an empty
+page. A committed file that drifts from its schema likewise fails the build
+rather than a page. An unknown model, plan, benchmark, or source id returns
+`undefined` from its index lookup rather than throwing, so an id removed
+upstream degrades instead of crashing a page. The row types come from
+`@rack-rate/core`; the module does not re-export a parallel type surface. Its
+JSON imports work because the root `tsconfig.json` sets `resolveJsonModule:
+true`. Vite bundles the files at build time and the module reaches no browser
+bundle because only Astro frontmatter imports it. `Model.id` and `Plan.id` are
+used as slugs directly, so no second slug mapping exists to drift.
 
 Measured on the Stage 3.4 build: 53 pages; a static server with the `dist` tree
 mounted at `/rack-rate` returned 200 for all 53 routes, and every base-prefixed
