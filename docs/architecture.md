@@ -903,6 +903,68 @@ later stage measuring resize, animation, or disposal needs that step first.
 Triggering the fix through the real observer, not a manual `chart.resize()`, is
 what makes "the helper resizes" a measurement rather than a restatement.
 
+**Stage 4.4–4.15: six more builders, and one resolution rule.** Each chart is a
+`*-payload.ts` (values from `data/derived.json` plus the committed labels, as a
+JSON payload the page inlines in `<script id="…-data" type="application/json">`
+with `<` escaped to `\u003c`), a `*.ts` pure option builder, and a
+`components/*Section.astro` that decodes the payload, mounts through
+`mount.ts`, and re-renders from its own controls. `heatmap.ts`, `slope.ts`,
+`waterfall.ts`, and `radar.ts` are the four new option builders; the builder on
+`/explore` (`builder.ts` + `builder-payload.ts` + `builder-page.ts`) ships the
+per-benchmark z-scores so the composite is recomputed client-side.
+
+The one plan→model resolution for "what does this plan cost at N tasks" lives in
+`waterfall-payload.ts` and is imported by both consumers — the burn-down on
+`/explore` and the calculator on `/`: `measured_against_model` when that model
+has a committed route, else the plan's cheapest committed route, else a reason
+row drawn from committed data (`unavailable_reason`, `quota_note`,
+`known_gaps`). Measured against the committed documents, 15 of the 16 plans
+resolve and only `google-ai-pro` is reason-only (its quota is unresolved). The
+calculator's column is labelled **Model priced**, not "measured model", because
+the fallback makes the two different claims.
+
+Composite parity is exact, not approximate: recombining the payload's per-benchmark
+z-scores at the committed weights — renormalized over the benchmarks a model
+actually has, `T = 50 + 10·Σwᵢzᵢ / Σwᵢ` — reproduces `data/derived.json`'s
+`composite` for all 12 models with `k ≥ 2` to within 0.001, and 16 models fall
+below the gate and must render `single-source` with no `T`.
+
+**Three layout traps, each measured before it was fixed.**
+
+- `Badge.astro` needed `relative`. Its children include `sr-only` spans, which
+  are `position: absolute`; with an unpositioned `inline-flex` badge inside a
+  wide table inside an `overflow-x-auto` wrapper, the containing block is the
+  initial containing block, so 28 badges in `/models` laid their accessible text
+  out at x = 735 inside the overwide table and stretched the *document* with
+  them. `documentElement.scrollWidth` read 736 against a 360 px viewport and
+  `window.scrollTo(9999, 0)` moved 376 px into blank space — on `/models`,
+  `/models/[slug]`, `/plans`, `/plans/[slug]` and `/compare`. Hiding the
+  container dropped it to 360; `contain: paint` and `translateZ(0)` on the
+  wrapper also masked it, which is what identified an escaping absolute box
+  rather than the table. One `relative` on the badge's own class list removes it
+  on all five routes.
+- A `<select>`'s min-content width is its widest option, and `min-width: auto` on
+  a flex item refuses to shrink below it: the builder's X-metric control with a
+  61-character option laid out 493 px wide at a 360 px viewport. Every control
+  select on the explore surface now carries `min-w-0 max-w-full`.
+- The heatmap's legend and its `visualMap` both anchor to the canvas bottom, so
+  both series names landed on top of the colour bar, and the grid's default 16
+  spacing units put the x-axis labels in the bar's band. The frame now takes
+  `gridBottom: 76` and the legend sits at the right corner: the canvas bottom
+  resolves into three separated bands (labels 488–498, axis name 518–527,
+  colour bar and legend 535–560 on a 576 px canvas) with no shared row.
+
+**Verification.** Ten routes at 360 px report `window.scrollTo(9999, 0) → 0`, so
+the phantom horizontal scroll is gone everywhere. Every interactive element on
+the seven content routes has an accessible name (28 CI bars and 7 chart hosts
+carry `role="img"` and a data-derived name; the builder's is
+`aria-labelledby` to a heading that the controls rewrite). `Enter` on a
+`/models` header button sets that column's `aria-sort`; `Space` on the Pareto
+"Plan route" radio re-renders and rewrites the chart's accessible name; the
+metric, type, vendor, effort, score-floor and utilization controls each change
+their chart's painted pixels. The browser issues zero requests for any `.json`
+path.
+
 ## Template whitespace
 
 Astro has a measured whitespace rule: a whitespace run containing a newline

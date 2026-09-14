@@ -1,0 +1,101 @@
+---
+import { plans, planKnownGaps, derivedKnownGaps, routesByPlan } from "../lib/data.ts"
+import {
+  buildWaterfallPayload,
+  encodeWaterfallPayload,
+  waterfallAriaLabel,
+} from "../lib/charts/waterfall-payload.ts"
+import { href } from "../lib/url.ts"
+
+const payload = buildWaterfallPayload({
+  plans,
+  routesByPlan,
+  knownGaps: [...planKnownGaps, ...derivedKnownGaps],
+})
+
+const initialPlan =
+  payload.plans.find(
+    (plan) =>
+      plan.modelId !== null &&
+      plan.tasksPerMonth !== null &&
+      plan.tasksPerMonth > 0,
+  ) ?? payload.plans[0]
+
+if (initialPlan === undefined) {
+  throw new Error("Waterfall section needs a committed plan")
+}
+
+const initialUsedTasks = initialPlan.tasksPerMonth ?? 0
+
+const initialInputValue = initialPlan.tasksPerMonth ?? ""
+
+const initialAriaLabel = waterfallAriaLabel(payload, initialPlan, initialUsedTasks)
+
+const encodedPayload = encodeWaterfallPayload(payload)
+
+const pricedPlanCount = payload.plans.filter((plan) => plan.modelId !== null).length
+
+const missingPlanCount = payload.plans.length - pricedPlanCount
+
+const headline = `${payload.plans.length} committed plans are listed; ${pricedPlanCount} have a priced route, while ${missingPlanCount} have no quota burn-down to draw.`
+---
+
+<section class="mt-12" aria-labelledby="waterfall-title">
+  <h2 id="waterfall-title" class="text-title">{payload.title}</h2>
+  <p class="mt-2 text-meta text-dim">{headline}</p>
+  <p class="mt-2 text-body">
+    The input is tasks per month on the plan's measured model, or its cheapest committed route when the measured model is absent; a bar below zero is a quota deficit.
+  </p>
+
+  <div class="mt-4 flex flex-wrap items-end gap-4">
+    <div class="grid gap-1">
+      <label for="waterfall-plan" class="text-body">Plan</label>
+      <select id="waterfall-plan" class="min-w-0 max-w-full text-body">
+        {payload.plans.map((plan) => (
+          <option value={plan.planId} selected={plan.planId === initialPlan.planId}>{plan.planName}</option>
+        ))}
+      </select>
+    </div>
+    <div class="grid gap-1">
+      <label for="waterfall-utilization" class="text-body">Utilization (tasks per month)</label>
+      <input
+        id="waterfall-utilization"
+        class="text-body"
+        type="number"
+        min="0"
+        step="1"
+        value={initialInputValue}
+      />
+    </div>
+  </div>
+
+  <div
+    id="waterfall-chart"
+    class="mt-4 h-80 w-full sm:h-[26rem]"
+    role="img"
+    aria-label={initialAriaLabel}
+  ></div>
+  <p id="waterfall-note" class="mt-2 text-meta text-dim">{initialPlan.reason ?? payload.note}</p>
+
+  <script id="waterfall-data" type="application/json" is:inline set:html={encodedPayload}></script>
+
+  <noscript>
+    <p class="mt-2 text-body">The chart is drawn in the browser; quota conversion and utilization formulas are documented on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+  </noscript>
+</section>
+
+<script>
+  const host = document.getElementById("waterfall-chart")
+
+  if (host !== null) {
+    void import("../lib/charts/waterfall-page.ts")
+      .then((chart) => chart.startWaterfallChart(host))
+      .catch(() => {
+        const note = document.getElementById("waterfall-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+</script>

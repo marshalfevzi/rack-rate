@@ -1,0 +1,101 @@
+---
+import { models, routesByModel } from "../lib/data.ts"
+import {
+  buildSlopePayload,
+  encodeSlopePayload,
+  slopeAriaLabel,
+} from "../lib/charts/slope-payload.ts"
+import { formatCount, formatMultiple } from "../lib/format.ts"
+import { href } from "../lib/url.ts"
+
+const payload = buildSlopePayload({ models, routesByModel })
+
+const encodedPayload = encodeSlopePayload(payload)
+
+const defaultModel = payload.models.find((model) => model.routes.length > 0) ?? payload.models[0]
+
+if (defaultModel === undefined) {
+  throw new Error("slope section needs at least one committed model")
+}
+
+const routeCount = payload.models.reduce((count, model) => count + model.routes.length, 0)
+
+const modelsWithRoutes = payload.models.filter((model) => model.routes.length > 0).length
+
+let defaultSmallest: number | undefined
+
+let defaultLargest: number | undefined
+
+for (const route of defaultModel.routes) {
+  defaultSmallest =
+    defaultSmallest === undefined
+      ? route.savingsMultiple
+      : Math.min(defaultSmallest, route.savingsMultiple)
+  defaultLargest =
+    defaultLargest === undefined
+      ? route.savingsMultiple
+      : Math.max(defaultLargest, route.savingsMultiple)
+}
+
+const defaultRange =
+  defaultSmallest === undefined || defaultLargest === undefined
+    ? (defaultModel.reason ?? "No priced route")
+    : defaultSmallest === defaultLargest
+      ? `${formatMultiple(defaultSmallest)} savings versus API list`
+      : `${formatMultiple(defaultSmallest)}–${formatMultiple(defaultLargest)} savings versus API list`
+
+const dataSentence =
+  defaultSmallest === undefined || defaultLargest === undefined
+    ? `${formatCount(payload.models.length)} committed models map to ${formatCount(routeCount)} priced plan routes; ${formatCount(modelsWithRoutes)} have a route to compare.`
+    : `${formatCount(payload.models.length)} committed models map to ${formatCount(routeCount)} priced plan routes; ${defaultModel.name} spans ${defaultRange} across ${formatCount(defaultModel.routes.length)} routes.`
+---
+
+<section class="mt-12" aria-labelledby="slope-title">
+  <h2 id="slope-title" class="text-title">{payload.title}</h2>
+  <p class="mt-2 text-meta text-dim">{dataSentence}</p>
+  <p class="mt-2 text-body">
+    Each line joins the model's API list cost per task to one candidate plan's route cost per task.
+    Both bases are named on the axis, and the log scale keeps the committed cost range readable;
+    the slope and multiple show the savings implied by each route.
+  </p>
+
+  <div class="mt-4 flex flex-wrap items-center gap-3">
+    <label for="slope-model" class="text-body">Model</label>
+    <select id="slope-model" class="min-w-0 max-w-full text-body">
+      {payload.models.map((model) => (
+        <option value={model.id} selected={model.id === defaultModel.id}>{model.name}</option>
+      ))}
+    </select>
+    <span id="slope-range" class="text-meta text-dim">{defaultRange}</span>
+  </div>
+
+  <div
+    id="slope-chart"
+    class="mt-4 h-80 w-full sm:h-[26rem]"
+    role="img"
+    aria-label={slopeAriaLabel(payload, defaultModel)}
+  ></div>
+  <p id="slope-note" class="mt-2 text-meta text-dim">{payload.note}</p>
+
+  <script id="slope-data" type="application/json" is:inline set:html={encodedPayload}></script>
+
+  <noscript>
+    <p class="mt-2 text-body">The chart is drawn in the browser; API list and plan-route savings are documented on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+  </noscript>
+</section>
+
+<script>
+  const host = document.getElementById("slope-chart")
+
+  if (host !== null) {
+    void import("../lib/charts/slope-page.ts")
+      .then((chart) => chart.startSlopeChart(host))
+      .catch(() => {
+        const note = document.getElementById("slope-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+</script>

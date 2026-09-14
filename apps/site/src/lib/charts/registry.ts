@@ -1,10 +1,12 @@
-import { LineChart, ScatterChart } from "echarts/charts"
+import { BarChart, HeatmapChart, LineChart, RadarChart, ScatterChart } from "echarts/charts"
 import {
   DataZoomComponent,
   GridComponent,
   LegendComponent,
   MarkLineComponent,
+  RadarComponent,
   TooltipComponent,
+  VisualMapComponent,
 } from "echarts/components"
 import { getInstanceByDom, init, use } from "echarts/core"
 import { LabelLayout } from "echarts/features"
@@ -14,7 +16,9 @@ import type {
   DataZoomComponentOption,
   GridComponentOption,
   LegendComponentOption,
+  RadarComponentOption,
   TooltipComponentOption,
+  VisualMapComponentOption,
 } from "echarts/components"
 
 // `use()`'s own parameter type says what may be registered; ECharts exports the
@@ -34,12 +38,15 @@ interface SeriesInstall {
 // option can use to refer to it. Keeping both in one row is what makes
 // `unregisteredSeriesTypes` trustworthy — a stage cannot register a family
 // without teaching the check that family's name. Growth rule: the stage that
-// lands a family's first builder adds its row (4.2 scatter + line, 4.4
-// heatmap, 4.6 bar, 4.7 radar; 4.3 and 4.5 reuse line), never a page or a
-// builder module.
+// lands a family's first builder adds its row, never a page or a builder
+// module. All five Stage-4 families are landed: scatter + line in 4.2, heatmap
+// in 4.4, bar in 4.6, radar in 4.7 (4.3 and 4.5 reuse line).
 const SERIES_INSTALLS: readonly SeriesInstall[] = [
   { install: ScatterChart, type: "scatter" },
   { install: LineChart, type: "line" },
+  { install: HeatmapChart, type: "heatmap" },
+  { install: BarChart, type: "bar" },
+  { install: RadarChart, type: "radar" },
 ]
 
 // Canvas is the only renderer the site uses. Grid, tooltip, legend, and
@@ -60,6 +67,11 @@ use([
   DataZoomComponent,
   LabelLayout,
   MarkLineComponent,
+  // 4.4 owns the diverging scale of the model x benchmark heatmap; 4.7 owns the
+  // radar coordinate system. Both were registered with the first option that
+  // reads them, per the growth rule above.
+  VisualMapComponent,
+  RadarComponent,
   ...SERIES_INSTALLS.map((series) => series.install),
 ])
 
@@ -71,7 +83,9 @@ export type FrameComponentOption =
   | DataZoomComponentOption
   | GridComponentOption
   | LegendComponentOption
+  | RadarComponentOption
   | TooltipComponentOption
+  | VisualMapComponentOption
 
 // `{ grid: { outerBoundsContain: "nope" } }` is a compile error. It does NOT
 // reject an unregistered key: ComposeOption keeps ECBasicOption's string index

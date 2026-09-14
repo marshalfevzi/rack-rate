@@ -1,8 +1,36 @@
 ---
 import type { Plan } from "@rack-rate/core"
 
+import CostBasisChip from "../../components/CostBasisChip.astro"
+import ConfidenceBadge from "../../components/ConfidenceBadge.astro"
+import FreshnessBadge from "../../components/FreshnessBadge.astro"
 import Page from "../../layouts/Page.astro"
-import { plans } from "../../lib/data.ts"
+import SourceLink from "../../components/SourceLink.astro"
+import {
+  badgeByPair,
+  derivedGeneratedAt,
+  models,
+  modelsById,
+  pairKey,
+  planKnownGaps,
+  plans,
+  quotaModelDocs,
+  routesByPlan,
+  tokenAllowances,
+} from "../../lib/data.ts"
+import {
+  formatCount,
+  formatDays,
+  formatMultiple,
+  formatTasksPerMonth,
+  formatTokens,
+  formatUsd,
+  formatUsdPerTask,
+  MISSING,
+} from "../../lib/format.ts"
+import { href } from "../../lib/url.ts"
+import { modelAllowed } from "@rack-rate/core/cost"
+import { freshnessOf } from "@rack-rate/core/freshness"
 
 export function getStaticPaths() {
   return plans.map((plan) => ({ params: { slug: plan.id }, props: { plan } }))
@@ -12,7 +40,84 @@ interface Props {
   plan: Plan
 }
 
+function knownGapsFor(plan: Plan) {
+  return planKnownGaps.filter(
+    (gap) => gap.plan === plan.name || gap.plan.split(", ").includes(plan.name),
+  )
+}
+
+function quotaReason(plan: Plan, gaps: ReturnType<typeof knownGapsFor>): string {
+  if (!plan.available) {
+    return plan.unavailable_reason ?? "Plan is unavailable."
+  }
+
+  if (plan.quota_unresolved) {
+    return plan.quota_note ?? "Quota conversion is unresolved."
+  }
+
+  return plan.quota_note ?? gaps[0]?.reason ?? "No committed quota conversion."
+}
+
+function maxValueMultiple(planId: string): number | null {
+  let maximum: number | null = null
+
+  for (const row of tokenAllowances) {
+    if (row.plan_id !== planId) {
+      continue
+    }
+
+    if (maximum === null || row.value_multiple > maximum) {
+      maximum = row.value_multiple
+    }
+  }
+
+  return maximum
+}
+
+function quotaValue(plan: Plan): string {
+  switch (plan.quota_model) {
+    case "budget":
+      return formatUsd(plan.quota_usd_month)
+    case "credits":
+      return formatCount(plan.credits_month)
+    case "requests":
+      return formatCount(plan.requests_month)
+    case "tokens_total":
+      return formatTokens(plan.tokens_month)
+  }
+}
+
 const { plan } = Astro.props
+
+const knownGaps = knownGapsFor(plan)
+
+const planQuotaReason = quotaReason(plan, knownGaps)
+
+const planRoutes = routesByPlan.get(plan.id) ?? []
+
+const unlockedModels = models.filter((model) => modelAllowed(model, plan))
+
+const modelRows = unlockedModels.map((model) => ({
+  model,
+  route: planRoutes.find((route) => route.model_id === model.id),
+  badge: badgeByPair.get(pairKey(model.id, plan.id)),
+}))
+
+const pricedModelCount = modelRows.filter(({ route }) => route !== undefined).length
+
+const measuredModel =
+  plan.measured_against_model === undefined
+    ? undefined
+    : modelsById.get(plan.measured_against_model)
+
+const measuredRoute =
+  plan.measured_against_model === undefined
+    ? undefined
+    : planRoutes.find((route) => route.model_id === plan.measured_against_model)
+
+const valueMultiple = maxValueMultiple(plan.id)
+
+const headline = `${formatCount(unlockedModels.length)} of ${formatCount(models.length)} committed models are admitted by ${plan.name}; ${formatCount(pricedModelCount)} have a committed plan route.`
 ---
 
 <Page
@@ -21,7 +126,164 @@ const { plan } = Astro.props
   heading={plan.name}
   lede={plan.provider}
 >
-  <p class="mt-6 text-meta text-dim">
-    Route skeleton — the quota model, value multiple, confidence badge and the models this plan unlocks land in Stage 4 of the build plan.
-  </p>
+  <p class="mt-2 text-meta text-dim">{headline}</p>
+
+  <div class="mt-8 space-y-10">
+    <section aria-labelledby="plan-details">
+      <h2 id="plan-details" class="text-title">Plan details</h2>
+      <dl class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Price/month</dt>
+          <dd class="mt-2 tabular">
+            {formatUsd(plan.price_usd_month)}{" "}
+            <CostBasisChip basis="plan-route" planName={plan.name} unit="per-month" />
+          </dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Quota model</dt>
+          <dd class="mt-2"><code>{plan.quota_model}</code></dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Key quota figure</dt>
+          <dd class="mt-2 tabular">
+            {quotaValue(plan)}
+            {plan.quota_model === "budget" && plan.quota_usd_month !== undefined ? (
+              <>
+                {" "}
+                <CostBasisChip basis="api-list" unit="per-month" />
+              </>
+            ) : null}
+          </dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Rolling window</dt>
+          <dd class="mt-2 tabular">
+            {plan.rolling_window_hours === undefined ? (
+              MISSING
+            ) : (
+              <>
+                {formatCount(plan.rolling_window_hours)}h
+                {plan.rolling_window_usd === undefined ? (
+                  <> {MISSING}</>
+                ) : (
+                  <>
+                    {" "}
+                    {formatUsd(plan.rolling_window_usd)}{" "}
+                    <CostBasisChip basis="api-list" unit="per-month" />
+                  </>
+                )}
+              </>
+            )}
+          </dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Measured-against model</dt>
+          <dd class="mt-2">
+            {measuredModel === undefined ? (
+              plan.measured_against_model ?? MISSING
+            ) : (
+              <a class="text-ink underline decoration-rule underline-offset-2" href={href(`/models/${measuredModel.id}`)}>
+                {measuredModel.name}
+              </a>
+            )}
+          </dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Value multiple</dt>
+          <dd class="mt-2 tabular">
+            {formatMultiple(valueMultiple)}
+            {valueMultiple === null ? <span class="ml-2 text-meta text-dim">{planQuotaReason}</span> : null}
+          </dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Days for a full run · measured model</dt>
+          <dd class="mt-2 tabular">{formatDays(measuredRoute?.days_for_full_run)}</dd>
+        </div>
+        <div class="border border-rule bg-panel p-4">
+          <dt class="text-meta text-dim">Confidence</dt>
+          <dd class="mt-2"><ConfidenceBadge level={plan.confidence} /></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="quota-explanation">
+      <h2 id="quota-explanation" class="text-title">Quota model explanation</h2>
+      <div class="mt-4 space-y-3 text-body">
+        {quotaModelDocs[plan.quota_model].map((entry) => <p>{entry}</p>)}
+      </div>
+    </section>
+
+    <section aria-labelledby="method">
+      <h2 id="method" class="text-title">Method</h2>
+      <p class="mt-4 text-body">{plan.method}</p>
+      <p class="mt-3 flex flex-wrap items-center gap-2 text-meta text-dim">
+        <span>Sources:</span>
+        {plan.sources.map((id) => <SourceLink id={id} />)}
+      </p>
+    </section>
+
+    {knownGaps.length > 0 ? (
+      <section aria-labelledby="known-gaps">
+        <h2 id="known-gaps" class="text-title">Known gaps</h2>
+        <ul class="mt-4 space-y-2 text-body">
+          {knownGaps.map((gap) => <li>{gap.reason}</li>)}
+        </ul>
+      </section>
+    ) : null}
+
+    <section aria-labelledby="models-unlocked">
+      <h2 id="models-unlocked" class="text-title">Models this plan unlocks</h2>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full min-w-[760px] text-left text-meta">
+          <caption class="sr-only">Models admitted by {plan.name} and their committed plan routes.</caption>
+          <thead class="border-b border-rule text-dim">
+            <tr>
+              <th scope="col" class="px-2 py-2 font-medium">model</th>
+              <th scope="col" class="px-2 py-2 font-medium">cost/task</th>
+              <th scope="col" class="px-2 py-2 font-medium">tasks/month</th>
+              <th scope="col" class="px-2 py-2 font-medium">days/full run</th>
+              <th scope="col" class="px-2 py-2 font-medium">confidence</th>
+              <th scope="col" class="px-2 py-2 font-medium">freshness</th>
+            </tr>
+          </thead>
+          <tbody>
+            {modelRows.map(({ model, route, badge }) => {
+              const freshness = badge?.freshness ?? freshnessOf(plan.retrieved_at, derivedGeneratedAt)
+
+              return (
+                <tr class="border-b border-rule last:border-b-0">
+                  <td class="px-2 py-3">
+                    <a class="text-ink underline decoration-rule underline-offset-2" href={href(`/models/${model.id}`)}>
+                      {model.name}
+                    </a>
+                  </td>
+                  <td class="px-2 py-3">
+                    {route === undefined ? (
+                      <>
+                        <div class="tabular">{MISSING}</div>
+                        <span class="text-meta text-dim">{planQuotaReason}</span>
+                      </>
+                    ) : (
+                      <>
+                        <div class="tabular">{formatUsdPerTask(route.cost_per_task_usd)}</div>
+                        <CostBasisChip basis="plan-route" planName={plan.name} unit="per-task" />
+                      </>
+                    )}
+                  </td>
+                  <td class="px-2 py-3 tabular">{formatTasksPerMonth(route?.tasks_per_month)}</td>
+                  <td class="px-2 py-3 tabular">{formatDays(route?.days_for_full_run)}</td>
+                  <td class="px-2 py-3">
+                    <ConfidenceBadge level={route?.confidence ?? plan.confidence} />
+                  </td>
+                  <td class="px-2 py-3">
+                    <FreshnessBadge freshness={freshness} retrievedAt={plan.retrieved_at} />
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 </Page>

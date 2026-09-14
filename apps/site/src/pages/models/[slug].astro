@@ -1,8 +1,32 @@
 ---
 import type { Model } from "@rack-rate/core"
+import { freshnessOf, STALE_AFTER_DAYS } from "@rack-rate/core/freshness"
 
+import Badge from "../../components/Badge.astro"
+import CiBar from "../../components/CiBar.astro"
+import ConfidenceBadge from "../../components/ConfidenceBadge.astro"
+import CostBasisChip from "../../components/CostBasisChip.astro"
+import FreshnessBadge from "../../components/FreshnessBadge.astro"
+import SourceLink from "../../components/SourceLink.astro"
 import Page from "../../layouts/Page.astro"
-import { models } from "../../lib/data.ts"
+import {
+  badgeByPair,
+  benchmarks,
+  derivedGeneratedAt,
+  models,
+  pairKey,
+  routesByModel,
+} from "../../lib/data.ts"
+import {
+  formatCount,
+  formatDays,
+  formatPercent,
+  formatTasksPerMonth,
+  formatTokens,
+  formatUsd,
+  formatUsdPerTask,
+} from "../../lib/format.ts"
+import { href } from "../../lib/url.ts"
 
 export function getStaticPaths() {
   return models.map((model) => ({ params: { slug: model.id }, props: { model } }))
@@ -13,6 +37,23 @@ interface Props {
 }
 
 const { model } = Astro.props
+
+const routes = routesByModel.get(model.id) ?? []
+
+const effortVariants = model.effort_variants ?? []
+
+const bestRoute = routes[0]
+
+const bestRouteBadge =
+  bestRoute === undefined ? undefined : badgeByPair.get(pairKey(model.id, bestRoute.plan_id))
+
+const freshness = bestRouteBadge?.freshness ?? freshnessOf(model.retrieved_at, derivedGeneratedAt)
+
+const benchmarkRows = benchmarks.flatMap((benchmark) => {
+  const row = benchmark.rows.find((candidate) => candidate.model_id === model.id)
+
+  return row === undefined ? [] : [{ benchmark, row }]
+})
 ---
 
 <Page
@@ -22,6 +63,206 @@ const { model } = Astro.props
   lede={model.provider ?? "Provider not identified by the upstream source."}
 >
   <p class="mt-6 text-meta text-dim">
-    Route skeleton — the score profile, effort ladder, priced plan routes and provenance rail land in Stage 4 of the build plan.
+    {model.name} has {benchmarkRows.length} committed benchmark rows across {benchmarks.length} benchmark
+    versions and {routes.length} priced plan routes; its headline score is {formatPercent(model.score_pct)}
+    at {model.benchmark_version}.
   </p>
+
+  <div class="mt-8 space-y-10">
+    <section>
+      <h2 class="text-title">Score profile</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="border border-rule bg-panel p-4">
+          <h3 class="font-semibold">pass@1 score</h3>
+          <p class="mt-2 tabular text-2xl">{formatPercent(model.score_pct)}</p>
+          <!-- Model-level ci_lo and ci_hi are 0-1 fractions; CiBar converts them to percent text. -->
+          <CiBar
+            class="mt-4"
+            value={model.score_pct / 100}
+            lo={model.ci_lo}
+            hi={model.ci_hi}
+            ciScale="fraction"
+            method={model.ci_method}
+          />
+          <p class="mt-3 text-meta text-dim">
+            Scored at <Badge>{model.benchmark_version}</Badge> over {formatCount(model.n_tasks_attempted)}
+            attempted tasks.
+          </p>
+          <p class="mt-2 flex flex-wrap items-center gap-2 text-meta">
+            API cost per task: {formatUsdPerTask(model.api_cost_per_task_usd)}
+            <CostBasisChip basis="api-list" unit="per-task" status={model.cost_basis} />
+          </p>
+        </div>
+
+        <div class="border border-rule bg-panel p-4">
+          <h3 class="font-semibold">pass@4 — display only, never part of a composite</h3>
+          <p class="mt-2 tabular text-2xl">{formatPercent(model.score_pass_at_4_pct)}</p>
+          <p class="mt-3 text-meta text-dim">
+            This display-only pass@4 value is separate from the pass@1 score and all composite inputs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-title">Effort ladder</h2>
+      {effortVariants.length > 0 ? (
+        <div class="mt-4 overflow-x-auto">
+          <table class="w-full min-w-full text-left text-meta">
+            <thead class="border-b border-rule text-dim">
+              <tr>
+                <th class="px-2 py-2 font-medium">effort</th>
+                <th class="px-2 py-2 text-right font-medium">score</th>
+                <th class="px-2 py-2 text-right font-medium">API $/task</th>
+                <th class="px-2 py-2 text-right font-medium">input tokens</th>
+                <th class="px-2 py-2 text-right font-medium">output tokens</th>
+                <th class="px-2 py-2 text-right font-medium">steps</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-rule">
+              {effortVariants.map((variant) => (
+                <tr>
+                  <th class="px-2 py-2 font-medium">{variant.reasoning_effort}</th>
+                  <td class="px-2 py-2 text-right tabular">{formatPercent(variant.score_pct)}</td>
+                  <td class="px-2 py-2 text-right tabular">
+                    {formatUsdPerTask(variant.api_cost_per_task_usd)}
+                    <CostBasisChip basis="api-list" unit="per-task" />
+                  </td>
+                  <td class="px-2 py-2 text-right tabular">
+                    {formatTokens(variant.input_tokens_per_task)}
+                  </td>
+                  <td class="px-2 py-2 text-right tabular">
+                    {formatTokens(variant.output_tokens_per_task)}
+                  </td>
+                  <td class="px-2 py-2 text-right tabular">
+                    {formatCount(variant.agent_steps_per_task)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="mt-4 text-body">
+          Upstream published no other effort level for this model; the committed row is the
+          highest-scoring effort.
+        </p>
+      )}
+    </section>
+
+    <section>
+      <h2 class="text-title">Priced plan routes</h2>
+      {routes.length > 0 ? (
+        <div class="mt-4 overflow-x-auto">
+          <table class="w-full min-w-full text-left text-meta">
+            <thead class="border-b border-rule text-dim">
+              <tr>
+                <th class="px-2 py-2 font-medium">plan</th>
+                <th class="px-2 py-2 font-medium">provider</th>
+                <th class="px-2 py-2 text-right font-medium">price/month</th>
+                <th class="px-2 py-2 text-right font-medium">tasks/month</th>
+                <th class="px-2 py-2 text-right font-medium">cost/task</th>
+                <th class="px-2 py-2 text-right font-medium">days for full run</th>
+                <th class="px-2 py-2 font-medium">confidence</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-rule">
+              {routes.map((route) => (
+                <tr>
+                  <th class="px-2 py-2 font-medium">{route.plan_name}</th>
+                  <td class="px-2 py-2">{route.provider}</td>
+                  <td class="px-2 py-2 text-right tabular">
+                    <span class="inline-flex flex-wrap items-center justify-end gap-1">
+                      {formatUsd(route.price_usd_month)}
+                      <CostBasisChip
+                        basis="plan-route"
+                        planName={route.plan_name}
+                        unit="per-month"
+                      />
+                    </span>
+                  </td>
+                  <td class="px-2 py-2 text-right tabular">{formatTasksPerMonth(route.tasks_per_month)}</td>
+                  <td class="px-2 py-2 text-right tabular">
+                    <span class="inline-flex flex-wrap items-center justify-end gap-1">
+                      {formatUsdPerTask(route.cost_per_task_usd)}
+                      <CostBasisChip
+                        basis="plan-route"
+                        planName={route.plan_name}
+                        unit="per-task"
+                      />
+                    </span>
+                  </td>
+                  <td class="px-2 py-2 text-right tabular">{formatDays(route.days_for_full_run)}</td>
+                  <td class="px-2 py-2"><ConfidenceBadge level={route.confidence} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="mt-4 text-body">
+          {model.provider === null
+            ? "No committed plan prices this model because no provider is identified by the upstream source."
+            : "No committed plan prices this model."}
+        </p>
+      )}
+    </section>
+
+    <section>
+      <h2 class="text-title">Provenance rail</h2>
+      <div class="mt-4 space-y-4 text-body">
+        <p>
+          Model evidence:{" "}
+          {model.evidence.map((id, index) => (
+            <>
+              {index > 0 ? ", " : null}
+              <SourceLink id={id} />
+            </>
+          ))}
+        </p>
+        <p>
+          The route cost is <code>cost_per_task_usd = price_usd_month / tasks_per_month</code>,
+          rounded with the core <code>roundHalfEven</code> operation to four decimal places. See the{" "}
+          <a class="text-api-ink underline decoration-rule underline-offset-2" href={href("/method")}>
+            method page
+          </a>
+          .
+        </p>
+        <p>
+          <code>days_for_full_run = task_count / tasks_per_day</code>. The rolling-window branch
+          applies only when a plan publishes both <code>rolling_window_hours</code> and{" "}
+          <code>rolling_window_usd</code>.
+        </p>
+        <p class="text-meta text-dim">
+          Freshness uses the shared {STALE_AFTER_DAYS}-day threshold against the committed
+          generation reference rather than a wall-clock date.
+        </p>
+        <FreshnessBadge freshness={freshness} retrievedAt={model.retrieved_at} />
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-title">Outbound benchmarks</h2>
+      {benchmarkRows.length > 0 ? (
+        <ul class="mt-4 space-y-2 text-body">
+          {benchmarkRows.map(({ benchmark, row }) => (
+            <li>
+              <a
+                class="text-api-ink underline decoration-rule underline-offset-2"
+                href={benchmark.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {benchmark.title}: {formatPercent(row.score)}
+                <span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="mt-4 text-body">No committed benchmark has a row for this model.</p>
+      )}
+    </section>
+  </div>
 </Page>
+

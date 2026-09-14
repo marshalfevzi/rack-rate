@@ -1,9 +1,15 @@
 ---
 import Page from "../layouts/Page.astro"
+import HeatmapSection from "../components/HeatmapSection.astro"
+import SlopeSection from "../components/SlopeSection.astro"
+import WaterfallSection from "../components/WaterfallSection.astro"
+import RadarSection from "../components/RadarSection.astro"
 
 import {
   apiFrontier,
   benchmarks,
+  bestRouteByModel,
+  compositeWeights,
   frontierByPlan,
   models,
   plansById,
@@ -14,6 +20,9 @@ import {
   encodeParetoPayload,
 } from "../lib/charts/pareto-payload.ts"
 import { buildBumpPayload, bumpAriaLabel, encodeBumpPayload } from "../lib/charts/bump-payload.ts"
+import type { BenchmarkSample } from "@rack-rate/core/normalize"
+import type { Model } from "@rack-rate/core"
+import { zScores } from "@rack-rate/core/normalize"
 import { costBasisTerm } from "../lib/provenance.ts"
 import { href } from "../lib/url.ts"
 
@@ -47,6 +56,96 @@ const firstPlanView = planViews[0]
 
 const selectedPlanId = firstPlanView?.planId ?? ""
 
+const builderBenchmarks = benchmarks.map((benchmark) => {
+  const samples: BenchmarkSample[] = []
+
+  for (const row of benchmark.rows) {
+    const sample: BenchmarkSample = { model_id: row.model_id, score: row.score }
+
+    if (row.ci_lo !== undefined) {
+      sample.ci_lo = row.ci_lo
+    }
+
+    if (row.ci_hi !== undefined) {
+      sample.ci_hi = row.ci_hi
+    }
+
+    samples.push(sample)
+  }
+
+  const normalized = zScores(benchmark.id, benchmark.version, samples)
+
+  return {
+    id: benchmark.id,
+    version: benchmark.version,
+    title: benchmark.title,
+    rows: normalized.rows.map((row) => ({
+      model_id: row.model_id,
+      score: row.score,
+      z: row.z,
+    })),
+  }
+})
+
+const builderWeightTotal = benchmarks.reduce(
+  (total, benchmark) => total + (compositeWeights[benchmark.id] ?? 0),
+  0,
+)
+
+const builderInitialWeights = benchmarks.map((benchmark) => {
+  const configuredWeight = compositeWeights[benchmark.id] ?? 0
+
+  return builderWeightTotal > 0
+    ? Math.round(((configuredWeight / builderWeightTotal) * 100) / 5) * 5
+    : 0
+})
+
+const builderModels = models.map((model) => ({
+  id: model.id,
+  name: model.name,
+  provider: model.provider,
+  reasoning_effort: model.reasoning_effort,
+  api_cost_per_task_usd: model.api_cost_per_task_usd,
+  tokens_per_task: model.input_tokens_per_task + model.output_tokens_per_task,
+  steps_per_task: model.agent_steps_per_task,
+  plan_cost_per_task_usd: bestRouteByModel.get(model.id)?.cost_per_task_usd ?? null,
+}))
+
+const builderPayload = {
+  models: builderModels,
+  benchmarks: builderBenchmarks,
+  initial_weights: builderInitialWeights,
+}
+
+const encodedBuilderPayload = JSON.stringify(builderPayload).replaceAll("<", "\\u003c")
+
+const builderFirstBenchmark = benchmarks[0]
+
+if (builderFirstBenchmark === undefined) {
+  throw new Error("Explore page needs at least one committed benchmark")
+}
+
+const builderVendors = Array.from(
+  new Set(
+    models
+      .map((model) => model.provider)
+      .filter((provider): provider is string => provider !== null),
+  ),
+).sort()
+
+const builderEfforts = Array.from(
+  new Set(
+    models
+      .map((model) => model.reasoning_effort)
+      .filter((effort): effort is NonNullable<Model["reasoning_effort"]> => effort !== null),
+  ),
+).sort()
+
+const builderWeightSummary = benchmarks
+  .map((benchmark, index) => `${benchmark.title} ${builderInitialWeights[index] ?? 0}%`)
+  .join(", ")
+
+const builderHeadline = `${models.length} committed models across ${benchmarks.length} benchmark versions; starts with ${builderFirstBenchmark.title} score versus ${apiTitle}, with weights ${builderWeightSummary}.`
 ---
 
 <Page
@@ -66,7 +165,7 @@ const selectedPlanId = firstPlanView?.planId ?? ""
       <label class="text-body"><input type="radio" name="pareto-basis" value="api-list" checked />{" "}API list</label>
       <label class="text-body"><input type="radio" name="pareto-basis" value="plan-route" />{" "}Plan route</label>
       <label for="pareto-plan" class="text-body">Plan</label>
-      <select id="pareto-plan" class="text-body" aria-label="Plan for the route cost basis">
+      <select id="pareto-plan" class="min-w-0 max-w-full text-body" aria-label="Plan for the route cost basis">
         {planViews.map((view) => (
           <option value={view.planId} selected={view.planId === selectedPlanId}>{view.planName}</option>
         ))}
@@ -108,7 +207,119 @@ const selectedPlanId = firstPlanView?.planId ?? ""
     </noscript>
   </section>
 
-  <p class="mt-6 text-meta text-dim">Route skeleton — the metric pickers, filters, chart-type switch, URL-shared configuration and composite weight sliders land in Stage 4.13 of the build plan.</p>
+  <HeatmapSection />
+
+  <SlopeSection />
+
+  <WaterfallSection />
+
+  <RadarSection />
+
+  <section class="mt-12" aria-labelledby="builder-title">
+    <h2 id="builder-title" class="text-title">Metric builder</h2>
+    <p class="mt-2 text-meta text-dim">{builderHeadline}</p>
+
+    <div class="mt-4 flex flex-wrap gap-4">
+      <label for="builder-y" class="text-body">Y metric</label>
+      <select id="builder-y" class="min-w-0 max-w-full text-body">
+        {benchmarks.map((benchmark, index) => (
+          <option value={`score:${benchmark.id}`} selected={index === 0}>{benchmark.title} score</option>
+        ))}
+        <option value="composite">Composite T</option>
+        <option value="tokens">Tokens per task</option>
+        <option value="steps">Steps per task</option>
+      </select>
+
+      <label for="builder-x" class="text-body">X metric</label>
+      <select id="builder-x" class="min-w-0 max-w-full text-body">
+        <option value="api-cost" selected>API list $/task</option>
+        <option value="plan-cost">Plan-adjusted $/task (plan route; model's cheapest committed route)</option>
+        <option value="tokens">Tokens per task</option>
+        <option value="steps">Steps per task</option>
+        {benchmarks.map((benchmark) => (
+          <option value={`score:${benchmark.id}`}>{benchmark.title} score</option>
+        ))}
+      </select>
+
+      <label for="builder-type" class="text-body">Chart type</label>
+      <select id="builder-type" class="min-w-0 max-w-full text-body">
+        <option value="scatter" selected>scatter</option>
+        <option value="line">line</option>
+        <option value="bar">bar</option>
+      </select>
+
+      <label for="builder-vendor" class="text-body">Vendor</label>
+      <select id="builder-vendor" class="min-w-0 max-w-full text-body">
+        <option value="" selected>All vendors</option>
+        {builderVendors.map((vendor) => <option value={vendor}>{vendor}</option>)}
+      </select>
+
+      <label for="builder-effort" class="text-body">Reasoning effort</label>
+      <select id="builder-effort" class="min-w-0 max-w-full text-body">
+        <option value="" selected>Any effort</option>
+        {builderEfforts.map((effort) => <option value={effort}>{effort}</option>)}
+      </select>
+
+      <label for="builder-floor" class="text-body">Score floor</label>
+      <input id="builder-floor" class="text-body w-20" type="number" min="0" max="100" step="1" value="0" />
+
+      <label for="builder-scale" class="text-body">
+        <input id="builder-scale" type="checkbox" />
+        {" "}log x axis
+      </label>
+
+      <label for="builder-frontier" class="text-body">
+        <input id="builder-frontier" type="checkbox" checked />
+        {" "}draw the Pareto frontier and dominated region
+      </label>
+    </div>
+
+    <p id="builder-frontier-note" class="mt-2 text-meta text-dim" hidden></p>
+
+    <fieldset class="mt-4">
+      <legend class="text-meta text-dim">Composite weights</legend>
+      <div class="mt-2 flex flex-wrap gap-4">
+        {benchmarks.map((benchmark, index) => (
+          <div class="flex items-center gap-2">
+            <label for={`builder-weight-${benchmark.id}`} class="text-body">{benchmark.title}</label>
+            <input
+              id={`builder-weight-${benchmark.id}`}
+              data-builder-weight
+              type="range"
+              min="0"
+              max="100"
+              step="5"
+              value={builderInitialWeights[index] ?? 0}
+            />
+            <output id={`builder-weight-value-${benchmark.id}`} for={`builder-weight-${benchmark.id}`} class="text-meta tabular">{builderInitialWeights[index] ?? 0}%</output>
+          </div>
+        ))}
+      </div>
+      <output id="builder-weights-output" class="mt-2 block text-meta text-dim">{builderWeightSummary}</output>
+      {/* Research presets include AA-Coding, but Artificial Analysis is not committed; each preset renormalizes over the committed benchmark ids. */}
+      <div class="mt-2 flex flex-wrap gap-2">
+        <button type="button" data-builder-preset="coding-heavy" class="text-body border border-rule px-2 py-1">Coding-heavy</button>
+        <button type="button" data-builder-preset="balanced" class="text-body border border-rule px-2 py-1">Balanced</button>
+        <button type="button" data-builder-preset="agentic" class="text-body border border-rule px-2 py-1">Agentic</button>
+      </div>
+    </fieldset>
+
+    <h3 id="builder-chart-title" class="mt-6 text-title">Metric builder</h3>
+    <div
+      id="builder-chart"
+      class="mt-4 h-80 w-full sm:h-[26rem]"
+      role="img"
+      aria-labelledby="builder-chart-title"
+    ></div>
+    <p id="builder-note" class="mt-2 text-meta text-dim">The chart is drawn in the browser.</p>
+    <p id="builder-live" class="mt-2 text-meta text-dim" aria-live="polite">{builderHeadline}</p>
+
+    <script id="builder-data" type="application/json" is:inline set:html={encodedBuilderPayload}></script>
+
+    <noscript>
+      <p class="mt-2 text-body">The configurable chart is drawn in the browser; the committed metrics and methods remain available on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+    </noscript>
+  </section>
 </Page>
 
 <script>
@@ -133,6 +344,20 @@ const selectedPlanId = firstPlanView?.planId ?? ""
       .then((chart) => chart.startBumpChart(bumpHost))
       .catch(() => {
         const note = document.getElementById("bump-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+
+  const builderHost = document.getElementById("builder-chart")
+
+  if (builderHost !== null) {
+    void import("../lib/charts/builder-page.ts")
+      .then((chart) => chart.startBuilder(builderHost))
+      .catch(() => {
+        const note = document.getElementById("builder-note")
 
         if (note !== null) {
           note.textContent = "The chart could not be drawn; the static description remains available."

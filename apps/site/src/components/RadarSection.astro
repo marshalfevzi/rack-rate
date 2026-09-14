@@ -1,0 +1,79 @@
+---
+import { href } from "../lib/url.ts"
+import {
+  OVERLAY_LIMIT,
+  buildRadarPayload,
+  encodeRadarPayload,
+  radarAriaLabel,
+  radarEligibleModels,
+  radarNote,
+} from "../lib/charts/radar-payload.ts"
+import { models, plans, benchmarks } from "../lib/data.ts"
+
+const payload = buildRadarPayload({ models, plans, benchmarks })
+
+const selectedPlan = payload.plans[0]
+
+if (selectedPlan === undefined) {
+  throw new Error("Radar section needs at least one available plan")
+}
+
+const encodedPayload = encodeRadarPayload(payload)
+
+const initialSeriesCount = Math.min(radarEligibleModels(payload, selectedPlan).length, OVERLAY_LIMIT)
+
+const initialTitle = `per-index z for ${selectedPlan.name}`
+
+const initialNote = radarNote(payload, selectedPlan, initialSeriesCount)
+
+const initialAriaLabel = radarAriaLabel(payload, selectedPlan, initialSeriesCount)
+
+const headline = `${payload.models.length} models across ${payload.axes.length} committed benchmark versions; ${selectedPlan.modelIds.length} models are admitted by ${selectedPlan.name} across ${payload.axes.map((axis) => axis.label).join(" and ")}.`
+---
+
+<section class="mt-12" aria-labelledby="radar-title">
+  <h2 id="radar-title" class="text-title">{initialTitle}</h2>
+  <p class="mt-2 text-meta text-dim">{headline}</p>
+  <p class="mt-2 text-body">
+    Axes are per-benchmark z units bounded from −2 to +2, never raw percentages. The overlay shows
+    the models the selected plan's scope actually admits.
+  </p>
+  <div class="mt-4 flex flex-wrap items-center gap-4">
+    <label for="radar-plan" class="text-body">Plan</label>
+    <select id="radar-plan" class="min-w-0 max-w-full text-body" aria-label="Plan whose admitted models are overlaid">
+      {payload.plans.map((plan) => (
+        <option value={plan.id} selected={plan.id === selectedPlan.id}>{plan.name}</option>
+      ))}
+    </select>
+  </div>
+
+  <div
+    id="radar-chart"
+    class="mt-4 h-96 w-full sm:h-[28rem]"
+    role="img"
+    aria-label={initialAriaLabel}
+  ></div>
+  <p id="radar-note" class="mt-2 text-meta text-dim">{initialNote}</p>
+
+  <script id="radar-data" type="application/json" is:inline set:html={encodedPayload}></script>
+
+  <noscript>
+    <p class="mt-2 text-body">The chart is drawn in the browser; the benchmark z-scores and plan scopes are documented on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+  </noscript>
+</section>
+
+<script>
+  const host = document.getElementById("radar-chart")
+
+  if (host !== null) {
+    void import("../lib/charts/radar-page.ts")
+      .then((chart) => chart.startRadarChart(host))
+      .catch(() => {
+        const note = document.getElementById("radar-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+</script>

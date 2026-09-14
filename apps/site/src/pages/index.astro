@@ -1,5 +1,157 @@
 ---
+import CostBasisChip from "../components/CostBasisChip.astro"
+import ConfidenceBadge from "../components/ConfidenceBadge.astro"
 import Page from "../layouts/Page.astro"
+
+import {
+  apiFrontier,
+  bestRouteByModel,
+  benchmarks,
+  compositeByModel,
+  derived,
+  derivedKnownGaps,
+  models,
+  planKnownGaps,
+  plans,
+  routesByPlan,
+  tokenAllowances,
+} from "../lib/data.ts"
+import { buildWaterfallPayload } from "../lib/charts/waterfall-payload.ts"
+import { formatCount, formatMultiple, formatTasksPerMonth, formatUsd } from "../lib/format.ts"
+import { href } from "../lib/url.ts"
+
+const defaultTaskCount = 300
+
+interface BudgetPayloadRow {
+  planId: string
+  planName: string
+  provider: string
+  modelName: string | null
+  tasksPerMonth: number | null
+  priceUsdMonth: number
+  apiCostPerTaskUsd: number | null
+  reason?: string
+}
+
+interface BudgetPayload {
+  defaultTasks: number
+  rows: BudgetPayloadRow[]
+}
+
+interface BudgetDisplay {
+  cost: string
+  breakEven: string
+}
+
+// This calculator ports the deleted legacy site's behavior: Q is the committed
+// tasks_per_month, C_eff(T) is P when T <= Q and P + (T - Q) * C_api otherwise,
+// and T* is P / C_api only when T* <= Q; the same definitions are §5 in the
+// insight methodology.
+const plansById = new Map(plans.map((plan) => [plan.id, plan]))
+
+// One rule for both this table and /explore's burn-down chart: the measured
+// model when it has a route for the plan, else the plan's cheapest committed
+// route. Only a plan with no route at all keeps a reason, drawn from committed
+// data by the waterfall builder.
+const budgetWaterfall = buildWaterfallPayload({
+  plans,
+  routesByPlan,
+  knownGaps: [...planKnownGaps, ...derivedKnownGaps],
+})
+
+const budgetRows: BudgetPayloadRow[] = budgetWaterfall.plans.map((entry) => {
+  const row: BudgetPayloadRow = {
+    planId: entry.planId,
+    planName: entry.planName,
+    provider: entry.provider,
+    modelName: entry.modelName,
+    tasksPerMonth: entry.tasksPerMonth,
+    priceUsdMonth: entry.priceUsdMonth,
+    apiCostPerTaskUsd: entry.apiCostPerTaskUsd,
+  }
+
+  if (entry.reason !== null) {
+    row.reason = entry.reason
+  }
+
+  return row
+})
+
+const budgetPayload: BudgetPayload = {
+  defaultTasks: defaultTaskCount,
+  rows: budgetRows,
+}
+
+const encodedBudget = JSON.stringify(budgetPayload).replaceAll("<", "\\u003c")
+
+function budgetDisplay(row: BudgetPayloadRow, tasks: number): BudgetDisplay {
+  if (row.reason !== undefined) {
+    return { cost: row.reason, breakEven: "—" }
+  }
+
+  if (row.tasksPerMonth === null || row.apiCostPerTaskUsd === null) {
+    throw new Error(`Homepage budget row ${row.planId} has incomplete priced-route inputs`)
+  }
+
+  const cost =
+    tasks <= row.tasksPerMonth
+      ? row.priceUsdMonth
+      : row.priceUsdMonth + (tasks - row.tasksPerMonth) * row.apiCostPerTaskUsd
+
+  const breakEven = row.priceUsdMonth / row.apiCostPerTaskUsd
+
+  return {
+    cost: formatUsd(cost),
+    breakEven:
+      breakEven > row.tasksPerMonth ? "Never breaks even at list rates" : formatTasksPerMonth(breakEven),
+  }
+}
+
+const largestAllowance = tokenAllowances.reduce((largest, row) =>
+  row.value_multiple > largest.value_multiple ? row : largest,
+)
+
+const largestAllowanceModel = models.find((model) => model.id === largestAllowance.model_id)
+
+const largestAllowancePlan = plansById.get(largestAllowance.plan_id)
+
+if (largestAllowanceModel === undefined || largestAllowancePlan === undefined) {
+  throw new Error("Homepage needs names for the largest committed value multiple")
+}
+
+let topComposite:
+  | {
+      modelId: string
+      composite: number
+      k: number
+    }
+  | undefined
+
+for (const [modelId, row] of compositeByModel) {
+  if (
+    row.k >= 2 &&
+    row.composite !== null &&
+    (topComposite === undefined || row.composite > topComposite.composite)
+  ) {
+    topComposite = { modelId, composite: row.composite, k: row.k }
+  }
+}
+
+if (topComposite === undefined) {
+  throw new Error("Homepage needs a composite row with at least two benchmarks")
+}
+
+const topCompositeModel = models.find((model) => model.id === topComposite.modelId)
+
+if (topCompositeModel === undefined) {
+  throw new Error("Homepage needs a name for the top composite model")
+}
+
+const modelsWithoutPricedRoute = models.filter((model) => !bestRouteByModel.has(model.id)).length
+
+const unresolvedPlanCount = plans.filter((plan) => plan.quota_unresolved === true).length
+
+const benchmarkNames = benchmarks.map((benchmark) => benchmark.title).join(", ")
 ---
 
 <Page
@@ -8,7 +160,268 @@ import Page from "../layouts/Page.astro"
   heading="Which model should I use, and which plan pays for itself?"
   lede="Two questions answered from cited public data: which model to use, and which coding subscription is worth its price at your usage."
 >
-  <p class="mt-6 text-meta text-dim">
-    Route skeleton — the hero comparison, the budget calculator, the headline insights and the entry points into the detail pages land in Stage 4 of the build plan.
+  <p class="mt-2 text-meta text-dim">
+    {formatCount(models.length)} models across {formatCount(benchmarks.length)} benchmark versions;{" "}
+    {formatCount(apiFrontier.frontier.length)} are Pareto-optimal at API list prices.
   </p>
+
+  <section class="mt-6" aria-labelledby="headline-figures">
+    <h2 id="headline-figures" class="sr-only">Headline figures</h2>
+    <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <dt class="text-meta text-dim">Committed models</dt>
+        <dd class="mt-1 text-title">
+          <a href={href("/models")} class="text-ink underline decoration-rule underline-offset-2">
+            {formatCount(models.length)}
+          </a>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-meta text-dim">Benchmark versions</dt>
+        <dd class="mt-1 text-title">
+          <a href={href("/explore")} class="text-ink underline decoration-rule underline-offset-2">
+            {benchmarkNames}
+          </a>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-meta text-dim">Committed plans</dt>
+        <dd class="mt-1 text-title">
+          <a href={href("/plans")} class="text-ink underline decoration-rule underline-offset-2">
+            {formatCount(plans.length)}
+          </a>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-meta text-dim">API-list Pareto frontier</dt>
+        <dd class="mt-1 text-title">
+          <a href={href("/explore")} class="text-ink underline decoration-rule underline-offset-2">
+            {formatCount(apiFrontier.frontier.length)} of {formatCount(apiFrontier.points.length)} plotted
+          </a>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-meta text-dim">Largest value multiple</dt>
+        <dd class="mt-1 text-title">
+          <a href={href("/plans")} class="text-ink underline decoration-rule underline-offset-2">
+            {formatMultiple(largestAllowance.value_multiple)}
+          </a>
+          <span class="mt-1 block text-meta text-dim">
+            {largestAllowancePlan.name} · {largestAllowanceModel.name}
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="mt-12" aria-labelledby="budget-heading">
+    <h2 id="budget-heading" class="text-title">
+      What does a plan cost at <span id="budget-task-count" class="tabular">{formatTasksPerMonth(defaultTaskCount)}</span>{" "}
+      tasks/month?
+    </h2>
+    <p class="mt-2 text-body">
+      Enter a monthly task count. Inside each committed quota, the plan price is fixed; above it,
+      overage uses the measured model's API list rate. <CostBasisChip basis="api-list" unit="per-month" />
+    </p>
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+      <label for="budget-tasks" class="text-body">Tasks per month</label>
+      <input
+        id="budget-tasks"
+        class="w-32 rounded border border-rule bg-panel px-2 py-1 text-body tabular"
+        type="number"
+        min="0"
+        step="10"
+        value={defaultTaskCount}
+      />
+    </div>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full min-w-[42rem] text-left text-meta">
+        <thead class="border-b border-rule text-dim">
+          <tr>
+            <th class="px-2 py-2 font-medium">Plan</th>
+            <th class="px-2 py-2 font-medium">Model priced</th>
+            <th class="px-2 py-2 font-medium">
+              Effective monthly cost <CostBasisChip basis="api-list" unit="per-month" />
+            </th>
+            <th class="px-2 py-2 font-medium">Break-even tasks/month</th>
+          </tr>
+        </thead>
+        <tbody id="budget-results">
+          {budgetRows.map((row) => {
+            const plan = plansById.get(row.planId)
+
+            if (plan === undefined) {
+              throw new Error(`Homepage budget row has no plan ${row.planId}`)
+            }
+
+            const display = budgetDisplay(row, defaultTaskCount)
+
+            return (
+              <tr data-budget-plan={row.planId} class="border-b border-rule align-top">
+                <td class="px-2 py-2">
+                  <div class="text-ink">{row.planName}</div>
+                  <div class="mt-1 text-dim">{row.provider}</div>
+                  <ConfidenceBadge level={plan.confidence} />
+                </td>
+                <td class="px-2 py-2 text-dim">{row.modelName ?? "—"}</td>
+                <td class="px-2 py-2">
+                  <span
+                    id={`budget-cost-${row.planId}`}
+                    class={row.reason === undefined ? "tabular" : "text-dim"}
+                  >
+                    {display.cost}
+                  </span>
+                  {row.reason === undefined ? (
+                    <>
+                      {" "}
+                      <CostBasisChip basis="api-list" unit="per-month" />
+                    </>
+                  ) : null}
+                </td>
+                <td class="px-2 py-2">
+                  <span id={`budget-break-even-${row.planId}`} class="tabular">
+                    {display.breakEven}
+                  </span>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-2 text-meta text-dim">
+      Quota is never recomputed here: each Q is the plan's committed <code>tasks_per_month</code>
+      for its measured-against model. A missing route stays a reason, not a zero-dollar result.
+    </p>
+    <script id="budget-data" type="application/json" is:inline set:html={encodedBudget}></script>
+  </section>
+
+  <section class="mt-12" aria-labelledby="insights-heading">
+    <h2 id="insights-heading" class="text-title">Top insights</h2>
+    <div class="mt-4 space-y-2 text-body">
+      <p>
+        The largest committed value multiple is {formatMultiple(largestAllowance.value_multiple)}:
+        {largestAllowancePlan.name} for {largestAllowanceModel.name}.
+      </p>
+      <p>
+        The cross-check median ratio is {formatMultiple(derived.cross_check.summary.median_ratio)} across{" "}
+        {formatCount(derived.cross_check.summary.pair_count)} pairs, spanning{" "}
+        {formatMultiple(derived.cross_check.summary.min_ratio)} to{" "}
+        {formatMultiple(derived.cross_check.summary.max_ratio)}.
+      </p>
+      <p>
+        The highest composite among rows with at least two benchmark versions is{" "}
+        {formatCount(topComposite.composite)} index points for {topCompositeModel.name}, which has{" "}
+        {formatCount(topComposite.k)} benchmark versions in the composite.
+      </p>
+      <p>
+        {formatCount(modelsWithoutPricedRoute)} committed models have no priced plan route.
+      </p>
+      <p>{formatCount(unresolvedPlanCount)} committed plans leave their quota unresolved.</p>
+    </div>
+  </section>
+
+  <section class="mt-12" aria-labelledby="entry-points-heading">
+    <h2 id="entry-points-heading" class="text-title">Continue exploring</h2>
+    <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-body">
+      <li><a href={href("/models")} class="text-ink underline decoration-rule underline-offset-2">Models</a></li>
+      <li><a href={href("/plans")} class="text-ink underline decoration-rule underline-offset-2">Plans</a></li>
+      <li><a href={href("/compare")} class="text-ink underline decoration-rule underline-offset-2">Compare</a></li>
+      <li><a href={href("/explore")} class="text-ink underline decoration-rule underline-offset-2">Explore</a></li>
+      <li><a href={href("/method")} class="text-ink underline decoration-rule underline-offset-2">Method</a></li>
+      <li><a href={href("/sources")} class="text-ink underline decoration-rule underline-offset-2">Sources</a></li>
+    </ul>
+  </section>
 </Page>
+
+<script>
+  import { formatTasksPerMonth, formatUsd } from "../lib/format.ts"
+
+  interface BudgetPayloadRow {
+    planId: string
+    planName: string
+    provider: string
+    modelName: string | null
+    tasksPerMonth: number | null
+    priceUsdMonth: number
+    apiCostPerTaskUsd: number | null
+    reason?: string
+  }
+
+  interface BudgetPayload {
+    defaultTasks: number
+    rows: BudgetPayloadRow[]
+  }
+
+  const dataNode = document.getElementById("budget-data")
+
+  const input = document.getElementById("budget-tasks")
+
+  const taskCountNode = document.getElementById("budget-task-count")
+
+  const rowsBody = document.getElementById("budget-results")
+
+  if (dataNode !== null && input instanceof HTMLInputElement && rowsBody !== null) {
+    const encoded = dataNode.textContent
+
+    if (encoded === null) {
+      throw new Error("Homepage budget payload is empty")
+    }
+
+    // SAFETY: this string is written by this page's own frontmatter in the same
+    // build, so no external producer can reach this client decoder; fields are not
+    // revalidated.
+    const payload = JSON.parse(encoded) as BudgetPayload
+
+    const render = (tasks: number): void => {
+      if (taskCountNode !== null) {
+        taskCountNode.textContent = formatTasksPerMonth(tasks)
+      }
+
+      for (const row of payload.rows) {
+        const costNode = document.getElementById(`budget-cost-${row.planId}`)
+        const breakEvenNode = document.getElementById(`budget-break-even-${row.planId}`)
+
+        if (costNode === null || breakEvenNode === null) {
+          throw new Error(`Homepage budget row is missing DOM nodes for ${row.planId}`)
+        }
+
+        if (row.reason !== undefined) {
+          costNode.textContent = row.reason
+          breakEvenNode.textContent = "—"
+          continue
+        }
+
+        if (row.tasksPerMonth === null || row.apiCostPerTaskUsd === null) {
+          throw new Error(`Homepage budget row ${row.planId} has incomplete priced-route inputs`)
+        }
+
+        const cost =
+          tasks <= row.tasksPerMonth
+            ? row.priceUsdMonth
+            : row.priceUsdMonth + (tasks - row.tasksPerMonth) * row.apiCostPerTaskUsd
+
+        const breakEven = row.priceUsdMonth / row.apiCostPerTaskUsd
+
+        costNode.textContent = formatUsd(cost)
+        breakEvenNode.textContent =
+          breakEven > row.tasksPerMonth
+            ? "Never breaks even at list rates"
+            : formatTasksPerMonth(breakEven)
+      }
+    }
+
+    input.addEventListener("input", () => {
+      const value = input.valueAsNumber
+
+      if (!Number.isFinite(value) || value < 0) {
+        return
+      }
+
+      render(value)
+    })
+
+    render(payload.defaultTasks)
+  }
+</script>
+

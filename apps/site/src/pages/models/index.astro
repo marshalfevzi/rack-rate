@@ -1,5 +1,37 @@
 ---
 import Page from "../../layouts/Page.astro"
+import CiBar from "../../components/CiBar.astro"
+import CostBasisChip from "../../components/CostBasisChip.astro"
+import ConfidenceBadge from "../../components/ConfidenceBadge.astro"
+import FreshnessBadge from "../../components/FreshnessBadge.astro"
+import {
+  badgeByPair,
+  benchmarks,
+  bestRouteByModel,
+  compositeByModel,
+  models,
+  pairKey,
+  tokenAllowanceByPair,
+} from "../../lib/data.ts"
+import {
+  formatCount,
+  formatDays,
+  formatMultiple,
+  formatPercent,
+  formatUsdPerTask,
+  MISSING,
+} from "../../lib/format.ts"
+import { href } from "../../lib/url.ts"
+
+const vendors = Array.from(
+  new Set(
+    models.flatMap((model) => (model.provider === null ? [] : [model.provider])),
+  ),
+).sort((left, right) => left.localeCompare(right))
+
+const pricedRouteCount = models.filter((model) => bestRouteByModel.has(model.id)).length
+
+const benchmarkVersions = benchmarks.map((benchmark) => benchmark.version).join(", ")
 ---
 
 <Page
@@ -8,7 +40,287 @@ import Page from "../../layouts/Page.astro"
   heading="Models"
   lede="One row per model: benchmark score, the cheapest plan that actually runs it, cost per task under that plan, and days for a full benchmark run."
 >
-  <p class="mt-6 text-meta text-dim">
-    Route skeleton — the sortable, filterable model table lands in Stage 4 of the build plan.
+  <p class="mt-2 text-meta text-dim">
+    {formatCount(models.length)} models span {formatCount(benchmarks.length)} committed benchmark versions ({benchmarkVersions});{" "}
+    {formatCount(pricedRouteCount)} have a usable priced plan route and{" "}
+    {formatCount(models.length - pricedRouteCount)} do not.
   </p>
+
+  <div class="mt-6 flex flex-wrap gap-4">
+    <label for="models-filter" class="text-body">
+      <span class="mr-2">Name or provider</span>
+      <input
+        id="models-filter"
+        type="search"
+        class="rounded border border-rule bg-panel px-2 py-1"
+        autocomplete="off"
+      />
+    </label>
+    <label for="models-vendor" class="text-body">
+      <span class="mr-2">Vendor</span>
+      <select id="models-vendor" class="rounded border border-rule bg-panel px-2 py-1">
+        <option value="">All vendors</option>
+        {vendors.map((vendor) => <option value={vendor}>{vendor}</option>)}
+      </select>
+    </label>
+    <label for="models-floor" class="text-body">
+      <span class="mr-2">Score floor</span>
+      <input
+        id="models-floor"
+        type="number"
+        min="0"
+        max="100"
+        step="1"
+        class="w-20 rounded border border-rule bg-panel px-2 py-1 tabular"
+      />
+    </label>
+  </div>
+
+  <div class="mt-4 overflow-x-auto">
+    <table class="w-full text-body" id="models-table">
+      <caption class="sr-only">
+        Models with pass@1 score and confidence interval, pass@4 score, API-list cost per task,
+        cheapest usable plan, value multiple, days to full run, reasoning effort, and coverage
+        badges.
+      </caption>
+      <thead>
+        <tr class="border-b border-rule text-left text-meta text-dim">
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="name">Model</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="score">Score (pass@1)</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="pass4">Pass@4</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="api-cost">API list cost/task</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="plan">Cheapest usable plan</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="multiple">Value multiple</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="days">Days to full run</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="effort">Effort</button>
+          </th>
+          <th scope="col" class="px-2 py-2">
+            <button type="button" data-sort="composite">Composite coverage</button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {models.map((model) => {
+          const route = bestRouteByModel.get(model.id)
+          const pair = route === undefined ? undefined : pairKey(model.id, route.plan_id)
+          const allowance = pair === undefined ? undefined : tokenAllowanceByPair.get(pair)
+          const badge = pair === undefined ? undefined : badgeByPair.get(pair)
+          const composite = compositeByModel.get(model.id)
+
+          return (
+            <tr
+              class="border-b border-rule align-top"
+              data-name={model.name}
+              data-vendor={model.provider ?? "provider not identified"}
+              data-score={model.score_pct}
+              data-pass4={model.score_pass_at_4_pct}
+              data-api-cost={model.api_cost_per_task_usd}
+              data-plan={route?.plan_name ?? ""}
+              data-multiple={allowance?.value_multiple ?? ""}
+              data-days={route?.days_for_full_run ?? ""}
+              data-effort={model.reasoning_effort ?? ""}
+              data-composite={composite?.composite ?? ""}
+            >
+              <td class="px-2 py-3">
+                <a
+                  href={href(`/models/${model.id}`)}
+                  class="text-ink underline decoration-rule underline-offset-2"
+                >
+                  {model.name}
+                </a>
+                <span class="block text-meta text-dim">
+                  {model.provider ?? "provider not identified"}
+                </span>
+              </td>
+              <td class="px-2 py-3 tabular">
+                <span>{formatPercent(model.score_pct)}</span>
+                {/*
+                  Model CI bounds are 0–1 fractions, so score_pct is divided by 100 for CiBar.
+                  BenchmarkRow bounds are 0–100.
+                */}
+                <CiBar
+                  value={model.score_pct / 100}
+                  lo={model.ci_lo}
+                  hi={model.ci_hi}
+                  ciScale="fraction"
+                  method={model.ci_method}
+                  class="mt-2 min-w-24"
+                />
+              </td>
+              <td class="px-2 py-3 tabular text-dim">
+                {formatPercent(model.score_pass_at_4_pct)}
+              </td>
+              <td class="px-2 py-3 tabular">
+                <span>{formatUsdPerTask(model.api_cost_per_task_usd)}</span>{" "}
+                <CostBasisChip basis="api-list" unit="per-task" status={model.cost_basis} />
+              </td>
+              <td class="px-2 py-3">
+                {route ? (
+                  <a
+                    href={href(`/plans/${route.plan_id}`)}
+                    class="text-ink underline decoration-rule underline-offset-2"
+                  >
+                    {route.plan_name}
+                  </a>
+                ) : (
+                  <>
+                    <span class="tabular">{MISSING}</span>{" "}
+                    <span class="text-meta text-dim">no priced route</span>
+                  </>
+                )}
+              </td>
+              <td class="px-2 py-3 tabular">
+                {formatMultiple(allowance?.value_multiple)}
+              </td>
+              <td class="px-2 py-3 tabular">{formatDays(route?.days_for_full_run)}</td>
+              <td class="px-2 py-3">{model.reasoning_effort ?? MISSING}</td>
+              <td class="px-2 py-3 tabular">
+                <div class="flex flex-wrap gap-1">
+                  {route ? <ConfidenceBadge level={route.confidence} /> : null}
+                  {badge ? (
+                    <FreshnessBadge freshness={badge.freshness} retrievedAt={model.retrieved_at} />
+                  ) : null}
+                </div>
+                <div class="mt-1 text-meta text-dim">
+                  {composite === undefined
+                    ? MISSING
+                    : composite.badge === "single-source"
+                      ? "single-source"
+                      : composite.composite === null
+                        ? MISSING
+                        : `T ${formatCount(composite.composite)} · k=${formatCount(composite.k)}`}
+                </div>
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  </div>
 </Page>
+
+<script>
+  const startModelsTable = () => {
+    const filter = document.getElementById("models-filter")
+    const vendor = document.getElementById("models-vendor")
+    const floor = document.getElementById("models-floor")
+    const table = document.getElementById("models-table")
+
+    if (
+      filter === null ||
+      vendor === null ||
+      floor === null ||
+      table === null ||
+      !(filter instanceof HTMLInputElement) ||
+      !(vendor instanceof HTMLSelectElement) ||
+      !(floor instanceof HTMLInputElement)
+    ) {
+      return
+    }
+
+    const body = table.querySelector("tbody")
+
+    if (body === null) {
+      return
+    }
+
+    const rows = () => Array.from(body.querySelectorAll("tr"))
+    const headers = Array.from(table.querySelectorAll("th"))
+    let activeKey = ""
+    let descending = false
+
+    const applyFilters = () => {
+      const query = filter.value.trim().toLocaleLowerCase()
+      const selectedVendor = vendor.value
+      const floorValue = Number.parseFloat(floor.value)
+
+      for (const row of rows()) {
+        const name = row.getAttribute("data-name")?.toLocaleLowerCase() ?? ""
+        const rowVendor = row.getAttribute("data-vendor") ?? ""
+        const score = Number.parseFloat(row.getAttribute("data-score") ?? "")
+
+        const matchesQuery =
+          query === "" || `${name} ${rowVendor.toLocaleLowerCase()}`.includes(query)
+
+        const matchesVendor = selectedVendor === "" || rowVendor === selectedVendor
+
+        const matchesFloor =
+          !Number.isFinite(floorValue) || !Number.isFinite(score) || score >= floorValue
+
+        row.hidden = !(matchesQuery && matchesVendor && matchesFloor)
+      }
+    }
+
+    for (const control of [filter, vendor, floor]) {
+      control.addEventListener("input", applyFilters)
+      control.addEventListener("change", applyFilters)
+    }
+
+    for (const button of table.querySelectorAll("button[data-sort]")) {
+      button.addEventListener("click", () => {
+        const key = button.getAttribute("data-sort")
+
+        if (key === null) {
+          return
+        }
+
+        if (activeKey === key) {
+          descending = !descending
+        } else {
+          activeKey = key
+          descending = false
+        }
+
+        const direction = descending ? -1 : 1
+
+        rows()
+          .sort((left, right) => {
+            const leftValue = left.getAttribute(`data-${key}`) ?? ""
+            const rightValue = right.getAttribute(`data-${key}`) ?? ""
+            const leftNumber = Number.parseFloat(leftValue)
+            const rightNumber = Number.parseFloat(rightValue)
+
+            if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) {
+              return (leftNumber - rightNumber) * direction
+            }
+
+            return (
+              leftValue.localeCompare(rightValue, undefined, {
+                numeric: true,
+                sensitivity: "base",
+              }) * direction
+            )
+          })
+          .forEach((row) => body.append(row))
+
+        for (const header of headers) {
+          header.removeAttribute("aria-sort")
+        }
+
+        const header = button.closest("th")
+
+        if (header !== null) {
+          header.setAttribute("aria-sort", descending ? "descending" : "ascending")
+        }
+      })
+    }
+  }
+
+  startModelsTable()
+</script>
+

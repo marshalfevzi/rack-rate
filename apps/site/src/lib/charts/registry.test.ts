@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test"
 import type { ChartOption } from "./registry.ts"
 import { unregisteredSeriesTypes } from "./registry.ts"
 
-// The registry starts with scatter and line rows; each later family stage adds
-// its own row and its own `use()`d install (4.4 heatmap, 4.6 bar, 4.7 radar).
+// All five Stage-4 series families are registered: scatter and line (4.2),
+// heatmap (4.4), bar (4.6), radar (4.7).
 
 describe("unregisteredSeriesTypes", () => {
   test("names a series type that no row registers", () => {

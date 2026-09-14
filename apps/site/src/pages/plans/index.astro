@@ -1,5 +1,108 @@
 ---
+import type { Plan } from "@rack-rate/core"
+
+import CostBasisChip from "../../components/CostBasisChip.astro"
+import ConfidenceBadge from "../../components/ConfidenceBadge.astro"
 import Page from "../../layouts/Page.astro"
+import {
+  models,
+  modelsById,
+  planKnownGaps,
+  plans,
+  routesByPlan,
+  tokenAllowances,
+} from "../../lib/data.ts"
+import {
+  formatCount,
+  formatDays,
+  formatMultiple,
+  formatTokens,
+  formatUsd,
+  formatUsdPerTask,
+  MISSING,
+} from "../../lib/format.ts"
+import { href } from "../../lib/url.ts"
+import { modelAllowed } from "@rack-rate/core/cost"
+
+function knownGapFor(plan: Plan) {
+  return planKnownGaps.find(
+    (gap) => gap.plan === plan.name || gap.plan.split(", ").includes(plan.name),
+  )
+}
+
+function quotaReason(plan: Plan): string {
+  if (!plan.available) {
+    return plan.unavailable_reason ?? "Plan is unavailable."
+  }
+
+  if (plan.quota_unresolved) {
+    return plan.quota_note ?? "Quota conversion is unresolved."
+  }
+
+  return plan.quota_note ?? knownGapFor(plan)?.reason ?? "No committed quota conversion."
+}
+
+function maxValueMultiple(planId: string): number | null {
+  let maximum: number | null = null
+
+  for (const row of tokenAllowances) {
+    if (row.plan_id !== planId) {
+      continue
+    }
+
+    if (maximum === null || row.value_multiple > maximum) {
+      maximum = row.value_multiple
+    }
+  }
+
+  return maximum
+}
+
+function quotaValue(plan: Plan): string {
+  switch (plan.quota_model) {
+    case "budget":
+      return formatUsd(plan.quota_usd_month)
+    case "credits":
+      return formatCount(plan.credits_month)
+    case "requests":
+      return formatCount(plan.requests_month)
+    case "tokens_total":
+      return formatTokens(plan.tokens_month)
+  }
+}
+
+const rankedPlans = plans
+  .map((plan) => ({
+    plan,
+    valueMultiple: maxValueMultiple(plan.id),
+    measuredRoute:
+      plan.measured_against_model === undefined
+        ? undefined
+        : routesByPlan.get(plan.id)?.find(
+            (route) => route.model_id === plan.measured_against_model,
+          ),
+    unlockedCount: models.filter((model) => modelAllowed(model, plan)).length,
+  }))
+  .sort((left, right) => {
+    if (left.valueMultiple === null) {
+      return right.valueMultiple === null ? 0 : 1
+    }
+
+    if (right.valueMultiple === null) {
+      return -1
+    }
+
+    return right.valueMultiple - left.valueMultiple
+  })
+
+const valuedPlans = rankedPlans.filter(({ valueMultiple }) => valueMultiple !== null)
+
+const leader = valuedPlans[0]
+
+const headline =
+  leader === undefined
+    ? `${formatCount(plans.length)} committed plans have no committed value multiple.`
+    : `${formatCount(plans.length)} committed plans ranked by value multiple; ${formatCount(valuedPlans.length)} have a committed multiple, led by ${leader.plan.name} at ${formatMultiple(leader.valueMultiple)}.`
 ---
 
 <Page
@@ -8,7 +111,110 @@ import Page from "../../layouts/Page.astro"
   heading="Plans"
   lede="Each plan ranked by what it actually buys: the converted monthly quota, the cost per task for the model it was measured against, and the volume at which it beats paying API list rates."
 >
-  <p class="mt-6 text-meta text-dim">
-    Route skeleton — the ranked plan table lands in Stage 4 of the build plan.
-  </p>
+  <p class="mt-2 text-meta text-dim">{headline}</p>
+
+  <div class="mt-6 overflow-x-auto">
+    <table class="w-full min-w-[1440px] text-left text-meta">
+      <caption class="sr-only">Plans ranked by their largest committed value multiple.</caption>
+      <thead class="border-b border-rule text-dim">
+        <tr>
+          <th scope="col" class="px-2 py-2 font-medium">rank</th>
+          <th scope="col" class="px-2 py-2 font-medium">plan</th>
+          <th scope="col" class="px-2 py-2 font-medium">provider</th>
+          <th scope="col" class="px-2 py-2 font-medium">price/month</th>
+          <th scope="col" class="px-2 py-2 font-medium">quota model</th>
+          <th scope="col" class="px-2 py-2 font-medium">key quota</th>
+          <th scope="col" class="px-2 py-2 font-medium">rolling window</th>
+          <th scope="col" class="px-2 py-2 font-medium">measured-against model</th>
+          <th scope="col" class="px-2 py-2 font-medium">value multiple</th>
+          <th scope="col" class="px-2 py-2 font-medium">cost/task · measured model</th>
+          <th scope="col" class="px-2 py-2 font-medium">days/full run</th>
+          <th scope="col" class="px-2 py-2 font-medium">confidence</th>
+          <th scope="col" class="px-2 py-2 font-medium">models unlocked</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rankedPlans.map(({ plan, valueMultiple, measuredRoute, unlockedCount }, index) => {
+          const measuredModel =
+            plan.measured_against_model === undefined
+              ? undefined
+              : modelsById.get(plan.measured_against_model)
+          const reason = quotaReason(plan)
+
+          return (
+            <tr class="border-b border-rule last:border-b-0">
+              <td class="px-2 py-3 tabular">{formatCount(index + 1)}</td>
+              <td class="px-2 py-3">
+                <a class="text-ink underline decoration-rule underline-offset-2" href={href(`/plans/${plan.id}`)}>
+                  {plan.name}
+                </a>
+              </td>
+              <td class="px-2 py-3 whitespace-nowrap">{plan.provider}</td>
+              <td class="px-2 py-3 whitespace-nowrap">
+                <div class="tabular">{formatUsd(plan.price_usd_month)}</div>
+                <CostBasisChip basis="plan-route" planName={plan.name} unit="per-month" />
+              </td>
+              <td class="px-2 py-3 whitespace-nowrap"><code>{plan.quota_model}</code></td>
+              <td class="px-2 py-3 whitespace-nowrap">
+                <div class="tabular">{quotaValue(plan)}</div>
+                {plan.quota_model === "budget" && plan.quota_usd_month !== undefined ? (
+                  <CostBasisChip basis="api-list" unit="per-month" />
+                ) : null}
+              </td>
+              <td class="px-2 py-3 whitespace-nowrap">
+                {plan.rolling_window_hours === undefined ? (
+                  MISSING
+                ) : (
+                  <>
+                    <span class="tabular">{formatCount(plan.rolling_window_hours)}h</span>
+                    {plan.rolling_window_usd === undefined ? (
+                      <> {MISSING}</>
+                    ) : (
+                      <>
+                        {" "}
+                        <span class="tabular">{formatUsd(plan.rolling_window_usd)}</span>{" "}
+                        <CostBasisChip basis="api-list" unit="per-month" />
+                      </>
+                    )}
+                  </>
+                )}
+              </td>
+              <td class="px-2 py-3">
+                {measuredModel === undefined ? (
+                  plan.measured_against_model ?? MISSING
+                ) : (
+                  <a
+                    class="text-ink underline decoration-rule underline-offset-2"
+                    href={href(`/models/${measuredModel.id}`)}
+                  >
+                    {measuredModel.name}
+                  </a>
+                )}
+              </td>
+              <td class="px-2 py-3">
+                <div class="tabular">{formatMultiple(valueMultiple)}</div>
+                {valueMultiple === null ? <span class="text-meta text-dim">{reason}</span> : null}
+              </td>
+              <td class="px-2 py-3">
+                {measuredRoute === undefined ? (
+                  <>
+                    <div class="tabular">{MISSING}</div>
+                    <span class="text-meta text-dim">{reason}</span>
+                  </>
+                ) : (
+                  <>
+                    <div class="tabular">{formatUsdPerTask(measuredRoute.cost_per_task_usd)}</div>
+                    <CostBasisChip basis="plan-route" planName={plan.name} unit="per-task" />
+                  </>
+                )}
+              </td>
+              <td class="px-2 py-3 tabular">{formatDays(measuredRoute?.days_for_full_run)}</td>
+              <td class="px-2 py-3"><ConfidenceBadge level={plan.confidence} /></td>
+              <td class="px-2 py-3 tabular">{formatCount(unlockedCount)}</td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  </div>
 </Page>

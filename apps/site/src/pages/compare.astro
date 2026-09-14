@@ -1,5 +1,106 @@
 ---
 import Page from "../layouts/Page.astro"
+import CostBasisChip from "../components/CostBasisChip.astro"
+import ConfidenceBadge from "../components/ConfidenceBadge.astro"
+
+import { benchmarks, compositeByModel, models, plansById, routesByModel } from "../lib/data.ts"
+import { formatCount, formatPercent } from "../lib/format.ts"
+import { href } from "../lib/url.ts"
+
+const defaultModels = [...models]
+  .sort((left, right) => right.score_pct - left.score_pct || left.id.localeCompare(right.id))
+  .slice(0, 4)
+
+const payload = {
+  models: models.map((model) => {
+    const composite = compositeByModel.get(model.id)
+
+    if (composite === undefined) {
+      throw new Error(`Compare page has no composite row for ${model.id}`)
+    }
+
+    const routes = (routesByModel.get(model.id) ?? []).map((route) => {
+      const plan = plansById.get(route.plan_id)
+
+      if (plan === undefined) {
+        throw new Error(`Compare page has no plan row for ${route.plan_id}`)
+      }
+
+      return {
+        planId: route.plan_id,
+        planName: plan.name,
+        costPerTaskUsd: route.cost_per_task_usd,
+        daysForFullRun: route.days_for_full_run,
+        confidence: plan.confidence,
+      }
+    })
+
+    const perBenchmark = Object.fromEntries(
+      benchmarks.flatMap((benchmark) => {
+        const row = benchmark.rows.find((candidate) => candidate.model_id === model.id)
+
+        if (row === undefined) {
+          return []
+        }
+
+        return [
+          [
+            benchmark.id,
+            {
+              title: benchmark.title,
+              version: benchmark.version,
+              score: row.score,
+              ciLo: row.ci_lo ?? null,
+              ciHi: row.ci_hi ?? null,
+            },
+          ],
+        ]
+      }),
+    )
+
+    return {
+      id: model.id,
+      name: model.name,
+      provider: model.provider ?? "Unknown",
+      scorePct: model.score_pct,
+      // Model CIs stay as 0–1 fractions; the browser converts them once for display.
+      ciLo: model.ci_lo ?? null,
+      ciHi: model.ci_hi ?? null,
+      composite: composite.composite,
+      k: composite.k,
+      scorePassAt4Pct: model.score_pass_at_4_pct,
+      apiCostPerTaskUsd: model.api_cost_per_task_usd,
+      perBenchmark,
+      routes,
+    }
+  }),
+  benchmarks: benchmarks.map((benchmark) => ({
+    id: benchmark.id,
+    title: benchmark.title,
+    version: benchmark.version,
+  })),
+}
+
+// Escaping less-than signs keeps committed labels from closing this JSON script element.
+const encodedPayload = JSON.stringify(payload).replaceAll("<", "\\u003c")
+
+const leadingModel = defaultModels[0]
+
+if (leadingModel === undefined) {
+  throw new Error("Compare page needs at least one committed model")
+}
+
+const comparisonSummary = `${formatCount(models.length)} models across ${formatCount(benchmarks.length)} committed benchmark versions; ${leadingModel.name} leads at ${formatPercent(leadingModel.score_pct)} pass@1.`
+
+const defaultModelIds = defaultModels.map((model) => model.id)
+
+const routeBasisTemplates = Array.from(
+  new Map(
+    payload.models
+      .flatMap((model) => model.routes)
+      .map((route) => [route.planId, route] as const),
+  ).values(),
+)
 ---
 
 <Page
@@ -8,5 +109,603 @@ import Page from "../layouts/Page.astro"
   heading="Compare"
   lede="Line up two to four models: per-benchmark scores, both cost bases, effort levels, and where a difference sits inside the confidence intervals."
 >
-  <p class="mt-6 text-meta text-dim">Route skeleton — the side-by-side comparison lands in Stage 4 of the build plan.</p>
+  <p class="mt-2 text-meta text-dim">{comparisonSummary}</p>
+
+  <section class="mt-8" aria-labelledby="compare-selection-title">
+    <h2 id="compare-selection-title" class="text-title">Models</h2>
+    <fieldset id="compare-controls" class="mt-4 flex flex-wrap items-center gap-4">
+      <legend class="text-meta text-dim">Choose two to four models</legend>
+      {
+        models.map((model) => (
+          <label class="text-body" for={`compare-model-${model.id}`}>
+            <input
+              id={`compare-model-${model.id}`}
+              name="compare-model"
+              type="checkbox"
+              value={model.id}
+              checked={defaultModelIds.includes(model.id)}
+            />{" "}
+            {model.name}
+          </label>
+        ))
+      }
+    </fieldset>
+
+    <p id="compare-status" class="mt-3 text-meta text-dim" aria-live="polite">
+      {formatCount(defaultModelIds.length)} of 4 selected — uncheck one to add another
+    </p>
+
+    <div id="compare-table" class="mt-6 overflow-x-auto"></div>
+    <p class="mt-3 border-l-2 border-adjusted bg-panel px-3 py-2 text-meta text-dim">
+      Tie rule: overlapping CI bands are labelled “statistical tie at 95%”; ranks are shown as ranges rather than ordinals.
+    </p>
+
+    <script id="compare-data" type="application/json" is:inline set:html={encodedPayload}></script>
+    <template id="compare-api-basis">
+      <CostBasisChip basis="api-list" unit="per-task" />
+    </template>
+    {
+      routeBasisTemplates.map((route) => (
+        <template id={`compare-route-basis-${route.planId}`}>
+          <CostBasisChip basis="plan-route" planName={route.planName} unit="per-task" />{" "}
+          <ConfidenceBadge level={route.confidence} />
+        </template>
+      ))
+    }
+
+    <noscript>
+      <p class="mt-3 text-body">
+        Select models to draw the comparison table; the committed benchmark definitions and tie rule are documented on
+        <a href={href("/method")} class="text-ink underline">/method</a>.
+      </p>
+    </noscript>
+  </section>
 </Page>
+
+<script>
+  import {
+    formatCount,
+    formatDays,
+    formatFractionAsPercentRange,
+    formatPercent,
+    formatPercentRange,
+    formatUsdPerTask,
+  } from "../lib/format.ts"
+
+  interface BenchmarkCell {
+    title: string
+    version: string
+    score: number
+    ciLo: number | null
+    ciHi: number | null
+  }
+
+  interface Route {
+    planId: string
+    planName: string
+    costPerTaskUsd: number
+    daysForFullRun: number | null
+    confidence: "measured" | "high" | "medium" | "low"
+  }
+
+  interface CompareModel {
+    id: string
+    name: string
+    provider: string
+    scorePct: number
+    ciLo: number | null
+    ciHi: number | null
+    composite: number | null
+    k: number
+    scorePassAt4Pct: number
+    apiCostPerTaskUsd: number
+    perBenchmark: Record<string, BenchmarkCell>
+    routes: Route[]
+  }
+
+  interface ComparePayload {
+    models: CompareModel[]
+    benchmarks: Array<{ id: string; title: string; version: string }>
+  }
+
+  interface RankedEntry {
+    model: CompareModel
+    cell: BenchmarkCell
+    rank: number
+  }
+
+  interface BenchmarkComparison {
+    entries: RankedEntry[]
+    tiePairs: Array<[RankedEntry, RankedEntry]>
+    tieRanks: Map<string, Set<number>>
+  }
+
+  function textElement(tagName: string, className: string, text: string): HTMLElement {
+    const element = document.createElement(tagName)
+    element.className = className
+    element.textContent = text
+
+    return element
+  }
+
+  function appendTemplate(parent: HTMLElement, id: string): void {
+    const template = document.getElementById(id)
+
+    if (template === null || !(template instanceof HTMLTemplateElement)) {
+      return
+    }
+
+    parent.append(template.content.cloneNode(true))
+  }
+
+  function intervalsOverlap(left: BenchmarkCell, right: BenchmarkCell): boolean {
+    if (
+      left.ciLo === null ||
+      left.ciHi === null ||
+      right.ciLo === null ||
+      right.ciHi === null
+    ) {
+      return false
+    }
+
+    const leftLo = Math.min(left.ciLo, left.ciHi)
+    const leftHi = Math.max(left.ciLo, left.ciHi)
+    const rightLo = Math.min(right.ciLo, right.ciHi)
+    const rightHi = Math.max(right.ciLo, right.ciHi)
+
+    return leftLo <= rightHi && rightLo <= leftHi
+  }
+
+  function benchmarkComparison(
+    benchmarkId: string,
+    selectedModels: readonly CompareModel[],
+  ): BenchmarkComparison {
+    const entries: RankedEntry[] = []
+
+    for (const model of selectedModels) {
+      const cell = model.perBenchmark[benchmarkId]
+
+      if (cell !== undefined) {
+        entries.push({ model, cell, rank: 0 })
+      }
+    }
+
+    entries.sort((left, right) => right.cell.score - left.cell.score || left.model.id.localeCompare(right.model.id))
+
+    for (const [index, entry] of entries.entries()) {
+      entry.rank = index + 1
+    }
+
+    const tiePairs: Array<[RankedEntry, RankedEntry]> = []
+    const tieRanks = new Map<string, Set<number>>()
+
+    for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
+      const left = entries[leftIndex]
+
+      if (left === undefined) {
+        continue
+      }
+
+      for (let rightIndex = leftIndex + 1; rightIndex < entries.length; rightIndex += 1) {
+        const right = entries[rightIndex]
+
+        if (right === undefined || !intervalsOverlap(left.cell, right.cell)) {
+          continue
+        }
+
+        tiePairs.push([left, right])
+
+        const leftRanks = tieRanks.get(left.model.id) ?? new Set<number>()
+        leftRanks.add(left.rank)
+        leftRanks.add(right.rank)
+        tieRanks.set(left.model.id, leftRanks)
+
+        const rightRanks = tieRanks.get(right.model.id) ?? new Set<number>()
+        rightRanks.add(left.rank)
+        rightRanks.add(right.rank)
+        tieRanks.set(right.model.id, rightRanks)
+      }
+    }
+
+    return { entries, tiePairs, tieRanks }
+  }
+
+  function rankLabel(entry: RankedEntry, tieRanks: Map<string, Set<number>>): string {
+    const ranks = tieRanks.get(entry.model.id)
+
+    if (ranks === undefined) {
+      return formatCount(entry.rank)
+    }
+
+    const values = [...ranks]
+    const low = Math.min(...values)
+    const high = Math.max(...values)
+
+    return `${formatCount(low)}–${formatCount(high)}`
+  }
+
+  function appendModelHeader(cell: HTMLTableCellElement, model: CompareModel): void {
+    cell.append(textElement("span", "font-medium", model.name))
+    cell.append(textElement("span", "block text-meta text-dim", model.provider))
+
+    const compositeText =
+      model.composite === null
+        ? "not available"
+        : `${formatCount(model.composite)} (k=${formatCount(model.k)})`
+
+    cell.append(textElement("span", "mt-2 block text-meta text-dim", `Composite index: ${compositeText}`))
+
+    if (model.ciLo !== null && model.ciHi !== null) {
+      // These model-level bounds are fractions; this formatter performs the sole ×100 conversion.
+      cell.append(
+        textElement(
+          "span",
+          "block text-meta text-dim",
+          `Model 95% CI: ${formatFractionAsPercentRange(model.ciLo, model.ciHi)}`,
+        ),
+      )
+    }
+  }
+
+  function appendBenchmarkCell(
+    row: HTMLTableRowElement,
+    model: CompareModel,
+    comparison: ReturnType<typeof benchmarkComparison>,
+  ): void {
+    const cell = document.createElement("td")
+    cell.className = "border-b border-rule px-2 py-3 align-top"
+    const entry = comparison.entries.find((candidate) => candidate.model.id === model.id)
+
+    if (entry === undefined) {
+      cell.append(textElement("span", "text-dim", "not evaluated"))
+      row.append(cell)
+
+      return
+    }
+
+    cell.append(textElement("span", "tabular", formatPercent(entry.cell.score)))
+    cell.append(textElement("span", "mt-1 block text-meta text-dim", `rank ${rankLabel(entry, comparison.tieRanks)}`))
+
+    if (entry.cell.ciLo !== null && entry.cell.ciHi !== null) {
+      cell.append(
+        textElement(
+          "span",
+          "block text-meta text-dim",
+          `95% CI ${formatPercentRange(entry.cell.ciLo, entry.cell.ciHi)}`,
+        ),
+      )
+    }
+
+    row.append(cell)
+  }
+
+  function appendComparisonCell(
+    row: HTMLTableRowElement,
+    comparison: ReturnType<typeof benchmarkComparison>,
+  ): void {
+    const cell = document.createElement("td")
+    cell.className = "border-b border-rule bg-panel px-3 py-3 align-top"
+
+    if (comparison.tiePairs.length === 0) {
+      cell.append(textElement("span", "text-meta text-dim", "Plain score comparison"))
+      row.append(cell)
+
+      return
+    }
+
+    for (const [index, [left, right]] of comparison.tiePairs.entries()) {
+      if (index > 0) {
+        cell.append(document.createElement("br"))
+      }
+
+      const tie = textElement(
+        "span",
+        "inline-block border-l-2 border-adjusted px-2 font-medium text-adjusted",
+        "statistical tie at 95%",
+      )
+
+      const models = textElement("span", "mt-1 block text-meta text-dim", `${left.model.name} and ${right.model.name}`)
+      cell.append(tie, models)
+    }
+
+    row.append(cell)
+  }
+
+  function appendBenchmarkRow(
+    body: HTMLTableSectionElement,
+    benchmark: ComparePayload["benchmarks"][number],
+    selectedModels: readonly CompareModel[],
+  ): void {
+    const row = document.createElement("tr")
+    const label = document.createElement("th")
+    label.className = "border-b border-rule px-2 py-3 text-left align-top font-medium"
+    label.scope = "row"
+    label.append(textElement("span", "block", benchmark.title))
+    label.append(textElement("span", "block text-meta text-dim", `version ${benchmark.version}`))
+    row.append(label)
+
+    const comparison = benchmarkComparison(benchmark.id, selectedModels)
+
+    for (const model of selectedModels) {
+      appendBenchmarkCell(row, model, comparison)
+    }
+
+    appendComparisonCell(row, comparison)
+    body.append(row)
+  }
+
+  function appendCostRow(
+    body: HTMLTableSectionElement,
+    labelText: string,
+    basisText: string,
+    selectedModels: readonly CompareModel[],
+    valueForModel: (model: CompareModel) => number | null,
+    detailForModel: (model: CompareModel) => string | null,
+  ): void {
+    const row = document.createElement("tr")
+    const label = document.createElement("th")
+    label.className = "border-b border-rule px-2 py-3 text-left align-top font-medium"
+    label.scope = "row"
+    label.append(textElement("span", "block", labelText))
+    label.append(textElement("span", "block text-meta text-dim", basisText))
+    row.append(label)
+
+    for (const model of selectedModels) {
+      const cell = document.createElement("td")
+      cell.className = "border-b border-rule px-2 py-3 align-top"
+      const value = valueForModel(model)
+
+      if (value === null) {
+        cell.append(textElement("span", "text-dim", "not available"))
+      } else {
+        cell.append(textElement("span", "tabular", formatUsdPerTask(value)))
+        cell.append(document.createTextNode(" "))
+        appendTemplate(cell, "compare-api-basis")
+        const detail = detailForModel(model)
+
+        if (detail !== null) {
+          cell.append(textElement("span", "mt-1 block text-meta text-dim", detail))
+        }
+      }
+
+      row.append(cell)
+    }
+
+    const comparison = document.createElement("td")
+    comparison.className = "border-b border-rule bg-panel px-3 py-3 align-top"
+    comparison.append(textElement("span", "text-meta text-dim", "Plain cost comparison"))
+    row.append(comparison)
+    body.append(row)
+  }
+
+  function appendRouteRow(
+    body: HTMLTableSectionElement,
+    plan: { planId: string; planName: string },
+    selectedModels: readonly CompareModel[],
+  ): void {
+    const row = document.createElement("tr")
+    const label = document.createElement("th")
+    label.className = "border-b border-rule px-2 py-3 text-left align-top font-medium"
+    label.scope = "row"
+    label.append(textElement("span", "block", `${plan.planName} route $/task`))
+    label.append(textElement("span", "block text-meta text-dim", "Plan route basis"))
+    row.append(label)
+
+    for (const model of selectedModels) {
+      const cell = document.createElement("td")
+      cell.className = "border-b border-rule px-2 py-3 align-top"
+      const route = model.routes.find((candidate) => candidate.planId === plan.planId)
+
+      if (route === undefined) {
+        cell.append(textElement("span", "text-dim", "not available"))
+      } else {
+        cell.append(textElement("span", "tabular", formatUsdPerTask(route.costPerTaskUsd)))
+        cell.append(document.createTextNode(" "))
+        appendTemplate(cell, `compare-route-basis-${plan.planId}`)
+
+        const days =
+          route.daysForFullRun === null
+            ? "full run days unavailable"
+            : `${formatDays(route.daysForFullRun)} days for full run`
+
+        cell.append(textElement("span", "mt-1 block text-meta text-dim", days))
+      }
+
+      row.append(cell)
+    }
+
+    const comparison = document.createElement("td")
+    comparison.className = "border-b border-rule bg-panel px-3 py-3 align-top"
+    comparison.append(textElement("span", "text-meta text-dim", "Plain cost comparison"))
+    row.append(comparison)
+    body.append(row)
+  }
+
+  function renderTable(
+    tableArea: HTMLElement,
+    payload: ComparePayload,
+    selectedModels: readonly CompareModel[],
+  ): void {
+    tableArea.replaceChildren()
+
+    if (selectedModels.length < 2) {
+      tableArea.append(textElement("p", "text-body text-dim", "choose at least 2 models"))
+
+      return
+    }
+
+    const table = document.createElement("table")
+    table.className = "w-full min-w-[48rem] text-left text-meta"
+    const caption = document.createElement("caption")
+    caption.className = "sr-only"
+    caption.textContent = "Selected models compared across benchmark scores and cost bases"
+    table.append(caption)
+
+    const head = document.createElement("thead")
+    head.className = "border-b border-rule text-dim"
+    const headerRow = document.createElement("tr")
+    const metricHeader = document.createElement("th")
+    metricHeader.className = "px-2 py-2 text-left font-medium"
+    metricHeader.scope = "col"
+    metricHeader.textContent = "Metric"
+    headerRow.append(metricHeader)
+
+    for (const model of selectedModels) {
+      const modelHeader = document.createElement("th")
+      modelHeader.className = "px-2 py-2 text-left font-medium"
+      modelHeader.scope = "col"
+      appendModelHeader(modelHeader, model)
+      headerRow.append(modelHeader)
+    }
+
+    const comparisonHeader = document.createElement("th")
+    comparisonHeader.className = "px-3 py-2 text-left font-medium"
+    comparisonHeader.scope = "col"
+    comparisonHeader.textContent = "Comparison"
+    headerRow.append(comparisonHeader)
+    head.append(headerRow)
+    table.append(head)
+
+    const body = document.createElement("tbody")
+
+    for (const benchmark of payload.benchmarks) {
+      appendBenchmarkRow(body, benchmark, selectedModels)
+    }
+
+    appendCostRow(
+      body,
+      "API list $/task",
+      "API list",
+      selectedModels,
+      (model) => model.apiCostPerTaskUsd,
+      () => "pass@1 basis",
+    )
+
+    const routePlans = new Map<string, { planId: string; planName: string }>()
+
+    for (const model of selectedModels) {
+      for (const route of model.routes) {
+        if (!routePlans.has(route.planId)) {
+          routePlans.set(route.planId, { planId: route.planId, planName: route.planName })
+        }
+      }
+    }
+
+    const sortedPlans = [...routePlans.values()].sort(
+      (left, right) => left.planName.localeCompare(right.planName) || left.planId.localeCompare(right.planId),
+    )
+
+    for (const plan of sortedPlans) {
+      appendRouteRow(body, plan, selectedModels)
+    }
+
+    table.append(body)
+    tableArea.append(table)
+  }
+
+  (() => {
+    const dataElement = document.getElementById("compare-data")
+    const controls = document.getElementById("compare-controls")
+    const status = document.getElementById("compare-status")
+    const tableArea = document.getElementById("compare-table")
+
+    if (dataElement === null || controls === null || status === null || tableArea === null) {
+      return
+    }
+
+    const statusNode: HTMLElement = status
+    const tableNode: HTMLElement = tableArea
+
+    const rawPayload = dataElement.textContent
+
+    if (rawPayload === null) {
+      return
+    }
+
+    // SAFETY: this JSON is emitted by the same static page build as this decoder.
+    const payload = JSON.parse(rawPayload) as ComparePayload
+    const modelById = new Map(payload.models.map((model) => [model.id, model]))
+    const inputs = [...controls.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')]
+    const fallbackIds = inputs.flatMap((input) => (input.checked ? [input.value] : []))
+    const queryValue = new URLSearchParams(window.location.search).get("models")
+    let selectedIds = fallbackIds
+
+    if (queryValue !== null) {
+      const queryIds = queryValue.split(",").map((id) => id.trim())
+      const uniqueIds = new Set(queryIds)
+
+      if (
+        queryIds.length >= 2 &&
+        queryIds.length <= 4 &&
+        queryIds.every((id) => id.length > 0 && modelById.has(id)) &&
+        uniqueIds.size === queryIds.length
+      ) {
+        selectedIds = queryIds
+      }
+    }
+
+    function statusText(count: number): string {
+      if (count < 2) {
+        return `${formatCount(count)} of 4 selected — choose at least 2 models`
+      }
+
+      if (count === 4) {
+        return "4 of 4 selected — uncheck one to add another"
+      }
+
+      return `${formatCount(count)} of 4 selected — select another to compare more`
+    }
+
+    function writeSelectionToUrl(ids: readonly string[]): void {
+      const url = new URL(window.location.href)
+
+      if (ids.length >= 2 && ids.length <= 4) {
+        url.searchParams.set("models", ids.join(","))
+      } else {
+        url.searchParams.delete("models")
+      }
+
+      window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`)
+    }
+
+    function applySelection(ids: readonly string[]): void {
+      selectedIds = [...ids]
+
+      for (const input of inputs) {
+        input.checked = selectedIds.includes(input.value)
+      }
+
+      statusNode.textContent = statusText(selectedIds.length)
+      const selectedModels: CompareModel[] = []
+
+      for (const id of selectedIds) {
+        const model = modelById.get(id)
+
+        if (model !== undefined) {
+          selectedModels.push(model)
+        }
+      }
+
+      renderTable(tableNode, payload, selectedModels)
+      writeSelectionToUrl(selectedIds)
+    }
+
+    for (const input of inputs) {
+      input.addEventListener("change", () => {
+        let nextIds = selectedIds.filter((id) => id !== input.value)
+
+        if (input.checked) {
+          nextIds.push(input.value)
+
+          if (nextIds.length > 4) {
+            nextIds = nextIds.slice(1)
+          }
+        }
+
+        applySelection(nextIds)
+      })
+    }
+
+    applySelection(selectedIds)
+  })()
+</script>

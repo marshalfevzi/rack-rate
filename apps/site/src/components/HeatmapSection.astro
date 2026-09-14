@@ -1,0 +1,52 @@
+---
+import { benchmarks, models } from "../lib/data.ts"
+import {
+  buildHeatmapPayload,
+  encodeHeatmapPayload,
+  heatmapAriaLabel,
+} from "../lib/charts/heatmap-payload.ts"
+import { href } from "../lib/url.ts"
+
+const payload = buildHeatmapPayload({ models, benchmarks })
+
+const encodedPayload = encodeHeatmapPayload(payload)
+
+const heatmapSummary = `${payload.rows.length} models across ${payload.columns.length} benchmark versions; ${payload.cells.length} evaluated cells and ${payload.missing.length} not evaluated.`
+---
+
+<section class="mt-12" aria-labelledby="heatmap-title">
+  <h2 id="heatmap-title" class="text-title">{payload.title}</h2>
+  <p class="mt-2 text-meta text-dim">{heatmapSummary}</p>
+  <p class="mt-2 text-body">
+    Each cell shows a model's z-score within one committed benchmark version. A hatched cell means not evaluated, never a low score.
+  </p>
+  <div
+    id="heatmap-chart"
+    class="mt-4 h-[36rem] w-full"
+    role="img"
+    aria-label={heatmapAriaLabel(payload)}
+  ></div>
+  <p id="heatmap-note" class="mt-2 text-meta text-dim">{payload.note}</p>
+
+  <script id="heatmap-data" type="application/json" is:inline set:html={encodedPayload}></script>
+
+  <noscript>
+    <p class="mt-2 text-body">The heatmap is drawn in the browser; benchmark z-scores and missing data are documented on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+  </noscript>
+</section>
+
+<script>
+  const host = document.getElementById("heatmap-chart")
+
+  if (host !== null) {
+    void import("../lib/charts/heatmap-page.ts")
+      .then((chart) => chart.startHeatmapChart(host))
+      .catch(() => {
+        const note = document.getElementById("heatmap-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+</script>
