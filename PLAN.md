@@ -6,7 +6,7 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 3.10.** Stages 1 and 2 are landed and green, and Stage 3.1–3.9
+**Next stage: 3.11.** Stages 1 and 2 are landed and green, and Stage 3.1–3.10
 landed (see the progress log). The Stage 1–2 task lists,
 acceptance criteria, handover contracts and session history live in
 [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
@@ -130,7 +130,7 @@ the design system in place and one real page rendering real numbers.
   (`src/pages/robots.txt.ts`), not a static `public/` file, because its
   `Sitemap:` line is absolute and a static copy would write the origin a second
   time.
-- [ ] 3.10 CI: `.github/workflows/ci.yml` running `bun install --frozen-lockfile`,
+- [x] 3.10 CI: `.github/workflows/ci.yml` running `bun install --frozen-lockfile`,
   `bun run check`, `bun test`, `bun run data:build`, and a check that
   re-running compute leaves `data/derived.json` unchanged (stale-output guard).
   Delete any Vercel-specific config.
@@ -1446,3 +1446,110 @@ No stage was opened. Stage 3 is still untouched.
 - `/rack-rate/404/` answers 200 under `astro preview` because it serves
   `404.html` for that path directly; the deployed status code is 6.4's concern,
   and the page is absent from the sitemap either way.
+
+### 2026-09-14 — Stage 3.10: CI workflow with a stale-output guard
+
+**Landed**
+
+- `.github/workflows/ci.yml` (new, 46 lines): `push` on `main`,
+  `pull_request`, and `workflow_dispatch`; `permissions: contents: read`;
+  `concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }`.
+  One job, `verify` (`name: Typecheck, tests, data gate`), runs on
+  `ubuntu-latest` with `timeout-minutes: 15`. Its eight steps, in order:
+  `actions/checkout@v7`; `oven-sh/setup-bun@v2` with no `with:` block;
+  `bun install --frozen-lockfile`; `bun run check`; `bun test`;
+  `bun run data:build`; `bun run data:check`; and
+  `Compute left committed data unchanged`, whose script is
+  `changes="$(git status --porcelain -- data/)"` → print the changes,
+  `echo "::error::bun run compute changed data/; commit the regenerated
+  files"`, `exit 1`. The setup action reads `packageManager: "bun@1.4.2"`
+  from the root `package.json`, so the Bun version is written once.
+- Action pins checked live: `actions/checkout` latest release `v7.0.1`,
+  `oven-sh/setup-bun` latest `v2.2.0`; the workflow pins the major tag and
+  the repository does not require SHA pinning.
+- `docs/architecture.md` gained `## Continuous integration` (lines 704–748):
+  the job, the step table, the guard semantics, and the decisions.
+  `CONTRIBUTING.md` line 16 now names all five commands CI runs (`check`,
+  `test`, `data:build`, `data:check`, and the compute-unchanged guard).
+- Vercel: nothing to delete. `git ls-files | grep -iE
+  'vercel|netlify|now\.json'` printed nothing and no untracked `.vercel`,
+  `vercel.json`, or `now.json` exists anywhere; the predecessor's
+  `vercel.json` was already removed in Stage 1.5.
+
+**Verified**
+
+- Clean-clone simulation (macOS, warm Bun cache; `git clone . /tmp/rr-ci310`,
+  workflow copied in, no `.env`, `AA_API_KEY` unset): every step exit 0.
+  Timings: `bun install --frozen-lockfile` 0.52 s, `bun run check` 9.44 s,
+  `bun test` 0.12 s, `bun run data:build` 0.13 s,
+  `bun run data:check` 0.07 s, guard 0.04 s. `data:build` reported
+  `no problems`, pairs 178, best routes 28, cross-check pairs 11,
+  composite coverage 12 models at k ≥ 2 and 16 single-source, frontier
+  api 28 points / 6 frontier, 178 token-allowance rows and 178 badge rows.
+  `data:check` compared expected and committed sha256
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`
+  and reported the file current.
+- Negative controls in that clone: editing `data/derived.json`'s
+  `generated_from.models` 28 → 29 made `bun run data:check` exit 1 naming
+  the staleness (`first differing top-level key generated_from`, committed
+  hash `8b0dc36504e063e844f477eacedcd4b7f26e2cf7d9327471c5330ef19dfe1a56`);
+  the same uncommitted edit made the guard exit 1, printing
+  ` M data/derived.json` and the `::error::` line; after
+  `git checkout -- data/derived.json`, the guard exited 0. Temp dirs were
+  removed; `data/derived.json` remained `7425a331…`.
+- Node-free: `env PATH=/tmp/bunonly:/usr/bin:/bin bash -c
+  'command -v node || echo NO_NODE; bun run check'` printed `NO_NODE` and
+  `Result (28 files): 0 errors / 0 warnings / 0 hints`, exit 0 — the
+  measured reason the workflow carries no `actions/setup-node`.
+- Real GitHub Actions run:
+  [run 34802515011](https://github.com/marshalfevzi/rack-rate/actions/runs/34802515011),
+  workflow `CI`, event `pull_request`, head branch `ci/3.10-verify` at
+  commit `9765e3e`, created `2026-09-14T03:24:40Z`, job
+  `Typecheck, tests, data gate` `03:24:43Z` → `03:25:06Z` (23 s),
+  **conclusion success**: all eight steps succeeded, as did both action
+  post-steps. It was triggered by a temporary draft PR (#1) opened to fire
+  the `pull_request` event, because the `push` trigger only fires on `main`
+  and local `main` has not been pushed (`origin/main` is still `104c618`).
+  The branch and the draft PR are scaffolding, removed after this entry
+  lands.
+- Repo gates after landing: `bun run check` exit 0 (typecheck, oxlint, oxfmt
+  clean over 46 files, `astro check` 28 files 0 errors / 0 warnings /
+  0 hints), `bun test` 72 pass / 0 fail / 231 assertions in 7 files,
+  `bun run data:check` exit 0 with `data/derived.json` still
+  `7425a331…` — no published number moved. `bun run quality`
+  (report-only, out of the gate) exits 1 on the unchanged baseline:
+  dead-code 26, dupes 10, health 143 above threshold over 606 analysed
+  files, maintainability 89.8. Adding the workflow introduced no fallow
+  finding.
+
+**Decisions taken this session**
+
+- No `bun run build` step: task 3.10's list is the CI gate, and Stage 6.1's
+  deploy workflow owns `bun run build` + `withastro/action`.
+- No `actions/setup-node` step: the check path is Bun-only, measured above;
+  the image ships Node anyway, so the absent pin is a documented
+  non-requirement.
+- The guard uses `git status --porcelain` rather than `git diff`, so a newly
+  created untracked file under `data/` also fails the job.
+- `bun run data:check` stays beside the guard: it is the staleness gate the
+  docs already advertise and it exercises the CLI's own in-memory
+  re-derivation, while the guard covers the `compute` write path.
+- The Bun version has one home, `package.json`'s `packageManager`, read by
+  `setup-bun`; the workflow carries no second copy.
+- No dependency-cache step: `bun install --frozen-lockfile` is a small share
+  of the job and a cache key is one more thing that can be wrong.
+- CI stays read-only and offline beyond the lockfile install — no secrets,
+  no fetcher, no `.env` in a clean clone — so invariants 9 and 10 hold by
+  construction.
+
+**Still open**
+
+- 3.11 remains: `/method` and the sources page still owe the real formulas
+  and the full attribution block.
+- The `push: branches: [main]` trigger has not fired yet: local `main` is
+  unpushed, so the first live use of that trigger is the owner's next push
+  to `main`; the job content itself is verified on `9765e3e`.
+- `bun run build` (Astro build → `og`) is deliberately outside CI; 6.1's
+  deploy workflow buys it.
+- CI's `validate`/`compute` run with Artificial Analysis unset, so the
+  AA-enabled publication path remains exercised by hand only.
