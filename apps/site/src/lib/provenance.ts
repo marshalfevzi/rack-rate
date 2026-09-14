@@ -5,7 +5,8 @@
 // Pure TypeScript — no Astro import, no `import.meta.env`, no DOM — so `.astro`
 // frontmatter and `bun test` call the same function.
 import type { Model, PairBadge, Plan, Source } from "@rack-rate/core"
-import { ARTIFICIAL_ANALYSIS_BENCHMARK_ID, STALE_AFTER_DAYS } from "@rack-rate/core"
+import { STALE_AFTER_DAYS } from "@rack-rate/core/freshness"
+import { ARTIFICIAL_ANALYSIS_BENCHMARK_ID } from "@rack-rate/core/ids"
 
 /** The four levels are `data/plans.json`'s `confidence` (invariant 5). */
 export type Confidence = Plan["confidence"]

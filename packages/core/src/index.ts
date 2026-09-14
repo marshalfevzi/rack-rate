@@ -1,3 +1,7 @@
+// `ids.ts` first: it is zod-free, so `schema.ts`'s validator stays out of any
+// client module that imports only an id (see the note in `ids.ts`).
+export * from "./ids.ts"
+
 export * from "./schema.ts"
 
 export * from "./cost.ts"

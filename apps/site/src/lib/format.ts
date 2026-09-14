@@ -1,4 +1,4 @@
-import { roundHalfEven } from "@rack-rate/core"
+import { roundHalfEven } from "@rack-rate/core/cost"
 
 export const MISSING = "—"
 

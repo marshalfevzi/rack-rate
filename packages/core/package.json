@@ -4,6 +4,7 @@
   "private": true,
   "description": "Domain types, zod schemas, cost model, benchmark normalization, Pareto frontier, insight math. Pure and I/O-free.",
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*.ts"
