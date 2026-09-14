@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, tests, data gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      # setup-bun reads packageManager: bun@1.4.2 from package.json.
+      - uses: oven-sh/setup-bun@v2
+      # No setup-node: astro check passes with Bun alone.
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      # CI never fetches upstream: invariant 9 builds offline from committed data, with no secrets or .env.
+      - name: Code quality gate
+        run: bun run check
+      - name: Unit tests
+        run: bun test
+      - name: Data build (validate + compute)
+        run: bun run data:build
+      # Keep data:check beside the guard for in-memory re-derivation, as advertised by CONTRIBUTING.md.
+      - name: Derived data is not stale
+        run: bun run data:check
+      # The guard ensures compute is idempotent against the committed bytes.
+      - name: Compute left committed data unchanged
+        run: |
+          changes="$(git status --porcelain -- data/)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            echo "::error::bun run compute changed data/; commit the regenerated files"
+            exit 1
+          fi
