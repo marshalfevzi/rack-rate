@@ -700,3 +700,49 @@ measured here: `satori/jsx`'s `createElement` does not typecheck for this card
 
 TypeScript uses a single root `tsconfig.json` with no project references. Its
 shared libraries are `lib: ["ES2023", "DOM"]`.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` defines one `verify` job on `ubuntu-latest`.
+It has a 15-minute timeout, `contents: read` permission, and concurrency
+group `ci-${{ github.ref }}` with in-progress runs cancelled. It runs on
+pushes to `main`, pull requests, and manual dispatches.
+
+| Step | Command | What it proves |
+|---|---|---|
+| Checkout | `actions/checkout@v7` | The job uses the repository contents. |
+| Bun setup | `oven-sh/setup-bun@v2` | Bun reads `bun@1.4.2` from the root `package.json`. |
+| Install | `bun install --frozen-lockfile` | Dependencies match the committed `bun.lock`. |
+| Code checks | `bun run check` | Typecheck, lint, format check and Astro check pass. |
+| Tests | `bun test` | The test suite passes. |
+| Data build | `bun run data:build` | Validation passes, then `compute` derives the data file. |
+| Data staleness | `bun run data:check` | In-memory re-derivation matches the committed bytes. |
+| Compute guard | `changes="$(git status --porcelain -- data/)"` | The compute write path leaves `data/` unchanged. |
+
+The final guard covers the write path that `bun run compute` exercises. It
+prints any changed paths, emits an error and exits `1` when the status is
+non-empty. It uses `git status --porcelain` rather than `git diff`, so a new
+untracked file under `data/` also fails the job. The guard sits beside
+`data:check`: `data:check` is the staleness gate, while the guard proves that
+the write path is idempotent and the committed artifact is not stale.
+
+There is no `bun run build` step. Task 3.10 lists install, check, test,
+`data:build` and the guard; Stage 6.1's deploy workflow owns `bun run build`
+and `withastro/action`. There is also no `actions/setup-node` step. The check
+path is Bun-only: with `node` removed from `PATH` using
+`PATH="/tmp/bunonly:/usr/bin:/bin"`, `bun run check` in `apps/site` printed
+`NO NODE ON PATH` and `Result (28 files): 0 errors / 0 warnings / 0 hints`,
+then exited `0`; the Node shipped by `ubuntu-latest` needs no pin.
+
+The job runs no fetcher and contacts no upstream URL. A clean clone has no
+`.env`, `AA_API_KEY` and `AA_PUBLISH` are unset so Artificial Analysis stays
+off, and the only network use is `bun install --frozen-lockfile` against the
+committed `bun.lock`. The workflow references no secrets, preserving
+invariant 9. The action references are major-tag pins: `actions/checkout@v7`
+is the `v7.0.1` release and `oven-sh/setup-bun@v2` is `v2.2.0`; this repository
+does not require SHA pinning.
+
+No tracked Vercel, Netlify or Now configuration remains. The command
+`git ls-files | grep -iE 'vercel|netlify|now\.json'` printed nothing. The
+predecessor's `vercel.json` was deleted in Stage 1.5, and the flat `site/`,
+`scripts/`, `vercel.json` layout is gone.
