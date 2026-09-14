@@ -1,6 +1,11 @@
+import { constants } from "node:fs"
+import { access } from "node:fs/promises"
+import { delimiter, join } from "node:path"
+
 import {
   BenchmarksFile,
   ModelsFile,
+  roundHalfEven,
   type Benchmark,
   type BenchmarkRow,
   type Model,
@@ -23,7 +28,7 @@ const BOARD_URL = "https://www.tbench.ai/"
 const TASKS_URL =
   "https://hub.harborframework.com/datasets/terminal-bench/terminal-bench/4?tab=tasks"
 
-const HARBOR_PATH = "/Users/marshal/.local/bin/harbor"
+const HARBOR_COMMAND = "harbor"
 
 const BOARD_SLUG = "4-0-0"
 
@@ -275,9 +280,56 @@ function extractFlightPayload(html: string): TerminalBenchPayload {
   )
 }
 
+function harborUnavailable(reason: string): Error {
+  const override = process.env.HARBOR_BIN ?? "(not set)"
+  const pathValue = process.env.PATH ?? "(not set)"
+
+  return new Error(
+    `harbor binary unavailable after flight data failure: ${reason}; ` +
+      `HARBOR_BIN=${override}; PATH=${pathValue}`,
+  )
+}
+
+async function resolveHarbor(): Promise<string> {
+  const override = process.env.HARBOR_BIN
+
+  if (override !== undefined) {
+    try {
+      await access(override, constants.X_OK)
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error)
+
+      throw harborUnavailable(
+        `HARBOR_BIN points to '${override}' but it is not executable (${reason})`,
+      )
+    }
+
+    return override
+  }
+
+  const pathValue = process.env.PATH ?? ""
+
+  for (const directory of pathValue.split(delimiter)) {
+    const candidate = directory.length === 0 ? HARBOR_COMMAND : join(directory, HARBOR_COMMAND)
+
+    try {
+      await access(candidate, constants.X_OK)
+
+      return candidate
+    } catch {
+      continue
+    }
+  }
+
+  throw harborUnavailable("no executable harbor was found on PATH")
+}
+
 async function runHarbor(): Promise<TerminalBenchPayload> {
+  const harborPath = await resolveHarbor()
+  info(`resolved harbor binary: ${harborPath}`)
+
   const process = Bun.spawn(
-    [HARBOR_PATH, "hub", "leaderboard", "show", `${DATASET_PACKAGE}/${BOARD_SLUG}`, "--json"],
+    [harborPath, "hub", "leaderboard", "show", `${DATASET_PACKAGE}/${BOARD_SLUG}`, "--json"],
     { stdout: "pipe", stderr: "pipe" },
   )
 
@@ -295,6 +347,162 @@ async function runHarbor(): Promise<TerminalBenchPayload> {
   }
 
   return parseJsonAs(stdout, TerminalBenchPayloadSchema, "Harbor leaderboard JSON")
+}
+
+function numericInput(value: number | null | undefined): number | undefined {
+  return value === null || value === undefined ? undefined : value
+}
+
+type TokenMapping = {
+  cachedInputTokens: number | undefined
+  uncachedInputTokens: number
+  totalTokens: number
+  outputTokens: number
+}
+
+function tokenMapping(row: LeaderboardRow): TokenMapping {
+  const uncachedInputTokens = numericInput(row.metrics.uncached_input_tokens)
+  const outputTokens = numericInput(row.metrics.output_tokens)
+
+  if (uncachedInputTokens === undefined || outputTokens === undefined) {
+    throw new Error(
+      `row ${row.id} is missing uncached_input_tokens or output_tokens; refusing to guess tokens_input`,
+    )
+  }
+
+  if (row.metrics.total_tokens !== uncachedInputTokens + outputTokens) {
+    throw new Error(
+      `row ${row.id} total_tokens does not equal uncached_input_tokens + output_tokens`,
+    )
+  }
+
+  return {
+    cachedInputTokens: numericInput(row.metrics.cached_input_tokens),
+    uncachedInputTokens,
+    totalTokens: row.metrics.total_tokens,
+    outputTokens,
+  }
+}
+
+function validateRow(row: LeaderboardRow): void {
+  const { accuracy, n_trials: nTrials, successes } = row.metrics
+
+  if (successes > nTrials) {
+    throw new Error(`row ${row.id} has successes greater than n_trials`)
+  }
+
+  const expectedAccuracy = (100 * successes) / nTrials
+
+  if (Math.abs(accuracy - expectedAccuracy) >= 0.01) {
+    throw new Error(`row ${row.id} accuracy does not match successes / n_trials`)
+  }
+
+  const ciLo = accuracy - row.metrics.accuracy_ci95_half_width
+  const ciHi = accuracy + row.metrics.accuracy_ci95_half_width
+
+  if (ciLo < 0 || ciHi > 100) {
+    throw new Error(`row ${row.id} confidence interval is outside 0-100`)
+  }
+}
+
+function toBenchmarkRow(
+  row: LeaderboardRow,
+  modelId: string,
+  payload: TerminalBenchPayload,
+  taskCount: TaskCount,
+): BenchmarkRow {
+  validateRow(row)
+
+  const { accuracy, accuracy_ci95_half_width: halfWidth } = row.metrics
+  const tokens = tokenMapping(row)
+  const score = roundHalfEven(accuracy, 2)
+  const ciLo = roundHalfEven(accuracy - halfWidth, 2)
+  const ciHi = roundHalfEven(accuracy + halfWidth, 2)
+
+  if (!(ciLo <= score && score <= ciHi)) {
+    throw new Error(`row ${row.id} confidence interval does not contain rounded score`)
+  }
+
+  const provenance = {
+    total_cost_usd: String(row.metrics.total_cost_usd),
+    total_tokens: String(tokens.totalTokens),
+    cached_input_tokens: String(tokens.cachedInputTokens ?? null),
+    uncached_input_tokens: String(tokens.uncachedInputTokens),
+    token_mapping:
+      "tokens_input = uncached_input_tokens; upstream total_tokens equals " +
+      "uncached_input_tokens + output_tokens, so cached reads are part of the " +
+      "uncached figure and must not be added again (verified on all rows of the fetched board)",
+    n_trials: String(row.metrics.n_trials),
+    successes: String(row.metrics.successes),
+    rank: String(row.rank),
+    agent: row.metadata.agent_display.label,
+    effort: row.metadata.reasoning_effort,
+    date: row.metadata.date,
+    row_id: row.id,
+    model_url: row.metadata.model_display.url,
+    selection_rule: SELECTION_RULE,
+    board: payload.leaderboard.name,
+    board_id: payload.leaderboard.id,
+    dataset_version_id: payload.leaderboard.dataset_version_ids.join(","),
+    board_updated_at: payload.leaderboard.updated_at,
+    task_count_url: taskCount.url,
+  }
+
+  return {
+    model_id: modelId,
+    score,
+    ci_lo: ciLo,
+    ci_hi: ciHi,
+    tokens_input: tokens.uncachedInputTokens,
+    tokens_output: tokens.outputTokens,
+    provenance,
+  }
+}
+
+function selectRows(
+  rows: readonly LeaderboardRow[],
+  models: readonly Model[],
+  payload: TerminalBenchPayload,
+  taskCount: TaskCount,
+): Selection {
+  const lookup = modelLookup(models)
+  const selected = new Map<string, LeaderboardRow>()
+  const skippedLabels = new Set<string>()
+  let displayCount = 0
+
+  for (const row of rows) {
+    if (row.status !== "display") {
+      continue
+    }
+
+    displayCount += 1
+    tokenMapping(row)
+    const modelId = resolveModel(row, lookup)
+
+    if (modelId === null) {
+      skippedLabels.add(row.metadata.model_display.label)
+      continue
+    }
+
+    const current = selected.get(modelId)
+
+    if (
+      current === undefined ||
+      row.metadata.date > current.metadata.date ||
+      (row.metadata.date === current.metadata.date &&
+        row.metrics.accuracy > current.metrics.accuracy)
+    ) {
+      selected.set(modelId, row)
+    }
+  }
+
+  const result: BenchmarkRow[] = []
+
+  for (const [modelId, row] of selected) {
+    result.push(toBenchmarkRow(row, modelId, payload, taskCount))
+  }
+
+  return { rows: result, skippedLabels: [...skippedLabels], displayCount }
 }
 
 function parseTaskCount(text: string): number {
@@ -385,140 +593,6 @@ function resolveModel(row: LeaderboardRow, lookup: ReadonlyMap<string, string>):
   return lookup.get(urlSlug(row.metadata.model_display.url)) ?? null
 }
 
-function numericInput(value: number | null | undefined): number | undefined {
-  return value === null || value === undefined ? undefined : value
-}
-
-function validateRow(row: LeaderboardRow): void {
-  const { accuracy, n_trials: nTrials, successes } = row.metrics
-
-  if (successes > nTrials) {
-    throw new Error(`row ${row.id} has successes greater than n_trials`)
-  }
-
-  const expectedAccuracy = (100 * successes) / nTrials
-
-  if (Math.abs(accuracy - expectedAccuracy) >= 0.01) {
-    throw new Error(`row ${row.id} accuracy does not match successes / n_trials`)
-  }
-
-  const ciLo = accuracy - row.metrics.accuracy_ci95_half_width
-  const ciHi = accuracy + row.metrics.accuracy_ci95_half_width
-
-  if (ciLo < 0 || ciHi > 100) {
-    throw new Error(`row ${row.id} confidence interval is outside 0-100`)
-  }
-}
-
-function toBenchmarkRow(
-  row: LeaderboardRow,
-  modelId: string,
-  payload: TerminalBenchPayload,
-  taskCount: TaskCount,
-): BenchmarkRow {
-  validateRow(row)
-
-  const { accuracy, accuracy_ci95_half_width: halfWidth } = row.metrics
-
-  const tokensInput = [
-    numericInput(row.metrics.uncached_input_tokens),
-    numericInput(row.metrics.cached_input_tokens),
-  ]
-
-  const inputParts = tokensInput.filter((value): value is number => value !== undefined)
-
-  const provenance = {
-    total_cost_usd: String(row.metrics.total_cost_usd),
-    total_tokens: String(row.metrics.total_tokens),
-    n_trials: String(row.metrics.n_trials),
-    successes: String(row.metrics.successes),
-    rank: String(row.rank),
-    agent: row.metadata.agent_display.label,
-    effort: row.metadata.reasoning_effort,
-    date: row.metadata.date,
-    row_id: row.id,
-    model_url: row.metadata.model_display.url,
-    selection_rule: SELECTION_RULE,
-    board: payload.leaderboard.name,
-    board_id: payload.leaderboard.id,
-    dataset_version_id: payload.leaderboard.dataset_version_ids.join(","),
-    board_updated_at: payload.leaderboard.updated_at,
-    task_count_url: taskCount.url,
-  }
-
-  const result: BenchmarkRow = {
-    model_id: modelId,
-    score: accuracy,
-    ci_lo: accuracy - halfWidth,
-    ci_hi: accuracy + halfWidth,
-    tokens_input: undefined,
-    tokens_output: undefined,
-    provenance,
-  }
-
-  if (inputParts.length === 2) {
-    const uncachedInput = inputParts[0]
-    const cachedInput = inputParts[1]
-
-    if (uncachedInput !== undefined && cachedInput !== undefined) {
-      result.tokens_input = uncachedInput + cachedInput
-    }
-  }
-
-  const outputTokens = numericInput(row.metrics.output_tokens)
-
-  if (outputTokens !== undefined) {
-    result.tokens_output = outputTokens
-  }
-
-  return result
-}
-
-function selectRows(
-  rows: readonly LeaderboardRow[],
-  models: readonly Model[],
-  payload: TerminalBenchPayload,
-  taskCount: TaskCount,
-): Selection {
-  const lookup = modelLookup(models)
-  const selected = new Map<string, LeaderboardRow>()
-  const skippedLabels = new Set<string>()
-  let displayCount = 0
-
-  for (const row of rows) {
-    if (row.status !== "display") {
-      continue
-    }
-
-    displayCount += 1
-    const modelId = resolveModel(row, lookup)
-
-    if (modelId === null) {
-      skippedLabels.add(row.metadata.model_display.label)
-      continue
-    }
-
-    const current = selected.get(modelId)
-
-    if (
-      current === undefined ||
-      row.metadata.date > current.metadata.date ||
-      (row.metadata.date === current.metadata.date &&
-        row.metrics.accuracy > current.metrics.accuracy)
-    ) {
-      selected.set(modelId, row)
-    }
-  }
-
-  const result: BenchmarkRow[] = []
-
-  for (const [modelId, row] of selected) {
-    result.push(toBenchmarkRow(row, modelId, payload, taskCount))
-  }
-
-  return { rows: result, skippedLabels: [...skippedLabels], displayCount }
-}
-
 type ComparableRow = {
   model_id: string
   score: string
@@ -531,6 +605,9 @@ type ComparableRow = {
   steps: string | undefined
   "provenance.total_cost_usd": string | undefined
   "provenance.total_tokens": string | undefined
+  "provenance.cached_input_tokens": string | undefined
+  "provenance.uncached_input_tokens": string | undefined
+  "provenance.token_mapping": string | undefined
   "provenance.n_trials": string | undefined
   "provenance.successes": string | undefined
   "provenance.rank": string | undefined
@@ -559,6 +636,9 @@ const ROW_DIFF_FIELDS = [
   "steps",
   "provenance.total_cost_usd",
   "provenance.total_tokens",
+  "provenance.cached_input_tokens",
+  "provenance.uncached_input_tokens",
+  "provenance.token_mapping",
   "provenance.n_trials",
   "provenance.successes",
   "provenance.rank",
@@ -614,6 +694,9 @@ function comparableRow(row: BenchmarkRow): ComparableRow {
     tokens_output: row.tokens_output === undefined ? undefined : String(row.tokens_output),
     steps: row.steps === undefined ? undefined : String(row.steps),
     "provenance.total_cost_usd": row.provenance.total_cost_usd,
+    "provenance.cached_input_tokens": row.provenance.cached_input_tokens,
+    "provenance.uncached_input_tokens": row.provenance.uncached_input_tokens,
+    "provenance.token_mapping": row.provenance.token_mapping,
     "provenance.total_tokens": row.provenance.total_tokens,
     "provenance.n_trials": row.provenance.n_trials,
     "provenance.successes": row.provenance.successes,
