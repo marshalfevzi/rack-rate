@@ -1426,3 +1426,23 @@ No stage was opened. Stage 3 is still untouched.
   architecture section states as an obligation.
 - The favicon and sitemap are build outputs; only `public/favicon.svg` is
   committed. `apps/site/public/CNAME` still does not exist, by design.
+
+**Addendum, same stage, measured after the commit**
+
+- The three new files were checked **as served**, not only on disk:
+  `astro preview` on the built `dist/` returned 200 with the right types for
+  `/rack-rate/robots.txt` (`text/plain`, 92 B), `/rack-rate/sitemap-index.xml`
+  and `/rack-rate/sitemap-0.xml` (`text/xml`, 203 B / 4,572 B), and
+  `/rack-rate/favicon.svg` (`image/svg+xml`, 428 B). The preview server binds to
+  `localhost` (IPv6 `::1`), so a `127.0.0.1` readiness probe never connects even
+  though the server is up — a probe artifact, not a site one.
+- One claim in `docs/architecture.md` was **overstated and is corrected** rather
+  than left standing: the favicon's `rule` border does not give the mark an edge
+  on dark browser chrome. Recomputed by WCAG 2.x relative luminance: amber on
+  canvas 10.57:1, amber on a dark chrome strip `#202124` 8.8:1, canvas on white
+  19.33:1, canvas on `#202124` 1.2:1, border on `#202124` 1.07:1. On dark chrome
+  the bars alone carry the mark; on light chrome the square does, and the
+  paragraph now says that.
+- `/rack-rate/404/` answers 200 under `astro preview` because it serves
+  `404.html` for that path directly; the deployed status code is 6.4's concern,
+  and the page is absent from the sitemap either way.

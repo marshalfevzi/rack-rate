@@ -189,8 +189,12 @@ path.
 
 `apps/site/public/favicon.svg` is the tab icon: a standalone 32×32 SVG (428
 bytes) using only the three token hexes — a `#0A0E15` (`canvas`) rounded square,
-a 1.5 px `#1D2735` (`rule`) border so the mark keeps an edge against dark
-browser chrome, and three ascending bars in `#FFB020` (`adjusted`). The amber is
+a 1.5 px `#1D2735` (`rule`) border, and three ascending bars in `#FFB020`
+(`adjusted`). Measured contrast: amber on canvas 10.57:1, amber on a dark chrome
+strip (`#202124`) 8.8:1, canvas on white 19.33:1 — while that same square
+against the dark strip is 1.2:1 and its border 1.07:1. On dark chrome the bars
+alone carry the mark; on light chrome the square does. The border is a
+light-chrome edge, not a dark-chrome one, and is described that way. The amber is
 wordmark chrome, not a cost basis: a favicon carries no number, so invariant 4
 has nothing to label here. `Base.astro` links it as `asset("/favicon.svg")` with
 `type="image/svg+xml"`, so the prefix comes from the builder; measured, all 53
