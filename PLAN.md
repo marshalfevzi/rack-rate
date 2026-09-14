@@ -1252,4 +1252,19 @@ No stage was opened. Stage 3 is still untouched.
   needs a printable basis legend, it reads `COST_BASIS_TERMS` through
   `costBasisTerm` rather than re-typing the labels.
 
+**Addendum, same stage, measured after the commit**
+
+- The 360 px overflow in the probe build was attributed rather than assumed. A
+  second throwaway page (`src/pages/smoke37b.astro`, one overflow candidate per
+  section, every other section hidden, `documentElement.scrollWidth` per
+  section) returned 360 for a `CiBar` in a 32 px box, a `CiBar` in a 96 px box,
+  three chips in a 100 px no-wrap flex box, and a chip in a 60 px box; 564 for a
+  seven-column table alone, and 360 for the same table inside `overflow-x-auto`.
+  No component forces page width at 360 px — the table did — and the wrapper
+  contains it. Two Stage 4 obligations replace the assumption, recorded in
+  `docs/architecture.md`: tables need a scroll wrapper, and a `CiBar` needs its
+  `min-w-16` floor (64 px) of room, since inside a 32 px box it renders 64 px
+  and overhangs its parent by 32 px instead of shrinking. Page and `dist/`
+  removed afterwards.
+
 

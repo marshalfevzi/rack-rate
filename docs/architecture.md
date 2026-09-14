@@ -447,6 +447,18 @@ no accent. The probe is a real gate: changing one expected interval start to
 `71.24` made `bun run --filter @rack-rate/site build` exit 1 with
 `stage 3.7 probe failed: astra interval start -> 71.25 (expected 71.24)`.
 
+Width, measured in isolation at a 360 px viewport — one candidate overflow
+source per section, every other section hidden, reading
+`documentElement.scrollWidth`: a `CiBar` in a 32 px box 360, a `CiBar` in a 96 px
+box 360, three chips in a 100 px no-wrap flex box 360, one chip in a 60 px box
+360, a seven-column table 564, and the same table inside `overflow-x-auto` 360.
+The components therefore force no page width at 360 px; the seven-column table
+was the only source, and a scroll wrapper contains it. Two Stage 4 layout
+obligations follow instead: any table needs that wrapper, and a `CiBar` needs at
+least its `min-w-16` floor (64 px) of room — inside a 32 px box it renders 64 px
+and overhangs its parent by 32 px rather than shrinking, because the floor is a
+`min-width`, not a hint.
+
 ## Design tokens
 
 `apps/site/src/styles/global.css` is the single CSS entry: one
