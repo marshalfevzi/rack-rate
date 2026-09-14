@@ -690,6 +690,18 @@ for the same import from `@rack-rate/core/cost`, and importing one id from
 contains a zod marker. The rule exists because the alternative is shipping a
 validator to a browser that only ever reads committed numbers.
 
+**Axis names are contained.** The frame sets the grid's
+`outerBoundsMode: "same"` with `outerBoundsContain: "all"`. The `"axisLabel"`
+variant ECharts still documents is not equivalent on a labelled axis: in
+`Grid.js`'s `createOrUpdateAxesView`, axis-name layout runs only when
+`outerBoundsContain === "all"`, so with `"axisLabel"` the name is laid out
+nowhere and is drawn outside the canvas. Measured before the fix, on the frame's
+own option at two widths: `$/task` clipped in half at the canvas top and
+`tasks / month` off the right edge, at both 360 px and 1280 px — the defect was
+width-independent because the margins are. The frame test asserts the labelled
+axes *and* the `"all"` containment together, so a regression to `"axisLabel"`
+fails a test rather than shipping a clipped chart.
+
 **Verification.** The mount contract is checked in a real browser, and a hidden
 headless page cannot check it: with the page hidden, `requestAnimationFrame`
 stops, the rendering lifecycle never advances, and `ResizeObserver` callbacks

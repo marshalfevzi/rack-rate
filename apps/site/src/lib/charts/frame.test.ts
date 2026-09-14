@@ -101,17 +101,27 @@ describe("cartesian frame", () => {
     expect(formatter(2, 0, undefined)).toBe(formatAxis(2))
   })
 
-  test("uses token chrome and anti-signal-free tooltip and legend defaults", () => {
+  test("contains axis names as well as labels in the grid's outer bounds", () => {
     const option = cartesianFrame(baseInput).option
     const grid = onlyOption(option.grid)
+
+    // A labelled axis is what makes the containment rule matter; with
+    // `outerBoundsContain: "axisLabel"` ECharts lays out no axis name and the
+    // name is drawn outside the canvas.
+    expect(onlyOption(option.xAxis).name).toBe(baseInput.x.label)
+    expect(onlyOption(option.yAxis).name).toBe(baseInput.y.label)
+    expect(grid.outerBoundsMode).toBe("same")
+    expect(grid.outerBoundsContain).toBe("all")
+    expect(grid.left).toBe(grid.right)
+    expect(grid.top).toBe(grid.bottom)
+  })
+
+  test("uses token chrome and anti-signal-free tooltip and legend defaults", () => {
+    const option = cartesianFrame(baseInput).option
     const tooltip = onlyOption(option.tooltip)
     const legend = onlyOption(option.legend)
     const yAxis = onlyOption(option.yAxis)
 
-    expect(grid.outerBoundsMode).toBe("same")
-    expect(grid.outerBoundsContain).toBe("axisLabel")
-    expect(grid.left).toBe(grid.right)
-    expect(grid.top).toBe(grid.bottom)
     expect(yAxis.axisLabel?.color).toBe(tokens.dim)
     expect(yAxis.axisLine?.lineStyle?.color).toBe(tokens.rule)
     expect(yAxis.splitLine?.lineStyle?.color).toBe(tokens.rule)

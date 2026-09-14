@@ -1795,6 +1795,25 @@ the rule and its measurements under "Charts".
   `apps/site/src/lib/charts/mount.ts`, unreachable from any entry point, and
   `theme.ts`'s `readChartTokens`; both are consumed by 4.2.
 
+**Review correction after the stage's own checks passed**
+
+An independent review pass on the committed chart modules found one real defect,
+in the frame. `grid.outerBoundsContain` was `"axisLabel"`, copied from the
+documented `containLabel` replacement, and ECharts skips axis-name layout
+entirely for that value (`Grid.js`, `createOrUpdateAxesView`: the name is built
+only when `outerBoundsContain === "all"`). The name was therefore drawn outside
+the plot box on every chart the frame builds: at 360 px and at 1280 px, `$/task`
+clipped in half at the canvas top and `tasks / month` fell off the right edge —
+width-independent, because the frame's own margins are. The frame comment
+claiming `"axisLabel"` contained names was wrong and is replaced. The fix is
+`outerBoundsContain: "all"`, verified by rendering the frame's own option at
+360 px (host 326 px) and at 1280 px and reading both canvases: both names fully
+inside the canvas at both widths, with the plot shrinking to fit.
+`frame.test.ts` gains a test that asserts the labelled axes and the containment
+together — it fails on `"axisLabel"` (checked by flipping the value back, 5 pass
+/ 1 fail), so the regression cannot ship silently. `bun test` is 99 pass, 286
+assertions in 9 files. No other finding from the review changed code.
+
 **Still open**
 
 - 4.2 is the first consumer of the platform: until it lands, `mount.ts` and

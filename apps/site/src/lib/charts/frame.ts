@@ -73,11 +73,13 @@ export function cartesianFrame(input: CartesianFrameInput): CartesianFrame {
       top: gridMargin,
       bottom: gridMargin,
       // `containLabel` is deprecated in ECharts 6; this is its documented
-      // equivalent (`{outerBoundsMode: 'same', outerBoundsContain: 'axisLabel'}`),
-      // so a label or axis name that overflows shrinks the plot instead of
-      // leaving the box on a phone-width chart.
+      // equivalent. `outerBoundsContain: "all"` is load-bearing: with
+      // `"axisLabel"` ECharts skips axis-name layout during estimation
+      // (`Grid.js`, `createOrUpdateAxesView`), so at these margins the y name
+      // clipped in half at the canvas top and the x name fell off the right
+      // edge — measured at 360 px and at 1280 px.
       outerBoundsMode: "same",
-      outerBoundsContain: "axisLabel",
+      outerBoundsContain: "all",
     },
     tooltip: {
       backgroundColor: tokens.panel,
