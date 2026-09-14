@@ -102,9 +102,7 @@ export function paretoScatter(input: ParetoScatterInput): ParetoScatter {
 
   const frame = cartesianFrame({
     tokens,
-    metric: "$/task",
-    basis: view.basis,
-    planName: view.planName ?? undefined,
+    title: `${costBasisTerm(view.basis, view.planName ?? undefined).label} $/task`,
     x: {
       type: "log",
       label: "$/task",

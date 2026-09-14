@@ -22,8 +22,7 @@ const tokens: ChartTokens = {
 
 const baseInput: CartesianFrameInput = {
   tokens,
-  metric: "$/task",
-  basis: "api-list",
+  title: "API list $/task",
   x: { label: "tasks / month" },
   y: { label: "cost" },
   format: formatUsdPerTask,
@@ -48,12 +47,46 @@ function onlyOption<T>(value: T | T[] | undefined): T {
 }
 
 describe("cartesian frame", () => {
-  test("titles each cost basis and rejects an unnamed route", () => {
-    expect(cartesianFrame(baseInput).title).toBe("API list $/task")
-    expect(
-      cartesianFrame({ ...baseInput, basis: "plan-route", planName: "Claude Pro" }).title,
-    ).toBe("Claude Pro route $/task")
-    expect(() => cartesianFrame({ ...baseInput, basis: "plan-route" })).toThrow()
+  test("supports category axes without numeric formatting", () => {
+    const frame = cartesianFrame({
+      ...baseInput,
+      x: { type: "category", categories: ["alpha", "beta"] },
+    })
+
+    const xAxis = onlyOption(frame.option.xAxis)
+
+    if (xAxis.type !== "category") {
+      throw new Error("expected a category axis")
+    }
+
+    expect(xAxis.data).toEqual(["alpha", "beta"])
+    expect(xAxis.axisLabel?.formatter).toBeUndefined()
+    expect(xAxis.min).toBeUndefined()
+    expect(xAxis.max).toBeUndefined()
+  })
+
+  test("passes inversion and interval settings to numeric axes", () => {
+    const frame = cartesianFrame({
+      ...baseInput,
+      y: { type: "value", inverse: true, interval: 1 },
+    })
+
+    const yAxis = onlyOption(frame.option.yAxis)
+
+    if (yAxis.type !== "value") {
+      throw new Error("expected a value axis")
+    }
+
+    expect(yAxis.interval).toBe(1)
+  })
+
+  test("requires categories for a category axis", () => {
+    expect(() =>
+      cartesianFrame({
+        ...baseInput,
+        x: { type: "category" },
+      }),
+    ).toThrow("the category axis needs categories")
   })
 
   test("allows the Pareto chart to reserve space below the plot", () => {

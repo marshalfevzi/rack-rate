@@ -171,7 +171,7 @@ driven by `@rack-rate/core` output, mobile-first.
   dominated region, labelled outliers, hover/zoom. Two cost bases as a toggle
   (API list ↔ selected plan route) with the basis in the title. Effort variants
   render as a connected trail off the pinned point.
-- [ ] 4.3 **Bump/rank chart** — rank across benchmarks, missing benchmark as a
+- [x] 4.3 **Bump/rank chart** — rank across benchmarks, missing benchmark as a
   broken line with a gap marker, never interpolated. Overlapping CIs render as
   tied rank ranges.
 - [ ] 4.4 **Model × benchmark heatmap** — diverging `visualMap` centred on 0,
@@ -1989,3 +1989,35 @@ detector either.
 - Plan-route views draw no effort trails by design: an effort variant's plan
   cost is not a published figure.
 - The 404 route's canonical/`noindex` item is still 6.4's.
+
+### 2026-09-14 - Stage 4.3: bump/rank chart
+
+**Landed**
+
+- `bump-payload.ts` builds the inline ranked payload; `bump.ts` builds the
+  model lines, gap markers, tied-rank bands, and lane separator; and
+  `bump-page.ts` decodes and mounts the chart. `/explore` now carries the
+  second chart section. `frame.ts` gained category, inverse, and interval axis
+  support, and `MarkLineComponent` is registered for the tie bands and lane
+  separator.
+- Review caught all 16 gap markers collapsed onto one identical point, leaving
+  only the topmost hoverable. Per-item `symbolOffset` now spreads them into 16
+  distinct hollow markers; six real hovers named six different missing models.
+  Review also caught the doubled `not evaluated` lane label. Removing the
+  markLine label leaves the y-axis lane tick as the single label, and a unit
+  test fails if a second one appears.
+- On the same geometry, the real option painted 78,273 pixels versus 78,263
+  with `connectNulls: true` (−10); filling every gap with its lane rank painted
+  93,811 (+15,538), so both designs were refused. With `MarkLineComponent`
+  unregistered, tie-band pixels fell to 0 and the total fell 38,187 → 35,868;
+  restoring it produced 1,608 tie-band pixels, identical to the original.
+- At 360 px, `scrollWidth === clientWidth === 360`; the bump canvas is 328 px
+  wide at x = 16, the marker row stays inside the canvas, and no label pair
+  collides. The marker spread also held at 900 px.
+
+**Still open**
+
+- 4.13 replaces this fixed chart with the metric/axis/filter builder.
+- 4.15 owns the Pareto chart's 360 px label/tick collision.
+- Plan-route views draw no effort trails: an effort variant's plan cost is not
+  a published figure.

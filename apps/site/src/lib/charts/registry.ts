@@ -3,6 +3,7 @@ import {
   DataZoomComponent,
   GridComponent,
   LegendComponent,
+  MarkLineComponent,
   TooltipComponent,
 } from "echarts/components"
 import { getInstanceByDom, init, use } from "echarts/core"
@@ -46,8 +47,11 @@ const SERIES_INSTALLS: readonly SeriesInstall[] = [
 // scatter's window control use.
 // LabelLayout is load-bearing for Stage 4.2's Pareto scatter option: without it,
 // ECharts silently ignores `labelLayout`, measured as overlapping data labels at
-// 360 px. Growth rule: the stage whose option first relies on a feature adds its
-// registration here.
+// 360 px. markLine is load-bearing for Stage 4.3's tied-rank bands and the
+// not-evaluated lane separator, and ECharts silently drops `series.markLine`
+// when the component is unregistered (same silent failure mode as the
+// `LabelLayout` feature in 4.2). Growth rule: the stage whose option first
+// relies on a feature adds its registration here.
 use([
   CanvasRenderer,
   GridComponent,
@@ -55,6 +59,7 @@ use([
   TooltipComponent,
   DataZoomComponent,
   LabelLayout,
+  MarkLineComponent,
   ...SERIES_INSTALLS.map((series) => series.install),
 ])
 

@@ -13,6 +13,7 @@ import {
   chartAriaLabel,
   encodeParetoPayload,
 } from "../lib/charts/pareto-payload.ts"
+import { buildBumpPayload, bumpAriaLabel, encodeBumpPayload } from "../lib/charts/bump-payload.ts"
 import { costBasisTerm } from "../lib/provenance.ts"
 import { href } from "../lib/url.ts"
 
@@ -25,6 +26,10 @@ const payload = buildParetoPayload({
 })
 
 const encodedPayload = encodeParetoPayload(payload)
+
+const bumpPayload = buildBumpPayload({ models, benchmarks })
+
+const encodedBumpPayload = encodeBumpPayload(bumpPayload)
 
 const apiView = payload.bases.find((view) => view.basis === "api-list")
 
@@ -83,6 +88,26 @@ const selectedPlanId = firstPlanView?.planId ?? ""
     </noscript>
   </section>
 
+  <section class="mt-12" aria-labelledby="bump-title">
+    <h2 id="bump-title" class="text-title">{bumpPayload.title}</h2>
+    <p class="mt-2 text-body">
+      Every committed model is one line, one column per benchmark version, ranked best first. A vertical band spans the ranks whose confidence intervals share a common value. A hollow marker in the not-evaluated lane means that model has no committed row in that benchmark: the line breaks there and no rank is invented.
+    </p>
+    <div
+      id="bump-chart"
+      class="mt-4 h-96 w-full sm:h-[32rem]"
+      role="img"
+      aria-label={bumpAriaLabel(bumpPayload)}
+    ></div>
+    <p id="bump-note" class="mt-2 text-meta text-dim">{bumpPayload.note}</p>
+
+    <script id="bump-data" type="application/json" is:inline set:html={encodedBumpPayload}></script>
+
+    <noscript>
+      <p class="mt-2 text-body">The rank chart is drawn in the browser; benchmark ranks and confidence intervals are documented on <a href={href("/method")} class="text-ink underline">/method</a>.</p>
+    </noscript>
+  </section>
+
   <p class="mt-6 text-meta text-dim">Route skeleton — the metric pickers, filters, chart-type switch, URL-shared configuration and composite weight sliders land in Stage 4.13 of the build plan.</p>
 </Page>
 
@@ -94,6 +119,20 @@ const selectedPlanId = firstPlanView?.planId ?? ""
       .then((chart) => chart.startParetoChart(host))
       .catch(() => {
         const note = document.getElementById("pareto-note")
+
+        if (note !== null) {
+          note.textContent = "The chart could not be drawn; the static description remains available."
+        }
+      })
+  }
+
+  const bumpHost = document.getElementById("bump-chart")
+
+  if (bumpHost !== null) {
+    void import("../lib/charts/bump-page.ts")
+      .then((chart) => chart.startBumpChart(bumpHost))
+      .catch(() => {
+        const note = document.getElementById("bump-note")
 
         if (note !== null) {
           note.textContent = "The chart could not be drawn; the static description remains available."

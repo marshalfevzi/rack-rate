@@ -1,12 +1,12 @@
-// Numeric (value/log) axes only; a categorical axis is added by the stage that needs one.
 import type { ChartOption } from "./registry.ts"
 import type { ChartTokens } from "./theme.ts"
-import type { CostBasisKind } from "../provenance.ts"
-import { costBasisTerm } from "../provenance.ts"
 
 export interface AxisSpec {
   readonly label?: string
-  readonly type?: "value" | "log"
+  readonly type?: "value" | "log" | "category"
+  readonly categories?: readonly string[]
+  readonly inverse?: boolean
+  readonly interval?: number
   readonly format?: (value: number) => string
   readonly min?: number
   readonly max?: number
@@ -14,9 +14,7 @@ export interface AxisSpec {
 
 export interface CartesianFrameInput {
   readonly tokens: ChartTokens
-  readonly metric: string
-  readonly basis: CostBasisKind
-  readonly planName?: string
+  readonly title: string
   readonly x: AxisSpec
   readonly y: AxisSpec
   readonly format: (value: number) => string
@@ -37,31 +35,65 @@ export interface SeriesMarker {
 export function cartesianFrame(input: CartesianFrameInput): CartesianFrame {
   const { tokens } = input
 
-  const axisOption = (spec: AxisSpec) => ({
-    type: spec.type ?? "value",
-    name: spec.label,
-    min: spec.min,
-    max: spec.max,
-    axisLabel: {
-      color: tokens.dim,
-      fontSize: tokens.fontSizeMeta,
-      fontFamily: tokens.fontFamily,
-      hideOverlap: true,
-      formatter: spec.format ?? input.format,
-    },
-    axisLine: {
-      lineStyle: { color: tokens.rule },
-    },
-    axisTick: { show: false },
-    splitLine: {
-      lineStyle: { color: tokens.rule },
-    },
-    nameTextStyle: {
-      color: tokens.dim,
-      fontSize: tokens.fontSizeMeta,
-      fontFamily: tokens.fontFamily,
-    },
-  })
+  const axisOption = (spec: AxisSpec) => {
+    if (spec.type === "category") {
+      if (spec.categories === undefined || spec.categories.length === 0) {
+        throw new Error("the category axis needs categories")
+      }
+
+      return {
+        type: spec.type,
+        name: spec.label,
+        data: [...spec.categories],
+        axisLabel: {
+          color: tokens.dim,
+          fontSize: tokens.fontSizeMeta,
+          fontFamily: tokens.fontFamily,
+          hideOverlap: true,
+        },
+        axisLine: {
+          lineStyle: { color: tokens.rule },
+        },
+        axisTick: { show: false },
+        splitLine: {
+          lineStyle: { color: tokens.rule },
+        },
+        nameTextStyle: {
+          color: tokens.dim,
+          fontSize: tokens.fontSizeMeta,
+          fontFamily: tokens.fontFamily,
+        },
+      }
+    }
+
+    return {
+      type: spec.type ?? "value",
+      name: spec.label,
+      min: spec.min,
+      max: spec.max,
+      inverse: spec.inverse ?? false,
+      interval: spec.interval,
+      axisLabel: {
+        color: tokens.dim,
+        fontSize: tokens.fontSizeMeta,
+        fontFamily: tokens.fontFamily,
+        hideOverlap: true,
+        formatter: spec.format ?? input.format,
+      },
+      axisLine: {
+        lineStyle: { color: tokens.rule },
+      },
+      axisTick: { show: false },
+      splitLine: {
+        lineStyle: { color: tokens.rule },
+      },
+      nameTextStyle: {
+        color: tokens.dim,
+        fontSize: tokens.fontSizeMeta,
+        fontFamily: tokens.fontFamily,
+      },
+    }
+  }
 
   // Four spacing units leave room for labels while keeping the plot compact.
   const gridMargin = 16
@@ -107,7 +139,7 @@ export function cartesianFrame(input: CartesianFrameInput): CartesianFrame {
   }
 
   return {
-    title: `${costBasisTerm(input.basis, input.planName).label} ${input.metric}`,
+    title: input.title,
     option,
   }
 }

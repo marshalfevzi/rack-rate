@@ -646,6 +646,9 @@ adapter:
 | `pareto-payload.ts` | Builds the inline `ParetoPayload` from committed derived frontiers and source data, encodes/decodes the JSON boundary, and owns `chartAriaLabel(view)` — the chart's accessible name, shared by the server template and the client rebuild so the two cannot drift. |
 | `pareto.ts` | Pure Pareto scatter option and tooltip builders: axes, frontier, dominated region, labels, effort trails, zoom, and tokens. |
 | `pareto-page.ts` | Browser-only adapter that decodes the inline payload, resolves controls, mounts the option, and rebuilds the title, note, and accessible name. |
+| `bump-payload.ts` | Builds the inline `BumpPayload`: one ranked column per committed benchmark version, model-aligned cells, tied rank groups, and the not-evaluated lane. |
+| `bump.ts` | Pure bump/rank option and tooltip builders: model lines, gap markers, tied-rank bands, and the lane separator. |
+| `bump-page.ts` | Browser-only adapter that decodes `#bump-data`, reads chart tokens, mounts the bump option, and reports a static fallback when drawing fails. |
 | `*.test.ts` | The pure halves: token parsing, frame layout, axis formatters, basis titles, marker geometry. |
 
 `MarkAreaComponent` is deliberately absent: no option uses `markArea`, and the
@@ -704,6 +707,47 @@ rebuild, so the sentence cannot survive a basis switch only on one side. It did
 once — the attribute kept claiming 28 models and an API-list basis after the
 reader switched to a plan route, because the two copies were written
 independently.
+
+**Bump/rank chart.** Stage 4.3 adds the second chart section on `/explore`,
+below the Pareto scatter. `explore.astro` inlines its payload as
+`<script type="application/json" id="bump-data">`; the client decodes that
+script at startup, so the chart makes no network request.
+
+The payload has one column per committed `benchmark_version`. Within each
+column, rows sort by score descending, then model id; a tied rank range is a
+maximal consecutive run whose confidence-interval windows share a common
+value. The interval join is transitive, so the group's shareable rank is its
+minimum position and its displayed range is `min–max`. A model absent from a
+benchmark has a null cell — never rank zero and never a rank borrowed from
+another column. `laneRank = max rank + 1` is a label-only not-evaluated row,
+not a rank.
+
+The option draws one line per committed model across the columns. A null cell
+breaks that line (`connectNulls: false`); the break stops it, with no
+interpolation and no extension into the lane. Each model missing from a column
+gets one hollow marker in that column's not-evaluated lane, spread within the
+column band in payload order so every marker is individually reachable.
+Tie bands are `MarkLineComponent` vertical segments at the column, one per
+group; a second markLine is the lane separator. `ChartOption` does not enforce
+these invariants: the option merely `satisfies ChartOption`, rather than
+cross-validating the payload and rendering contract. `MarkLineComponent`
+registration is load-bearing: with the feature unregistered, tie-band pixels
+drop to zero and the chart total falls from 38,187 to 35,868; restoring it
+produces 1,608 tie-band pixels, identical to the original.
+
+The 16 Terminal-Bench 4.0 gaps render as 16 distinct hollow markers inside
+the gap column's band, each individually hoverable. This spread held at both
+900 px and 360 px; at 360 px the markers stayed inside the canvas and the
+page had no horizontal overflow.
+
+The committed data makes every gap trailing: DeepSWE 1.1 carries all 28
+models, while Terminal-Bench 4.0 carries 12. Consequently, changing
+`connectNulls` to `true` changes almost nothing measurable (78,273 versus
+78,263 painted pixels, a −10 delta), because nothing follows a null for the
+line to connect to. The setting remains `false` deliberately: it makes the
+break explicit rather than accidental and becomes load-bearing when a gap is
+interior, such as with a third benchmark version or a source that lags. Version
+4.13 replaces this fixed chart with the metric/axis/filter builder.
 
 **Label layout is a feature registration.** The scatter sets
 `labelLayout: { hideOverlap: true }`, but ECharts silently ignores it unless

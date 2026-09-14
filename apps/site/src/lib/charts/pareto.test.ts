@@ -123,6 +123,7 @@ describe("Pareto scatter", () => {
     const slider = option.dataZoom?.find((entry) => entry.type === "slider")
 
     expect(grid.bottom).toBe(44)
+    expect(chart.title).toBe("API list $/task")
     expect(xAxis.type).toBe("log")
     expect(xAxis.min).toBe(0.7)
     expect(xAxis.max).toBe(5.6)
