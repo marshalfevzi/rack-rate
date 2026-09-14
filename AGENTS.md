@@ -48,6 +48,7 @@ agent's.
 ```
 packages/core/        @rack-rate/core
   src/schema.ts         zod schemas + inferred TS types  ← the data contract
+  src/ids.ts            benchmark/source ids and the AA gate identity (zod-free)
   src/cost.ts           plan quota → tasks/month → $/task, break-even, value multiple
   src/normalize.ts      per-benchmark z-score, weighted composite, missing-value rules
   src/pareto.ts         O(n log n) skyline + dominated-region + distance-to-frontier
@@ -65,7 +66,9 @@ apps/site/            @rack-rate/site        ← Astro; imports core + data/*.js
   src/pages/            one file per route
   src/layouts/          Base + Page shells
   src/components/       .astro components
-  src/lib/charts/       ECharts option builders (pure functions → option objects)
+  src/lib/charts/       ECharts option builders (pure) + the one registration
+                        module and the one mount helper (ResizeObserver,
+                        prefers-reduced-motion, disposal); dynamic import only
   src/lib/prefs.ts      nanostores persistent stores
   src/styles/global.css Tailwind entry + @theme tokens
   public/               favicon.svg; CNAME only when the domain is live

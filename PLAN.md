@@ -162,7 +162,7 @@ driven by `@rack-rate/core` output, mobile-first.
 
 ### Tasks
 
-- [ ] 4.1 `src/lib/charts/` — pure option builders (`(data) => EChartsOption`)
+- [x] 4.1 `src/lib/charts/` — pure option builders (`(data) => EChartsOption`)
   with a shared tree-shaken `echarts/core` registration module. One mount
   helper handling `ResizeObserver`, `prefers-reduced-motion`, and disposal.
   Charts load via dynamic `import()` so a page without charts ships no chart
@@ -1686,6 +1686,123 @@ contributing benchmark supplies an interval.
 - Stage 4 (4.1–4.15) is next: the charts, tables, and the model, plan, compare
   and explore pages. `/method` and `/sources` were the two pages that could
   land before them, and they now do.
+- Every Stage 4 template inherits the whitespace obligation in
+  `docs/architecture.md`: a visible space at a line boundary between text and a
+  tag stays on that line or is written `{" "}`.
+- The 404 route still carries a canonical for a path with no page and no
+  `noindex`; that is 6.4's, unchanged by this stage.
+- `bun run quality` stays report-only; it is not a gate.
+- The `push: branches: [main]` CI trigger has still not fired: local `main` is
+  unpushed, so the first live use of that trigger is the owner's next push.
+
+### 2026-09-14 — Stage 4.1: the chart platform, and the validator that was riding along
+
+`apps/site/src/lib/charts/` holds the platform: `registry.ts` (the repository's
+only `echarts.use()` call), `theme.ts` (the `@theme` token reader and one accent
+per cost basis), `frame.ts` (the shared cartesian frame and the series marker),
+`mount.ts` (the mount helper), and `frame.test.ts` / `theme.test.ts` for the
+pure halves. 4.1 registered `CanvasRenderer`, `GridComponent`,
+`LegendComponent`, and `TooltipComponent` — the renderer plus the components the
+frame and the preserved chart features use — and each series type is registered
+by the stage that lands its first builder (4.2 scatter, 4.3 line, 4.4 heatmap
+and `visualMap`, 4.5 line, 4.6 bar, 4.7 radar). `ChartOption` is
+`ComposeOption<FrameComponentOption>`, so an option object cannot carry a series
+type no stage registered: a missing `use()` is a type error rather than a blank
+chart. Builders stay pure — `(data) => ChartOption`, no `use()`, no DOM, no
+clock — and `mount.ts` is the only module in the directory that touches
+`window`.
+
+**The mount contract.** `mountChart(target, option)` refuses an element that
+already holds an instance (`the element already holds a chart instance; dispose
+the existing handle first`), applies the option with `notMerge: true`, and
+returns `{ update, dispose }`. A `ResizeObserver` on the target calls
+`chart.resize()`. A `MediaQueryList` listener for
+`prefers-reduced-motion: reduce` re-applies the current option with
+`animation: !motion.matches`; it is a live listener rather than a one-time read
+because reduced motion is a setting a reader can change while the page is open.
+`update()` after `dispose()` throws `the chart was disposed; mount a new one`
+instead of silently doing nothing, and `dispose()` is idempotent, disconnects
+both listeners, and leaves the element reusable by a later mount. Token reading
+is live (`getComputedStyle(element)`), so the light scheme's token
+re-declaration reaches charts with no chart-side code.
+
+**The client bundle, measured.** The first client modules exposed a cost stage 3
+never paid: `apps/site/src/lib/provenance.ts`, which every chart option builder
+reaches, imported `ARTIFICIAL_ANALYSIS_BENCHMARK_ID` from `@rack-rate/core`,
+whose barrel re-exports `schema.ts` — the one core module that builds zod
+schemas. One id pulled the whole validator into the browser bundle. Measured
+with the bundler: importing that id produced 99,247 bytes and importing
+`roundHalfEven` 99,721, against 514 bytes for the same rounding through
+`@rack-rate/core/cost`. Three changes: the ids moved to
+`packages/core/src/ids.ts`, a zod-free module the barrel re-exports (public
+surface unchanged, one home kept); `format.ts` and `provenance.ts` import the
+narrow subpaths `@rack-rate/core/cost`, `@rack-rate/core/ids`, and
+`@rack-rate/core/freshness`; and `packages/core/package.json` declares
+`"sideEffects": false`, which is truthful for a package that is pure by
+invariant and makes a bare barrel import of a pure core value drop the schemas
+too. No built client chunk carries a zod marker. `docs/architecture.md` records
+the rule and its measurements under "Charts".
+
+**Verified**
+
+- `bun run check` exits 0: `tsc --build --force`, oxlint with every rule at
+  error severity, `oxfmt --check` clean over 53 files, `astro check` over 34
+  files with 0 errors, 0 warnings, 0 hints.
+- `bun test` reports 98 pass, 0 fail, 284 assertions in 9 files (76 pass, 231
+  assertions, 7 files at 3.11; the 22 new cases are the frame and theme suites).
+- Browser, headless Chromium against `astro preview` on the built `dist/` at the
+  real `/rack-rate` prefix, driving a throwaway probe page (deleted afterwards)
+  whose script asserted in-page and reported 0 failures:
+  - The frame's real option object drives a real chart: title
+    `API list $/task`, `yAxis.type` `log` from the caller's axis spec, tooltip
+    background `#111825` — the `--color-panel` token arriving through
+    `readChartTokens` — and `animation: true` with no reduced-motion preference.
+  - Resize: narrowing the host from 990 px to 420 px moved the canvas to 418 px
+    with a 522 px backing store at `devicePixelRatio` 1.25, through the helper's
+    own observer and never a manual `chart.resize()`.
+  - Reduced motion: emulating `reduce` flipped the live option to
+    `animation: false`; emulating `no-preference` flipped it back to `true`.
+  - Disposal: `dispose()` left 0 canvases, cleared `_echarts_instance_`, and
+    emptied the element; a second `dispose()` was a no-op; `update()` after it
+    threw `the chart was disposed; mount a new one`; remounting the same element
+    painted a chart again; a second mount threw the occupied-element error.
+  - 360 px: `documentElement.scrollWidth` 360 with `clientWidth` 360, zero
+    elements past the viewport, and both chart canvases at their host widths
+    (326 px and 254 px).
+  - Chart-free route: `/models` emits 0 `<script>` tags, 0 `modulepreload`
+    links, and its browser makes 0 `.js` requests.
+- A hidden headless page cannot measure the observer work: while the document is
+  hidden, `requestAnimationFrame` stops, so `ResizeObserver` callbacks never
+  arrive — a control observer took 0 entries while the host narrowed from 990 px
+  to 398 px and the canvas stayed at 990 px. Calling
+  `Emulation.setFocusEmulationEnabled({ enabled: true })` after
+  `page.bringToFront()` restores the loop (92 frames in 1.5 s) and the callback
+  (host 418 px, canvas 418 px). `docs/architecture.md` records the step so the
+  next stage does not re-diagnose it.
+- `bun run data:check` exits 0 and `data/derived.json` is still sha256
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: the ids
+  split moved no published byte.
+- `bun run build` exits 0 with 53 pages, and `dist/og.png` is still sha256
+  `23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed` at
+  1200×630. With the probe deleted, `apps/site/dist/_astro/` holds no `.js` file
+  at all: every route in the 4.1 tree ships zero client JavaScript.
+- On the probe build, before deletion, the chart-bearing page made 6 `.js`
+  requests: the ECharts core chunk at 458 KB, plus option-builder, theme, frame,
+  and mount chunks at 1.5 KB, 1.7 KB, 1.5 KB, and 0.6 KB.
+- `bun run quality` (report-only, out of the gate) exits 1: dead-code 17 issues,
+  dupes 10 clone groups, health 144 above threshold over 668 analysed files,
+  maintainability 90.2. The two entries this stage owns are
+  `apps/site/src/lib/charts/mount.ts`, unreachable from any entry point, and
+  `theme.ts`'s `readChartTokens`; both are consumed by 4.2.
+
+**Still open**
+
+- 4.2 is the first consumer of the platform: until it lands, `mount.ts` and
+  `readChartTokens` are deliberately unreferenced, and the browser pass above is
+  the only thing that has executed them.
+- 4.2–4.15 remain: the six chart types, the tables and pages, and the
+  accessibility pass. Each new series type registers in `registry.ts` in its own
+  stage, and each chart page's script dynamically imports its builder.
 - Every Stage 4 template inherits the whitespace obligation in
   `docs/architecture.md`: a visible space at a line boundary between text and a
   tag stays on that line or is written `{" "}`.

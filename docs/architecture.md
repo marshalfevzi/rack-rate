@@ -530,8 +530,14 @@ copy.
 |---|---|
 | `packages/core/src/normalize.ts`: `COMPOSITE_CENTER = 50` and `COMPOSITE_SPREAD = 10` | the composite and both CI endpoints use the same identifiers, so the page can print `50 + 10 × weighted_z` from the math it describes |
 | `packages/core/src/cost.ts`: `DAYS_PER_MONTH = 30` and `HOURS_PER_DAY = 24` | `daysForFullRun` owns the quota-to-days conversion constants |
-| `packages/core/src/schema.ts`: `ARTIFICIAL_ANALYSIS_BENCHMARK_ID = "artificial-analysis"` and `ARTIFICIAL_ANALYSIS_SOURCE_ID = "src-artificial-analysis"` | the AA identity decides the licensing gate and the source identity keeps attribution on one spelling |
-| `packages/core/src/schema.ts`: `BENCHMARK_SOURCE_IDS: ReadonlyMap<string, string>` | `deepswe` maps to `src-deepswe-data`, `terminal-bench` to `src-terminal-bench`, and `artificial-analysis` to `src-artificial-analysis`, so attribution follows one benchmark-to-source relation |
+| `packages/core/src/ids.ts`: `ARTIFICIAL_ANALYSIS_BENCHMARK_ID = "artificial-analysis"` and `ARTIFICIAL_ANALYSIS_SOURCE_ID = "src-artificial-analysis"` | the AA identity decides the licensing gate and the source identity keeps attribution on one spelling |
+| `packages/core/src/ids.ts`: `BENCHMARK_SOURCE_IDS: ReadonlyMap<string, string>` | `deepswe` maps to `src-deepswe-data`, `terminal-bench` to `src-terminal-bench`, and `artificial-analysis` to `src-artificial-analysis`, so attribution follows one benchmark-to-source relation |
+
+The three ids and the map moved to `packages/core/src/ids.ts` in 4.1. They hold
+no zod value, and they sat in the one core module that does: importing
+`ARTIFICIAL_ANALYSIS_BENCHMARK_ID` from `packages/core/src/schema.ts` linked the
+validator into any client bundle that reached it. `ids.ts` imports nothing, the
+barrel re-exports it, so the public surface is unchanged.
 
 The map is a `ReadonlyMap`, not an object annotated with an open dictionary
 type: the repository's `no-known-value-widening` anti-slop rule rejects that
@@ -624,6 +630,77 @@ measured both pages at 360 px with `documentElement.scrollWidth` and
 `<h1>`, and 0 `<script>` tags; the `/sources` attribution block was 3 text
 lines. At 1280 px, `/sources` had 11 source cards, a 992 px attribution block,
 and no horizontal overflow.
+
+## Charts
+
+Stage 4.1 landed the chart platform in `apps/site/src/lib/charts/`. Five
+modules, one job each:
+
+| Module | Job |
+|---|---|
+| `registry.ts` | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>` so an option cannot carry a series type nobody registered. |
+| `theme.ts` | `ChartTokens` and the two ways to build them: `chartTokensFrom(lookup, rootFontSizePx)` is pure and tested, `readChartTokens(element)` reads the live element. Plus one accent per cost basis (`costBasisColor`, `basisTextColor`), so invariant 4's three quantities stay three colours. |
+| `frame.ts` | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. |
+| `mount.ts` | `mountChart(target, option)` → `{ update, dispose }`, plus `ChartHandle`. |
+| `*.test.ts` | The pure halves: token parsing, frame layout, axis formatters, basis titles, marker geometry. |
+
+**Builders stay pure.** A builder is `(data) => ChartOption`: no `echarts.use()`,
+no DOM, no `getComputedStyle`, no clock. Anything that needs the browser belongs
+to `mount.ts`, which is the only module in the directory that touches `window`.
+The registration module holds every `use()` call for the same reason — one
+`use()` surface means one shared chunk and one place to grow when a stage
+registers a new series type. Registration is per stage, not speculative: 4.1
+registered the renderer and the three frame components, and the first builder
+that needs a series registers it in that stage (4.2 scatter, 4.3 line, 4.4
+heatmap and `visualMap`, 4.5 line, 4.6 bar, 4.7 radar).
+
+**Loading.** A chart reaches a page only through the page's own `<script>`,
+which dynamically imports the builder and the mount helper. Astro bundles that
+script as its own entry, so a route whose script does not import chart code
+ships none: `/models` emits zero `<script>` tags, zero `modulepreload` links,
+and its browser makes zero `.js` requests. Measured on the built site against
+`astro preview`, the chart-bearing probe page made 6 `.js` requests, of which
+the ECharts core chunk is 458 KB and the option-builder, theme, frame, and
+mount chunks are 1.5 KB, 1.7 KB, 1.5 KB, and 0.6 KB.
+
+**The mount contract.** `mountChart` refuses an element that already holds an
+instance rather than silently replacing it, initialises the canvas renderer,
+applies the option with `notMerge: true`, and returns a handle:
+
+- A `ResizeObserver` on the target calls `chart.resize()`, so a chart follows a
+  container that changes with the viewport.
+- A `MediaQueryList` listener for `prefers-reduced-motion: reduce` re-applies
+  the current option with `animation: !matches`. It is a live listener because
+  reduced motion is a setting a reader can change while the page is open; a
+  chart mounted under a media query read once would keep animating.
+- `update(option)` after `dispose()` throws `the chart was disposed; mount a
+  new one`. A silent no-op would hide a page that threw its handle away.
+- `dispose()` is idempotent, disconnects the observer and the listener, and
+  empties the element, so a later `mountChart` on the same element works.
+
+**Client-side core imports.** A chart module that reaches `@rack-rate/core`
+imports the narrow subpath whose module carries no zod value —
+`@rack-rate/core/ids` for the Artificial Analysis id, `@rack-rate/core/cost`
+for `roundHalfEven`, `@rack-rate/core/freshness` for `STALE_AFTER_DAYS` — and
+`packages/core/package.json` declares `"sideEffects": false` so a barrel import
+of a pure core value is dropped whole. Measured with the bundler: importing
+`roundHalfEven` from `@rack-rate/core` produced 99,721 bytes against 514 bytes
+for the same import from `@rack-rate/core/cost`, and importing one id from
+`@rack-rate/core/schema.ts` produced 99,247 bytes. No built client chunk
+contains a zod marker. The rule exists because the alternative is shipping a
+validator to a browser that only ever reads committed numbers.
+
+**Verification.** The mount contract is checked in a real browser, and a hidden
+headless page cannot check it: with the page hidden, `requestAnimationFrame`
+stops, the rendering lifecycle never advances, and `ResizeObserver` callbacks
+never arrive — measured: a control observer on the same element received zero
+entries while the host narrowed from 990 px to 398 px and the canvas stayed at
+990 px. `Emulation.setFocusEmulationEnabled({ enabled: true })` after
+`bringToFront()` restores the loop (92 frames in 1.5 s) and the callback (host
+418 px, canvas 418 px, backing store 522 px at `devicePixelRatio` 1.25). Any
+later stage measuring resize, animation, or disposal needs that step first.
+Triggering the fix through the real observer, not a manual `chart.resize()`, is
+what makes "the helper resizes" a measurement rather than a restatement.
 
 ## Template whitespace
 
