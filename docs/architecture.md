@@ -633,16 +633,106 @@ and no horizontal overflow.
 
 ## Charts
 
-Stage 4.1 landed the chart platform in `apps/site/src/lib/charts/`. Five
-modules, one job each:
+Stage 4.1 landed the chart platform in `apps/site/src/lib/charts/`. Its five
+modules, one job each, are joined in 4.2 by the payload, builder, and page
+adapter:
 
 | Module | Job |
 |---|---|
-| `registry.ts` | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>`. |
+| `registry.ts` | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, `ScatterChart`/`scatter`, `LineChart`/`line`, `DataZoomComponent`, and the `LabelLayout` feature; re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>`. `FrameComponentOption` includes `DataZoomComponentOption`. |
 | `theme.ts` | `ChartTokens` and the two ways to build them: `chartTokensFrom(lookup, rootFontSizePx)` is pure and tested, `readChartTokens(element)` reads the live element. Plus one accent per cost basis (`costBasisColor`, `basisTextColor`), so invariant 4's three quantities stay three colours. |
-| `frame.ts` | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. |
+| `frame.ts` | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. `input.gridBottom` lets a builder reserve room under the plot for a control of its own (the Pareto slider). |
 | `mount.ts` | `mountChart(target, option)` → `{ update, dispose }`, plus `ChartHandle`. |
+| `pareto-payload.ts` | Builds the inline `ParetoPayload` from committed derived frontiers and source data, and encodes/decodes the JSON boundary. |
+| `pareto.ts` | Pure Pareto scatter option and tooltip builders: axes, frontier, dominated region, labels, effort trails, zoom, and tokens. |
+| `pareto-page.ts` | Browser-only adapter that decodes the inline payload, resolves controls, mounts the option, and rebuilds the title, note, and accessible name. |
 | `*.test.ts` | The pure halves: token parsing, frame layout, axis formatters, basis titles, marker geometry. |
+
+`MarkAreaComponent` is deliberately absent: no option uses `markArea`, and the
+option type never admitted that key. A mid-stage registration was removed;
+registration remains per stage rather than speculative.
+
+**Pareto payload.** `pareto-payload.ts` turns the committed `frontiers.api`
+and `frontiers.plan_adjusted` from `data/derived.json`, plus `models.json`,
+`benchmarks.json`, and `plans.json`, into one `ParetoPayload`:
+`{ scoreLabel, bases }`. Each `ParetoBasisView` carries its basis and optional
+plan, `points`, `frontier`, `trails`, and a note. There is one API-list view and
+15 plan-route views. The API view's frontier is `frontiers.api`; each plan view
+uses `frontiers.plan_adjusted[plan]`. The frontier is therefore the committed
+core output, not a browser recomputation.
+
+`encodeParetoPayload` writes JSON with `<` escaped to `\u003c`.
+`decodeParetoPayload` refuses an empty `bases` array or any view with an empty
+`points` or `frontier` array. It does not revalidate every field: the same build
+writes and reads this payload, so no external producer reaches the decoder; the
+source records that boundary as a SAFETY comment.
+
+**Pareto option.** `pareto.ts` consumes one `ParetoBasisView` and returns
+`{ title, option }`. The x-axis is log-scaled `$/task`, with
+`min = minCost × 0.7` and `max = maxCost × 1.4`; the y-axis is the DeepSWE
+v1.1 `pass@1` score, floored and ceiled to the next 5-point mark. A view with
+no points, a non-positive or non-finite cost, an unknown frontier id, or an
+empty frontier list throws. The frontier's own points and the three worst-value
+dominated points, sorted by descending `distance.cost_ratio`, show labels; all
+other points carry `label: { show: false }`.
+
+The frontier polyline follows the derived frontier order (ascending cost) and
+extends to the x-axis maximum at the last frontier point's score. That extension
+shows the region the last frontier model keeps dominating. It is drawn in
+`tokens.ink`; its dominated-region `areaStyle` uses `tokens.rule` at 0.55
+opacity. Effort variants are dashed 4 px line series, one per model with at
+least two variants, sorted by cost, and are drawn only for the API-list basis.
+Plan views carry `trails: []` and say so in their note because an effort
+variant's plan cost is not a published figure.
+
+The x-axis has ECharts' `inside` zoom and a slider. Every slider colour —
+border, background, filler, handles, move handle, data background, selected data
+background, emphasis, and text — comes from a chart token rather than ECharts'
+default palette; the built chart left zero default-palette pixels in either
+basis.
+
+**Pareto page.** `pareto-page.ts` is browser-only. It reads
+`<script id="pareto-data" type="application/json">`, resolves the active radio
+basis and plan select, mounts the chart, and rebuilds on every control change.
+Each rebuild rewrites `#pareto-title`, `#pareto-note`, and the host's
+`aria-label`. `explore.astro` supplies the inline payload, two basis radios,
+the 15-plan select, the chart host, and a `/method` noscript link; its page
+script dynamically imports the adapter.
+
+**Label layout is a feature registration.** The scatter sets
+`labelLayout: { hideOverlap: true }`, but ECharts silently ignores it unless
+`LabelLayout` is registered: `installLabelLayout` supplies the
+`series:layoutlabels` lifecycle and `LabelManager.layout()` is the only caller
+of the `hideOverlap` path. At 360 px, without the feature all nine data labels
+were drawn on top of one another; after registration, six of nine had no data
+label overlap and every remaining label was legible. Axis labels did not
+collide — `AxisBuilder` has its own overlap pass — but `deepseek-v4-flash`
+started over the axis gutter and partly covered the `60.0%` tick. A feature can
+be as load-bearing as a series registration and fail silently in exactly the
+same way.
+
+**Stage 4.2 verification.** All 16 views' `frontier` arrays and point counts
+equal their corresponding `data/derived.json` entries exactly: the API-list
+view has 28 points and frontier ids `deepseek-v4-flash`, `deepseek-v4-pro`,
+`glm-5.3-flash`, `gemini-3.7-flash`, `gemini-3.8-flash`, and `gpt-6-astra`;
+`chatgpt-plus` has 6 points / 3 frontier models and `opencode-go` has 1 / 1.
+The basis toggle updates the title, note, accent, and plot; the plan select
+re-renders every plan, and keyboard input reaches the radios and switches the
+basis without a mouse. The item-triggered tooltip reads
+`deepseek-v4-flash · 53.3% · $0.0304 · Ollama Pro route` on a
+`--color-panel` background.
+
+At 360 px, `scrollWidth === clientWidth === 360`, no element crosses the right
+edge, the chart host and canvas are both 328 px wide, and controls wrap to one
+per line. With `prefers-reduced-motion: reduce`, the canvas hash is byte-identical
+at 120 ms, 370 ms, and 770 ms after a basis switch; with motion allowed, the
+frames at 120 ms and 370 ms differ. The page makes four requests — the
+document, one CSS file, the page script, and one 562 KB JavaScript chunk carrying
+ECharts and the builder — and zero requests for `data/*.json`; `/models` emits
+zero `<script>` tags and zero `modulepreload` links. On every rebuild the host
+name follows the active view; for ChatGPT Plus it reads `6 committed models
+plotted against ChatGPT Plus route cost per task; 3 frontier models; JavaScript
+is required to draw this chart.`
 
 **Builders stay pure.** A builder is `(data) => ChartOption`: no `echarts.use()`,
 no DOM, no `getComputedStyle`, no clock. Anything that needs the browser belongs
@@ -650,9 +740,9 @@ to `mount.ts`, which is the only module in the directory that touches `window`.
 The registration module holds every `use()` call for the same reason — one
 `use()` surface means one shared chunk and one place to grow when a stage
 registers a new series type. Registration is per stage, not speculative: 4.1
-registered the renderer and the three frame components, and the first builder
-that needs a series registers it in that stage (4.2 scatter, 4.3 line, 4.4
-heatmap and `visualMap`, 4.5 line, 4.6 bar, 4.7 radar).
+registered the renderer and the three frame components; 4.2 registered
+`scatter` and `line`; 4.4 still owns `heatmap` and `visualMap`, 4.6 owns `bar`,
+and 4.7 owns `radar`; 4.3 and 4.5 reuse `line`.
 
 **Loading.** A chart reaches a page only through the page's own `<script>`,
 which dynamically imports the builder and the mount helper. Astro bundles that
