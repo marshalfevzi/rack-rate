@@ -1814,6 +1814,34 @@ together — it fails on `"axisLabel"` (checked by flipping the value back, 5 pa
 / 1 fail), so the regression cannot ship silently. `bun test` is 99 pass, 286
 assertions in 9 files. No other finding from the review changed code.
 
+**Second review finding: the option type's safety claim was false**
+
+The same review pass checked the claim that `ChartOption` cannot carry a series
+type nobody registered. It cannot hold: `ComposeOption` keeps
+`ECBasicOption`'s string index signature (`shared.d.ts`; `ECUnitOption` ends in
+`| unknown`), so the alias types the *values* of declared component keys —
+`{ grid: { outerBoundsContain: "nope" } }` and `{ xAxis: { type: "nonsense" } }`
+are compile errors, confirmed by a throwaway `tsc --build` probe — but it
+accepts any extra key. `series`, `dataZoom` and an invented component key all
+compiled. The comment in `registry.ts` and the `ChartOption` row in
+`docs/architecture.md` claimed otherwise and are corrected.
+
+Registration is therefore enforced by discipline and measurement, not by types,
+and the measurement matters because ECharts 6 fails silently: with
+`CanvasRenderer`, grid, legend and tooltip registered and nothing else, mounting
+`{ series: [{ type: "scatter", data: [[1, 2]] }] }` threw nothing, logged
+nothing in either build, and left `getModel().getSeries()` empty while
+`getOption()` echoed one series in a production build and zero in a dev build.
+A plot of axes with no points reads as "no data", so each builder stage must
+prove its own series registered in its browser probe:
+`chart.getModel().getSeries().length` must equal the number of series its
+builder declares. `docs/architecture.md` records that obligation, the
+measurement, and why `mount.ts` does not call the private `getModel()` itself to
+enforce it. The review's second note — a per-series `animation: true` outranks
+the mount helper's global `animation: !prefers-reduced-motion` because ECharts
+resolves own-before-parent — is recorded as a constraint on builders; no series
+exists in 4.1, so it changes no code.
+
 **Still open**
 
 - 4.2 is the first consumer of the platform: until it lands, `mount.ts` and

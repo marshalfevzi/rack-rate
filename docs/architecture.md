@@ -638,7 +638,7 @@ modules, one job each:
 
 | Module | Job |
 |---|---|
-| `registry.ts` | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>` so an option cannot carry a series type nobody registered. |
+| `registry.ts` | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>`. |
 | `theme.ts` | `ChartTokens` and the two ways to build them: `chartTokensFrom(lookup, rootFontSizePx)` is pure and tested, `readChartTokens(element)` reads the live element. Plus one accent per cost basis (`costBasisColor`, `basisTextColor`), so invariant 4's three quantities stay three colours. |
 | `frame.ts` | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. |
 | `mount.ts` | `mountChart(target, option)` → `{ update, dispose }`, plus `ChartHandle`. |
@@ -673,10 +673,36 @@ applies the option with `notMerge: true`, and returns a handle:
   the current option with `animation: !matches`. It is a live listener because
   reduced motion is a setting a reader can change while the page is open; a
   chart mounted under a media query read once would keep animating.
+- A series that sets its own `animation: true` wins over that global flag:
+  ECharts resolves a model option own-before-parent (`Series.js` builds its
+  option, `Model.js` `getShallow` returns the own value when present), so one
+  animated series would animate for a reader who asked for no motion. A builder
+  must leave per-series animation unset.
 - `update(option)` after `dispose()` throws `the chart was disposed; mount a
   new one`. A silent no-op would hide a page that threw its handle away.
 - `dispose()` is idempotent, disconnects the observer and the listener, and
   empties the element, so a later `mountChart` on the same element works.
+
+**What the option type does and does not enforce.** `ChartOption` types the
+registered component keys: `{ grid: { outerBoundsContain: "nope" } }` and
+`{ xAxis: { type: "nonsense" } }` are compile errors. It does not reject an
+unregistered key — `ComposeOption` keeps `ECBasicOption`'s string index
+signature (`shared.d.ts`: `ECUnitOption` ends in `| unknown`), and measured with
+`tsc --build`, `series`, `dataZoom`, and an invented component key all compile.
+So registration is a discipline, not a typed guarantee: `registry.ts` is the
+only `use()` site, and the check that a builder's series actually registered is
+a runtime measurement, not a type. ECharts 6 makes that measurement necessary —
+it drops a series whose type nobody registered without throwing or logging
+anything: mounting `{ series: [{ type: "scatter", data: [[1, 2]] }] }` against
+the 4.1 registry left `getModel().getSeries()` empty while `getOption()` still
+echoed one series in a production build and zero in a dev build, and no console
+message appeared in either. The example is deliberately not a fair use of the
+public API — `getModel()` is private in the ECharts declarations — so
+`mount.ts` does not call it. Each stage that lands a family builder checks its
+own option in the browser probe instead: `chart.getModel().getSeries().length`
+must equal the number of series the builder declares. A chart that renders axes
+around an empty plot reads as "no data", which is the one meaning this site must
+never produce by accident.
 
 **Client-side core imports.** A chart module that reaches `@rack-rate/core`
 imports the narrow subpath whose module carries no zod value —

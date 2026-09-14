@@ -23,7 +23,10 @@ export type FrameComponentOption =
   | LegendComponentOption
   | TooltipComponentOption
 
-// ChartOption carries no series: a family builder composes its own series
-// options from FrameComponentOption, and frame.ts returns exactly ChartOption.
-// ComposeOption narrows ECharts' otherwise index-signed option type.
+// ChartOption types the frame's component keys and their option values, so
+// `{ grid: { outerBoundsContain: "nope" } }` is a compile error. It does NOT
+// reject an unregistered key: ComposeOption keeps ECBasicOption's string index
+// signature, so `series` and invented keys compile too, registered or not. The
+// measurement and the verification each builder stage owes live in
+// docs/architecture.md, "What the option type does and does not enforce".
 export type ChartOption = ComposeOption<FrameComponentOption>
