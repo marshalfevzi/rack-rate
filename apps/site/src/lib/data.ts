@@ -149,6 +149,19 @@ const tokenAllowanceRows = requiredSection(derived.token_allowances, "token_allo
 
 const badges = requiredSection(derived.badges, "badges")
 
+// The reference moment every freshness verdict is measured against: the newest
+// upstream `generated_at` among the inputs that feed `compute`, not the wall
+// clock. Optional in the schema because a hand-written document may omit it, but
+// a dated row cannot exist without it, so its absence fails the build instead of
+// rendering an undated badge.
+const generatedAt = derived.generated_at
+
+if (generatedAt === undefined) {
+  throw new Error("data/derived.json has no generated_at; freshness cannot be dated")
+}
+
+export const derivedGeneratedAt: string = generatedAt
+
 const compositeByModelIndex = new Map<string, DerivedCompositeRow>()
 
 for (const row of composites.rows) {

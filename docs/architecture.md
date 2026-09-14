@@ -275,7 +275,9 @@ synthesized. The id indexes are `modelsById`, `plansById`, `benchmarksById`, and
 `frontierByPlan`, `tokenAllowances`, `tokenAllowanceByPair`, `badgeByPair`,
 `crossCheck`, and `derivedKnownGaps`. `pairKey(modelId, planId)` is the single
 place the `(model, plan)` map key is built, using a separator absent from either
-kebab-case id.
+kebab-case id. `derivedGeneratedAt` is the one scalar: the newest upstream
+`generated_at` `compute` wrote into the file, which every freshness badge is
+measured against instead of the wall clock.
 
 The computed sections `composites`, `frontiers`, `token_allowances`, and
 `badges` are optional in the `DerivedFile` schema but always present in the
@@ -352,10 +354,98 @@ as 0–1 fractions, while `score_pct`, `data/benchmarks.json` rows, and
 both `formatPercent`/`formatFractionAsPercent` and both range variants; a page
 must pick by the units its row actually carries.
 
-Stage 4 consumers—charts, tables, and badge components—import this module and
+Stage 4 consumers—charts, tables, and the components below—import this module and
 never call `toFixed`, `Intl`, or a template literal for a published number.
-`CiBar` (3.7) uses the range formatters; `CostBasisChip` (3.7) owns the basis
-label that keeps invariant 4 visible.
+`CiBar` uses the range formatters and `CostBasisChip` owns the basis label that
+keeps invariant 4 visible; both landed in 3.7.
+
+## Provenance components
+
+`apps/site/src/components/` holds six components: a chip shell and the five that
+carry "where did this come from" for a figure. They take parsed values and render
+words, geometry and citations — never a figure of their own — so the number stays
+owned by `format.ts` and the cost basis by the chip.
+
+| Component | Props | Renders |
+|---|---|---|
+| `Badge.astro` | `{ tone?: "neutral" \| "api" \| "adjusted"; title?: string; class?: string }` | the one chip shell (`inline-flex … border-rule text-meta`) the three badges share, so the chip markup exists once |
+| `ConfidenceBadge.astro` | `{ level: Confidence }` | the level word, prefixed by an `sr-only` "Confidence: ", with the level's definition in `title` |
+| `FreshnessBadge.astro` | `{ freshness: Freshness; retrievedAt: string }` | the `Fresh`/`Stale` word plus `retrieved <date>` in `tabular` digits, definition in `title` |
+| `CostBasisChip.astro` | `{ basis: CostBasisKind; planName?: string; unit?: CostUnit; status?: CostBasisStatus }` | the basis label, the unit (`/task`, `/mo`, `/1M tokens`) and, when the status is not `list`, the qualifier (`expected launch`, `disputed`, `unknown basis`) |
+| `SourceLink.astro` | `{ id: string; label?: string }` | one external anchor to the source's `url`, `title` = title · licence · retrieval date, plus an `sr-only` new-tab note |
+| `CiBar.astro` | `{ value: number; lo?: number; hi?: number; ciScale: CiScale; method?: string; class?: string }` | the interval bar with its composed accessible name, or `— no interval reported` |
+
+`apps/site/src/lib/provenance.ts` is the vocabulary and the arithmetic:
+`CONFIDENCE_TERMS`, `FRESHNESS_TERMS`, `COST_BASIS_TERMS`, `COST_UNIT_LABELS`,
+`costBasisTerm`, `costBasisQualifier` and `ciGeometry`. Its types are derived
+from the data contract — `Confidence` is `Plan["confidence"]`, `Freshness` is
+`PairBadge["freshness"]`, `CostBasisStatus` is
+`Model["cost_basis"] | NonNullable<Plan["price_status"]>` — so a new level or
+status fails the build inside the module instead of rendering an unlabelled
+badge. The module is pure TypeScript, so `.astro` frontmatter and `bun test` call
+the same function.
+
+Five rules the components encode:
+
+1. **One accent per role.** `neutral` (`text-dim`) for confidence, freshness and
+   the AA index basis; `text-api-ink` for the API-list basis; `text-adjusted` for
+   a `{plan} route`. `--color-measured` stays reserved for the measured quota
+   basis, which no 3.7 component renders. Nothing spends an accent on chrome, on
+   an interval or on interaction.
+2. **A basis label names its quantity.** `costBasisTerm("plan-route")` throws
+   without a plan name, because `{plan} route` without the plan names nothing.
+3. **Absent stays absent.** `CiBar` renders text, never a bar, when either
+   endpoint is missing: a bar drawn from one end would invent the other, the same
+   rule the range formatters apply to the printed range.
+4. **The interval is never zoomed.** `ciGeometry` maps the interval onto the
+   unit's full domain (`0–1` for a fraction, `0–100` for percent), so a 5.7-point
+   interval reads as one. `leftPct` and `widthPct` round to 3 dp with the width
+   taken as a delta between the rounded ends, so `leftPct + widthPct` lands
+   exactly on the interval's high end; out-of-domain values clamp instead of
+   rescaling the track; a transposed pair is ordered rather than drawn inside
+   out; the interval's 2 px minimum width is CSS, not geometry.
+5. **One freshness rule.** `isStale` and `freshnessOf` ship in `@rack-rate/core`
+   with `STALE_AFTER_DAYS` at 14 and the reference moment as an argument.
+   `compute` imports them for the committed `PairBadge.freshness`, and a row's
+   verdict is `freshnessOf(row.retrieved_at, derivedGeneratedAt)`. The extraction
+   deleted `compute.ts`'s private copy of the rule, and `bun run data:check`
+   proves the move changed no byte of `derived.json`. The research pass's
+   30/90-day `aging` ladder was not adopted: the committed vocabulary is
+   `fresh | stale`.
+
+`derivedGeneratedAt` in `lib/data.ts` is that reference moment: `compute` writes
+the newest upstream `generated_at` into `derived.json`, so a badge is dated
+against committed data rather than the wall clock and two builds of one commit
+age identically. It is read once through the same fail-fast guard as the computed
+sections, because a dated row cannot exist without it.
+
+`SourceLink` throws for an id that is not in `data/sources.json` rather than
+degrading to plain text. `bun run validate` already enforces evidence and source
+referential integrity, and invariant 8 makes attribution load-bearing, so a
+citation that cannot resolve fails the build; the accessor's `undefined`-degrades
+rule covers an id upstream retired, not a missing citation.
+
+Stage 4's rule, unchanged from the plan: every published figure ships inside at
+least one of these components, so provenance is structural rather than a footer
+paragraph. Until then the components are unreachable from any entry point and
+`fallow` reports them as unused files — expected, not stale.
+
+Measured on the 3.7 probe build (54 pages; the throwaway page was deleted
+afterwards): the gpt-6-astra interval emitted
+`style="left:71.25%;width:5.73%;min-width:2px"` with `left:74.12%` for the point
+estimate, and its accessible name was `74.1% (interval 71.2–77.0%; 95%
+run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R)))`.
+A chip read `API list /task · expected launch` in `text-api-ink`; the plan route
+chip read `ChatGPT Pro 20x route /task` in `text-adjusted`; a `Terminal-Bench`
+row rendered `— no interval reported` rather than a bar. In headless Chromium at
+360 px the page reported `scrollWidth` 360 with no unclipped overflow: the track
+measured 96 px inside its `w-24` container and fell to its `min-w-16` floor
+(64 px) in a squeezed table cell, 4 px
+tall, interval `rgb(163, 176, 196)` on a `rgb(29, 39, 53)` track with a 2 px
+`rgb(234, 238, 245)` point marker — `--color-dim`, `--color-rule`, `--color-ink`,
+no accent. The probe is a real gate: changing one expected interval start to
+`71.24` made `bun run --filter @rack-rate/site build` exit 1 with
+`stage 3.7 probe failed: astra interval start -> 71.25 (expected 71.24)`.
 
 ## Design tokens
 

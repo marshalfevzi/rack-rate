@@ -1,0 +1,26 @@
+---
+const TONE_CLASSES = {
+  neutral: "text-dim",
+  api: "text-api-ink",
+  adjusted: "text-adjusted",
+} satisfies Record<"neutral" | "api" | "adjusted", string>
+
+interface Props {
+  tone?: "neutral" | "api" | "adjusted"
+  title?: string
+  class?: string
+}
+
+const { tone = "neutral", title, class: className } = Astro.props
+---
+
+<span
+  class:list={[
+    "inline-flex items-baseline gap-1 rounded-xs border border-rule px-1.5 py-0.5 text-meta",
+    TONE_CLASSES[tone],
+    className,
+  ]}
+  title={title}
+>
+  <slot />
+</span>

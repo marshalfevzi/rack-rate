@@ -1,0 +1,27 @@
+---
+import type { Source } from "@rack-rate/core"
+
+import { sourcesById } from "../lib/data.ts"
+
+interface Props {
+  id: string
+  label?: string
+}
+
+const { id, label } = Astro.props
+
+const source: Source | undefined = sourcesById.get(id)
+
+if (source === undefined) {
+  throw new Error(`SourceLink: source id "${id}" is not in data/sources.json`)
+}
+---
+<a
+  href={source.url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="text-api-ink underline decoration-rule underline-offset-2 transition-colors hover:decoration-api-ink"
+  title={`${source.title} · ${source.license_short ?? source.license} · retrieved ${source.retrieved}`}
+>
+  {label ?? source.title}<span class="sr-only"> (opens in a new tab)</span>
+</a>

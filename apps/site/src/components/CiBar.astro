@@ -1,0 +1,60 @@
+---
+import type { CiScale } from "../lib/provenance.ts"
+
+import { ciGeometry } from "../lib/provenance.ts"
+import {
+  MISSING,
+  formatFractionAsPercentRange,
+  formatPercent,
+  formatPercentRange,
+} from "../lib/format.ts"
+
+interface Props {
+  value: number
+  lo?: number
+  hi?: number
+  ciScale: CiScale
+  method?: string
+  class?: string
+}
+
+const { value, lo, hi, ciScale, method, class: className } = Astro.props
+
+const valueText = ciScale === "fraction" ? formatPercent(value * 100) : formatPercent(value)
+
+const rangeText =
+  ciScale === "fraction"
+    ? formatFractionAsPercentRange(lo, hi)
+    : formatPercentRange(lo, hi)
+
+const geometry = ciGeometry(value, lo, hi, ciScale)
+
+const accessibleName = geometry
+  ? `${valueText} (interval ${rangeText}${method === undefined ? "" : `; ${method}`})`
+  : `${valueText} — no interval reported`
+
+const intervalStyle = geometry
+  ? `left:${geometry.leftPct}%;width:${geometry.widthPct}%;min-width:2px`
+  : ""
+
+const valueStyle = geometry ? `left:${geometry.valuePct}%` : ""
+---
+
+{geometry ? (
+  <span
+    role="img"
+    aria-label={accessibleName}
+    title={accessibleName}
+    class:list={["relative inline-block h-1 w-full min-w-16 rounded-xs bg-rule", className]}
+  >
+    <span
+      class="absolute inset-y-0 rounded-xs bg-dim"
+      style={intervalStyle}
+    ></span>
+    <span class="absolute inset-y-0 w-0.5 bg-ink" style={valueStyle}></span>
+  </span>
+) : (
+  <span class:list={["text-meta text-dim", className]} title="No interval reported for this row.">
+    {MISSING} no interval reported
+  </span>
+)}

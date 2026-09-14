@@ -31,6 +31,7 @@ import {
   composite,
   crossCheck,
   DerivedFile,
+  isStale,
   ModelsFile,
   paretoFrontier,
   PlansFile,
@@ -98,14 +99,6 @@ function newestGeneratedAt(
   }
 
   return newest
-}
-
-function isStale(retrievedAt: string, generatedAt: string): boolean {
-  const retrievedTime = Date.parse(`${retrievedAt}T00:00:00Z`)
-  const generatedTime = Date.parse(generatedAt)
-  const fourteenDays = 14 * 86_400_000
-
-  return generatedTime - retrievedTime > fourteenDays
 }
 
 function matchKind(model: Model, plan: Plan): "any" | "exact" | "provider" {

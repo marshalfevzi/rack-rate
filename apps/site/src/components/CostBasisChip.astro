@@ -1,0 +1,40 @@
+---
+import Badge from "./Badge.astro"
+import {
+  COST_UNIT_LABELS,
+  costBasisQualifier,
+  costBasisTerm,
+  type CostBasisKind,
+  type CostBasisStatus,
+  type CostUnit,
+} from "../lib/provenance.ts"
+
+const TONE_BY_BASIS = {
+  "api-list": "api",
+  "plan-route": "adjusted",
+  "aa-index": "neutral",
+} satisfies Record<CostBasisKind, "neutral" | "api" | "adjusted">
+
+interface Props {
+  basis: CostBasisKind
+  planName?: string
+  unit?: CostUnit
+  status?: CostBasisStatus
+}
+
+const { basis, planName, unit, status = "list" } = Astro.props
+
+const term = costBasisTerm(basis, planName)
+
+const qualifier = costBasisQualifier(status)
+
+const title = qualifier
+  ? `${term.description} ${qualifier.description}`
+  : term.description
+---
+
+<Badge tone={TONE_BY_BASIS[basis]} title={title}>
+  {term.label}
+  {unit ? <span class="tabular">{COST_UNIT_LABELS[unit]}</span> : null}
+  {qualifier ? <> · {qualifier.label}</> : null}
+</Badge>
