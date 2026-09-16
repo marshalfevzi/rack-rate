@@ -35,8 +35,10 @@ DeepSWE v1.1 and Terminal-Bench board 4-0-0 are live pulls.
 shells that return 200 without quoted limit text, so `data/plans.json` remains
 at its Stage 1 revision.
 Artificial Analysis is off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set;
-the site builds as static output with skeleton routes; content and charts
-arrive in Stages 4–5, and deployment in Stage 6 (see [`PLAN.md`](PLAN.md)).
+the site builds as static output from committed data. Charts and the insight
+pages landed in Stage 4, the Console Listing redesign is Stage 5, the
+provider-selection wizard Stage 6, and deployment Stage 7
+(see [`PLAN.md`](PLAN.md)).
 The repository does not mirror benchmark tasks, prompts, verifiers, or patches.
 
 ## The method

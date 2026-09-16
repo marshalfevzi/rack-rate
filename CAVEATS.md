@@ -106,7 +106,7 @@ Do not cite it as permission in this repo.
 question so that gaining or losing permission is a configuration change rather
 than a refactor.
 
-Three states, ascending exposure (specified in `PLAN.md` task 6.2b):
+Three states, ascending exposure (specified in `PLAN.md` task 7.2b):
 
 1. **`AA_PUBLISH=0` — the default.** The AA fetcher is skipped. AA is absent
    from `data/benchmarks.json`, from every composite, and from the built site.
@@ -158,7 +158,7 @@ The options:
   converts any of the above from inference into permission, and it costs
   nothing. §4.1 notes Commercial terms are provisioned via an Order Form.
 
-Whatever ships, `PLAN.md` 6.2b requires the choice and its reasoning to be
+Whatever ships, `PLAN.md` 7.2b requires the choice and its reasoning to be
 recorded at deployment time.
 
 ---

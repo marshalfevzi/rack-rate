@@ -6,11 +6,19 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 5.1.** Stages 1–3 and Stage 4 landed in full (4.1–4.15; see the
-progress log). The Stage 1–2 task lists,
-acceptance criteria, handover contracts and session history live in
+**Next stage: 5.1** — the Console Listing redesign. Stages 1–4 landed in full
+(4.1–4.15; see the progress log). The Stage 1–2 task lists, acceptance criteria,
+handover contracts and session history live in
 [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
 live stages, the data contract, the open questions and the newest log entry.
+
+Stage 5 replaces the visual world. The world itself is already decided and is
+**not** re-opened by any task in it: `DESIGN.md` owns the design system,
+[`docs/design/surfaces.md`](docs/design/surfaces.md) owns per-route layout, and
+[`apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md`](apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md)
+owns the direction contract. `.impeccable/review/incumbent/*.png` is the
+anti-reference. The "Why this rewrite" and "What done means" sections above are
+unchanged by it.
 
 
 ## Why this rewrite
@@ -109,7 +117,7 @@ the design system in place and one real page rendering real numbers.
   and the reasoning in `docs/architecture.md` so Stage 4 does not re-invent
   them.
 - [x] 3.4 Routing skeleton for the page set (content lands in Stage 4, wizard
-  content in Stage 5): `/`, `/models`, `/models/[slug]`, `/plans`,
+  content in Stage 6): `/`, `/models`, `/models/[slug]`, `/plans`,
   `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`, `/sources`,
   `404`. Uses `getStaticPaths` from the committed data.
 - [x] 3.5 `src/lib/data.ts` — the single typed entry point importing
@@ -222,38 +230,420 @@ works. Verified on a real browser at 360 px and at desktop width.
 
 ---
 
-## Stage 5 — Provider selection wizard
+## Stage 5 — The Console Listing redesign
+
+**Goal:** every route renders in the locked **Console Listing** world — a
+mainframe console / ISPF panel of fixed-column listing paper, a line-number
+gutter, a carriage-control state column, printer rules and uppercase mono
+legends — so the site becomes one inspectable listing instead of a dark card
+grid with a soft hero. It is the world `DESIGN.md` names as the creative north
+star and the *Divine Machinery* direction roll of 2026-09-16. Stage 5 changes
+presentation, composition and chart grammar only: no data, no arithmetic, no
+route identity, no schema.
+
+**The world is frozen.** `DESIGN.md` is the only owner of token values. This
+stage restates names and shell metrics because acceptance measures them, and for
+nothing else.
+
+| Concern | Frozen names and metrics |
+|---|---|
+| Grounds | `--color-canvas`, `--color-panel`, `--color-panel-2` |
+| Rules | `--color-rule`, `--color-rule-strong` |
+| Text | `--color-ink`, `--color-dim`, `--color-faint` (label-only, lowest contrast) |
+| Signal | `--color-signal`, `--color-on-signal` |
+| Type | `--text-micro`, `--text-meta`, `--text-body`, `--text-data`, `--text-title`, `--text-display` |
+| Faces | IBM Plex Sans for prose; IBM Plex Mono for every figure, identifier, legend and lane number |
+| Shell | status band 32px pinned; lane rail 176px, lanes `01`–`06` at 40px plus the unnumbered `METHOD`/`SOURCES` reference rows at 36px after a 2px divider, rail total 314px; data row 36px desktop / 44px mobile; line-number gutter 40px at ≥768px and the first element dropped on phones; state column 20px and never dropped; numeric columns right-aligned with a 72px minimum and 1px column-group rules |
+| Rhythm | 4px base, `4/8/12/16/24/32/48/64`; workspace max 1440px; edge gutters 24/32/48px; radius 0 everywhere |
+| Motion | one duration ≤150ms, one easing `cubic-bezier(0.2, 0, 0, 1)`, state-only, `prefers-reduced-motion` honoured |
+| State | carriage-control glyphs ` ` (live) `·` (held) `-` (excluded) `*` (committed) `!` (gap) `?` (low confidence) `+` (changed); never colour alone |
+| Basis | `plan route` solid 1px rule; `API list` hairline 1px at 50% plus an open-ended stroke; `AA index` doubled rule; every axis, chart title, column, chip and legend names its basis in words |
+| Banned | a second hue, green/red semantics, rounded corners, pills, shadow, gradient, blur, glow, spinners, shimmer, decorative dashes, monospace prose, a decorative eyebrow above a heading, motion above 150ms, and any contractual fact that exists only on hover |
+
+**Boundaries — what Stage 5 must not do.**
+
+- No change to `data/**`, `packages/core`, `packages/data-cli` or any formula.
+  `bun run data:check` stays exit 0 and `data/derived.json` stays
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
+- No server endpoint, no client-side data request, no new dependency. Charts keep
+  reading committed payloads through the existing `*-payload.ts` modules.
+- No route, slug or URL meaning changes. `apps/site/astro.config.mjs` remains the
+  only owner of `site`/`base`, and every internal link keeps going through
+  `href()`.
+- **`apps/site/src/lib/prefs.ts` is not created in this stage.** It is task 6.1.
+  Every state mark in Stage 5 is URL or session state, the set-aside is driven by
+  filters a route already owns (score floor, vendor, reasoning effort) and by
+  `known_gaps` rows, and no surface may imply a saved preference. The `-` and `*`
+  marks consuming `ignoredModels` / `ignoredPlans` / `paidPlans` are Stage 6's;
+  Stage 5 ships the glyph grammar and the set-aside surface that will carry them.
+- **`/start` is layout only.** Task 5.12 gives it the shell, the selection
+  console, the readout and the empty/error grammar. The provider → plan → model
+  flow, the shareable result URL, the zod validation and export/import are
+  Stage 6.
+- `apps/site/scripts/og.ts` and `apps/site/public/favicon.svg` change only as
+  task 5.2 prescribes.
+- Evidence for every task is captured from a **built preview** (`bun run build`
+  then `bun run preview`), never from `astro dev`: the dev server injects its own
+  toolbar, which is not app chrome and was mistaken for chart chrome in the
+  earlier design session.
+
+**Reporting rule.** Each task updates its section of `docs/architecture.md` as it
+lands, the way Stages 3 and 4 did. Task 5.15 re-derives the design documents from
+the shipped code afterwards.
+
+### Tasks
+
+- [ ] 5.1 **Token foundation and scheme inversion.**
+  **Files:** `apps/site/src/styles/global.css`.
+  **Work:** replace the nine incumbent tokens (`canvas`, `panel`, `rule`, `ink`,
+  `dim`, `adjusted`, `measured`, `api`, `api-ink`) with the frozen ten, adding
+  `panel-2`, `rule-strong`, `faint`, `signal` and `on-signal`; replace the
+  four-step type scale with the frozen six steps at fixed pixel line-heights,
+  with the Sans and Mono stacks named per role; keep `--spacing: 0.25rem` as the
+  single spacing unit; replace the ink `:focus-visible` ring with a 2px
+  `--color-signal` ring offset 2px; theme the browser surfaces DESIGN.md names
+  (selection plate, caret, scrollbar track and thumb, underline offset); make the
+  light scheme a value-only inversion of the same ten tokens, including the
+  `#FFB020` signal plate against `--color-on-signal`; keep one duration, one
+  easing and the reduced-motion override.
+  **Done when** every token in `DESIGN.md` exists in `@theme`, all four retired
+  accent tokens and the utilities they generated are gone, and a contrast
+  recomputation for both schemes against canvas, panel **and** panel-2 clears the
+  floors in `DESIGN.md`, with `--color-faint` recorded as label-only.
+- [ ] 5.2 **Self-hosted IBM Plex, its licence, and the two generated assets.**
+  **Files:** new `apps/site/public/fonts/ibm-plex-sans-latin-{400,500,600}-normal.woff2`,
+  `apps/site/public/fonts/ibm-plex-mono-latin-{400,500}-normal.woff2` and
+  `apps/site/public/fonts/LICENSE.txt`; `global.css` (`@font-face`, fallbacks,
+  `--font-sans` / `--font-mono`); `apps/site/scripts/og.ts`;
+  `apps/site/public/favicon.svg`; `apps/site/src/layouts/Base.astro`; delete
+  `apps/site/assets/fonts/**` only once nothing references it.
+  **Work:** acquire the five latin-subset woff2 files once from the `@fontsource`
+  jsDelivr paths, commit them with the IBM Plex OFL 1.1 text, and declare both
+  families with local `/fonts/` URLs and real fallbacks; keep prose in Sans and
+  figures in Mono; move `og.ts` off Lato onto Plex Sans with its palette reader
+  still following `@theme`; verify the favicon against the world — rule, gutter,
+  one amber signal — and redraw only its rule weights if the 16px reading fails,
+  which is a build-session decision rather than a brand change; update the two
+  media-scoped `theme-color` values to the frozen canvas values.
+  **Done when** the browser loads only the five committed woff2 files with zero
+  remote font requests, computed styles report Plex Sans for prose and Plex Mono
+  for data, `dist/og.png` is 1200×630 in the console palette, and no Lato family
+  or path remains anywhere in the tree.
+- [ ] 5.3 **Shell — status band, lane rail, drawer, workspace, footer index.**
+  **Files:** `apps/site/src/layouts/Base.astro`, `apps/site/src/layouts/Page.astro`,
+  new `apps/site/src/components/StatusBand.astro`,
+  `apps/site/src/components/LaneRail.astro`,
+  `apps/site/src/components/FooterIndex.astro`.
+  **Work:** replace the sticky header with the 32px pinned band (`RACK-RATE`,
+  `BUILD {derivedGeneratedAt}`, `DATA {newest retrieved_at}`, `AA {ON|OFF}`
+  linking to the gate explanation on `/sources`); add the 176px lane rail with
+  lanes `01 OVERVIEW` … `06 GET STARTED`, the 2px divider and the unnumbered
+  `METHOD`/`SOURCES` rows, carrying the roving-focus keyboard model (`Tab` enters,
+  arrows move, `Home`/`End` jump, `Enter`/`Space` activates) and
+  `aria-current="page"`; below 1024px move the rail into a drawer opened by a
+  `MENU` text button, with focus moved to the active lane, focus trapped,
+  dismissal on `Escape`, the close button or a route activation, and the page
+  behind it at an unchanged scroll position; replace `Page.astro`'s `max-w-5xl`
+  column with the 1440px workspace and the 24/32/48px gutters; turn the footer
+  into the numbered index plus the Bosphorus Elevate maker credit. Route labels
+  stay verbatim; only the casing treatment changes.
+  **Done when** at 1440px the band is pinned and six numbered lanes plus two
+  reference rows are visible at left with no `max-w-5xl` column, at 390px the rail
+  is a drawer and the page has no horizontal scroll, the drawer is fully
+  keyboard-operable, and switching `prefers-color-scheme` moves values and no
+  geometry.
+- [ ] 5.4 **The cursor readout.**
+  **Files:** new `apps/site/src/components/Readout.astro` and
+  `apps/site/src/lib/readout.ts`; a mount point in `Base.astro`; fixed-line
+  geometry in `global.css`.
+  **Work:** one readout element per page, `aria-live="polite"`, printing
+  `VALUE · BASIS · CONFIDENCE · SOURCE · RETRIEVED` in that fixed order and never
+  in another; pre-filled from the page's own headline figure so it is never blank
+  and never a hint string; pointer hover, keyboard focus and touch focus all
+  route through one update path; a missing value prints `—` with the
+  `known_gaps` reason beside it. **This task resolves the one contradiction
+  between the two design documents:** `DESIGN.md`'s "Readout behavior" docks the
+  readout in the right column of `/`'s split console, while
+  `docs/design/surfaces.md` docks it as the fixed 28px line at the viewport
+  bottom at ≥768px and directly under the band below that. Ship
+  `surfaces.md`'s docking — one fixed 28px line, page body reserving 28px of
+  bottom padding so it never covers the footer index, and the same element inline
+  under the band below 768px — record the choice in `docs/architecture.md`, and
+  hand the `DESIGN.md` sentence to 5.15.
+  **Done when** the readout is one element, never blank, updated identically by
+  pointer and by keyboard, not inserted as a repeated tab stop, and unchanged
+  under `prefers-reduced-motion`.
+- [ ] 5.5 **Listing primitives and the provenance components.**
+  **Files:** rewrite `apps/site/src/components/{Badge,CostBasisChip,ConfidenceBadge,FreshnessBadge,SourceLink,CiBar}.astro`;
+  new `apps/site/src/components/{SectionHead,Plate,Chip,ControlRow,StateCell,Gutter,SetAside,EmptyState}.astro`;
+  `apps/site/src/lib/provenance.ts`.
+  **Work:** put every primitive on the console grammar — square, 1px rules,
+  `--text-micro` uppercase mono legends, 36px desktop / 44px mobile rows, no
+  radius (the incumbent `CiBar` carries `rounded-xs`), no shadow or gradient; give
+  each one the state set DESIGN.md's component table prescribes
+  (`default | hover | focus-visible | active | disabled | loading | empty |
+  error`), with a rule, glyph, label or inversion beside any tonal change; the
+  state cell carries exactly one carriage-control glyph; excluded and gap rows stay
+  visible in the set-aside rail with their reason, and an empty set-aside renders
+  `No excluded rows in this view.` rather than disappearing; the empty-state and
+  error strings named in `surfaces.md` ship with the primitives rather than being
+  re-typed per page.
+  **Done when** each primitive renders its prescribed states, no primitive
+  survives with a radius, shadow, gradient or second hue, and the three badges and
+  the basis chip still read their vocabulary from `lib/provenance.ts`.
+- [ ] 5.6 **`/` — the split console.**
+  **Files:** `apps/site/src/pages/index.astro`.
+  **Work:** recompose the entry as the split console: the left selection column is
+  plan → models → tasks per month, pre-filled with a real committed plan and its
+  measured-against model, and the right column is the readout listing
+  (`Plan · Model priced · Effective monthly cost · Break-even tasks/month`, with
+  the last two numeric and right-aligned, the line-number gutter, the 2px head
+  rule and a foot line carrying the route count and the API-list multiple), with
+  the effective-cost head stating `API list` in words; keep the ported
+  calculator's arithmetic and its missing-route reasons exactly; serialize every
+  control to the URL (`plan`, `models`, `tasks`) and restore from it; replace the
+  "Top insights" paragraphs with listing rows whose value and provenance are
+  readable without hover. The surface brief's first viewport is band + rail +
+  split console, so **no authored figure opens `/`** — the headline is the
+  readout listing's own first line, and any authored technical figure goes below
+  the fold as its own section.
+  **Done when** `/` with no query shows a committed plan rather than a
+  placeholder, changing plan, models or task count writes the URL and a reload
+  reconstructs the state, the five former insight statements are rows rather than
+  paragraphs, and the browser makes no `.json` or API request.
+- [ ] 5.7 **`/models` and `/models/[slug]`.**
+  **Files:** `apps/site/src/pages/models/index.astro`,
+  `apps/site/src/pages/models/[slug].astro`.
+  **Work:** the index becomes a fixed-column listing — `Model`, `Score (pass@1)`,
+  `Pass@4`, `API list cost/task`, `Cheapest usable plan`, `Value multiple`,
+  `Days to full run`, `Effort`, `Composite coverage` — with the filter row (name
+  or provider, vendor, score floor), sortable heads writing `sort` and `direction`
+  to the URL, the line-number gutter doubling as the deep-link anchor and the state
+  cell inline before the model name. `pass@1` and `pass@4` never share a field or
+  a basis; a `k < 2` composite keeps `Composite suppressed: fewer than two
+  benchmark versions (single-source).` The detail page becomes score profile →
+  effort ladder → priced plan routes → provenance rail → outbound benchmark
+  links, every cost cell naming `API list` or `plan route` beside the number.
+  **Done when** both routes render in the shell, at 360px each row is a labelled
+  record in field order with no field hidden, no figure appears without its basis
+  and source line, and one model slug followed from a copied URL reproduces
+  exactly.
+- [ ] 5.8 **`/plans` and `/plans/[slug]`.**
+  **Files:** `apps/site/src/pages/plans/index.astro`,
+  `apps/site/src/pages/plans/[slug].astro`.
+  **Work:** the index becomes the sortable plan listing — `rank`, `plan`,
+  `provider`, `price/month`, `quota model`, `key quota`, `rolling window`,
+  `measured-against model`, `value multiple`, `cost/task · measured model`,
+  `days/full run`, `confidence`, `models unlocked` — with each basis stated in
+  words in the head and an unresolved quota rendering as a gap row with its reason
+  and no zero-valued cost. The detail page carries plan details, the quota-model
+  explanation using the exact `quota_model` field names from `data/plans.json`,
+  method, `known_gaps` adjacent to the value each qualifies, and the
+  models-this-plan-unlocks listing.
+  **Done when** both routes render in the shell, sorting works from the keyboard
+  and writes the URL, every unresolved quota and known gap keeps its reason beside
+  the affected value, and no plan route prints a cost without its basis.
+- [ ] 5.9 **Chart grammar — re-theme the shared frame and all six builders.**
+  **Files:** `apps/site/src/lib/charts/{theme,frame,registry,mount}.ts`, the six
+  option builders (`pareto`, `bump`, `heatmap`, `slope`, `waterfall`, `radar`),
+  their `*-payload.ts` and `*-page.ts` companions, and the section components
+  `apps/site/src/components/{HeatmapSection,RadarSection,SlopeSection,WaterfallSection}.astro`.
+  **Work:** re-theme every option to the console grammar: `splitLine` 1px
+  `--color-rule`, `axisLine` 1px `--color-rule-strong`, 4px minor ticks; 3px round
+  square markers for measured values and 1px-stroked diamonds for adjusted or
+  derived ones, never circles; 45°/6px hatch at ≤8% ink in place of series fill,
+  never a gradient; a 2px ink frontier polyline and a 45° hatched dominated
+  region; confidence mapped to stroke weight (measured 2px, high 1.5px, medium
+  1px, low 0.75px plus hatch); missing data as an open gap with a `!` tick and
+  never interpolation; amber only on the active series or cursor; basis words on
+  every axis, title, legend and chip; `benchmark_version` attached to every
+  benchmark label.
+  **Move the chart chrome into the page control row.** The incumbent draws its own
+  chrome outside that row — the Pareto `dataZoom` slider and the legend capsules
+  built in `pareto.ts` — and those controls become labelled, URL-addressable
+  controls in the page control row instead.
+  **Never register `ToolboxComponent`.** `registry.ts` registers none today and
+  must not start: the ECharts toolbox is banned, so no built route can render one.
+  Keep registration tree-shaken through `echarts/core` and keep the growth rule
+  that the stage landing a series family adds its row to `SERIES_INSTALLS`.
+  **Done when** every chart carries an accessible name and a real table twin,
+  keyboard-reachable data points, the prescribed marker shape and stroke weight, a
+  real graticule and an open `!` gap; no chart option sets a gradient, a circle
+  marker, a second hue, a `toolbox` block or an unlabelled cost axis; and the
+  rendered option for each of the six mappings in `DESIGN.md` matches that table.
+- [ ] 5.10 **`/compare` — the metric matrix and its chart plate.**
+  **Files:** `apps/site/src/pages/compare.astro`.
+  **Work:** keep the 2–4 model selection fieldset and make the matrix a
+  `Metric | model … | Comparison` table whose benchmark rows are the committed
+  `title` plus `benchmark_version`, whose cost rows are one `API list $/task` row
+  and one `{plan name} route $/task` row per available route, and whose comparison
+  column states `Plain score comparison` or `Plain cost comparison` with interval
+  overlap labelled `statistical tie at 95%` and ranks as ranges. Replace the
+  floating chart chrome with a page control row; keep the chart plate, its table
+  twin and its accessible name.
+  **Done when** no control floats over the reading path, the selection writes
+  `models=` to the URL and restores from it, fewer than two selections renders
+  `Choose at least 2 models`, and at 390px the matrix becomes one metric record at
+  a time with the model header repeated and no hidden column.
+- [ ] 5.11 **`/explore` — the instrument panel.**
+  **Files:** `apps/site/src/pages/explore.astro`.
+  **Work:** keep all six chart plates (Pareto, bump/rank, heatmap, slope,
+  waterfall, radar) in the new grammar, each with its own control row, its reserved
+  height, its cursor readout and a real table twin immediately after the plot; keep
+  the metric builder's y metric, x metric, chart type, vendor, reasoning-effort,
+  score-floor, log/linear and frontier controls, and the composite weight sliders
+  with presets recomputing client-side from shipped per-benchmark z-scores. Every
+  control writes its namespaced URL value and restores from it. The page stays
+  usable with JavaScript disabled through the twin tables and the method links.
+  **Done when** every chart keeps its incumbent controls without the chart-drawn
+  chrome, each control row performs the function the chart chrome used to, every
+  setting round-trips through the URL, and no chart hides a value behind hover
+  alone.
+- [ ] 5.12 **`/start` — the selection console at full width, layout only.**
+  **Files:** `apps/site/src/pages/start.astro`.
+  **Work:** give `/start` its lane, the full-width selection console layout from
+  `docs/design/surfaces.md`, the readout it will write into, and the empty and
+  error grammar — no flow logic. It renders the three step headings, the selection
+  surfaces and the recommendation block's frame with an honest
+  `No committed rows for this view.`-class empty state, so the page is legible and
+  keyboard-traversable before its behaviour exists.
+  **Done when** `/start` renders under the new shell at 1440px, 768px and 360px
+  with no horizontal scroll, contains no selection logic and no persisted state,
+  and does not claim a saved preference.
+- [ ] 5.13 **`/method`, `/sources`, `404`.**
+  **Files:** `apps/site/src/pages/method.astro`,
+  `apps/site/src/pages/sources.astro`, `apps/site/src/pages/404.astro`.
+  **Work:** `/method` becomes the numbered arithmetic chain — formula sections
+  with their named inputs, the quota-branch listing, the cost-basis legend, the
+  benchmark-weight listing and the confidence/freshness index — with code field
+  names left intact. `/sources` becomes the citation listing the readout quotes:
+  the Artificial Analysis gate state readout, the source records with licence,
+  coverage, changes and retrieval date, the verbatim Awesome Coding Plan CC BY 4.0
+  attribution, the deliberate gaps and the commitments. The 404 becomes the empty
+  listing with an honest empty state and indexed links, and loses the canonical
+  the plan's 3.4 note already flagged.
+  **Done when** the attribution block and exactly one AA gate state render from
+  committed data, every formula and field name on `/method` matches the
+  implementation, and the 404 carries no canonical and no decorative image.
+- [ ] 5.14 **Accessibility, provenance and release reconciliation.**
+  **Files:** every file changed by 5.1–5.13.
+  **Work:** walk every interactive chart, table, drawer, readout and URL control
+  with keyboard and touch and confirm focus, reduced motion, contrast, nulls, gaps,
+  confidence and source dates; confirm the footer credits Bosphorus Elevate only as
+  maker while `/sources` keeps the data-source obligations; reconcile the favicon,
+  metadata, light inversion and social card against the same token contract; and
+  remove the incumbent residue the replacement now owns — the retired accent
+  tokens, the `max-w-5xl` column, every `rounded-*` class, the Lato fonts, the
+  Pareto slider and legend chrome, and the stale three-accent prose in
+  `docs/architecture.md` and `global.css`.
+  **Done when** the stage Acceptance section below passes end to end and no
+  incumbent visual residue is reachable from any route.
+- [ ] 5.15 **Re-derive the design record from the built world.**
+  **Files:** `DESIGN.md`, `docs/design/surfaces.md`,
+  `apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md`,
+  `docs/architecture.md`.
+  **Work:** run the impeccable `document` pass so the durable system, the
+  per-route layout and the surface brief are re-derived from the shipped code
+  instead of remaining a pre-build contract; resolve `DESIGN.md`'s readout-docking
+  sentence against the docking 5.4 shipped; give `docs/architecture.md` its
+  Console Listing section — both schemes with their audited ratios, the shell
+  metrics, the primitive inventory, the chart grammar and the readout contract.
+  **Done when** no design document states a token, metric or docking the built site
+  contradicts, and `docs/architecture.md` describes the shipped world rather than
+  the superseded one.
+
+### Acceptance
+
+`bun run check`, `bun test` and `bun run build` all exit 0; `bun run data:check`
+exits 0 with `data/derived.json` still
+`7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`. Beyond that:
+
+- Every route in the 3.4 set renders under the same status band and lane rail at
+  1440px, 768px and 360px, in both schemes, with no horizontal scroll at 360px.
+- Dark and light captures of the same route have identical geometry; the
+  inversion changes values only.
+- Keyboard-only traversal reaches every chart point, table row, drawer item,
+  control-row action and the readout, at desktop and mobile width.
+- Every interactive chart and table has a real table twin carrying the same
+  values, basis, confidence, benchmark version, source and gaps.
+- Removing colour loses nothing contractual: a greyscale capture of any route
+  still shows every state, basis and confidence distinction.
+- `apps/site/src` contains no radius, shadow, gradient, blur, glow, spinner,
+  shimmer, second duration or second hue, and no colour token outside the frozen
+  ten.
+- Charts carry no `ToolboxComponent` in `registry.ts`, no chart-drawn chrome
+  outside the page control row, no gradient, no circle marker and no unlabelled
+  cost axis; `pass@1` and `pass@4` never share a field, axis or formula, and
+  `benchmark_version` stays attached to every benchmark label.
+- Five committed woff2 files, zero remote font requests, prose in Plex Sans,
+  figures in Plex Mono, and a 1200×630 social card in the console palette.
+- `apps/site/src/lib/prefs.ts` does not exist at the end of the stage and no
+  surface implies a saved preference.
+- Every evidence capture for the stage comes from a built preview, never
+  `astro dev`.
+
+### Contract handed to Stage 6
+
+The shell (status band, lane rail, drawer, workspace, footer index), the listing
+primitives, the cursor readout, the chart grammar and the six chart workspaces,
+all on the frozen ten tokens.
+
+Stage 6 adds behaviour, not appearance: `lib/prefs.ts` under
+`rack-rate:prefs:v1`, the `/start` flow, the shared result URL, zod validation at
+the localStorage boundary, export/import and reset, and preference-aware
+rendering — the `-` and `*` marks and the set-aside consuming `ignoredModels`,
+`ignoredPlans` and `paidPlans`.
+
+Stage 6 may not add a token, a hue, a radius or a second duration, and may not
+restyle the shell. A new visual need is either a Stage 5 follow-up or a
+`DESIGN.md` change, never a page-local override.
+
+---
+
+## Stage 6 — Provider selection wizard
 
 **Goal:** "which plan should *I* buy" becomes a guided flow, and the answers
 persist offline.
 
 ### Tasks
 
-- [ ] 5.1 `src/lib/prefs.ts` — typed `nanostores` persistent stores under one
+- [ ] 6.1 `src/lib/prefs.ts` — typed `nanostores` persistent stores under one
   versioned key namespace, `rack-rate:prefs:v1`, holding
   `{ ignoredModels, ignoredPlans, paidPlans, vendor, currency, budgetCeiling,
   weights, benchmarkFilters }`. SSR-safe (no `localStorage` read during
   frontmatter), corrupt values fall back to defaults, cross-tab sync on.
   Bumping the version prefix is how a schema change migrates: read the old key
-  once, transform, write the new one, never crash on the old shape.
-- [ ] 5.2 Preference-aware rendering: ignored models/plans are dimmed with a
-  one-click restore rather than hidden, so a filtered view is never mistaken for
-  the whole picture. Paid plans are marked and excluded from "what should I buy"
-  totals.
-- [ ] 5.3 Wizard `/start` (or `/wizard`) — steps: (a) which vendors/plans you can
-  or will pay for, (b) what you optimize for (score / cost / agentic vs coding /
-  throughput), (c) usage intensity (tasks per month, slider) mapped onto the
-  composite weights and utilization math, (d) results: ranked plans with
-  break-even, value multiple, days-to-full-run, and the models each unlocks.
-- [ ] 5.4 Result summary is shareable and stateless: encode the answers in the
+  once, transform, write the new one, never crash on the old shape. The file does
+  not exist before this task and Stage 5 deliberately shipped without it.
+- [ ] 6.2 Preference-aware rendering: an ignored model or plan takes the `-`
+  carriage-control mark and moves to the set-aside rail Stage 5 built, with a
+  one-click restore and its reason intact — never hidden, so a filtered view is
+  never mistaken for the whole picture. A paid plan takes the `*` mark and is
+  excluded from "what should I buy" totals.
+- [ ] 6.3 Wizard `/start` — steps: (a) which vendors/plans you can or will pay
+  for, (b) what you optimize for (score / cost / agentic vs coding / throughput),
+  (c) usage intensity (tasks per month, slider) mapped onto the composite weights
+  and utilization math, (d) results: ranked plans with break-even, value
+  multiple, days-to-full-run, and the models each unlocks. This fills in the
+  console layout, control row and empty states task 5.12 already placed; it adds
+  no shell, token or primitive.
+- [ ] 6.4 Result summary is shareable and stateless: encode the answers in the
   URL so a result can be linked, and hydrate preferences from the URL when
   present. Persist locally on confirmation.
-- [ ] 5.5 `/models` and the Pareto chart honour the wizard's context (a chip
-  showing the active plan/vendor filter with a clear action).
-- [ ] 5.6 Export/import preferences as JSON (a single file, versioned), plus a
+- [ ] 6.5 `/models` and the Pareto chart honour the wizard's context (a console
+  chip showing the active plan/vendor filter with a clear action).
+- [ ] 6.6 Export/import preferences as JSON (a single file, versioned), plus a
   "reset all preferences" action.
-- [ ] 5.7 Preferences are validated with the same zod schema as any other trust
+- [ ] 6.7 Preferences are validated with the same zod schema as any other trust
   boundary; an old or hand-edited payload cannot crash a page.
+
+### Contract from Stage 5
+
+The wizard is behaviour added inside a finished shell. Every surface it touches
+already has its lane, its listing primitives, its set-aside rail, its cursor
+readout and its state glyphs; task 6.1 supplies the store the glyphs consume.
+Stage 6 adds no token, hue, radius or duration, and restyles nothing the redesign
+shipped.
 
 ### Acceptance
 
@@ -270,23 +660,23 @@ verified by hand, not assumed.
 
 ---
 
-## Stage 6 — GitHub Pages deployment
+## Stage 7 — GitHub Pages deployment
 
 **Goal:** the site publishes itself from `main`, and the data refresh path is
 documented for contributors.
 
 ### Tasks
 
-- [ ] 6.1 `.github/workflows/deploy.yml` — Bun setup with a pinned version,
+- [ ] 7.1 `.github/workflows/deploy.yml` — Bun setup with a pinned version,
   `bun install --frozen-lockfile`, `bun run build`, `withastro/action` upload,
   `actions/deploy-pages` deploy, correct `permissions:` block, concurrency group
   so overlapping pushes cancel.
-- [ ] 6.2 Decide and document the canonical URL: project page
+- [ ] 7.2 Decide and document the canonical URL: project page
   (`marshalfevzi.github.io/rack-rate`) first, custom domain (`rackrate.dev`)
   when DNS is ready. Commit `public/CNAME` only with the domain. Confirm
   `site`/`base` and the OG image URL are correct in both modes and that a
   subpath build has no absolute-root links.
-- [ ] 6.2b Artificial Analysis publication decision, made explicitly here rather
+- [ ] 7.2b Artificial Analysis publication decision, made explicitly here rather
   than by default. Three defensible states, in ascending exposure; record which
   one ships and why:
 
@@ -313,20 +703,20 @@ documented for contributors.
   implementation: the chart-only variant must be reachable by configuration,
   not by a refactor. **The decision and its reasoning are recorded in
   `CAVEATS.md` §1.6**, which is the reader-facing statement of the position.
-- [ ] 6.3 Data freshness without breaking determinism: a scheduled workflow that
+- [ ] 7.3 Data freshness without breaking determinism: a scheduled workflow that
   runs the fetchers, and **opens a pull request** instead of pushing directly
   when `data/*.json` changes, so every data movement is reviewable and the
   deployed site is always built from a committed, validated snapshot.
-- [ ] 6.4 Cache and index hygiene: `robots.txt`, sitemap verified against the
+- [ ] 7.4 Cache and index hygiene: `robots.txt`, sitemap verified against the
   deployed base path, 404 page served, hashed asset caching confirmed.
-- [ ] 6.5 `CONTRIBUTING.md` rewritten for the new stack: how to add a plan, how
+- [ ] 7.5 `CONTRIBUTING.md` rewritten for the new stack: how to add a plan, how
   to add a source, how to submit a measured quota, what belongs in
   `known_gaps`, and the licensing rules from `docs/data-sources.md`. Preserve
   the existing measured-quota issue template path and the credit promise.
-- [ ] 6.6 Update `PLAN.md` (this file) so every stage is ticked or explicitly
+- [ ] 7.6 Update `PLAN.md` (this file) so every stage is ticked or explicitly
   carried, update `AGENTS.md` if any command changed, and write the final
   `docs/architecture.md`.
-- [ ] 6.7 Final verification: clean clone → `bun install` → `bun run build` →
+- [ ] 7.7 Final verification: clean clone → `bun install` → `bun run build` →
   deployed URL loads, every route reachable, chart interactions work on a
   phone-sized viewport, and the sources page lists every upstream plus the
   attribution block.
@@ -511,9 +901,24 @@ reason; do not guess a number to close one.
   secret-manager reference, not a harbor key. Nothing breaks today; revisit only
   if a fetch path ever needs a login.
 - **Artificial Analysis publication state is undecided** — the enabled path is
-  now proven live (see `CAVEATS.md` §1.6), so task 6.2b is a configuration
+  now proven live (see `CAVEATS.md` §1.6), so task 7.2b is a configuration
   decision rather than an engineering one. AA values stay out of `data/*.json`
   until that decision is recorded.
+- **The incumbent captures in `.impeccable/review/incumbent/` were taken from
+  `astro dev`** and carry the dev toolbar, which no built route renders. One of
+  them was misread as chart chrome and became an acceptance criterion before the
+  code was checked (see the correction in `docs/design/build-plan.md`). They stay
+  as the anti-reference because the layout, spacing, colour and typography
+  defects they show are real; Stage 5's own evidence is captured from a built
+  preview instead.
+- **`DESIGN.md` and `docs/design/surfaces.md` disagree on where the cursor
+  readout docks** — the right column of `/`'s split console versus a fixed 28 px
+  line at the viewport bottom. Task 5.4 ships the fixed line and 5.15 corrects
+  `DESIGN.md`.
+- **`AGENTS.md`'s layout block lists `apps/site/src/lib/prefs.ts` as if it
+  existed.** It is task 6.1 and is not in the tree. Recorded, not fixed: the
+  rewrite is the owner's call, and the previous session reached the same
+  conclusion for the same line.
 
 
 ---
@@ -610,7 +1015,7 @@ No stage was opened. Stage 3 is still untouched.
   scripts changing how they invoke it.
 - `HARBOR_API_KEY` stays out of `.env.example` until a command here consumes it.
 - Artificial Analysis remains off in committed data; the state is chosen
-  explicitly at task 6.2b.
+  explicitly at task 7.2b.
 - The two 404 evidence URLs are recorded in "Open questions", not fixed now.
 - Closed stages and history live in `docs/archive/stages-1-2.md`.
 
@@ -2183,3 +2588,92 @@ console listing that replaces the incumbent flat dark stack.
   overwrite).
 - The design documents are a contract, not an implementation: Stages 1–6 in
   `docs/design/build-plan.md` are all still unbuilt.
+
+### 2026-09-16 — Plan session: the Console Listing redesign becomes Stage 5 (docs only)
+
+No stage was opened. No source file, data file or test changed; the working tree
+holds documentation only.
+
+**Landed**
+
+- **New Stage 5 — The Console Listing redesign**, 15 tasks: 5.1 the frozen tokens
+  and the scheme inversion; 5.2 self-hosted IBM Plex with its OFL notice, the
+  social card, the favicon and `theme-color`; 5.3 the shell (status band, lane
+  rail, drawer, 1440px workspace, footer index); 5.4 the cursor readout; 5.5 the
+  listing primitives and the provenance components; 5.6 `/`; 5.7 `/models`; 5.8
+  `/plans`; 5.9 the chart grammar across the shared frame and all six builders;
+  5.10 `/compare`; 5.11 `/explore`; 5.12 `/start`, layout only; 5.13 `/method`,
+  `/sources` and `404`; 5.14 accessibility and release reconciliation; 5.15
+  re-derives the design record from the built world. Each task names its files,
+  its work and a **Done when**; the stage carries a frozen name/metric table, six
+  boundaries, ten acceptance checks, and the contract it hands forward.
+- **The wizard moved to Stage 6 and deployment to Stage 7.** Wizard tasks 5.1–5.7
+  are now 6.1–6.7 and deploy tasks 6.1–6.7 are now 7.1–7.7, with 7.2b keeping its
+  suffix. Stage 6 gained a **Contract from Stage 5** section, and its 6.2 now
+  consumes the set-aside rail the redesign ships instead of dimming rows.
+- **The boundaries that keep the two stages from colliding.** Stage 5 creates no
+  `lib/prefs.ts`, persists nothing, and gives `/start` layout only; Stage 6 adds
+  behaviour, not appearance, and may not add a token, hue, radius or duration.
+- **`docs/design/build-plan.md` trimmed 501 → 262 lines.** It now points at
+  PLAN.md Stage 5 for dependency order and keeps what PLAN.md does not carry: the
+  incumbent diagnosis, "what does not change", the frozen implementation contract
+  and the risk register, plus a mapping from its former six stages.
+- **Correction to that diagnosis.** It recorded "a floating ECharts toolbox
+  capsule" and made its removal an acceptance criterion. `registry.ts` registers
+  no `ToolboxComponent`, no option under `apps/site/src` sets a `toolbox` block,
+  and the same capsule appears in `home-desktop.png`, on a route that mounts no
+  chart — it is the `astro dev` toolbar, not app chrome. The row now names the two
+  real defects, the Pareto `dataZoom` slider and legend drawn outside the page
+  control row and the three-accent palette, and every Stage 5 capture is required
+  to come from a built preview.
+- **Renumbering propagated** to `PRODUCT.md`, `DESIGN.md`, `CAVEATS.md`,
+  `README.md`, `docs/architecture.md`, `docs/design/build-plan.md` and
+  `apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md`.
+  `docs/architecture.md`'s `## Design tokens` section gained a superseded note,
+  because Stage 5 replaces the token set it documents while the section stays as
+  the Stage 4 record. Log entries before this one are **not** rewritten: inside
+  them, `5.x` means the wizard and `6.x` means deployment.
+
+**Verified**
+
+- `bun test` 138 pass / 0 fail, 493 `expect()` calls across 14 files.
+- `bun run format:check` exits 1 on 7 vendored `.claude/skills/impeccable/**`
+  files and names none of the eight documents this session edited, so the
+  markdown scope exclusion holds.
+- `data/derived.json` is still
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348` and was not
+  regenerated.
+- Every relative document link this session added or touched resolves, checked
+  by resolving each target against its containing file's directory.
+- The four answered planning questions were confirmed by the owner before any
+  edit: Stage 5 owns `/start`'s layout only, PLAN.md owns sequencing, the toolbox
+  diagnosis is corrected rather than carried, and Stage 5 closes with the
+  design-record re-derivation.
+
+**Decisions taken this session** (owner)
+
+- The redesign is one stage of 15 tasks, landing across sessions the way Stage 4
+  did, rather than several stages.
+- Stage 5 gives `/start` its layout; the wizard flow stays Stage 6.
+- PLAN.md owns sequencing; `docs/design/build-plan.md` keeps evidence and the
+  frozen contract.
+- The ECharts-toolbox diagnosis is corrected, not carried forward.
+- Stage 5 closes with an impeccable `document` pass that re-derives `DESIGN.md`
+  and `surfaces.md` from the built world.
+
+**Still open**
+
+- Stage 5 is entirely unbuilt; `apps/site` still ships the Stage 4 world.
+- `DESIGN.md`'s readout docking contradicts `docs/design/surfaces.md`; 5.4
+  resolves it in favour of the fixed 28 px line and 5.15 corrects `DESIGN.md`.
+- Two build-session decisions stay recorded rather than resolved: the favicon
+  redraw (5.2) and whether an authored technical figure appears below the fold on
+  `/` (5.6).
+- `AGENTS.md`'s layout block still lists `apps/site/src/lib/prefs.ts` as present;
+  it is task 6.1 and is not in the tree. Recorded in "Open questions", not fixed.
+- `bun run format:check` fails on 7 vendored
+  `.claude/skills/impeccable/**` files, and none of the eight documents edited
+  this session is among them (`**/*.md` is out of format scope). The path in the
+  previous session's note, `.agents/skills/impeccable/**`, no longer exists; the
+  skill now lives under `.claude/`. Recorded, not fixed — the fix is a tooling
+  choice (an oxfmt ignore, or formatting files upstream will overwrite).

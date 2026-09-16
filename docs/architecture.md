@@ -1022,6 +1022,12 @@ intentional.
 
 ## Design tokens
 
+> **Superseded, not deleted.** Stage 5 replaces this nine-token set, the type
+> scale and both anti-signal lists in this section with the Console Listing
+> system in `DESIGN.md` (`PLAN.md` 5.1–5.15). The values and contrast evidence
+> below describe the implementation as it stood through Stage 4 and stay as that
+> stage's record. An implementer working on 5.1 or later reads `DESIGN.md`.
+
 `apps/site/src/styles/global.css` is the single CSS entry: one
 `@import "tailwindcss"`, one `@theme`, and one `@layer base`. The dark scheme
 is the default. `@theme` emits the custom properties and their Tailwind
@@ -1116,7 +1122,7 @@ The light scheme is a token re-declaration only:
 `@media (prefers-color-scheme: light) { :root { … } }` appears in
 `@layer base`, which wins over Tailwind's `theme` layer. Dark is the default.
 There is no `.dark` class, toggle, or pre-paint script, so there is no FOUC
-avoidance toggle to document; a toggle is deferred to task 5.1.
+avoidance toggle to document; a toggle is deferred to task 6.1.
 
 ### Anti-signals
 
@@ -1238,7 +1244,7 @@ untracked file under `data/` also fails the job. The guard sits beside
 the write path is idempotent and the committed artifact is not stale.
 
 There is no `bun run build` step. Task 3.10 lists install, check, test,
-`data:build` and the guard; Stage 6.1's deploy workflow owns `bun run build`
+`data:build` and the guard; Stage 7.1's deploy workflow owns `bun run build`
 and `withastro/action`. There is also no `actions/setup-node` step. The check
 path is Bun-only: with `node` removed from `PATH` using
 `PATH="/tmp/bunonly:/usr/bin:/bin"`, `bun run check` in `apps/site` printed
