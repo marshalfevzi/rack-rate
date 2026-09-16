@@ -41,9 +41,10 @@ Answers two questions from public data with published arithmetic:
 Success is defined in `PLAN.md`: a visitor picks their provider/plan, sees which
 models that plan can run and what each costs them per task, compares those
 models across several benchmarks with the Pareto frontier drawn on both the
-API-list and plan-adjusted axes, reads where each number came from, and has
-their ignored/paid/already-owned choices persist between visits — on a phone,
-on a static site, with no server.
+API-list and plan-adjusted axes, reads where each number came from, and can
+carry their ignored/paid/already-owned choices between visits — on a phone,
+on a static site, with no server. The URL carries that state today; the
+persisted store is `PLAN.md` task 5.1.
 
 ## Positioning
 
@@ -83,8 +84,10 @@ The mechanism a neighbouring comparison product could not truthfully copy:
   `fetch`, no `fs`, no clock).
 - The visitor's real scene is a purchase decision: mid-research, often on a
   phone, comparing a handful of models and plans. Ignored models/plans, paid
-  plans and other answers persist in `localStorage` under one versioned key
-  namespace, `rack-rate:prefs:v1`, and are shareable through the URL.
+  plans and other answers are shareable through the URL today; `PLAN.md` task
+  5.1 plans to persist them in `localStorage` under one versioned key
+  namespace, `rack-rate:prefs:v1` (`apps/site/src/lib/prefs.ts`, not yet in the
+  tree).
 - Inputs are four upstream sources: DeepSWE v1.1, Terminal-Bench board 4-0-0,
   Artificial Analysis (off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set),
   and measured plan quotas from Awesome Coding Plan. USD is the display
@@ -152,18 +155,43 @@ at 360 px, text contrast ≥ 4.5:1.
   `/sources`; credit to Datacurve for DeepSWE methodology and results;
   Terminal-Bench / Harbor Hub; `real-api-pricing` by FeiZhuLulu as prior art
   only, with no figures copied; Lato under the SIL OFL 1.1 for the build-time
-  social card. When an AA value is ever published, §5.1 requires the Artificial
+  social card as it stands today — `docs/design/build-plan.md` Stage 2 moves the
+  card to IBM Plex and the Lato notice leaves with the font. When an AA value is ever published, §5.1 requires the Artificial
   Analysis logo visible on the chart plus a hyperlink, official terminology, and
   no implication of endorsement.
 - **Existing mark:** `apps/site/public/favicon.svg` — a 32×32 canvas square with
   a rule border and three ascending amber bars. No raster icon and no web
-  manifest ship with it.
-- **Recorded anti-signals** from the deliberate visual pass (task 3.3b), which
-  future work preserves unless a redesign is explicitly requested: no second
-  accent hue, no dashed borders, no gradients or shadows, no second motion
-  duration, no monospace body text, no emoji.
-- Two-scheme palette (dark default, light under `prefers-color-scheme`), one
-  accent per semantic role (plan-adjusted / measured / API-list basis).
+  manifest ship with it. It survives the 2026-09-16 redesign unchanged;
+  redrawing it for the world's rule weights and its 16 px reading is a
+  build-session decision, not a brand change.
+- **Visual world — "Divine Machinery: the Console Listing"** (decided
+  2026-09-16; supersedes the task 3.3b visual pass and its anti-signals). A
+  mainframe console / ISPF panel: fixed-column listing paper, a line-number
+  gutter, a carriage-control state column, printer rules, uppercase mono
+  legends, sharp corners, and one amber signal for whatever is active. It
+  refuses the category default — the dark card grid with a soft hero, a
+  floating chart mock-up and three accent colours — and equally its opposite,
+  the warm-cream editorial hero. `DESIGN.md` holds the durable system,
+  `docs/design/surfaces.md` the per-route layout, `docs/design/build-plan.md`
+  the sequencing; seed keys `8e5f39de` (world) and `4c59a482` (composition).
+- **Maker, not brand:** rack-rate is an independent product. Bosphorus Elevate
+  is credited as its maker in the footer and on `/method`, and contributes no
+  palette, imagery, atmosphere or voice to this site.
+- **Type:** IBM Plex Sans for sentences, IBM Plex Mono for every figure,
+  identifier, legend and lane number, self-hosted as woff2 under the SIL OFL
+  1.1 with the licence notice committed beside them. No runtime font request.
+- **Anti-signals** (replacing the task 3.3b list): no rounded corners or pills;
+  no shadow, gradient, blur or glow; no second hue and no green/red semantic
+  colour — state is a glyph, a stroke pattern or an inversion, never a colour;
+  no decorative imagery, photography or illustration; no emoji; no card grids,
+  floating mock-ups, logo walls, testimonials or invented proof; no spinners or
+  shimmer skeletons; no decorative dashed borders (dashes belong to the
+  uncertainty grammar); no monospace prose; no decorative eyebrow above a
+  heading; no motion above 150 ms; and no contractual fact that exists only on
+  hover.
+- **Colour and scheme:** dark default with a strict light inversion, and exactly
+  one signal colour, amber (`--color-signal`). The three cost bases are told
+  apart by label and stroke pattern, never by hue.
 
 ## Evidence on Hand
 
@@ -186,9 +214,11 @@ at 360 px, text contrast ≥ 4.5:1.
   press, no traffic or conversion numbers, no company or team behind the name,
   no endorsement by Datacurve, Harbor or Artificial Analysis, no AA values in
   any build where `AA_PUBLISH` is not exactly `1`, and never any benchmark task,
-  prompt, verifier or patch. No `DESIGN.md` exists; the incumbent visual system
-  is documented in `docs/architecture.md` and the committed CSS, components and
-  chart option builders.
+  prompt, verifier or patch. `DESIGN.md` (written 2026-09-16 as the pre-build
+  contract for the Divine Machinery redesign), `docs/design/surfaces.md` and
+  `docs/design/build-plan.md` are the visual sources of truth; `docs/architecture.md`
+  and the committed CSS, components and chart option builders remain the record
+  of the implementation.
 
 ## Product Principles
 

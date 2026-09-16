@@ -7,3 +7,6 @@ data/raw/
 !.env.example
 *.tsbuildinfo
 .DS_Store
+
+# impeccable: machine-local state (hook consent), not shared
+.impeccable/config.local.json

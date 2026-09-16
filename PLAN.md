@@ -2128,3 +2128,58 @@ detector either.
   shape (Stage 5's wizard, a refactor) should pin it first.
 - Stage 4 is placeholder-grade by instruction: the surface is complete and
   measurable, not pixel-finished. A UI refactor is expected to rewrite it.
+
+### 2026-09-16 — Design documentation: the Divine Machinery visual world (docs only)
+
+No stage above ran in this session and no task is ticked by it. The session
+chose a replacement visual world for `apps/site` and wrote the documents that
+own it; `apps/site/src` and `packages/**` are untouched, so no build, chart or
+data behaviour changed. The direction is the owner's: "Divine Machinery" — a
+console listing that replaces the incumbent flat dark stack.
+
+- `DESIGN.md` (new, 445 lines) is the durable system: frontmatter tokens plus
+  the Console Listing world — pinned status band, lane rail, line-number
+  gutter, carriage-control state column, printer rules, 0 px radius, no
+  shadow/gradient/blur, one amber signal (`#FFB020`) for active and attention
+  only, a six-step Plex Sans / Plex Mono scale with explicit line-heights,
+  and the state alphabet (blank live, `·` held, `-` excluded, `*` committed,
+  `!` gap, `?` low confidence, `+` changed).
+- `docs/design/surfaces.md` (new, 500 lines) is per-route layout: shell
+  geometry (32 px band, 176 px rail with working lanes 01–06 plus unnumbered
+  `METHOD`/`SOURCES` reference rows, 314 px total), 11 route wireframes, the
+  single cursor readout, the listing-table anatomy, chart placement, the
+  component-to-route map, and the exact empty/gap/suppressed strings.
+- `docs/design/build-plan.md` (new, 501 lines) is the sequence: incumbent
+  diagnosis from the captures, the frozen implementation contract, Stages 1–6
+  with named files and acceptance, and the risk register.
+- `PRODUCT.md` brand commitments now state the new world, the maker
+  relationship (Bosphorus Elevate credited as maker only, no palette, imagery
+  or voice inherited), the anti-signals, and the dark-default strict light
+  inversion. The `/` surface brief under `apps/site/.impeccable/surfaces/` is
+  realigned to the same world.
+- The 14 incumbent captures in `.impeccable/review/incumbent/` are committed
+  as the evidence the build plan's diagnosis cites; `.impeccable/config.local.json`
+  is machine-local hook consent and is now gitignored.
+- Cost basis stays explicit as the palette collapses to mono plus amber: bases
+  are told apart by label and stroke pattern (solid / hairline-with-open-end /
+  doubled), never by hue, and every axis, chart title, column and chip states
+  its basis in words.
+- The cursor readout is specified for keyboard focus, touch and pointer, never
+  hover-only, and never the only place a contractual fact lives.
+- Verified: `DESIGN.md` frontmatter parses as YAML with one value per token;
+  every relative link and anchor in the four documents resolves; `bun test`
+  138 pass / 0 fail.
+
+**Still open**
+
+- Two build-session decisions are recorded rather than invented: which authored
+  technical figure opens `/`, and whether the favicon is redrawn at 24 px.
+- `AGENTS.md` and `PRODUCT.md` described `apps/site/src/lib/prefs.ts`
+  (`rack-rate:prefs:v1`) as present. It is task 5.1 and is not in the tree;
+  `PRODUCT.md` now marks it planned, `AGENTS.md`'s layout line still lists it.
+- `bun run format:check` fails on 8 vendored `.agents/skills/impeccable/**`
+  files. Pre-existing and unrelated to this session; the fix is a tooling
+  choice (an oxfmt ignore for `.agents/**`, or formatting files upstream will
+  overwrite).
+- The design documents are a contract, not an implementation: Stages 1–6 in
+  `docs/design/build-plan.md` are all still unbuilt.
