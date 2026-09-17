@@ -27,33 +27,60 @@ context.
 
 3. **Dispatch one implementation pass.** Determine `isImpeccable` from the selected task's
    configured prefix in `docs/pm/config.yml`. If it is true, load `skill://impeccable` and
-   dispatch `pm-ui-implementer`; otherwise dispatch `pm-implementer`. Make it ONE `task` call.
+   dispatch `pm-ui-implementer`; otherwise dispatch `pm-implementer`. The verifier named in
+   step 5 follows the same prefix decision: use `pm-ui-verifier` when `isImpeccable` is true
+   and `pm-verifier` otherwise. Make it ONE `task` call.
    The subagent's instructions must carry: the task document path, the acceptance criteria
    verbatim, the configured gate command, the reference documents the task names, and every
-   decision you resolved in intake. Instruct it to decide anything else locally from those
-   documents and to never ask mid-run. When the task names three or more independent file
-   groups, make it a `tasks[]` batch with one item per group — never a sequence of separate
-   dispatches.
+   decision you resolved in intake. They must also carry these contract requirements verbatim:
+   UI structural budget: a page-local `<style>` or `<script>` block in an `.astro` route file
+   is capped at about 40 lines each. Beyond that, styles go to the single `global.css` entry
+   (`@theme` / `@layer`) or the owning component, and client behavior goes to an imported `.ts`
+   module. A route file over about 250 lines decomposes into `components/`. The impeccable
+   detector is not a substitute for this structure.
+   Reference-document policy: `PRD.md`, `ARCHITECTURE.md`, `PRODUCT.md`, `DESIGN.md` and
+   `CAVEATS.md` hold current truth only. Per-task and per-stage records belong in the task
+   document's `## Session` section or `docs/archive/`; never append them to a reference
+   document. `pm_doc_check` reports a `doc-append-record` warning when one is present, and
+   `/pm-align` relocates it.
+   Evidence-loop scoping: `bun run build` and the preview server run once per task, not once
+   per pass. A fix round that changes no more than two files runs the configured gate
+   (`bun run check`) only.
+   Each dispatched worker reports in the structured payload its agent definition declares; do not
+   ask it for a Markdown report.
+   When the task names three or more independent file groups, make it a `tasks[]` batch with
+   one item per group — never a sequence of separate dispatches.
 
-4. **Do not poll.** The dispatch delivers its own result. Do not call `hub wait` in a loop, do
-   not re-read files to infer progress, and make no tool call whose only purpose is to check on
-   a worker. Spend the wait on nothing, or on independent orchestrator work, and let the result
-   arrive.
+4. **Never wait on a worker.** The dispatch delivers its own result. Never call `sleep`, never
+   call `hub wait` in a loop, never re-read files to infer progress, and make no tool call whose
+   only purpose is to check on a worker. Spend the idle time on independent orchestrator work, or
+   on nothing, and let the result arrive.
 
-5. **Verify once.** Dispatch `pm-verifier` with the task document, the base revision, and the
-   changed paths. Require the per-criterion matrix and the exact gate result.
+5. **Verify once.** Dispatch `pm-ui-verifier` when `isImpeccable` is true and `pm-verifier`
+   otherwise, following the dispatch rule above, with the task document, the base revision, and
+   changed paths. Read `criteria[].verdict`, `measurements` for every browser-observable criterion,
+   `gate_result`, and `recommendation` from the structured payload.
 
-6. **At most one fix round.** If verification fails or is unverified, message the _same_
-   implementer over `hub` with the verifier's report verbatim — its context is still live, so do
-   not spawn a replacement. Then re-verify once. A second failure is a blocker to report, not
-   another round.
+6. **At most one fix round.** Branch on the verifier's `recommendation`: `finish` proceeds to
+   finish; `fix` messages the same implementer over `hub` with the verifier's failed and
+   unverified criteria plus its `defects` verbatim; `blocked` is reported as a blocker. Then
+   re-verify once after a `fix`, reusing the same agent rather than spawning a replacement. A
+   second failure is a blocker to report, not another round.
 
 7. **Finish.** Ensure the working tree is formatted. Run the configured gate once and require it
-   to pass. Update only the task frontmatter in `docs/pm/<M>/todo/<ID>.md` (or its unplanned
-   path) to `status: done`; never move the file by hand. Call `pm_task_finish` with the task id,
-   a concise session summary containing the evidence, and `commit: true`. Then call
-   `pm_plan_sync` with `{ write: true }` as the final synchronization, and report its `issues`,
-   the generated `docs/pm/plan.yml` state, the completed task path, the verification evidence,
-   and the commit result. Leave any reported error or warning visible rather than masking it.
+   to pass. Do not run `bun run build`, a preview server, or the design detector here: each runs
+   once per task inside the pass that owns it — the implementer builds and runs the detector, and
+   the UI verifier starts the preview. A fix round touching no more than two files runs only the
+   configured gate. Update only the task frontmatter in `docs/pm/<M>/todo/<ID>.md` (or its
+   unplanned path) to `status: done`; never move the file by hand. Call `pm_task_finish` with
+   the task id, a concise session summary containing the evidence, and `commit: true`. Then call
+   `pm_plan_sync` with `{ write: true }` as the final synchronization, and report its `issues`, the
+   generated `docs/pm/plan.yml` state, the completed task path, the implementer's `files_changed`
+   and `gate_result`, the verifier's `recommendation` and `criteria`, and the commit result. Leave
+   any reported error or warning visible rather than masking it.
 
 Keep the task in `todo/` until `pm_task_finish` moves it.
+
+Reference documents hold current truth only. A task records its own measurements in its own
+`## Session` section, and `pm_doc_check`'s `doc-append-record` warning is relocated with
+`/pm-align` rather than re-appended.

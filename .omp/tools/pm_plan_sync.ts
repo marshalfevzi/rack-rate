@@ -6,7 +6,7 @@ const factory: CustomToolFactory = (pi) => ({
   label: "PM Plan Sync",
   description: "Validate PM documents and regenerate the generated plan when valid.",
   parameters: pi.zod.object({
-    write: pi.zod.boolean().default(true).optional(),
+    write: pi.zod.boolean().optional(),
   }),
   async execute(_id, params, _onUpdate, ctx, _signal) {
     const result = await syncPlan(ctx.cwd, params.write !== false)

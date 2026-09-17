@@ -7,12 +7,9 @@ const factory: CustomToolFactory = (pi) => ({
   description: "Create a dated decision record and regenerate the PM plan.",
   parameters: pi.zod.object({
     title: pi.zod.string(),
-    status: pi.zod
-      .enum(["proposed", "accepted", "rejected", "superseded", "deferred"])
-      .default("accepted")
-      .optional(),
+    status: pi.zod.enum(["proposed", "accepted", "rejected", "superseded", "deferred"]).optional(),
     milestone: pi.zod.string().nullable(),
-    tasks: pi.zod.array(pi.zod.string()).default([]).optional(),
+    tasks: pi.zod.array(pi.zod.string()).optional(),
     context: pi.zod.string(),
     decision: pi.zod.string(),
     consequences: pi.zod.string(),

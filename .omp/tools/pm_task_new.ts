@@ -11,10 +11,10 @@ const factory: CustomToolFactory = (pi) => ({
     title: pi.zod.string(),
     description: pi.zod.string(),
     milestone: pi.zod.string().nullable().optional(),
-    kind: pi.zod.string().default("feature").optional(),
-    pre: pi.zod.array(pi.zod.string()).default([]).optional(),
-    body: pi.zod.string().default("").optional(),
-    unplanned: pi.zod.boolean().default(false).optional(),
+    kind: pi.zod.string().optional(),
+    pre: pi.zod.array(pi.zod.string()).optional(),
+    body: pi.zod.string().optional(),
+    unplanned: pi.zod.boolean().optional(),
   }),
   async execute(_id, params, _onUpdate, ctx, _signal) {
     try {

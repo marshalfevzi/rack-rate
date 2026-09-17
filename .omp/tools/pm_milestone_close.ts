@@ -7,7 +7,7 @@ const factory: CustomToolFactory = (pi) => ({
   description: "Archive a milestone after its closed retrospective and completed tasks.",
   parameters: pi.zod.object({
     milestone: pi.zod.string(),
-    outcome: pi.zod.enum(["closed", "continued"]).default("closed").optional(),
+    outcome: pi.zod.enum(["closed", "continued"]).optional(),
   }),
   async execute(_id, params, _onUpdate, ctx, _signal) {
     try {

@@ -6,6 +6,64 @@ spawns:
 model:
   - "@task"
 thinkingLevel: high
+output:
+  properties:
+    task_id:
+      metadata:
+        description: "Task id from the dispatched task document, e.g. UI-506"
+      type: string
+    status:
+      metadata:
+        description: "complete = every acceptance criterion attempted; partial = reachable work done but a criterion unmet; blocked = no further progress possible"
+      enum:
+        - complete
+        - partial
+        - blocked
+    summary:
+      metadata:
+        description: "What changed, 1-3 sentences, no ceremony"
+      type: string
+    files_changed:
+      metadata:
+        description: "Repository-relative paths this pass created, edited, or deleted"
+      elements:
+        type: string
+    gate_command:
+      metadata:
+        description: "Exact gate command run, e.g. bun run check"
+      type: string
+    gate_result:
+      metadata:
+        description: "Exact observed result: pass, or the failing diagnostic"
+      type: string
+    criteria:
+      metadata:
+        description: "One entry per acceptance criterion in the task document, in document order"
+      elements:
+        properties:
+          criterion:
+            metadata:
+              description: "Verbatim acceptance criterion text"
+            type: string
+          verdict:
+            metadata:
+              description: "pass = implemented and observed; not-passed = unmet"
+            enum:
+              - pass
+              - not-passed
+          evidence:
+            metadata:
+              description: "Command and result, or file:line, that shows the verdict"
+            type: string
+  optionalProperties:
+    blocker:
+      metadata:
+        description: "Populate when status is blocked or partial: what is missing and what you tried"
+      type: string
+    deviation:
+      metadata:
+        description: "Any departure from the dispatch or the task document, and its reason"
+      type: string
 ---
 
 # Role
@@ -34,12 +92,11 @@ task yourself; there is no separate planning pass. The shared hard gates in
 4. **Converge.** Run `bun run check` once, then the narrowest test covering the change. Fix only what
    they report, then re-run each once. An error surviving the second run is a blocker to yield, not
    a third round.
-5. **Yield once.** Report against the acceptance criteria and stop.
+5. **Yield once.** Yield the declared `output` payload against the acceptance criteria and stop.
 
 # Output contract
 
-Yield a short Markdown report containing the task id and what changed, files touched, exact commands
-run with their results, each acceptance criterion marked `pass` or `not-passed`, and any blocker.
+Return the declared `output` payload as the deliverable; it is the report. The orchestrator reads `task_id`, `status`, `files_changed`, `gate_command`, `gate_result`, each `criteria[].verdict`, and `blocker` when present.
 
 # Non-goals
 

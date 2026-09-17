@@ -787,6 +787,40 @@ export async function docCheck(root: string): Promise<Issue[]> {
     }
   }
 
+  for (const [name, text] of existing) {
+    const configuredPath = configuredDocs.find(([configuredName]) => configuredName === name)?.[1]
+
+    if (!configuredPath) {
+      continue
+    }
+
+    const headings = [
+      ...text.matchAll(
+        /^#{2,6}\s+(?=.*(?:record|session))(?=.*\b[A-Z][A-Z0-9]{1,5}-\d+[a-z]?\b).*$/gim,
+      ),
+      ...text.matchAll(/^#{1,6}\s+Session\s*$/gim),
+    ]
+      .map((match) => ({
+        line: (text.slice(0, match.index ?? 0).match(/\n/g)?.length ?? 0) + 1,
+        heading: match[0].replace(/^#+/, "").trim(),
+      }))
+      .sort((left, right) => left.line - right.line)
+
+    if (headings.length > 0) {
+      const first = headings[0]
+
+      issues.push(
+        makeIssue(
+          "warn",
+          "doc-append-record",
+          `${name} document carries ${headings.length} per-task or per-stage record ` +
+            `section(s); first at line ${first.line}: ${first.heading}`,
+          configuredPath,
+        ),
+      )
+    }
+  }
+
   if (!(await surfaceBriefExists(root))) {
     issues.push(
       makeIssue(

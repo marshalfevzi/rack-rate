@@ -2,6 +2,10 @@
 
 # Architecture
 
+_This document describes the system as it is now. Per-task and per-stage records belong in
+`docs/pm/<M>/done/<ID>.md` under `## Session` or in `docs/archive/`; inserting a dated record
+section is a `doc-append-record` warning._
+
 ## Module graph
 
 Describe modules and their directed dependencies. Keep the graph acyclic where boundaries require it.

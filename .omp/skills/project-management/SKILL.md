@@ -47,6 +47,17 @@ For field definitions and generated-plan ordering, read
 `skill://project-management/templates/`. The complete lifecycle is in
 `skill://project-management/reference/workflow.md`.
 
+## Reference documents
+
+Reference-document policy: `PRD.md`, `ARCHITECTURE.md`, `PRODUCT.md`, `DESIGN.md` and
+`CAVEATS.md` hold current truth only. Per-task and per-stage records belong in the task document's
+`## Session` section or `docs/archive/`; never append them to a reference document. `pm_doc_check`
+reports a `doc-append-record` warning when one is present, and `/pm-align` relocates it.
+
+- The per-task record for a finished task lives in `docs/pm/<M>/done/<ID>.md` under `## Session`;
+  the flat per-milestone record lives in `docs/archive/<M>-<slug>.md`; `ARCHITECTURE.md` and
+  `PRD.md` are reconciled in place so they describe the system as it is now.
+
 ## Lifecycle: intake → execution
 
 ### Intake
@@ -68,38 +79,42 @@ For field definitions and generated-plan ordering, read
    the task, asks only blocking questions, plans, implements, verifies, and finishes the task.
 3. A completed task is moved to `done/` through `pm_task_finish`, receives its completion date and
    Session record, and is reflected in the generated plan.
-4. When all milestone tasks are done, run `/pm-retro`. A `closed` outcome requires a completed
+4. When a task's measurements or build notes need keeping, they belong in that task's `## Session`
+   section; nothing is appended to a reference document, and a `doc-append-record` warning is
+   cleared with `/pm-align`.
+5. When all milestone tasks are done, run `/pm-retro`. A `closed` outcome requires a completed
    closed retro; `pm_milestone_close` then writes one flat archive slice and removes the live milestone
    directory. A `continued` outcome records the retro and returns the milestone to `in_progress` so new
    tasks can be added — a milestone never rests at `status: retro`.
-5. Run `/pm-docs` whenever PRD or architecture content must be brought back into agreement with the
+6. Run `/pm-docs` whenever PRD or architecture content must be brought back into agreement with the
    implementation. End with `pm_doc_check`.
 
 ## Invariants
 
-| Code                       | Severity | Rule                                                                  |
-| -------------------------- | -------- | --------------------------------------------------------------------- |
-| `id-duplicate`             | error    | Task, decision, retro, and milestone ids are unique.                  |
-| `prefix-unknown`           | error    | Every task id prefix is declared in config `prefixes`.                |
-| `task-missing`             | error    | Every milestone task entry resolves to an existing task document.     |
-| `task-orphan`              | warn     | A milestone task document should be listed by its milestone.          |
-| `pre-missing`              | error    | Every prerequisite names an existing task id.                         |
-| `pre-order`                | error    | Each prerequisite appears earlier in its milestone task order.        |
-| `pre-cycle`                | error    | The prerequisite graph is acyclic.                                    |
-| `blocked-no-decision`      | error    | A blocked task names an accepted or deferred decision.                |
-| `decision-missing`         | error    | Every blocker or decision reference resolves.                         |
-| `done-location`            | error    | Done tasks live in `done/`; other task statuses do not.               |
-| `done-date`                | error    | A done task has a `completed` date.                                   |
-| `milestone-close-blocked`  | error    | A completed milestone has a closed retro and zero open tasks.         |
-| `milestone-retro`          | warn     | All-done in-progress milestones should move to `retro`.               |
-| `plan-stale`               | warn     | The committed generated plan differs from the freshly rendered model. |
-| `next-blocked`             | warn     | The next task in priority order is blocked.                           |
-| `frontmatter-unterminated` | error    | Markdown frontmatter must have a closing delimiter.                   |
-| `frontmatter-invalid`      | error    | Frontmatter must parse as valid YAML.                                 |
-| `frontmatter-key-missing`  | error    | Required frontmatter keys must be present.                            |
-| `hard-break-backslash`     | error    | A trailing backslash must not create a hard line break.               |
-| `hard-break-spaces`        | error    | Two trailing spaces must not create a hard line break.                |
-| `dangling-link`            | error    | Relative links must resolve to existing files or anchors.             |
+| Code                       | Severity | Rule                                                                                                                                                           |
+| -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id-duplicate`             | error    | Task, decision, retro, and milestone ids are unique.                                                                                                           |
+| `prefix-unknown`           | error    | Every task id prefix is declared in config `prefixes`.                                                                                                         |
+| `task-missing`             | error    | Every milestone task entry resolves to an existing task document.                                                                                              |
+| `task-orphan`              | warn     | A milestone task document should be listed by its milestone.                                                                                                   |
+| `pre-missing`              | error    | Every prerequisite names an existing task id.                                                                                                                  |
+| `pre-order`                | error    | Each prerequisite appears earlier in its milestone task order.                                                                                                 |
+| `pre-cycle`                | error    | The prerequisite graph is acyclic.                                                                                                                             |
+| `blocked-no-decision`      | error    | A blocked task names an accepted or deferred decision.                                                                                                         |
+| `decision-missing`         | error    | Every blocker or decision reference resolves.                                                                                                                  |
+| `done-location`            | error    | Done tasks live in `done/`; other task statuses do not.                                                                                                        |
+| `done-date`                | error    | A done task has a `completed` date.                                                                                                                            |
+| `milestone-close-blocked`  | error    | A completed milestone has a closed retro and zero open tasks.                                                                                                  |
+| `milestone-retro`          | warn     | All-done in-progress milestones should move to `retro`.                                                                                                        |
+| `plan-stale`               | warn     | The committed generated plan differs from the freshly rendered model.                                                                                          |
+| `next-blocked`             | warn     | The next task in priority order is blocked.                                                                                                                    |
+| `doc-append-record`        | warn     | A reference document (PRD, ARCHITECTURE, PRODUCT, DESIGN, CAVEATS) carries per-task or per-stage record sections; reference documents hold current truth only. |
+| `frontmatter-unterminated` | error    | Markdown frontmatter must have a closing delimiter.                                                                                                            |
+| `frontmatter-invalid`      | error    | Frontmatter must parse as valid YAML.                                                                                                                          |
+| `frontmatter-key-missing`  | error    | Required frontmatter keys must be present.                                                                                                                     |
+| `hard-break-backslash`     | error    | A trailing backslash must not create a hard line break.                                                                                                        |
+| `hard-break-spaces`        | error    | Two trailing spaces must not create a hard line break.                                                                                                         |
+| `dangling-link`            | error    | Relative links must resolve to existing files or anchors.                                                                                                      |
 
 The runnable task is the first `todo` task in an `in_progress` milestone, then a `backlog`
 milestone, whose prerequisites are all done. `next_task` in the generated plan is the earliest

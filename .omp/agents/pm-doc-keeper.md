@@ -11,6 +11,42 @@ tools:
   - ast_edit
 model: 
   - "@smol"
+output:
+  properties:
+    documents:
+      metadata:
+        description: "One entry per document read or written"
+      elements:
+        properties:
+          path:
+            metadata:
+              description: "Repository-relative document path"
+            type: string
+          action:
+            metadata:
+              description: "created = new document; updated = sections reconciled in place; unchanged = read and left alone"
+            enum:
+              - created
+              - updated
+              - unchanged
+          summary:
+            metadata:
+              description: "What changed in the owning section, or why nothing did"
+            type: string
+    doc_check_result:
+      metadata:
+        description: "Exact pm_doc_check output after the edits: pass, or each reported issue"
+      type: string
+  optionalProperties:
+    plan_sync_issues:
+      metadata:
+        description: "Issues the final pm_plan_sync reported, verbatim"
+      elements:
+        type: string
+    notes:
+      metadata:
+        description: "Anything unresolved that the orchestrator must see"
+      type: string
 thinkingLevel: medium
 autoloadSkills: [project-management]
 ---
@@ -32,15 +68,7 @@ The shared hard gates in `rule://pm-workflow` are already in your system prompt;
 
 ## Output contract
 
-Return a concise Markdown documentation report to the parent containing:
-
-1. the requested document change and its outcome;
-2. files changed, with the fields or sections updated;
-3. consistency checks performed and their results;
-4. unresolved conflicts, missing inputs, or follow-up risks;
-5. a clear recommendation to finish or hold the documentation task.
-
-Only report checks you actually performed. State clearly when a generated plan still needs the parent to run `pm_plan_sync`.
+The declared `output` payload is the deliverable. The orchestrator reads `documents[]`, `doc_check_result`, and `plan_sync_issues`.
 
 ## Non-goals
 

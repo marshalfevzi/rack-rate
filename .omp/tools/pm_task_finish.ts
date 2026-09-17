@@ -8,7 +8,7 @@ const factory: CustomToolFactory = (pi) => ({
   parameters: pi.zod.object({
     task_id: pi.zod.string(),
     summary: pi.zod.string(),
-    commit: pi.zod.boolean().default(false).optional(),
+    commit: pi.zod.boolean().optional(),
   }),
   async execute(_id, params, _onUpdate, ctx, _signal) {
     try {

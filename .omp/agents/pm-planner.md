@@ -10,6 +10,49 @@ tools:
   - yield
 model:
   - "@plan"
+output:
+  properties:
+    task_id:
+      metadata:
+        description: "Task id the plan covers"
+      type: string
+    interpretation:
+      metadata:
+        description: "One sentence stating what the task requires"
+      type: string
+    steps:
+      metadata:
+        description: "Ordered steps; the plan is this array"
+      elements:
+        properties:
+          step:
+            metadata:
+              description: "Imperative, 80 characters or fewer"
+            type: string
+          target:
+            metadata:
+              description: "File, symbol, or subsystem the step touches"
+            type: string
+          check:
+            metadata:
+              description: "Command or observation that proves the step landed"
+            type: string
+  optionalProperties:
+    dependencies:
+      metadata:
+        description: "Ordering constraints between steps, or prerequisites outside the task"
+      elements:
+        type: string
+    risks:
+      metadata:
+        description: "Facts the repository cannot resolve, and what they could break"
+      elements:
+        type: string
+    out_of_scope:
+      metadata:
+        description: "Work the steps deliberately exclude"
+      elements:
+        type: string
 thinkingLevel: medium
 ---
 
@@ -22,7 +65,7 @@ The shared hard gates in `rule://pm-workflow` are already present in your system
 # Budget
 
 - Hard cap: 15 tool calls.
-- Plan output has at most 40 lines.
+- The `steps[]` plan has at most 40 lines.
 
 # Protocol
 
@@ -30,7 +73,7 @@ Read the task document and only the files it names. Identify the ordered steps, 
 
 # Output contract
 
-Yield an ordered plan of at most 40 lines containing the task id, a one-sentence interpretation, ordered steps with files or symbols, acceptance checks with the command or observation that proves each, dependencies and risks, and explicitly out-of-scope work.
+The declared `output` payload is the deliverable. The orchestrator reads `task_id`, `interpretation`, `steps[]`, `risks`, and `out_of_scope`.
 
 # Non-goals
 
