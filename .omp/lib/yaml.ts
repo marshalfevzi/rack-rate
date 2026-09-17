@@ -52,7 +52,7 @@ function scalar(value: unknown): string {
     value.includes("\n") ||
     value.includes("\r") ||
     /^\s|\s$/.test(value) ||
-    /^(?:\[|\{|-|\?)/.test(value)
+    /^[-?:,[\]{}#&*!|>'"%@`]/.test(value)
 
   if (!needsQuotes) {
     return value
