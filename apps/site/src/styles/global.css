@@ -197,3 +197,275 @@
     }
   }
 }
+
+/* Console listing route styles — unlayered to preserve route precedence. */
+.console-table {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.console-table > colgroup > .console-col-state {
+  width: 20px;
+}
+
+.console-table > colgroup > .console-col-gutter {
+  width: 40px;
+}
+
+.console-table > colgroup > .console-col-flex {
+  width: auto;
+}
+
+#console-table > colgroup > .console-col-model {
+  width: 160px;
+}
+
+#console-table > colgroup > .console-col-value {
+  width: 120px;
+}
+
+.console-table--index > colgroup > .console-col-index-label {
+  width: auto;
+}
+
+.console-table--index > colgroup > .console-col-index-value {
+  width: 88px;
+}
+
+.console-table--index > colgroup > .console-col-index-basis {
+  width: 112px;
+}
+
+.console-table--index > colgroup > .console-col-index-confidence {
+  width: 100px;
+}
+
+.console-table--index > colgroup > .console-col-index-source {
+  width: 180px;
+}
+
+.console-table--index > colgroup > .console-col-index-retrieved {
+  width: 100px;
+}
+
+.console-table > :is(thead, tbody) > tr > :is(th, td) {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+.console-table:not(.console-table--index) tbody tr,
+.console-table:not(.console-table--index) tbody tr > td {
+  height: 36px;
+}
+
+.console-data-row:focus-visible,
+.console-table--index tbody tr:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+.console-table thead {
+  position: sticky;
+  top: 32px;
+  z-index: 5;
+  background-color: var(--color-panel-2);
+}
+
+.console-table thead th {
+  position: static;
+}
+
+.console-model-toggle:has(input:checked) {
+  border-color: var(--color-signal);
+  background-color: var(--signal-plate);
+  color: var(--color-on-signal);
+}
+
+@media (min-width: 768px) {
+  .console-table tbody tr,
+  .console-table tbody tr > td {
+    height: 36px;
+    max-height: 36px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .console-table tbody tr > td > * {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: inherit;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .console-table > colgroup > .console-col-gutter {
+    width: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .console-table thead {
+    position: static;
+    visibility: collapse;
+    height: 0;
+  }
+
+  #console-table > colgroup > .console-col-model {
+    width: 88px;
+  }
+
+  #console-table > colgroup > .console-col-value {
+    width: 56px;
+  }
+
+  .console-table--index > colgroup > .console-col-index-value,
+  .console-table--index > colgroup > .console-col-index-basis,
+  .console-table--index > colgroup > .console-col-index-confidence,
+  .console-table--index > colgroup > .console-col-index-source,
+  .console-table--index > colgroup > .console-col-index-retrieved {
+    width: 0;
+  }
+
+  #console-table tbody tr,
+  #console-table tbody tr > td {
+    max-height: 44px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 767px) {
+  .console-table:not(.console-table--index) tbody tr {
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .console-table:not(.console-table--index) tbody tr > td {
+    height: 44px;
+    min-height: 44px;
+    min-width: 0;
+    padding: 4px 8px;
+  }
+
+  .console-table:not(.console-table--index) tbody td[data-label="Model priced"] a {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 767px) {
+  .console-table--index {
+    display: block;
+    width: 100%;
+  }
+
+  .console-table--index > tbody {
+    display: block;
+    width: 100%;
+  }
+  .console-table--index tbody tr {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    min-height: 44px;
+    height: auto;
+    padding-block: 4px;
+  }
+
+  .console-table--index tbody tr > td {
+    grid-column: 2;
+    display: flex;
+    min-width: 0;
+    min-height: 36px;
+    height: auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 8px;
+    text-align: right;
+  }
+
+  .console-table--index tbody tr > td:first-child {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    display: block;
+    min-height: 36px;
+    padding: 4px 0;
+    text-align: center;
+  }
+
+  .console-table--index tbody tr > td:nth-child(2) {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    display: block;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    min-height: 0;
+    height: 0;
+    padding: 0;
+    visibility: hidden;
+    overflow: hidden;
+  }
+
+  .console-table--index tbody tr > td[data-label]::before {
+    flex: 0 1 auto;
+    color: var(--color-dim);
+    content: attr(data-label);
+    font-family: var(--font-plex-mono);
+    font-size: var(--text-micro);
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .console-table--index tbody tr > td.console-index-label {
+    display: block;
+    padding-left: 0;
+    text-align: left;
+  }
+
+  .console-table--index tbody tr > td.console-index-label::before {
+    display: none;
+  }
+
+  .console-table--index tbody tr > td[data-label="Source"] {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .console-table--index tbody tr > td[data-label="Source"]::before {
+    flex: 0 0 auto;
+  }
+
+  .console-table tbody td a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 479px) {
+  .console-table > colgroup > .console-col-gutter {
+    width: 0;
+  }
+
+  #console-table tbody tr > :nth-child(2) {
+    display: table-cell;
+    width: 0;
+    min-width: 0;
+    max-width: 0;
+    padding: 0;
+    visibility: hidden;
+    overflow: hidden;
+  }
+}

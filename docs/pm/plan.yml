@@ -434,9 +434,9 @@ milestones:
       - id: UI-506
         title: "`/` — the split console"
         description: "/ — the split console. Files: apps/site/src/pages/index.astro. Work: recompose the entry as the split console: the left selection column is plan → models → tasks per month, pre-filled with a real committed plan and its measured-again..."
-        status: todo
+        status: done
         pre: []
-        file: docs/pm/M5/todo/UI-506.md
+        file: docs/pm/M5/done/UI-506.md
         impeccable: true
       - id: UI-507
         title: "`/models` and `/models/[slug]`"

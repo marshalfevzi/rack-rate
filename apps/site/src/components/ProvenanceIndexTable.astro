@@ -1,0 +1,74 @@
+---
+import ConfidenceBadge from "./ConfidenceBadge.astro"
+import Gutter from "./Gutter.astro"
+import SectionHead from "./SectionHead.astro"
+import SourceLink from "./SourceLink.astro"
+import StateCell from "./StateCell.astro"
+import { MISSING } from "../lib/format.ts"
+import { readoutAttributes, type ReadoutFields } from "../lib/readout.ts"
+import type { ProvenanceListingRow } from "../lib/console-data.ts"
+
+interface Props {
+  id: string
+  title: string
+  caption: string
+  rows: ProvenanceListingRow[]
+}
+
+const { id, title, caption, rows } = Astro.props
+
+function listingRowFields(row: ProvenanceListingRow): ReadoutFields {
+  return {
+    value: row.value,
+    basis: row.basis,
+    confidence: row.confidence,
+    source: row.sourceIds.join(", "),
+    retrieved: row.retrieved,
+  }
+}
+---
+
+<section class="mt-12" aria-labelledby={`${id}-heading`}>
+  <SectionHead id={`${id}-heading`} title={title} />
+  <div class="mt-4 overflow-hidden">
+    <table class="console-table console-table--index w-full text-data">
+      <caption class="sr-only">{caption}</caption>
+      <colgroup>
+        <col class="console-col-state" />
+        <col class="console-col-gutter" />
+        <col class="console-col-index-label" />
+        <col class="console-col-index-value" />
+        <col class="console-col-index-basis" />
+        <col class="console-col-index-confidence" />
+        <col class="console-col-index-source" />
+        <col class="console-col-index-retrieved" />
+      </colgroup>
+      <thead class="sticky top-8 z-[5] bg-panel-2 text-left font-mono text-micro uppercase text-dim">
+        <tr class="border-b-2 border-rule-strong">
+          <th scope="col" class="border-r border-rule px-0 py-2 text-center"><span class="sr-only">State</span></th>
+          <th scope="col" class="hidden border-r border-rule px-2 py-2 text-right min-[480px]:table-cell"><span class="sr-only">Line number</span></th>
+          <th scope="col" class="px-2 py-2">Index label</th>
+          <th scope="col" class="px-2 py-2 text-right">Value</th>
+          <th scope="col" class="px-2 py-2">Basis</th>
+          <th scope="col" class="px-2 py-2">Confidence</th>
+          <th scope="col" class="px-2 py-2">Source</th>
+          <th scope="col" class="px-2 py-2">Retrieved</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, index) => (
+          <tr id={row.id} class="border-b border-rule align-middle transition-colors duration-150 ease-standard hover:bg-panel-2 focus-visible:relative focus-visible:z-[1]" tabindex="0" {...readoutAttributes(listingRowFields(row))}>
+            <StateCell mark="live" />
+            <Gutter line={index + 1} />
+            <td class="console-index-label min-w-0 px-2 align-middle" data-label="Index label"><a href={row.href} class="break-words text-ink underline decoration-rule underline-offset-2">{row.label}</a></td>
+            <td class="px-2 text-right align-middle font-mono tabular" data-label="Value">{row.value}</td>
+            <td class="px-2 align-middle" data-label="Basis">{row.basis}</td>
+            <td class="px-2 align-middle" data-label="Confidence">{row.confidence === MISSING ? MISSING : <ConfidenceBadge level={row.confidence as "measured" | "high" | "medium" | "low"} />}</td>
+            <td class="min-w-0 px-2 align-middle text-meta" data-label="Source">{row.sourceIds.map((sourceId, index) => <><>{index > 0 ? ", " : null}</><SourceLink id={sourceId} label={sourceId} /></>)}</td>
+            <td class="px-2 align-middle font-mono text-micro tabular text-dim" data-label="Retrieved">{row.retrieved}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>

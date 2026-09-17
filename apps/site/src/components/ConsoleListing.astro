@@ -1,0 +1,122 @@
+---
+import CostBasisChip from "./CostBasisChip.astro"
+import EmptyState from "./EmptyState.astro"
+import Gutter from "./Gutter.astro"
+import SectionHead from "./SectionHead.astro"
+import SetAside from "./SetAside.astro"
+import SourceLink from "./SourceLink.astro"
+import StateCell from "./StateCell.astro"
+import type { ConsoleRouteDisplay, SetAsideEntry } from "../lib/console-data.ts"
+import { formatCount, formatMultiple } from "../lib/format.ts"
+import { readoutAttributes, type ReadoutFields } from "../lib/readout.ts"
+import { href } from "../lib/url.ts"
+
+interface Props {
+  rows: ConsoleRouteDisplay[]
+  readout: ReadoutFields
+  routeCount: number
+  largestMultiple: { value: number; planName: string; modelName: string }
+  setAside: SetAsideEntry[]
+  payload: string
+}
+
+const { rows, readout, routeCount, largestMultiple, setAside, payload } = Astro.props
+---
+
+<section aria-labelledby="readout-listing-heading">
+  <SectionHead id="readout-listing-heading" title="READOUT LISTING" as="h3" />
+  <div class="mt-4 min-[1280px]:grid min-[1280px]:grid-cols-[minmax(0,1fr)_minmax(15rem,18rem)] min-[1280px]:gap-6">
+    <div class="min-w-0">
+      <div>
+        <table id="console-table" class="console-table w-full text-data">
+          <caption class="sr-only">
+            Effective monthly cost and break-even tasks per month for models selected in the current plan.
+          </caption>
+          <colgroup>
+            <col class="console-col-state" />
+            <col class="console-col-gutter" />
+            <col class="console-col-flex" />
+            <col class="console-col-model" />
+            <col class="console-col-value" />
+            <col class="console-col-value" />
+          </colgroup>
+          <thead class="sticky top-8 z-[5] bg-panel-2 text-left font-mono text-micro uppercase text-dim">
+            <tr class="border-b-2 border-rule-strong">
+              <th scope="col" class="border-r border-rule px-0 py-2 text-center"><span class="sr-only">State</span></th>
+              <th scope="col" class="hidden border-r border-rule px-2 py-2 text-right min-[480px]:table-cell"><span class="sr-only">Line number</span></th>
+              <th scope="col" class="px-2 py-2">Plan</th>
+              <th scope="col" class="px-2 py-2">Model priced</th>
+              <th scope="col" class="border-l border-rule px-2 py-2 text-right">Effective monthly cost <CostBasisChip basis="api-list" unit="per-month" /></th>
+              <th scope="col" class="border-l border-rule px-2 py-2 text-right">Break-even tasks/month</th>
+            </tr>
+          </thead>
+          <tbody id="console-results">
+            {rows.map((row, index) => (
+              <tr
+                id={`route-${row.planId}-${row.route.modelId}`}
+                class="console-data-row border-b border-rule align-middle transition-colors duration-150 ease-standard hover:bg-panel-2 focus-visible:relative focus-visible:z-[1]"
+                tabindex="0"
+                {...readoutAttributes(row.readout)}
+              >
+                <StateCell mark="live" />
+                <Gutter line={index + 1} />
+                <td class="console-plan-cell h-9 min-w-0 px-2 align-middle" data-label="Plan">
+                  <span class="console-plan-name block truncate font-mono text-data">{row.planName}</span>
+                  <span class="console-plan-provider block truncate font-mono text-micro text-dim">{row.provider}</span>
+                  <span class="sr-only">Line {String(index + 1).padStart(2, "0")}</span>
+                </td>
+                <td class="h-9 min-w-0 px-2 align-middle" data-label="Model priced">
+                  <a href={href(`/models/${row.route.modelId}`)} class="break-words text-ink underline decoration-rule underline-offset-2">{row.route.modelName}</a>
+                </td>
+                <td class="h-9 px-2 text-right align-middle font-mono tabular" data-label="Effective monthly cost">{row.cost}</td>
+                <td class="h-9 border-l border-rule px-2 text-right align-middle font-mono tabular" data-label="Break-even tasks/month">{row.breakEven}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div id="console-empty-state" class="hidden" role="status" aria-live="polite" {...readoutAttributes(readout)}>
+        <EmptyState variant="empty" />
+      </div>
+      <p class="mt-2 font-mono text-micro uppercase tabular text-dim">
+        ROUTES <span id="console-route-count">{formatCount(routeCount)}</span> · API LIST MULTIPLE{" "}
+        <a
+          href={`${href("/")}#headline-largest-multiple`}
+          class="text-ink underline decoration-rule underline-offset-2"
+        >{formatMultiple(largestMultiple.value)}</a>{" "}
+        <span class="normal-case">({largestMultiple.planName} · {largestMultiple.modelName})</span>
+      </p>
+    </div>
+
+    <SetAside rows={setAside.length} class="mt-8 min-[1280px]:mt-0">
+      {setAside.map((entry, index) => (
+        <div class="flex min-h-11 items-stretch border-b border-rule py-1 last:border-b-0" tabindex="0">
+          <StateCell as="span" mark="gap" class="shrink-0" />
+          <Gutter as="span" line={index + 1} state="default" class="shrink-0" />
+          <div class="min-w-0 px-2 py-1">
+            <a href={href(`/plans/${entry.planId}`)} class="font-mono text-data text-ink underline decoration-rule underline-offset-2">{entry.planName}</a>
+            <span class="block font-sans text-meta text-dim">{entry.provider}</span>
+            <span class="block font-sans text-meta text-dim">Known gap: {entry.reason}</span>
+            <span class="block text-meta text-dim">{entry.sourceIds.map((sourceId, index) => <><>{index > 0 ? ", " : null}</><SourceLink id={sourceId} label={sourceId} /></>)}</span>
+          </div>
+        </div>
+      ))}
+    </SetAside>
+  </div>
+</section>
+
+<script id="console-data" type="application/json" is:inline set:html={payload}></script>
+<template id="console-row-template">
+  <tr class="console-data-row border-b border-rule align-middle transition-colors duration-150 ease-standard hover:bg-panel-2 focus-visible:relative focus-visible:z-[1]" tabindex="0" data-console-row>
+    <StateCell mark="live" />
+    <Gutter line={null} />
+    <td class="console-plan-cell h-9 min-w-0 px-2 align-middle" data-label="Plan">
+      <span class="console-plan-name block truncate font-mono text-data" data-console-plan-name></span>
+      <span class="console-plan-provider block truncate font-mono text-micro text-dim" data-console-plan-provider></span>
+      <span class="sr-only" data-console-line-label></span>
+    </td>
+    <td class="h-9 min-w-0 px-2 align-middle" data-label="Model priced"><a href={href("/models")} class="break-words text-ink underline decoration-rule underline-offset-2" data-console-model-link></a></td>
+    <td class="h-9 px-2 text-right align-middle font-mono tabular" data-label="Effective monthly cost" data-console-cost></td>
+    <td class="h-9 border-l border-rule px-2 text-right align-middle font-mono tabular" data-label="Break-even tasks/month" data-console-break-even></td>
+  </tr>
+</template>

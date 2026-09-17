@@ -287,19 +287,6 @@ export function defaultReadout(input: DefaultReadoutInput): ReadoutFields {
   }
 
   switch (lane.path) {
-    case "/": {
-      const allowance = leadingAllowance(input.tokenAllowances)
-
-      const plan =
-        allowance === undefined
-          ? undefined
-          : input.plans.find((item) => item.id === allowance.plan_id)
-
-      return allowance === undefined || plan === undefined
-        ? missingReadout("no committed figure.")
-        : planReadout(plan, formatMultiple(allowance.value_multiple))
-    }
-
     case "/models": {
       const slug = detailId(input.pathname, lane.path)
 
