@@ -9,10 +9,10 @@ tools:
   - grep
   - glob
   - lsp
+  - ast_grep
   - ast_edit
   - browser
-model: "@default"
-thinking-level: high
+  - todo
 autoloadSkills: [impeccable, project-management]
 ---
 

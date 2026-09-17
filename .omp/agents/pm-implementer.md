@@ -8,11 +8,10 @@ tools:
   - bash
   - grep
   - glob
+  - ast_grep
   - ast_edit
   - lsp
   - todo
-model: "@default"
-thinking-level: high
 ---
 
 # Role

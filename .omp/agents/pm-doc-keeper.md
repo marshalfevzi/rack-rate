@@ -7,7 +7,8 @@ tools:
   - edit
   - grep
   - glob
-model: "@default"
+  - ast_grep
+  - ast_edit
 thinking-level: low
 autoloadSkills: [project-management]
 ---

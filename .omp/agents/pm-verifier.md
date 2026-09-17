@@ -8,8 +8,7 @@ tools:
   - bash
   - ast_grep
   - lsp
-model: "@slow"
-thinking-level: high
+  - pm_doc_check
 read-summarize: false
 ---
 

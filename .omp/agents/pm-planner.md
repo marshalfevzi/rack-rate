@@ -7,8 +7,7 @@ tools:
   - glob
   - ast_grep
   - web_search
-model: "@default"
-thinking-level: high
+  - todo
 ---
 
 # Role
