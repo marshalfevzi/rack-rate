@@ -184,7 +184,7 @@ the same build with the two-line switch emits
 is `Content-Type: text/plain; charset=utf-8`. The policy is `User-agent: *` plus
 `Allow: /`: every route is public, there is nothing authenticated to keep out,
 and the 404 is not disallowed — it is already absent from the sitemap, and task
-6.4 owns noindex. Task 6.4 also verifies both files against the deployed base
+7.4 owns noindex. Task 7.4 also verifies both files against the deployed base
 path.
 
 `apps/site/public/favicon.svg` is the tab icon: a standalone 32×32 SVG (428

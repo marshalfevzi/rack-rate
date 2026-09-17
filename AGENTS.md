@@ -69,7 +69,8 @@ apps/site/            @rack-rate/site        ← Astro; imports core + data/*.js
   src/lib/charts/       ECharts option builders (pure) + the one registration
                         module and the one mount helper (ResizeObserver,
                         prefers-reduced-motion, disposal); dynamic import only
-  src/lib/prefs.ts      nanostores persistent stores
+  src/lib/prefs.ts      nanostores persistent stores (PLAN.md task 6.1; the file
+                        is not in the tree yet)
   src/styles/global.css Tailwind entry + @theme tokens
   public/               favicon.svg; CNAME only when the domain is live
   scripts/og.ts         build-time social card (satori → resvg)
@@ -132,9 +133,14 @@ existing semicolon-free style, and `fallow` 3.25.0 as a report-only reviewer
 (`bun run quality`, no gate). Two exclusions are load-bearing rather than taste:
 `data/**` is never formatted because fixture hashes are recorded in `PLAN.md`,
 and `**/*.md` is out of format scope. `.astro` files get Oxlint's frontmatter
-linting but no formatting — oxfmt has no Astro support. If a stage needs another
-formatter or bundler config, add it in that stage and record it here. Do not add
-tooling speculatively.
+linting but no formatting — oxfmt has no Astro support. `.claude/skills/**` is
+excluded from lint and format for the same reason as `tools/oxlint/anti-slop/**`:
+it is vendored upstream code this repository does not own — the impeccable skill,
+its compiled scripts and its binaries — and linting it turned `bun run check`
+red from 2026-09-16 until 2026-09-17 without touching a line of this repo's
+source. Rules are never weakened for first-party code; a vendored tree is
+excluded whole. If a stage needs another formatter or bundler config, add it in
+that stage and record it here. Do not add tooling speculatively.
 
 ## Invariants — violating one of these is a bug
 

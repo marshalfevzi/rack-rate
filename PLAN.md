@@ -6,20 +6,40 @@ assumes.
 
 Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
-**Next stage: 5.1** — the Console Listing redesign. Stages 1–4 landed in full
-(4.1–4.15; see the progress log). The Stage 1–2 task lists, acceptance criteria,
-handover contracts and session history live in
-[`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); this file carries the
-live stages, the data contract, the open questions and the newest log entry.
+## Direction
+
+The product is done when a visitor can pick their provider and plan, see which
+models that plan can run and what each costs them per task, compare those models
+across the benchmarks with the Pareto frontier drawn on both cost bases, read
+where every number came from, and keep their ignored, paid and already-owned
+choices between visits — on a phone, from a static site, with no server. That is
+the whole of it. Stage 5 delivers the presentation, Stage 6 the behaviour that is
+still missing, Stage 7 makes it public, and Stage 8 closes two recorded data
+gaps off the critical path. **A task that does not move one of those clauses is
+not in this plan**; a session that wants one opens a decision here rather than a
+new stage.
+
+**Next stage: 5.1** — the Console Listing redesign. Stages 1–4 landed in full.
+Their task lists, acceptance criteria, handover contracts and session history
+live in the archive:
+
+| Archive | Holds |
+|---|---|
+| [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md) | Stage 1 (initialization), Stage 2 (data points), and the bootstrap session |
+| [`docs/archive/stages-3.md`](docs/archive/stages-3.md) | Stage 3 (static build framework) and its eleven sessions |
+| [`docs/archive/stages-4.md`](docs/archive/stages-4.md) | Stage 4 (charts and insight pages) and its four sessions |
+| [`docs/archive/retrospective-2026-09-17.md`](docs/archive/retrospective-2026-09-17.md) | The 2026-09-17 plan review: the task-by-task verdict, the repairs, and the owner decisions |
+
+This file carries the live stages, the data contract, the open questions and the
+progress-log entries that are not a landed stage's own.
 
 Stage 5 replaces the visual world. The world itself is already decided and is
 **not** re-opened by any task in it: `DESIGN.md` owns the design system,
 [`docs/design/surfaces.md`](docs/design/surfaces.md) owns per-route layout, and
 [`apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md`](apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md)
 owns the direction contract. `.impeccable/review/incumbent/*.png` is the
-anti-reference. The "Why this rewrite" and "What done means" sections above are
-unchanged by it.
-
+anti-reference. None of it changes what "done" means or the "Why this rewrite"
+section below.
 
 ## Why this rewrite
 
@@ -55,7 +75,9 @@ persist between visits — on a phone, on a static site, with no server.
 
 ## Completed stages
 
-Both landed green; full task lists and acceptance criteria are in the archive.
+Four stages have landed. Their task lists, acceptance criteria, handover
+contracts and full session history are in the archive; this is the one-line
+record.
 
 - **Stage 1 — Initialization** (`[x]`, 1.1–1.10): Bun workspace with three
   packages, one root `tsconfig.json` (no project references), the zod data
@@ -66,6 +88,23 @@ Both landed green; full task lists and acceptance criteria are in the archive.
   network and filesystem access; `packages/core` holds pure `cost`, `normalize`,
   `pareto` and `insights`; four fetchers; the `validate` / `compute` / `check` /
   `sources` / `doctor` surface; and the data gate `bun run data:check`.
+- **Stage 3 — Static build framework** (`[x]`, 3.1–3.11): the Astro static build
+  for the GitHub Pages base path, the two-scheme `@theme` token set with its
+  contrast evidence, the layouts and the `href()` / `asset()` link builders, the
+  eleven-route page set, the typed accessor over all five committed documents,
+  `format.ts` with one rounding rule per unit, the five provenance components
+  with one freshness rule, the satori social card, the sitemap plus generated
+  `robots.txt` and favicon, CI with a stale-output guard, and `/method` and
+  `/sources` rendered from committed formulas and attribution.
+- **Stage 4 — Frontend build** (`[x]`, 4.1–4.15): the chart platform — pure
+  `(data) => ChartOption` builders, one tree-shaken `echarts/core` registration
+  with the `SERIES_INSTALLS` guard, and one mount helper owning `ResizeObserver`,
+  `prefers-reduced-motion` and disposal — plus six chart types; `/models`,
+  `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/` and `/explore`
+  with the metric builder and client-side composite recomputation; and the
+  360 px accessibility pass. **Placeholder-grade by instruction:** the surface is
+  complete and measurable, not pixel-finished, and Stage 5 is the refactor that
+  was expected to rewrite it.
 
 ### Frozen fixtures and gates
 
@@ -81,152 +120,6 @@ Both landed green; full task lists and acceptance criteria are in the archive.
   re-derives it in memory and fails when the committed file is stale.
 - Code gates: `bun run check` (typecheck → lint → format:check → astro check)
   and `bun test`.
-
----
-
-## Stage 3 — Static build framework
-
-**Goal:** Astro builds a multi-page static site from the committed data, with
-the design system in place and one real page rendering real numbers.
-
-### Tasks
-
-- [x] 3.1 `apps/site/astro.config.mjs`: `output: 'static'`, `site`/`base` for
-  the GitHub Pages project page (`site: 'https://marshalfevzi.github.io'`,
-  `base: '/rack-rate'`), the Tailwind Vite plugin, and a single place where
-  switching to the custom domain (`site: 'https://rackrate.dev'`, no `base`)
-  is a two-line change. Document that switch in `docs/architecture.md`.
-- [x] 3.2 Tailwind v4 entry `src/styles/global.css` — `@import "tailwindcss"`
-  plus `@theme` tokens. Design tokens replace the old palette
-  (`bg #0A0E15`, panel `#111825`, rule `#1D2735`, ink `#EAEEF5`, dim `#A3B0C4`,
-  adjusted `#FFB020`, measured `#45D97F`, api `#5C6A80`), with contrast checked
-  and a light scheme considered. No `tailwind.config.js`.
-- [x] 3.3 `src/layouts/Base.astro` + `Page.astro`: head/meta, canonical URL
-  built from `Astro.site` + `base`, OG tags, skip-link, sticky nav, footer with
-  the attribution block. Every internal link goes through one `href()` helper
-  so `base` is applied consistently.
-- [x] 3.3b **Visual design pass** — the old site's problems are enumerated, so
-  fix them deliberately rather than by taste alone. Replace the accidental
-  signals the predecessor accumulated: 3D glossy ball chart markers, amber used
-  for everything, monospace used for everything, dashed-rule noise, four
-  competing animation durations, an emoji-based empty state, and a dead
-  analytics snippet. Deliverables: a type scale and spacing rhythm (three or
-  four sizes, one spacing unit), one accent per semantic role (adjusted /
-  measured / API), one motion duration and one easing with
-  `prefers-reduced-motion` honoured, and a two-scheme palette. Record the tokens
-  and the reasoning in `docs/architecture.md` so Stage 4 does not re-invent
-  them.
-- [x] 3.4 Routing skeleton for the page set (content lands in Stage 4, wizard
-  content in Stage 6): `/`, `/models`, `/models/[slug]`, `/plans`,
-  `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`, `/sources`,
-  `404`. Uses `getStaticPaths` from the committed data.
-- [x] 3.5 `src/lib/data.ts` — the single typed entry point importing
-  `data/derived.json` + friends at build time and re-exporting typed views.
-  Nothing else in the site touches raw JSON.
-- [x] 3.6 `src/lib/format.ts` — number/currency/percentage/token formatting,
-  one rounding rule per unit, so a figure reads identically everywhere.
-- [x] 3.7 Provenance components: `<SourceLink>`, `<ConfidenceBadge>`,
-  `<FreshnessBadge>`, `<CostBasisChip>`, `<CiBar>`. Every published number is
-  wrapped in at least one, so "where did this come from" is structural rather
-  than a footer paragraph.
-- [x] 3.8 `scripts/og.ts` — build-time 1200×630 social card via satori → resvg,
-  replacing the Pillow script. One bundled OFL font with its license file kept
-  in-repo. Runs after `astro build`, writes into `dist/`.
-- [x] 3.9 `@astrojs/sitemap`, `public/robots.txt`, `public/favicon.svg`, and a
-  `public/CNAME` placeholder path documented (not committed until the domain is
-  live). **Amended while landing:** `robots.txt` is a generated route
-  (`src/pages/robots.txt.ts`), not a static `public/` file, because its
-  `Sitemap:` line is absolute and a static copy would write the origin a second
-  time.
-- [x] 3.10 CI: `.github/workflows/ci.yml` running `bun install --frozen-lockfile`,
-  `bun run check`, `bun test`, `bun run data:build`, and a check that
-  re-running compute leaves `data/derived.json` unchanged (stale-output guard).
-  Delete any Vercel-specific config.
-- [x] 3.11 `/method` and the sources page render the real formulas and the full
-  attribution block from Stage 1's docs, so the honesty commitments ship with
-  the first pages, not later. **Amended while landing:** the sources page also
-  states which Artificial Analysis state the build is in and lists the figures
-  deliberately left out, both read from committed data at build time, because
-  `apps/site` never reads an environment value.
-
-### Acceptance
-
-`bun run build` produces `dist/` with every route in 3.4 present, all internal
-links resolving under the `base` prefix, and a generated OG image.
-`bun run check` passes. CI is green on a push to `main`. Mobile check: no
-horizontal scroll at 360 px on every route.
-
-### Contract handed to Stage 4
-
-Layout, tokens, formatters, badge components, typed data accessor, and the CI
-gate. Stage 4 adds charts and real page content only.
-
----
-
-## Stage 4 — Frontend build (charts and insight pages)
-
-**Goal:** the insight surface. Every chart type from the research pass exists,
-driven by `@rack-rate/core` output, mobile-first.
-
-### Tasks
-
-- [x] 4.1 `src/lib/charts/` — pure option builders (`(data) => EChartsOption`)
-  with a shared tree-shaken `echarts/core` registration module. One mount
-  helper handling `ResizeObserver`, `prefers-reduced-motion`, and disposal.
-  Charts load via dynamic `import()` so a page without charts ships no chart
-  code.
-- [x] 4.2 **Pareto scatter** — log cost axis, frontier polyline, shaded
-  dominated region, labelled outliers, hover/zoom. Two cost bases as a toggle
-  (API list ↔ selected plan route) with the basis in the title. Effort variants
-  render as a connected trail off the pinned point.
-- [x] 4.3 **Bump/rank chart** — rank across benchmarks, missing benchmark as a
-  broken line with a gap marker, never interpolated. Overlapping CIs render as
-  tied rank ranges.
-- [x] 4.4 **Model × benchmark heatmap** — diverging `visualMap` centred on 0,
-  hatched neutral cells for "not evaluated", never a low score.
-- [x] 4.5 **Slope chart** — API list price against plan route for one model,
-  one line per candidate plan, savings implied by the slope.
-- [x] 4.6 **Quota burn-down waterfall** — quota → used → remaining per period,
-  driven by a utilization input, deficit below zero.
-- [x] 4.7 **Radar of per-index z** — axes in z units, overlay the models a
-  selected plan can actually run.
-- [x] 4.8 `/models` sortable, filterable table: score, best API cost, cheapest
-  usable plan, value multiple, days-to-full-run, effort, badges. The old page's
-  sortable six-column table is the floor here, not the ceiling.
-- [x] 4.9 `/models/[slug]` — one page per model: score profile, effort ladder,
-  priced plan routes with cost-per-task, provenance rail (formula, days for a
-  full run, evidence cards), and outbound links to the upstream benchmarks.
-- [x] 4.10 `/plans` and `/plans/[slug]` — plans ranked by value multiple, with
-  quota model, rolling window, measured-against model, confidence, and the
-  models it unlocks.
-- [x] 4.11 `/compare` — 2–4 models side by side across all benchmarks and cost
-  bases, with the tie rule visible.
-- [x] 4.12 `/` — hero answering the two questions, the budget calculator from
-  the old site (ported, not reinvented), top insights, and entry points into the
-  detail pages.
-- [x] 4.13 `/explore` — the chart builder, and the answer to "the graphs are
-  bad and there are no custom graphs": the visitor chooses the y metric (any
-  benchmark score, composite `T`, or token-ratio metric), the x metric (API-list
-  $/task, plan-adjusted $/task, tokens/task, steps/task, or a benchmark score
-  for a head-to-head scatter), the chart type, the filters (vendor, effort
-  level, score floor, ignored models/plans), a log/linear axis toggle, and
-  whether the Pareto frontier and dominated-region shading are drawn. Plus the
-  composite weight sliders with presets, recomputing the composite client-side
-  from shipped per-benchmark z-scores — no refetch. Every setting is encoded in
-  the URL so a configuration is shareable, and it persists as a preference.
-- [x] 4.14 Headline insight copy for each page: one sentence per chart that
-  states what it shows, generated from the data where possible rather than
-  hardcoded, so it cannot drift from the numbers.
-- [x] 4.15 Accessibility and mobile pass: keyboard navigation for every chart,
-  table semantics, focus states, `prefers-reduced-motion`, touch targets,
-  360 px layout, contrast ≥ 4.5:1 for text.
-
-### Acceptance
-
-Every route renders real data from `data/derived.json` with no client-side
-data fetching. Pareto frontier matches `@rack-rate/core` output on a fixture
-checked by eye. Keyboard-only traversal of `/models` and the Pareto chart
-works. Verified on a real browser at 360 px and at desktop width.
 
 ---
 
@@ -318,17 +211,21 @@ the shipped code afterwards.
   `apps/site/public/favicon.svg`; `apps/site/src/layouts/Base.astro`; delete
   `apps/site/assets/fonts/**` only once nothing references it.
   **Work:** acquire the five latin-subset woff2 files once from the `@fontsource`
-  jsDelivr paths, commit them with the IBM Plex OFL 1.1 text, and declare both
-  families with local `/fonts/` URLs and real fallbacks; keep prose in Sans and
-  figures in Mono; move `og.ts` off Lato onto Plex Sans with its palette reader
-  still following `@theme`; verify the favicon against the world — rule, gutter,
-  one amber signal — and redraw only its rule weights if the 16px reading fails,
-  which is a build-session decision rather than a brand change; update the two
-  media-scoped `theme-color` values to the frozen canvas values.
+  jsDelivr paths, commit them with the IBM Plex OFL 1.1 text, and record each
+  file's source URL, byte length and sha256 in `docs/architecture.md` so the
+  committed bytes stay verifiable after the fact; declare both families with
+  local `/fonts/` URLs and real fallbacks; keep prose in Sans and figures in
+  Mono; move `og.ts` off Lato onto Plex Sans with its palette reader still
+  following `@theme`; update the two media-scoped `theme-color` values to the
+  frozen canvas values. The favicon keeps its 32×32 SVG geometry and is judged at
+  the 16px a browser tab actually renders, not at an authored size: if the 1.5px
+  rule weights close up at that size, adjust the rule weights only — the
+  geometry, the gutter and the single amber signal stay as they are.
   **Done when** the browser loads only the five committed woff2 files with zero
-  remote font requests, computed styles report Plex Sans for prose and Plex Mono
-  for data, `dist/og.png` is 1200×630 in the console palette, and no Lato family
-  or path remains anywhere in the tree.
+  remote font requests, each committed file's sha256 matches its recorded value,
+  computed styles report Plex Sans for prose and Plex Mono for data, the favicon
+  reads at 16px, `dist/og.png` is 1200×630 in the console palette, and no Lato
+  family or path remains anywhere in the tree.
 - [ ] 5.3 **Shell — status band, lane rail, drawer, workspace, footer index.**
   **Files:** `apps/site/src/layouts/Base.astro`, `apps/site/src/layouts/Page.astro`,
   new `apps/site/src/components/StatusBand.astro`,
@@ -466,11 +363,23 @@ the shipped code afterwards.
   must not start: the ECharts toolbox is banned, so no built route can render one.
   Keep registration tree-shaken through `echarts/core` and keep the growth rule
   that the stage landing a series family adds its row to `SERIES_INSTALLS`.
+  **Pin the geometry before re-theming it.** `frame`, `pareto` and `bump` carry
+  unit tests; `heatmap`, `slope`, `waterfall`, `radar` and `/explore`'s metric
+  builder do not, and their options have only ever been verified by rendering.
+  This task changes exactly the geometry and styling those tests would have
+  pinned, so each of the five gains a test in the same commit as its re-theme,
+  asserting an observable property a consumer relies on — the series family and
+  series count the builder declares, its axis type and bounds, its gap encoding,
+  and the basis words on its axes. Registration is guarded at mount time by
+  `SERIES_INSTALLS`, not by the option type, so a test that pins the declared
+  family is the only thing that fails when a `use()` row is dropped.
   **Done when** every chart carries an accessible name and a real table twin,
   keyboard-reachable data points, the prescribed marker shape and stroke weight, a
   real graticule and an open `!` gap; no chart option sets a gradient, a circle
-  marker, a second hue, a `toolbox` block or an unlabelled cost axis; and the
-  rendered option for each of the six mappings in `DESIGN.md` matches that table.
+  marker, a second hue, a `toolbox` block or an unlabelled cost axis; the
+  rendered option for each of the six mappings in `DESIGN.md` matches that table;
+  and each of the five previously untested builders fails its own test when its
+  declared series family or axis spec changes.
 - [ ] 5.10 **`/compare` — the metric matrix and its chart plate.**
   **Files:** `apps/site/src/pages/compare.astro`.
   **Work:** keep the 2–4 model selection fieldset and make the matrix a
@@ -521,7 +430,9 @@ the shipped code afterwards.
   coverage, changes and retrieval date, the verbatim Awesome Coding Plan CC BY 4.0
   attribution, the deliberate gaps and the commitments. The 404 becomes the empty
   listing with an honest empty state and indexed links, and loses the canonical
-  the plan's 3.4 note already flagged.
+  it currently emits for a path with no page — the defect the Stage 3 session
+  recorded and deliberately left open. This task owns the markup; the deployed
+  status code and index hygiene belong to task 7.4.
   **Done when** the attribution block and exactly one AA gate state render from
   committed data, every formula and field name on `/method` matches the
   implementation, and the 404 carries no canonical and no decorative image.
@@ -529,7 +440,12 @@ the shipped code afterwards.
   **Files:** every file changed by 5.1–5.13.
   **Work:** walk every interactive chart, table, drawer, readout and URL control
   with keyboard and touch and confirm focus, reduced motion, contrast, nulls, gaps,
-  confidence and source dates; confirm the footer credits Bosphorus Elevate only as
+  confidence and source dates. Four residues are named rather than discovered
+  again: the Pareto chart's `deepseek-v4-flash` label covering a `60.0%` axis tick
+  at 360px, the in-content prose links that stay 16px tall, `/compare`'s 13px
+  checkboxes reached only through their 24px labels, and the header nav that the
+  4.15 pass raised to 27px and no further. Each is either fixed here or recorded
+  in "Open questions" with the reason it is exempt; confirm the footer credits Bosphorus Elevate only as
   maker while `/sources` keeps the data-source obligations; reconcile the favicon,
   metadata, light inversion and social card against the same token contract; and
   remove the incumbent residue the replacement now owns — the retired accent
@@ -542,15 +458,22 @@ the shipped code afterwards.
   **Files:** `DESIGN.md`, `docs/design/surfaces.md`,
   `apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md`,
   `docs/architecture.md`.
-  **Work:** run the impeccable `document` pass so the durable system, the
-  per-route layout and the surface brief are re-derived from the shipped code
-  instead of remaining a pre-build contract; resolve `DESIGN.md`'s readout-docking
-  sentence against the docking 5.4 shipped; give `docs/architecture.md` its
-  Console Listing section — both schemes with their audited ratios, the shell
-  metrics, the primitive inventory, the chart grammar and the readout contract.
-  **Done when** no design document states a token, metric or docking the built site
-  contradicts, and `docs/architecture.md` describes the shipped world rather than
-  the superseded one.
+  **Work:** re-derive each document from the shipped code rather than editing it
+  into agreement — read the emitted `@theme` block, the shell's measured geometry
+  and the components actually on disk, then correct the documents to match. The
+  impeccable `document` pass (`.claude/skills/impeccable/`) is this repository's
+  tool for that and is the expected route; a session without it must still produce
+  the same result by hand, because **the deliverable is the corrected documents,
+  not the pass**. Resolve `DESIGN.md`'s readout-docking sentence against the
+  docking 5.4 shipped and carry the same docking into the surface brief; give
+  `docs/architecture.md` its Console Listing section — both schemes with their
+  audited ratios, the shell metrics, the primitive inventory, the chart grammar
+  and the readout contract — and delete its superseded Stage 4 token prose rather
+  than leaving it beside the new section.
+  **Done when** every value, token, metric and docking in `DESIGN.md`,
+  `docs/design/surfaces.md`, the surface brief and `docs/architecture.md` is one
+  the built site actually produces, checked by reading the emitted CSS and the
+  measured geometry rather than by reading another document.
 
 ### Acceptance
 
@@ -558,8 +481,11 @@ the shipped code afterwards.
 exits 0 with `data/derived.json` still
 `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`. Beyond that:
 
-- Every route in the 3.4 set renders under the same status band and lane rail at
-  1440px, 768px and 360px, in both schemes, with no horizontal scroll at 360px.
+- Every route in the eleven-route set — the overview, `/models`,
+  `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`,
+  `/method`, `/sources` and the 404 — renders under the same status band and lane
+  rail at 1440px, 768px and 360px, in both schemes, with no horizontal scroll at
+  360px.
 - Dark and light captures of the same route have identical geometry; the
   inversion changes values only.
 - Keyboard-only traversal reaches every chart point, table row, drawer item,
@@ -605,6 +531,11 @@ restyle the shell. A new visual need is either a Stage 5 follow-up or a
 **Goal:** "which plan should *I* buy" becomes a guided flow, and the answers
 persist offline.
 
+> **Reading these tasks.** Stage 6 tasks are written as requirements, not in the
+> Files / Work / Done-when form Stage 5 uses. A session that opens one restates
+> it in that form — naming the exact files and the observable done state — before
+> writing code, and verifies every symbol it names.
+
 ### Tasks
 
 - [ ] 6.1 `src/lib/prefs.ts` — typed `nanostores` persistent stores under one
@@ -613,8 +544,11 @@ persist offline.
   weights, benchmarkFilters }`. SSR-safe (no `localStorage` read during
   frontmatter), corrupt values fall back to defaults, cross-tab sync on.
   Bumping the version prefix is how a schema change migrates: read the old key
-  once, transform, write the new one, never crash on the old shape. The file does
-  not exist before this task and Stage 5 deliberately shipped without it.
+  once, transform, write the new one, never crash on the old shape. Every read
+  passes the same zod schema any other trust boundary uses, so a hand-edited or
+  version-stale payload cannot crash a page; a key that fails validation falls
+  back to that key's default rather than being dropped silently. The file does not
+  exist before this task and Stage 5 deliberately shipped without it.
 - [ ] 6.2 Preference-aware rendering: an ignored model or plan takes the `-`
   carriage-control mark and moves to the set-aside rail Stage 5 built, with a
   one-click restore and its reason intact — never hidden, so a filtered view is
@@ -634,9 +568,6 @@ persist offline.
   chip showing the active plan/vendor filter with a clear action).
 - [ ] 6.6 Export/import preferences as JSON (a single file, versioned), plus a
   "reset all preferences" action.
-- [ ] 6.7 Preferences are validated with the same zod schema as any other trust
-  boundary; an old or hand-edited payload cannot crash a page.
-
 ### Contract from Stage 5
 
 The wizard is behaviour added inside a finished shell. Every surface it touches
@@ -664,6 +595,10 @@ verified by hand, not assumed.
 
 **Goal:** the site publishes itself from `main`, and the data refresh path is
 documented for contributors.
+
+> **Reading these tasks.** Stage 7 tasks are written as requirements, not in the
+> Files / Work / Done-when form Stage 5 uses. A session that opens one restates
+> it in that form before writing anything, and verifies every path it names.
 
 ### Tasks
 
@@ -726,6 +661,77 @@ documented for contributors.
 Pushing to `main` deploys without manual steps; the published site matches a
 local `bun run build`; the scheduled refresh opens a reviewable PR rather than
 mutating the live site; a clean clone reproduces the build with no secrets.
+
+---
+
+---
+
+## Stage 8 — Data integrity follow-ups
+
+**Goal:** close the recorded gaps that no stage owned, without touching
+`packages/core`, the schemas, or any published formula. This stage adds no
+route, no token and no page.
+
+> **Scheduling note.** Stage 8 is off the critical path: it is the right place for
+> a session that cannot start a Stage 5 task, and it adds no route, token or page.
+> Three ordering rules, and the first two are load-bearing.
+> 1. **8.1 and 8.2 must not run while Stage 5 is open.** Both re-run `compute`
+>    and therefore change `data/derived.json`, and Stage 5's boundary and
+>    acceptance text pin its hash (`7425a331…`) as the proof that the redesign
+>    moved no published number. Landing either task mid-stage falsifies that
+>    evidence. Run them before Stage 5 is started, or after it is accepted.
+> 2. **When either lands, re-record the hash.** The new `data/derived.json` hash
+>    goes into this file *and* into Stage 5's acceptance text in the same commit,
+>    so the next session's "no published number moved" claim starts from a
+>    current pin rather than a stale one.
+> 3. **Never leave `data/*.json` half-refreshed.** A task here runs `validate`,
+>    `compute` and `data:check` before it stops.
+
+### Tasks
+
+- [ ] 8.1 **Refresh the eight plan rows that fail the anchor check.**
+  **Files:** `packages/data-cli/src/commands/fetch-plans.ts`, `data/plans.json`,
+  `data/sources.json`, `docs/architecture.md`.
+  **Why:** `data/plans.json` is still at its Stage 1 revision. Measured
+  2026-09-17 with `bun run fetch:plans --diff`, **eight of the sixteen plan rows
+  fail the anchor check**, so `fetch plans` fails closed and writes nothing:
+  `claude-pro`, `claude-max-5x`, `claude-max-20x`, `chatgpt-pro-20x`,
+  `kimi-code-andante`, `kimi-code-allegretto`, `glm-coding-lite` and
+  `glm-coding-pro`. The eight that verify are `chatgpt-plus`, `cursor-pro`,
+  `cursor-pro-plus`, `cursor-ultra`, `opencode-go`, `ollama-pro`,
+  `github-copilot-pro` and `google-ai-pro`. Model rows were refreshed in Stage 2;
+  plan prices and quotas were not, so every plan-route figure — Claude Pro's
+  included, which `/plans` ranks — is computed from a Stage 1 price.
+  **Work:** add a rendered-page acquisition path for those eight URLs. The
+  `harbor`-CLI fallback in `fetch-terminal-bench` is the precedent: resolve the
+  binary from an environment variable, then `PATH`, and fail closed naming both
+  when neither resolves. Keyword anchors keep throwing when the anchor text is
+  missing, and each row records which acquisition path produced it. Where a
+  vendor page still yields no quoted limit, the row keeps `quota_unresolved` and
+  gains a `known_gaps` entry — never an invented number.
+  **Done when** `bun run fetch:plans --diff` exits 0 with every plan row either
+  verified or explicitly unresolved, every changed row carries a bumped
+  `retrieved_at`, and `bun run validate && bun run compute && bun run data:check`
+  exits 0 with the new `data/derived.json` hash recorded in this file and, if
+  Stage 5 has already landed, in that stage's acceptance text.
+
+- [ ] 8.2 **Resolve the two committed evidence URLs that return 404.**
+  **Files:** `data/sources.json`, `packages/data-cli/src/commands/fetch-plans.ts`,
+  `docs/architecture.md`. May land in the same session as 8.1; they touch the
+  same two files.
+  **Why:** `bun run doctor` reports `https://openai.com/chatgpt/pricing/`
+  (`data/sources.json`, the ChatGPT Pro price) and
+  `https://support.google.com/googleone/answer/16287445` (the `google-ai-pro`
+  anchor in the plans fetcher) as 404. Both are cited facts, and invariant 8
+  makes a citation load-bearing.
+  **Work:** find live replacements for the *same* fact and update
+  `data/sources.json` and the fetcher anchor together, bumping `retrieved` and
+  re-running `compute`. Where no live replacement states the fact, drop the
+  claim and record it in `known_gaps` — a citation is never pointed at a page
+  that no longer carries it, and no number is hand-edited.
+  **Done when** `bun run doctor` reports no 404 among committed evidence URLs,
+  `bun run validate` exits 0, `bun run data:check` exits 0, and no published
+  figure changed without its `retrieved` date moving.
 
 ---
 
@@ -847,7 +853,9 @@ Two naming traps to avoid when writing the parity assertion:
 ## Open questions and known gaps
 
 Carried as data, not as prose on a page. Surface each in `known_gaps` with its
-reason; do not guess a number to close one.
+reason; do not guess a number to close one. Each item names the task that owns it
+or says plainly that no task does: an item with no owner is a decision waiting for
+the owner, not a task waiting for an agent.
 
 - **Artificial Analysis licensing** — no redistribution right granted, and the
   terms arguably make this project a restricted "Competitive Product". Shipped
@@ -885,15 +893,18 @@ reason; do not guess a number to close one.
   plan route prices them.
 - **Terminal-Bench payload is an undocumented flight-data blob** — it can move
   without notice. Mitigated by the `harbor` CLI fallback and a loud parse
-  failure rather than a silent empty table.
-- **Two evidence URLs return HTTP 404** (found 2026-09-14 by `bun run doctor`,
-  which still exits 0 because URL liveness is a finding, not a gate):
-  `https://openai.com/chatgpt/pricing/` (`data/sources.json:86`, ChatGPT Pro
-  pricing) and `https://support.google.com/googleone/answer/16287445`
+  failure rather than a silent empty table. The fallback's command shape is
+  verified against the live Hub, but its code path (`runHarbor()` → payload parse
+  → `selectRows`) has never executed, because the flight-data path keeps
+  succeeding; treat it as reachable and **unexercised**, not as working.
+- **Two evidence URLs return HTTP 404** — `https://openai.com/chatgpt/pricing/`
+  (`data/sources.json:86`, the ChatGPT Pro price) and
+  `https://support.google.com/googleone/answer/16287445`
   (`packages/data-cli/src/commands/fetch-plans.ts:410`, the `google-ai-pro`
-  anchor). Fixing them means finding live replacements for the *same* fact,
-  updating `sources.json` and the fetcher anchor together, bumping `retrieved`,
-  and re-running `compute` — not a hand-edit of a number.
+  anchor). Found 2026-09-14 by `bun run doctor`, which still exits 0 because URL
+  liveness is a finding, not a gate. **Owned by task 8.2**, which carries the
+  rule: a replacement must state the same fact, and a citation is never pointed
+  at a page that no longer carries it.
 - **`HARBOR_API_KEY` is inert here** — the `harbor` CLI reads it
   (`harbor/auth/credentials.py`, `sk-harbor-…` prefix) for authenticated Hub
   operations, but this repository never reads it and the public leaderboard read
@@ -905,20 +916,44 @@ reason; do not guess a number to close one.
   decision rather than an engineering one. AA values stay out of `data/*.json`
   until that decision is recorded.
 - **The incumbent captures in `.impeccable/review/incumbent/` were taken from
-  `astro dev`** and carry the dev toolbar, which no built route renders. One of
-  them was misread as chart chrome and became an acceptance criterion before the
-  code was checked (see the correction in `docs/design/build-plan.md`). They stay
-  as the anti-reference because the layout, spacing, colour and typography
-  defects they show are real; Stage 5's own evidence is captured from a built
-  preview instead.
+  `astro dev`** and carry the dev toolbar, which no built route renders. A
+  diagnosis drawn from one of them had to be retracted
+  (`docs/design/build-plan.md`). They stay as the anti-reference — the layout,
+  spacing, colour and typography defects they show are real — but no Stage 5
+  evidence may be captured from `astro dev`, and every Stage 5 task is required
+  to work from a built preview.
 - **`DESIGN.md` and `docs/design/surfaces.md` disagree on where the cursor
   readout docks** — the right column of `/`'s split console versus a fixed 28 px
   line at the viewport bottom. Task 5.4 ships the fixed line and 5.15 corrects
   `DESIGN.md`.
-- **`AGENTS.md`'s layout block lists `apps/site/src/lib/prefs.ts` as if it
-  existed.** It is task 6.1 and is not in the tree. Recorded, not fixed: the
-  rewrite is the owner's call, and the previous session reached the same
-  conclusion for the same line.
+- **Five chart builders ship without unit tests** — `heatmap`, `slope`,
+  `waterfall`, `radar` and `/explore`'s metric builder were verified by rendering
+  only; `frame`, `pareto` and `bump` are the three that carry tests. **Owned by
+  task 5.9**, which pins each builder's declared series family, axis spec and gap
+  encoding in the same commit as its re-theme.
+- **Eight of the sixteen plan rows are still at their Stage 1 revision** —
+  `claude-pro`, `claude-max-5x`, `claude-max-20x`, `chatgpt-pro-20x`,
+  `kimi-code-andante`, `kimi-code-allegretto`, `glm-coding-lite` and
+  `glm-coding-pro`, measured 2026-09-17 by `bun run fetch:plans --diff`. Their
+  vendor pages no longer carry the quoted limit text the anchors require, so
+  `fetch plans` fails closed and writes nothing while the model rows were
+  refreshed in Stage 2; every plan-route figure is computed from a Stage 1 price.
+  Earlier records in this plan said six or seven rows, from the anchor tables
+  printed on 2026-09-14; the live command is the authority and the count has
+  moved. **Owned by task 8.1.**
+- **The `push: branches: [main]` CI trigger has never fired** — the job's content
+  is verified (runs 34802515011 and 34802795461, both success, on temporary
+  branches), but local `main` is unpushed, so the first live use of that trigger
+  is the owner's next push. Nothing in the plan is blocked by it.
+- **`/rack-rate/404/` answers 200 under `astro preview`**, because the preview
+  server serves `404.html` for that path directly. The deployed status code and
+  the missing `noindex` belong to **task 7.4**; the stray canonical belongs to
+  **task 5.13**.
+- **Three accessibility residues the 4.15 pass left open** — the Pareto chart's
+  `deepseek-v4-flash` label partly covering a `60.0%` axis tick at 360px,
+  in-content prose links that stay 16px tall (WCAG 2.5.8 exempts links inside a
+  sentence), and `/compare`'s 13px checkboxes reached through their 24px labels.
+  **Owned by task 5.14**, which fixes each or records why it is exempt.
 
 
 ---
@@ -926,8 +961,12 @@ reason; do not guess a number to close one.
 ## Progress log
 
 Append-only. One entry per session: name the stage, what landed, what was
-verified. Entries for stages 1–2 are in
-[`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md); do not rewrite them.
+verified. A landed stage's entries move to that stage's archive when the stage
+closes, so what stays here are sessions that are not a stage's own. Stages 1–2
+are in [`docs/archive/stages-1-2.md`](docs/archive/stages-1-2.md), Stage 3 in
+[`docs/archive/stages-3.md`](docs/archive/stages-3.md), and Stage 4 in
+[`docs/archive/stages-4.md`](docs/archive/stages-4.md). Do not rewrite an entry
+once it has been written.
 
 ### 2026-09-14 — Review session: env wiring, fail-closed corrections, plan split
 
@@ -1031,1508 +1070,6 @@ No stage was opened. Stage 3 is still untouched.
 - The plan-level checks in this review covered the pipeline, env wiring and site
   scaffold; `/` and the chart surfaces do not exist yet, so no Stage 4 rendering
   claim has been tested.
-
-### 2026-09-14 — Stage 3.1: Astro config, Pages base, Tailwind Vite plugin
-
-**Landed**
-
-- `apps/site/astro.config.mjs` (new): `output: "static"` with no adapter,
-  `site: "https://marshalfevzi.github.io"`, `base: "/rack-rate"` for the GitHub
-  Pages project page, and `@tailwindcss/vite` registered as the Vite plugin. The
-  deployment target lives in that config object and nowhere else; the
-  custom-domain switch is two changed lines. `site` and `base` are options
-  rather than lifted constants — no build-time consumer reads them outside
-  Astro.
-- `docs/architecture.md` gained a `## Site configuration` section recording the
-  switch, the single-writer rule, the Tailwind entry point, and the measured
-  `Astro.site` / `import.meta.env.BASE_URL` / `Astro.url` values.
-
-**Verified**
-
-- Throwaway page plus an `@import "tailwindcss"` stylesheet, built with
-  `bun run --filter @rack-rate/site build` (exit 0, 1 page): under the shipped
-  config `import.meta.env.BASE_URL` is `/rack-rate` — **no trailing slash, so a
-  joiner supplies the separator** — `Astro.site` is
-  `https://marshalfevzi.github.io/`, `Astro.url.pathname` is
-  `/rack-rate/smoke31/`, and the stylesheet lands at
-  `/rack-rate/_astro/smoke31.<hash>.css` carrying the `.hidden` utility, so the
-  plugin really does scan and emit. Identical 4178-byte CSS across three
-  consecutive builds.
-- The same page with only those two options changed: `BASE_URL` `/`, `Astro.site`
-  `https://rackrate.dev/`, stylesheet at `/_astro/…`; `diff` shows exactly two
-  changed lines. The config was restored byte-identical and the throwaway page,
-  stylesheet and `dist/` were deleted.
-- `bun run check` exit 0 (typecheck, oxlint, oxfmt, astro check), `bun test` 17
-  pass / 0 fail, `bun run data:check` exit 0 — `data/derived.json` is still
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`, so no
-  published number moved. `bun run quality` still exits 1 on pre-existing
-  findings in `tools/oxlint/anti-slop` and `packages/data-cli`; it reports no
-  finding in `apps/site` and remains out of the `bun run check` gate.
-- The anti-slop `require-readable-spacing` rule rejected two adjacent
-  module-level constants; inlining them into the config object is what removed
-  the padding requirement.
-
-**Still open**
-
-- 3.2–3.11 remain in Stage 3. `astro check` still warns `Missing pages
-  directory: src/pages` until 3.4 lands, and `bun run og` still fails until 3.8.
-- The measured `BASE_URL` value contradicts nothing in the plan, but it does fix
-  the contract for 3.3: `href()` must join `/rack-rate` with a separator itself.
-
-### 2026-09-14 — Stage 3.2: Tailwind entry, design tokens, contrast evidence
-
-**Landed**
-
-- `apps/site/src/styles/global.css` (new, 30 lines): `@import "tailwindcss"`,
-  one `@theme` block holding the nine `--color-*` tokens, and one `@layer base`
-  block with `color-scheme: dark` plus body `canvas`/`ink`. Still no
-  `tailwind.config.js`, and no type scale, spacing rhythm, motion tokens, font
-  stacks or component classes — 3.3b owns all of those.
-- **Token names.** `bg` became `canvas`: a `--color-bg` token would generate the
-  utility `bg-bg`. `panel`, `rule`, `ink`, `dim`, `adjusted` and `measured` keep
-  the legacy hexes under semantic names. A ninth token, `--color-api-ink`
-  `#8a97ab`, is an addition the plan did not have, and it is required: the
-  legacy `api` `#5c6a80` measures 3.52:1 on canvas and 3.24:1 on panel, i.e. it
-  clears the 3:1 non-text threshold but not 4.5:1 for text. Invariant 4 makes
-  every cost figure carry its basis, so the API basis needs a label colour:
-  `--color-api` marks and strokes, `--color-api-ink` is the text (6.53:1 on
-  canvas; 6.01:1 on panel).
-- `docs/architecture.md` gained `## Design tokens`: the token table, a
-  dark-scheme contrast table, the light-scheme consideration, and the note that
-  Stage 4 chart code reads a token value with `getComputedStyle` rather than
-  copying hexes into TS.
-
-**Verified**
-
-- Emission and runtime, end to end. A throwaway `src/pages/smoke32.astro`
-  importing the entry built with `bun run --filter @rack-rate/site build`
-  (exit 0). The emitted stylesheet (5,149 bytes) carries all nine `--color-*`
-  declarations and generates `.bg-canvas`, `.bg-panel`, `.text-ink`,
-  `.text-dim`, `.text-adjusted`, `.text-measured`, `.text-api`,
-  `.text-api-ink` and `.border-rule`; two clean builds produced byte-identical
-  CSS, sha256 `8787ed50ad387df89f4f7ede93c7e49d5e48327731aab0cef12bebf0ba5e68a7`.
-- Real browser: headless Chromium on `http://127.0.0.1:4173/rack-rate/smoke32/`
-  computes `body` as `rgb(10, 14, 21)` on `rgb(234, 238, 245)` with
-  `color-scheme: dark`, every utility resolving to its token value, and the
-  stylesheet served under the `/rack-rate` base — 3.1's config and this entry
-  agree on the prefix.
-- Contrast, recomputed independently of the authoring agent: all thirteen
-  published ratios in both tables, and the three corrected light accents,
-  matched to two decimal places. `bun run check` exit 0 (typecheck, oxlint,
-  oxfmt over 35 files, `astro check` 0 errors / 0 warnings / 0 hints; the
-  `Missing pages directory: src/pages` warning stands until 3.4), `bun test`
-  17 pass / 0 fail, `bun run data:check` exit 0 with `data/derived.json` still
-  `7425a331…`, `bun run quality` exits 1 on the same pre-existing findings as at
-  3.1 (dead-code 10, dupes 10, health 140) and reports nothing under `apps/site`.
-- Throwaway page, the local static server and `apps/site/dist/` were removed;
-  the working tree holds only `global.css`, `docs/architecture.md` and this log.
-
-**Decisions taken this session**
-
-- Tokens ship as one dark scheme. The light scheme is **considered and
-  specified, not implemented**: the frozen candidate fails `adjusted` and
-  `measured` as accents (1.83:1 on white, 1.69:1 on panel) and `api-ink` as
-  text (2.96:1), so 3.3b needs hue-preserving light accents — recorded as
-  `adjusted #8a5a00`, `measured #1a7a45`, API text `#55627a` (5.93/5.48,
-  5.37/4.96, 6.15/5.68 against white and panel). Swapping schemes is a token
-  re-declaration, not a refactor, so 3.2 does not move for it to land.
-- A minimal-decrement search does reach 4.5:1 with `#c55420` / `#45807f` /
-  `#8a68ab`, and it was rejected: it turns amber into orange-red, green into
-  teal and slate into purple, and the accent's only job is to say which cost
-  basis a figure is. Role hue outranks the smallest numeric edit.
-
-**Still open**
-
-- 3.3–3.11 remain in Stage 3. `bun run og` still fails until 3.8, so
-  `bun run build` cannot complete yet by design.
-- The light-scheme hexes above are evidence for 3.3b, not shipped tokens; the
-  `prefers-color-scheme` / toggle mechanism is deliberately absent from 3.2.
-
-### 2026-09-14 — Stage 3.3 + 3.3b: layouts, link helpers, two-scheme token set
-
-**Landed**
-
-- `apps/site/src/lib/url.ts` (new): three typed helpers. `href(path)` is the
-  route builder — joins `import.meta.env.BASE_URL` and adds the trailing slash
-  the `directory` build format implies; `asset(path)` is the file builder and
-  adds none; `absoluteUrl(relativePath, site)` only turns an already
-  base-relative path absolute against `site.origin`. All base handling lives in
-  the two builders, so nothing detects or re-applies a prefix. The module
-  normalises `BASE_URL` once, which also survives someone writing
-  `base: "/rack-rate/"`. Measured: `href("/")` → `/rack-rate/`,
-  `href("/models")` → `/rack-rate/models/`, `asset("/og.png")` →
-  `/rack-rate/og.png`; under the custom domain `/`, `/models/`, `/og.png`.
-- `apps/site/src/layouts/Base.astro` (new): head metadata (charset, viewport,
-  title, description, canonical, generator, two media-scoped `theme-color`
-  values, Open Graph, Twitter card), the skip link, the sticky header with the
-  eight-route nav, and the footer. Canonical and `og:url` are
-  `absoluteUrl(Astro.url.pathname, Astro.site)` — `Astro.url.pathname` already
-  carries the base — and the OG/Twitter image is
-  `absoluteUrl(asset("/og.png"), Astro.site)`.
-- `apps/site/src/layouts/Page.astro` (new): the only `<main id="main"
-  tabindex="-1">` landmark, an `h1` from `heading ?? title`, an optional lede,
-  and the slot.
-- `apps/site/src/styles/global.css`: four-size type scale (`--text-*: initial`
-  plus meta 13 px / body 15 px / title 22 px / display 32 px), native sans and
-  mono stacks, `--spacing: 0.25rem` as the single spacing unit, one duration
-  (150 ms) and one easing (`cubic-bezier(0.2, 0, 0, 1)`) as the transition
-  defaults with `--ease-standard` named for explicit use, a `:focus-visible`
-  ink ring, `.skip-link` and `.tabular`, a `prefers-reduced-motion: reduce`
-  override, and the light scheme as a token re-declaration under
-  `prefers-color-scheme: light`.
-- `docs/architecture.md` gained `## Layouts and links` (line 150) and its
-  `## Design tokens` section (line 227) was rewritten: one colour table with
-  both schemes, dark and light contrast tables, the type scale, spacing, motion,
-  the scheme mechanism, the anti-signal table, and the three rules Stage 4
-  inherits.
-
-**Verified**
-
-- Built the layouts against throwaway pages (`/`, `/models`, `/smoke33`), then
-  deleted the pages and `dist/`: canonical and `og:url` measured
-  `https://marshalfevzi.github.io/rack-rate/models/` with `og:image`
-  `https://marshalfevzi.github.io/rack-rate/og.png`; the same build with
-  `--base / --site https://rackrate.dev` gave `https://rackrate.dev/models/` and
-  `https://rackrate.dev/og.png` with every internal href dropping the prefix.
-  A zero-page build still exits 0, so removing the throwaways left no new
-  failure mode.
-- Emitted CSS: `.text-meta`/`.text-body`/`.text-title`/`.text-display` carry
-  `font-size` plus the token's line-height, and `.text-sm`/`.text-base`/
-  `.text-lg`/`.text-xl` are absent — the namespace reset took effect.
-- Headless Chromium on the built page: dark body `rgb(10, 14, 21)` on
-  `rgb(234, 238, 245)`, light body `rgb(247, 248, 250)` on `rgb(15, 20, 29)`
-  with panel `rgb(255, 255, 255)` and rule `rgb(220, 226, 234)`, computed sizes
-  13/15/22/32 px, header `position: sticky`, nav `transition` `0.15s` with
-  `cubic-bezier(0.2, 0, 0, 1)`, `tabular-nums`, no horizontal scroll at 360 px
-  (scrollWidth 360 at a 360 px viewport). Under `prefers-reduced-motion:
-  reduce` the transition duration becomes `0.01ms`. The skip link is 1×1 px,
-  `clip-path: inset(50%)`, and on Tab becomes 138×42 px at the top left with
-  the 2 px ink outline. `aria-current="page"` lands on Overview at
-  `/rack-rate/`, on Models at `/rack-rate/models/`, and on nothing at
-  `/rack-rate/smoke33/`.
-- Contrast, recomputed twice from the shipped hexes by WCAG 2.x relative
-  luminance: dark ink 16.61/15.28, dim 8.80/8.10, adjusted 10.57/9.72, measured
-  10.57/9.72, api 3.52/3.24, api-ink 6.53/6.01, rule 1.28/1.18; light ink
-  17.36/18.45, dim 6.42/6.83, adjusted 5.58/5.93, measured 5.05/5.37, api
-  5.16/5.49, api-ink 5.79/6.15, rule 1.23/1.30.
-- Gates: `bun run check` exit 0 (typecheck, oxlint, oxfmt over 36 files, `astro
-  check` 0 errors / 0 warnings / 0 hints), `bun test` 17 pass / 0 fail,
-  `bun run data:check` exit 0 with `data/derived.json` still
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348` — no
-  published number moved. `bun run quality` exits 1 on pre-existing findings
-  only, and better than the recorded baseline: dead-code 9 (was 10), dupes 10,
-  health 140 (was 140), with nothing new under `apps/site`.
-
-**Decisions taken this session** (owner)
-
-- Links are split into a route builder and a file builder, with a separate
-  absolutiser, because the trailing slash and the base belong to path
-  construction; `absoluteUrl` doing prefix detection was rejected as a
-  whole-function heuristic.
-- The footer's credits are static text in the layout. The verbatim Awesome
-  Coding Plan attribution stays owned by `/sources` rendered from
-  `data/sources.json` in 3.11, so the validated string is not duplicated — and
-  so 3.3 does not front-run 3.5's data accessor by importing raw JSON.
-- The light scheme is `prefers-color-scheme` only: no toggle, no pre-paint
-  script, no FOUC workaround. A toggle needs persisted client state, which task
-  5.1 owns.
-- The focus ring is ink, not an accent, so no colour role is spent on
-  interaction chrome.
-- `--ease-standard` is kept even though Tailwind prunes theme variables no
-  emitted utility references; the pruning is expected, and Stage 4 gets a named
-  easing instead of an arbitrary value.
-
-**Still open**
-
-- 3.4–3.11 remain. The nav renders all eight route links, so it 404s until 3.4
-  lands the page set; `og:image` points at `/og.png`, which 3.8 has not
-  generated yet.
-- `/sources` still owes the verbatim CC BY 4.0 attribution and the
-  Artificial Analysis build-state line (3.11), and no favicon link ships until
-  3.9 adds `public/favicon.svg`.
-- The flat chart-marker rule, the `getComputedStyle` token read and the
-  "amber only for the plan-adjusted basis" rule are recorded in
-  `docs/architecture.md` for Stage 4 but are unenforced until chart code exists.
-
-### 2026-09-14 — Stage 3.4: routing skeleton, seeded data accessor
-
-**Landed**
-
-- `apps/site/src/pages/` (11 new files) — the whole route set: `index.astro`,
-  `models/index.astro`, `models/[slug].astro`, `plans/index.astro`,
-  `plans/[slug].astro`, `compare.astro`, `explore.astro`, `start.astro`,
-  `method.astro`, `sources.astro`, `404.astro`. Every page renders through
-  `Page.astro`, so each route has exactly one `<main id="main">` and one `h1`.
-- Both dynamic routes build `getStaticPaths` from committed rows: 28
-  `/models/<id>` pages from `data/models.json`, 16 `/plans/<id>` pages from
-  `data/plans.json` — 53 pages in total. The slug is the row `id`, so no second
-  slug mapping exists to drift; `google-ai-pro` gets a page despite its
-  unresolved quota, and the two provider-null models render "Provider not
-  identified by the upstream source." rather than a blank or an invented vendor.
-- `apps/site/src/lib/data.ts` (new) — the site's only importer of `data/*.json`,
-  parsing `models.json` and `plans.json` through the core zod schemas and
-  re-exporting the rows.
-- Root `tsconfig.json` gained `resolveJsonModule: true`, which those imports
-  need. No layout, stylesheet, or data file changed.
-- Each route carries one honest skeleton line ("Route skeleton — … lands in
-  Stage N of the build plan") instead of shipping an empty page; Stage 4 and 5
-  delete them as content arrives. No score, cost, badge or attribution string
-  was invented: those wait for the components that carry their basis.
-- `docs/architecture.md` gained `## Routes and data access` (the route table,
-  the slug rule, the skeleton-note convention and the accessor's boundaries).
-
-**Verified**
-
-- `bun run typecheck` exit 0, `bun run lint` exit 0, `bun run format:check` exit
-  0 (37 files), `astro check` 17 files with 0 errors / 0 warnings / 0 hints —
-  the `Missing pages directory: src/pages` warning is gone — `bun test` 17 pass /
-  0 fail, `bun run data:check` exit 0 with `data/derived.json` still
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: **no
-  published number moved in this session.**
-- `bun run --filter @rack-rate/site build` exit 0, 53 pages. Serving the `dist`
-  tree from a static server with the build mounted at its real `/rack-rate`
-  prefix returned 200 for all 53 routes, and every base-prefixed `href`/`src` in
-  the built HTML (eight nav links plus one stylesheet) resolved — no dangling
-  link, so the nav that 404'd through 3.3 now lands.
-- Headless Chromium at a 360 px viewport across all eleven route shapes plus a
-  second model and the 404: `scrollWidth` 360 on every page (no horizontal
-  scroll), one `<main>` and one `h1` each, `aria-current="page"` on Models at
-  `/models/gpt-6-astra/` and on Plans at `/plans/claude-pro/`, none on the 404,
-  and canonical URLs under `/rack-rate`.
-- Title mapping checked across all 44 detail pages rather than sampled: every
-  `/models/<id>` and `/plans/<id>` page's `h1` and `title` equal its own row's
-  `name`, every lede equals its own row's `provider`, no page carries the other
-  type's name, and both null-provider models render "Provider not identified by
-  the upstream source." instead of a blank or an invented vendor.
-- `bun run quality` (report-only, out of the gate) still exits 1 on pre-existing
-  findings and flags nothing in `src/pages` or `src/lib`: dead-code 8 (was 9 at
-  3.3) is one unused export in `tools/oxlint/anti-slop`, one duplicate `run`
-  export across `packages/data-cli`, and six dependencies `apps/site` declares
-  for later stages; dupes 10 and health 140 are unchanged from the 3.3 baseline.
-
-**Decisions taken this session**
-
-- 3.4 reads committed data through a seeded `src/lib/data.ts` rather than
-  importing JSON inside the two dynamic routes. The plan puts the accessor at
-  3.5, but `getStaticPaths` needs the rows now, and 3.3 had already refused to
-  front-run the accessor by importing raw JSON. 3.5 stays open and extends the
-  module with the derived, benchmark and source views; its task text is
-  unchanged.
-- The page set is a skeleton, not a first draft of content: a heading, one
-  honest skeleton note, and nothing numeric. A figure cannot ship before the
-  cost-basis, confidence and provenance badges that label it.
-- The 404 route links to the overview, models and plans instead of stating a
-  bare error.
-
-**Still open**
-
-- 3.5–3.11 remain. `src/lib/data.ts` holds `models` and `plans` only; the
-  derived, benchmark and source views are 3.5's.
-- `bun run build` still cannot complete: `bun run og` fails until 3.8, so
-  `og:image` points at `/rack-rate/og.png`, which no build writes yet.
-- The 404 route's canonical is `…/rack-rate/404/`, a path with no page.
-  `Base.astro` owns the head (3.3); the fix — no canonical on the 404 plus
-  `<meta name="robots" content="noindex">` — belongs with 6.4's index hygiene.
-- `/method` still owes the real formulas and `/sources` the verbatim attribution
-  block plus the Artificial Analysis build-state line (3.11). Neither page
-  duplicates attribution text in the meantime.
-
-### 2026-09-14 — Stage 3.5: typed data accessor over all five committed documents
-
-**Landed**
-
-- `apps/site/src/lib/data.ts` grew from two documents to five: it now parses
-  `models.json`, `plans.json`, `benchmarks.json`, `sources.json` and
-  `derived.json` through their `@rack-rate/core` zod schemas and exports 24
-  typed views in 189 lines. `models` and `plans` keep their names so the two
-  `getStaticPaths` routes are untouched.
-- Identity rows and documents: `models`, `plans`, `planKnownGaps`,
-  `quotaModelDocs`, `benchmarks`, `sources`, `derived`. Id indexes:
-  `modelsById`, `plansById`, `benchmarksById`, `sourcesById`. Relation indexes:
-  `routesByModel`, `routesByPlan`, `bestRouteByModel`, `compositeByModel`,
-  `compositeWeights`, `apiFrontier`, `frontierByPlan`, `tokenAllowances`,
-  `tokenAllowanceByPair`, `badgeByPair`, `crossCheck`, `derivedKnownGaps` — all
-  built once at module load in a single pass per source array, so a page never
-  rescans 178 pairs. `pairKey(modelId, planId)` is the one place the
-  `(model, plan)` key is assembled; the `::` separator appears in no committed
-  id, which is asserted rather than assumed.
-- `composites`, `frontiers`, `token_allowances` and `badges` are optional in
-  `DerivedFile` but always present in the committed document. The module reads
-  each once through a local `requiredSection` and exports the non-optional view,
-  so a document missing a computed section fails the build instead of rendering
-  an empty page. Lookups by an unknown id still return `undefined` — an id
-  upstream retired degrades to a missing row.
-- `docs/architecture.md` `## Routes and data access` now documents the landed
-  surface, the fail-fast rule, the unknown-id rule and the type boundary; the
-  measured Stage 3.4 build paragraph is unchanged.
-
-**Verified**
-
-- Throwaway `src/pages/smoke35.astro` (built, then deleted with `dist/`): 54
-  assertions, every one compared against the committed data read independently
-  with `jq`, and the build fails on any mismatch. Covered, all matching:
-  `models` 28, `plans` 16, `sources` 11, `benchmarks` 2 (deepswe v1.1 +
-  terminal-bench 4.0.0), `planKnownGaps` 7, `derived.pairs` 178,
-  `best_routes` 28; `routesByPlan` ollama-pro 28 / claude-pro 5 /
-  kimi-code-andante 2 / `google-ai-pro` absent; `bestRouteByModel("gpt-6-astra")`
-  = chatgpt-pro-20x at $0.1299; `compositeByModel("gpt-6-astra").composite`
-  = 65.6562 at k=2 while `claude-sonnet-4.6` stays `null` /
-  `single-source`; `compositeWeights` 1/1; `apiFrontier` 28 points and the six
-  frontier ids; `frontierByPlan` 15 plans, kimi-code-andante → `kimi-k3` alone;
-  `tokenAllowances` 178 with `value_multiple` 3 for
-  `gpt-6-astra × ollama-pro` and `undefined` when the pair is reversed;
-  `crossCheck.summary.median_ratio` 1.601 over 11 pairs; `derivedKnownGaps` 7;
-  the `badgeByPair` row for that pair = high / fresh / list / reported / any /
-  ok. The build reported 54 pages, so the probe compiled through the real Astro
-  pipeline rather than a type check alone.
-- Negative control for the missing-section guard: with `composites` removed from
-  a throwaway copy of `data/derived.json`, the same build exited 1 with
-  `data/derived.json is missing the composites section` instead of emitting an
-  empty page. The file was restored by `git checkout` and re-hashed to
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`, so the
-  control left no trace.
-- `grep` for `from "…/data/*.json"` under `apps/site/src` matches exactly one
-  module, `src/lib/data.ts` — 3.5's boundary, now checked rather than asserted.
-- `bun run check` exit 0 (typecheck, oxlint, oxfmt over 37 files, `astro check`
-  0 errors / 0 warnings / 0 hints), `bun test` 17 pass / 0 fail, `bun run
-  data:check` exit 0 with `data/derived.json` still `7425a331…`: **no published
-  number moved in this session.** `bun run quality` still exits 1 on
-  pre-existing findings; dead-code rose 8 → 30 because 22 of the new exports are
-  the Stage 4 views (`data.ts` reports as 92 % dead), dupes 10 and health 140 are
-  unchanged. Quality stays report-only, and the surface is what 3.5 was asked to
-  build, not an accident.
-- The anti-slop `require-readable-spacing` rule rejected the first layout of the
-  module with 37 findings; it now carries a blank line between top-level
-  statements, and `bun run format` left the file as written.
-
-**Decisions taken this session**
-
-- The accessor exports the full view set 3.5 names rather than only what the
-  skeleton routes consume today: the Stage 4 contract hands the typed accessor
-  forward, so the unused-export count rises once, now, instead of growing per
-  page later.
-- `compositeWeights` is a `Readonly<Record<string, number>>` straight from
-  `derived.composites.weights`; nothing in the site re-derives it.
-- Unknown-id lookups stay `undefined`; the build only fails on a missing
-  computed section, which `data:check` already guarantees cannot be committed.
-
-**Still open**
-
-- 3.6–3.11 remain. `bun run build` still cannot complete because `bun run og`
-  fails until 3.8 writes `dist/`'s social card.
-- The accessor's views are exercised by the probe, not by a page: no route
-  renders a score, cost or badge until 3.7's components exist.
-
-### 2026-09-14 — Stage 3.6: display formatting, one rounding rule per unit
-
-**Landed**
-
-- `apps/site/src/lib/format.ts` (new, 210 lines): `MISSING` plus sixteen
-  formatters — `formatPercent`, `formatFractionAsPercent`, `formatPoints`,
-  `formatPercentRange`, `formatFractionAsPercentRange`, `formatUsd`,
-  `formatUsdPerTask`, `formatUsdPerMillionTokens`, `formatTasksPerMonth`,
-  `formatDays`, `formatCount`, `formatTokens`, `formatTokensExact`,
-  `formatMultiple`, `formatZ`, `formatFxRate`. Each rule lives in the module:
-  no precision argument exists, so a page cannot re-round a figure. Every value
-  passes through `roundHalfEven` from `@rack-rate/core` — the repo's single
-  Python-parity rounding semantic — and through one
-  `Intl.NumberFormat("en-US", …)` per rule, pinned at module scope, so the
-  runtime locale never reaches a published figure. Absent, `NaN` and infinite
-  values return `MISSING` (`—`) from every entry point, while a genuine `0`
-  formats as `$0` / `0.0%`. Formatters emit symbols only (`$`, `%`, `×`);
-  compound unit words stay with the component that renders the basis.
-- `apps/site/src/lib/format.test.ts` (new): 34 tests / 142 assertions —
-  invalid-value coverage per formatter, half-even boundaries at each shipped
-  precision (`74.05 → "74.0%"`, `7.015 → "$7.01"`, `0.03045 → "$0.0305"`),
-  token scale promotion (`999999 → "1M"`), trailing-zero trimming
-  (`20 → "$20"`), grouping (`2400 → "2,400"`), the always-signed contract
-  (`0 → "+0.00"`), and one-sided ranges. Live-data proof is five anchors
-  through the typed accessor (`modelsById`, `bestRouteByModel`,
-  `compositeByModel`, `crossCheck`, `tokenAllowanceByPair`); the suite imports
-  no `data/*.json`, so 3.5's boundary holds inside `apps/site` and a routine
-  refresh cannot redden the rule tests.
-- `docs/architecture.md` gained `## Formatting` (lines 303–353): the
-  export/unit/rule/example table, the Stage 2 precision rule it implements, the
-  `en-US` pin, why percentages are 1 dp, the missing-vs-zero rule, the
-  one-sided-range rule, the weights-are-controls note, the two-convention trap
-  (`models.json` CI fractions vs percent-scale scores and composites) and the
-  Stage 4 consumer contract.
-
-**Verified**
-
-- `bun test` 51 pass / 0 fail (17 core + 34 format). `bun run check` exit 0
-  after one `bun run format` pass that joined three wrapped lines in the test
-  file: typecheck, oxlint, oxfmt over 39 files, `astro check` 0 errors /
-  0 warnings / 0 hints.
-- Throwaway `src/pages/smoke36.astro` (built, then deleted with `dist/`): 19
-  assertions formatting real committed rows read through `src/lib/data.ts` —
-  gpt-6-astra's `74.12 → "74.1%"`, its CI fraction pair → `"71.2–77.0%"`, a
-  suppressed composite → `—`, the chatgpt-pro-20x best route → `"$0.1299"` /
-  `"$200"` / `"2.2"` days, claude-opus-5's half-step median → `"90.5"`,
-  1,163,918 tokens → `"1.16M"` and `"1,163,918"`, `43.648 → "43.65×"`, the
-  `6.7787` FX rate, kimi-code-andante's `2,556` requests, and google-ai-pro's
-  unresolved quota → `—`. `bun run --filter @rack-rate/site build` reported 54
-  pages, exit 0.
-- **Negative control:** with one expectation changed to `74.2%` the build
-  failed — `stage 3.6 probe failed: percent from a committed score -> 74.1%
-  (expected 74.2%)`, exit 1 — so the probe is a real gate rather than a page
-  that cannot fail. Page and `dist/` were removed afterwards.
-- `grep` for `data/*.json` under `apps/site/src` still matches exactly one
-  module, `src/lib/data.ts`; the format layer and its test both stay behind the
-  accessor.
-- `bun run data:check` exit 0 and `data/derived.json` still
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: **no
-  published number moved in this session.** `bun run quality` still exits 1 on
-  pre-existing findings; dupes 10 and the health report sit at the 3.5
-  baseline, and dead code additionally lists `data.ts`'s awaiting-Stage-4 views
-  (16) while every `format.ts` export is referenced by the tests.
-
-**Decisions taken this session**
-
-- One rule per unit, owned by the module: formatters take no precision
-  argument. An options object with a digits field would re-open exactly the
-  drift the task exists to close — the predecessor called `toFixed` with 2, 3
-  and 4 decimals in one table.
-- Percentages display at 1 dp. Composites differ by as little as 0.03 pp and
-  two DeepSWE scores are identical, but the published CIs are 4–8 points wide
-  and every upstream board shows 1 dp, so 2 dp would print false precision;
-  ties are the CI-overlap rule's job, not extra digits'.
-- `formatCount` is **up to** 1 dp with trailing zeros trimmed, not a fixed
-  0 dp: `agent_steps_per_task` and benchmark `steps` carry half-step medians
-  (90.5, 61.5, …), so 0 dp would change a published figure. An independent
-  coverage pass over every numeric key in the five committed documents found
-  exactly two gaps in the frozen contract — that one, and
-  `plans[].requests_month` / `plans[].rolling_window_hours` (integer
-  quantities under the same rule) — and nothing else.
-- A one-sided CI renders as `MISSING` rather than a half-range: a range with a
-  single endpoint is not a reported interval, and a component needing the other
-  end would have to invent it.
-- `composites.weights` gets no formatter: it is a control input for 4.13's
-  sliders, not a published figure. If a page ever prints one, the rule lands in
-  `format.ts` and in the `docs/architecture.md` table first.
-- Formatters emit no unit words. `/task` and `/mo` belong to `CostBasisChip`
-  and to column headers; putting the unit inside the formatter would duplicate
-  the invariant-4 label.
-- Display rounding reuses `roundHalfEven` instead of `toFixed`, so a rendered
-  figure rounds the same way as the committed `derived.json` bytes.
-
-**Still open**
-
-- 3.7–3.11 remain. `bun run build` still cannot complete because `bun run og`
-  fails until 3.8 writes `dist/`'s social card.
-- `format.ts` is exercised by its tests and by the deleted probe, not by a
-  page: no route renders a figure until 3.7's badge components and Stage 4's
-  content land.
-- `formatPoints`, `formatZ` and `formatFxRate` have no page consumer yet. The
-  coverage pass confirmed a real committed field sits behind each — the
-  frontier distance, `composites.rows[].weighted_z`, and `plans[].fx.rate` —
-  so they ship now rather than as a later retrofit.
-
-### 2026-09-14 — Stage 3.7: the five provenance components and one freshness rule
-
-**Landed**
-
-- `apps/site/src/components/` (new, six files, 188 lines): `Badge.astro` is the
-  chip shell the three badges share — `inline-flex … border-rule text-meta`
-  rendered once, with a `tone` of `neutral` / `api` / `adjusted` and an
-  optional `title` — and the five provenance components render it:
-  `ConfidenceBadge.astro` (17), `FreshnessBadge.astro` (18),
-  `CostBasisChip.astro` (40), `SourceLink.astro` (27), `CiBar.astro` (60).
-  Every one takes parsed values, never raw JSON, and renders words, geometry or
-  a citation — no component formats a published figure, so the number stays
-  owned by `format.ts` and the basis by the chip.
-- `apps/site/src/lib/provenance.ts` (new, 197 lines): the vocabulary
-  (`CONFIDENCE_TERMS`, `FRESHNESS_TERMS`, `COST_BASIS_TERMS`,
-  `COST_UNIT_LABELS`) and the arithmetic (`costBasisTerm`,
-  `costBasisQualifier`, `ciGeometry`). Its types come from the data contract —
-  `Confidence` is `Plan["confidence"]`, `Freshness` is `PairBadge["freshness"]`,
-  `CostBasisStatus` is `Model["cost_basis"] | NonNullable<Plan["price_status"]>` —
-  so a new level or status fails the build inside the module rather than
-  rendering an unlabelled badge. Pure TypeScript: `.astro` frontmatter and
-  `bun test` call the same function.
-- `apps/site/src/lib/provenance.test.ts` (new, 93 lines): 13 tests / 25
-  assertions over `ciGeometry` (exact 3 dp left/width, the
-  `leftPct + widthPct` identity on the high end, 0–1 and 0–100 domains,
-  clamping, transposed pairs, absent and one-sided endpoints, `NaN`) and the
-  vocabulary (the routed label naming its plan, the throw on a missing or blank
-  plan name, the plain terms for non-route bases, the four status qualifiers).
-  Coverage of every `CostBasisKind` is the module's
-  `satisfies Record<CostBasisKind, Term>`, not a test.
-- `packages/core/src/freshness.ts` (new, 36 lines) and
-  `packages/core/src/freshness.test.ts` (new, 42 lines): `STALE_AFTER_DAYS`
-  (14), `isStale(retrievedAt, generatedAt)` and `freshnessOf` — the freshness
-  rule in one place, reference moment as an argument, exported through
-  `packages/core/src/index.ts`. `compute.ts` (+1/−8) now imports it instead of
-  keeping its own copy of the threshold and the comparison.
-- `apps/site/src/lib/data.ts` (+13): `derivedGeneratedAt` — the newest upstream
-  `generated_at` `compute` wrote into the file, read through the same fail-fast
-  guard as the computed sections. Every freshness badge is dated against it, so
-  a badge ages against committed data rather than the wall clock.
-- `docs/architecture.md` gained `## Provenance components` (lines 360–445): the
-  props/renders table, the vocabulary module, the five rules the components
-  encode, the `derivedGeneratedAt` reference moment, the `SourceLink` throw, the
-  Stage 4 coverage rule and the measured probe evidence.
-
-**Verified**
-
-- `bun run check` exit 0: typecheck, oxlint, oxfmt over 43 files, `astro check`
-  27 files 0 errors / 0 warnings / 0 hints. `bun test` 72 pass / 0 fail (24 core
-  + 47 site + 1 data-cli) in 7 files / 231 assertions.
-- `bun run data:check` exit 0 and `data/derived.json` still
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: **the
-  freshness extraction moved no byte.** `bun run quality` (report-only) exits 1
-  on pre-existing findings: dupes 10 and health 140 sit at the 3.6 baseline,
-  dead code lists the six components as unreachable files and `data.ts`'s 16
-  awaiting-Stage-4 views (`COST_STATUS_TERMS` was un-exported this session
-  because only `costBasisQualifier` reaches it).
-- Throwaway `src/pages/smoke37.astro` (built, then deleted with `dist/`): a
-  page asserting committed rows — their interval geometry, badge levels,
-  freshness verdicts, basis labels and citations — read through
-  `src/lib/data.ts`, plus the emitted markup. `bun run --filter
-  @rack-rate/site build` reported 54 pages, exit 0,
-  and the HTML carried `style="left:71.25%;width:5.73%;min-width:2px"` with
-  `left:74.12%` for gpt-6-astra's interval, the accessible name
-  `74.1% (interval 71.2–77.0%; 95% run-to-run: SE across repeated
-  whole-benchmark passes (1.96 * std(runs)/sqrt(R)))`, a `API list /task ·
-  expected launch` chip in `text-api-ink`, a `ChatGPT Pro 20x route /task` chip
-  in `text-adjusted`, `Fresh retrieved 2026-09-14` out of the row's own
-  `retrieved_at` judged against `derivedGeneratedAt`
-  (`2026-09-10T21:58:00Z`), and `— no interval reported` instead of a bar for
-  the Terminal-Bench row with no CI.
-- Browser (headless Chromium through the built `dist/` at
-  `localhost:4321/rack-rate/smoke37/`, `astro preview`): at 360 px the page
-  reported `scrollWidth` 360 with no unclipped overflow, and the bar measured
-  96 px inside a `w-24` container and falling to its 64 px `min-w-16` floor in
-  a squeezed table cell, 4 px tall, with
-  the interval `rgb(163, 176, 196)` on a `rgb(29, 39, 53)` track and a 2 px
-  `rgb(234, 238, 245)` marker: `--color-dim`, `--color-rule`, `--color-ink` —
-  no accent spent on chrome or interval. One layout defect was found and fixed
-  in the probe itself: a seven-column table is wider than 360 px, so the probe
-  renders cards instead of a table, which is 4.15's work rather than a
-  component property.
-- **Negative control:** with one expected interval start changed to `71.24` the
-  build failed — `stage 3.7 probe failed: astra interval start -> 71.25
-  (expected 71.24)`, exit 1 — so the probe is a real gate. Page and `dist/` were
-  removed afterwards.
-
-**Decisions taken this session**
-
-- The freshness rule moved into `@rack-rate/core` instead of being written twice
-  (component and `compute`), because a page's `Fresh`/`Stale` word and the
-  committed `PairBadge.freshness` are the same judgement; `compute` keeps the
-  reference-moment argument that the badge gets from `derivedGeneratedAt`. The
-  research pass's 30/90-day `aging` ladder was **not** adopted: the committed
-  vocabulary is `fresh | stale`, and widening it would invalidate the badges 3.5
-  already ships.
-- One `Badge.astro` shell rather than five copies of the chip markup, and no
-  generic `<Status>` component for the three enum badges: the words differ per
-  vocabulary, and a merged component would have to carry all three tables.
-- `SourceLink` **throws** for an id absent from `data/sources.json` instead of
-  degrading to plain text. `bun run validate` already enforces evidence/source
-  referential integrity and invariant 8 makes attribution load-bearing, so an
-  unresolvable citation must fail the build; the accessor's `undefined`-degrades
-  rule covers an id upstream retired, not a missing citation.
-- `ciGeometry` positions the interval on the **full** domain and never zooms, so
-  a 5.7-point interval reads as one. Rounding is 3 dp with the width taken as a
-  delta between the rounded ends, so `leftPct + widthPct` lands exactly on the
-  interval's high end; out-of-domain input clamps instead of rescaling the
-  track; a transposed `lo`/`hi` pair is ordered rather than drawn inside out; the
-  interval's 2 px floor is CSS (`min-width:2px`), not geometry.
-- Tones follow invariant 4 and the token roles: `neutral` for confidence,
-  freshness and the AA index basis, `text-api-ink` for the API-list basis,
-  `text-adjusted` for `{plan} route`. `--color-measured` stays reserved for the
-  measured quota basis, which no 3.7 component renders.
-- `CostBasisChip` throws when `plan-route` arrives without a plan name: the
-  label `{plan} route` without the plan names nothing, and the component is the
-  last point where that can be caught.
-
-**Still open**
-
-- 3.8–3.11 remain. `bun run build` still cannot complete because `bun run og`
-  fails until 3.8 writes `dist/`'s social card.
-- The components are unreachable from any entry point until Stage 4's tables and
-  charts consume them, so `fallow` lists all six as unused files (expected, not
-  stale) and the Stage 4 rule "every published figure sits inside at least one
-  provenance component" is not yet enforced by anything but review.
-- `CiBar` draws one full-domain interval bar; a zoomed or multi-series CI
-  rendering belongs to 4.x's ECharts work rather than to a second bar variant.
-- The AA index cost chip renders untinted by design; if 3.11's `/method` page
-  needs a printable basis legend, it reads `COST_BASIS_TERMS` through
-  `costBasisTerm` rather than re-typing the labels.
-
-**Addendum, same stage, measured after the commit**
-
-- The 360 px overflow in the probe build was attributed rather than assumed. A
-  second throwaway page (`src/pages/smoke37b.astro`, one overflow candidate per
-  section, every other section hidden, `documentElement.scrollWidth` per
-  section) returned 360 for a `CiBar` in a 32 px box, a `CiBar` in a 96 px box,
-  three chips in a 100 px no-wrap flex box, and a chip in a 60 px box; 564 for a
-  seven-column table alone, and 360 for the same table inside `overflow-x-auto`.
-  No component forces page width at 360 px — the table did — and the wrapper
-  contains it. Two Stage 4 obligations replace the assumption, recorded in
-  `docs/architecture.md`: tables need a scroll wrapper, and a `CiBar` needs its
-  `min-w-16` floor (64 px) of room, since inside a 32 px box it renders 64 px
-  and overhangs its parent by 32 px instead of shrinking. Page and `dist/`
-  removed afterwards.
-
-
-
-### 2026-09-14 — Stage 3.8: build-time social card (satori → resvg, vendored OFL font)
-
-**Landed**
-
-- `apps/site/scripts/og.ts` (212 lines) now renders the build-time 1200×630
-  social card with `satori` and `@resvg/resvg-js`, replacing the old Pillow
-  path. It writes `apps/site/dist/og.png` after the Astro build.
-- The root `bun run og` command dispatches to `@rack-rate/site`'s `og` script,
-  which runs `scripts/og.ts` from `apps/site`; root `bun run build` now runs
-  `data:build` → Astro build → `og`, so the card is written last after Astro
-  clears `dist/`.
-- The bundled font files are verbatim in `apps/site/assets/fonts/`:
-  `Lato-Regular.ttf` (656,568 bytes, sha256
-  `d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251`),
-  `Lato-Bold.ttf` (656,544 bytes, sha256
-  `8a0aace75d33794eece4b28187bfc1df0bbd2888b5d8a56e01788c8d65d16be1`), and
-  `OFL.txt` (4,407 bytes, sha256
-  `74ba064d03f1f1c4a952da936c3eb71866c34404916734de3cae73b34357e59e`).
-  The license is SIL Open Font License 1.1 and stays beside the font files;
-  satori receives Lato at weights 400 and 700 without synthesising bold.
-- The script reads `canvas`, `ink`, `dim`, and `rule` from the `@theme` block
-  in `apps/site/src/styles/global.css`; a missing token fails the build. It
-  reads the `28 models · 16 plans · 2 benchmark versions` counts through
-  `apps/site/src/lib/data.ts`, and prints the origin from the built
-  `dist/index.html` canonical link (`marshalfevzi.github.io/rack-rate`).
-- The composition is one content stack at the top — wordmark, the two questions
-  at 58 px, the counts — above a footer band. The first render spread three
-  zones with `space-between`, which stranded the wordmark on its own; the stack
-  was regrouped and the type enlarged, and the numbers below are from that
-  final card.
-
-**Verified**
-
-- The script asserts that the rendered bytes are a PNG (minimum length and PNG
-  signature) and that the IHDR width and height are exactly 1200×630 before
-  writing the file.
-- Missing `dist/index.html` is fail-closed: the script exits 1 with
-  `Missing built site at …/dist/index.html; run the site build first`. The
-  restored built index then allows the normal path to run.
-- `apps/site/dist/og.png` is 1200×630 and 45,413 bytes, with sha256
-  `23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed`.
-  Consecutive full `bun run build` runs produced byte-identical cards.
-- `bun run check` exits 0 (typecheck, oxlint with every rule at error severity,
-  oxfmt clean over 44 files, and `astro check` over 27 files with 0 errors,
-  0 warnings, and 0 hints). `bun test` is 72 pass / 0 fail / 231 assertions
-  in 7 files. `bun run data:check` exits 0 with `data/derived.json` unchanged
-  at sha256 `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
-  `bun run build` exits 0, produces all 53 routes, and writes `dist/og.png`.
-- `bun run quality` remains report-only and exits 1 on pre-existing findings:
-  dead-code 27, dupes 10, health 143 above threshold over 605 analysed files,
-  and maintainability 89.7. `apps/site/scripts/og.ts` is reported as an
-  unreached entry point with its internal helpers, like the Stage-4-pending
-  exports in `data.ts`.
-
-**Decisions taken this session**
-
-- The card carries no score or cost figure: an image cannot carry a basis or
-  confidence badge, so invariants 4 and 5 would be violated.
-- Only `canvas`, `ink`, `dim`, and `rule` are spent in the card. Accent tokens
-  name a cost basis and are not used as decorative card chrome.
-- The deployment target remains written once in `apps/site/astro.config.mjs`;
-  switching to the custom domain does not require a second social-card edit.
-- `apps/site/scripts` is now included in the root `tsconfig.json` typecheck
-  `include`.
-
-**Still open**
-
-- `bun run build` now completes end to end, including the generated social card.
-- Stage 3.9 is next: sitemap, `robots.txt`, favicon, and the `CNAME` path.
-- Stages 3.10 and 3.11 remain.
-
-### 2026-09-14 — Stage 3.9: sitemap, generated robots.txt, favicon
-
-**Landed**
-
-- `apps/site/astro.config.mjs` (+4): `integrations: [sitemap()]` from
-  `@astrojs/sitemap` 3.7.4, which was already a declared dependency, with a
-  two-line comment recording that 404/500 exclusion is the integration's default
-  (`STATUS_CODE_PAGES`), so the absent `filter` is a decision rather than an
-  oversight. `site`, `base`, `output` and `vite` are byte-identical.
-- `apps/site/src/pages/robots.txt.ts` (new, 20 lines): a prerendered endpoint
-  returning `text/plain; charset=utf-8` with `User-agent: *`, `Allow: /` and
-  `Sitemap: <absolute sitemap index URL>`, the URL built as
-  `absoluteUrl(asset("/sitemap-index.xml"), site)` through the 3.3 helpers.
-  **Amended against the task text:** the plan asked for `public/robots.txt`. The
-  `Sitemap:` line is necessarily absolute, so a static copy would write the
-  origin a second time and turn the custom-domain switch into three lines; the
-  route keeps it at two. Recorded in PLAN.md's 3.9 line and in
-  `docs/architecture.md`.
-- `apps/site/public/favicon.svg` (new, 428 bytes, 7 lines): a standalone 32×32
-  SVG in the token palette — `canvas` rounded square, 1.5 px `rule` border so it
-  keeps an edge on dark browser chrome, three ascending bars in `adjusted`. No
-  raster `apple-touch-icon`, no manifest.
-- `apps/site/src/layouts/Base.astro` (+1): the favicon link, through
-  `asset("/favicon.svg")` with `type="image/svg+xml"`; nothing else in the head
-  moved.
-- `docs/architecture.md` gained `## Crawl and discovery files` (line 156) and
-  its `## Site configuration` CNAME paragraph now names the path, the content
-  and why that file is committed last. `AGENTS.md`'s layout block lists
-  `apps/site/public/`.
-
-**Verified**
-
-- `bun run build` exit 0: 53 built routes, `dist/sitemap-index.xml`,
-  `dist/sitemap-0.xml`, `dist/robots.txt`, `dist/favicon.svg`, and the unchanged
-  45,413-byte `dist/og.png` at sha256 `23677cc0…`.
-- Sitemap contents were compared as a **set**, not sampled: 52 URLs against the
-  52 built `index.html` directories, empty difference in both directions, every
-  URL under `https://marshalfevzi.github.io/rack-rate/` ending in `/`, and no
-  entry containing `404` or `robots` — the 404 is excluded by the integration's
-  default and the `robots.txt` route never enters the list. `robots.txt` reads
-  `Sitemap: https://marshalfevzi.github.io/rack-rate/sitemap-index.xml`, which
-  is the index file the build actually wrote (the chunk is `sitemap-0.xml`).
-- Custom-domain mode measured by copying the config, changing only the two
-  documented lines, building, and restoring it (sha256 checked equal afterwards):
-  exit 0, `Sitemap: https://rackrate.dev/sitemap-index.xml`, all 52 URLs under
-  `https://rackrate.dev/`, and the icon link unprefixed as `/favicon.svg`.
-- Favicon: parses as XML, `viewBox="0 0 32 32"`, four `rect`s, rasterised and
-  inspected at 32×32; all 53 built HTML pages carry
-  `<link rel="icon" href="/rack-rate/favicon.svg" type="image/svg+xml">` with no
-  page carrying a differently-prefixed href.
-- `bun run check` exit 0 (typecheck, oxlint, oxfmt clean over 45 files, `astro
-  check` 28 files with 0 errors / 0 warnings / 0 hints) after one `bun run
-  format` pass, which rewrapped the endpoint's `new Response(…)` call. `bun test`
-  72 pass / 0 fail. `bun run data:check` exit 0 with `data/derived.json` still
-  `7425a331…` — **no published number moved in this session.** Re-building after
-  the format pass produced byte-identical `robots.txt` (`518368b9…`) and
-  `sitemap-0.xml` (`79943148…`), so formatting changed no output.
-- `bun run quality` (report-only, still out of the gate) exits 1 on pre-existing
-  findings and is one better than the 3.8 baseline: dead-code 27 → 26 (the new
-  route is a reachable entry point; the six Stage-4 components and `data.ts`'s
-  awaiting-3.x views are still listed), dupes 10 and health 143 unchanged,
-  maintainability 89.7 → 89.8 over 606 analysed files.
-
-**Decisions taken this session**
-
-- `robots.txt` is generated from `site`/`base` rather than committed as a static
-  file; a produced file that must agree with the build's own sitemap URL should
-  not be a second place the origin is written down.
-- The sitemap integration is configured with no options: no `filter` (404/500 are
-  already excluded by default and nothing else qualifies), no `lastmod` (it would
-  claim a per-page freshness the data cannot support — freshness is a badge dated
-  against `derivedGeneratedAt`), and no `changefreq`/`priority`, which crawlers
-  ignore.
-- `robots.txt` allows everything. Every route is public, no path is
-  authenticated, and the 404 is left crawlable: it is absent from the sitemap
-  already, and its `noindex` belongs with 6.4's index hygiene.
-- The favicon is SVG-only: no raster `apple-touch-icon`, no manifest. Both would
-  be new build assets with no requirement behind them in this stage.
-
-**Still open**
-
-- 3.10 and 3.11 remain. 3.10 owns CI and the stale-output guard; the deployed
-  base-path check for `robots.txt` and the sitemap is 6.4's, which the new
-  architecture section states as an obligation.
-- The favicon and sitemap are build outputs; only `public/favicon.svg` is
-  committed. `apps/site/public/CNAME` still does not exist, by design.
-
-**Addendum, same stage, measured after the commit**
-
-- The three new files were checked **as served**, not only on disk:
-  `astro preview` on the built `dist/` returned 200 with the right types for
-  `/rack-rate/robots.txt` (`text/plain`, 92 B), `/rack-rate/sitemap-index.xml`
-  and `/rack-rate/sitemap-0.xml` (`text/xml`, 203 B / 4,572 B), and
-  `/rack-rate/favicon.svg` (`image/svg+xml`, 428 B). The preview server binds to
-  `localhost` (IPv6 `::1`), so a `127.0.0.1` readiness probe never connects even
-  though the server is up — a probe artifact, not a site one.
-- One claim in `docs/architecture.md` was **overstated and is corrected** rather
-  than left standing: the favicon's `rule` border does not give the mark an edge
-  on dark browser chrome. Recomputed by WCAG 2.x relative luminance: amber on
-  canvas 10.57:1, amber on a dark chrome strip `#202124` 8.8:1, canvas on white
-  19.33:1, canvas on `#202124` 1.2:1, border on `#202124` 1.07:1. On dark chrome
-  the bars alone carry the mark; on light chrome the square does, and the
-  paragraph now says that.
-- `/rack-rate/404/` answers 200 under `astro preview` because it serves
-  `404.html` for that path directly; the deployed status code is 6.4's concern,
-  and the page is absent from the sitemap either way.
-
-### 2026-09-14 — Stage 3.10: CI workflow with a stale-output guard
-
-**Landed**
-
-- `.github/workflows/ci.yml` (new, 46 lines): `push` on `main`,
-  `pull_request`, and `workflow_dispatch`; `permissions: contents: read`;
-  `concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }`.
-  One job, `verify` (`name: Typecheck, tests, data gate`), runs on
-  `ubuntu-latest` with `timeout-minutes: 15`. Its eight steps, in order:
-  `actions/checkout@v7`; `oven-sh/setup-bun@v2` with no `with:` block;
-  `bun install --frozen-lockfile`; `bun run check`; `bun test`;
-  `bun run data:check`; `bun run data:build`; and
-  `Compute left committed data unchanged`, whose script is
-  `changes="$(git status --porcelain -- data/)"` → print the changes,
-  `echo "::error::bun run compute changed data/; commit the regenerated
-  files"`, `exit 1`. The setup action reads `packageManager: "bun@1.4.2"`
-  from the root `package.json`, so the Bun version is written once.
-- Action pins checked live: `actions/checkout` latest release `v7.0.1`,
-  `oven-sh/setup-bun` latest `v2.2.0`; the workflow pins the major tag and
-  the repository does not require SHA pinning.
-- `docs/architecture.md` gained `## Continuous integration` (lines 704–748):
-  the job, the step table, the guard semantics, and the decisions.
-  `CONTRIBUTING.md` line 16 now names all five commands CI runs (`check`,
-  `test`, `data:build`, `data:check`, and the compute-unchanged guard).
-- Vercel: nothing to delete. `git ls-files | grep -iE
-  'vercel|netlify|now\.json'` printed nothing and no untracked `.vercel`,
-  `vercel.json`, or `now.json` exists anywhere; the predecessor's
-  `vercel.json` was already removed in Stage 1.5.
-
-**Verified**
-
-- Clean-clone simulation (macOS, warm Bun cache; `git clone . /tmp/rr-ci310`,
-  workflow copied in, no `.env`, `AA_API_KEY` unset): every step exit 0.
-  Timings: `bun install --frozen-lockfile` 0.52 s, `bun run check` 9.44 s,
-  `bun test` 0.12 s, `bun run data:build` 0.13 s,
-  `bun run data:check` 0.07 s, guard 0.04 s. `data:build` reported
-  `no problems`, pairs 178, best routes 28, cross-check pairs 11,
-  composite coverage 12 models at k ≥ 2 and 16 single-source, frontier
-  api 28 points / 6 frontier, 178 token-allowance rows and 178 badge rows.
-  `data:check` compared expected and committed sha256
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`
-  and reported the file current.
-- Negative controls in that clone: editing `data/derived.json`'s
-  `generated_from.models` 28 → 29 made `bun run data:check` exit 1 naming
-  the staleness (`first differing top-level key generated_from`, committed
-  hash `8b0dc36504e063e844f477eacedcd4b7f26e2cf7d9327471c5330ef19dfe1a56`);
-  the same uncommitted edit made the guard exit 1, printing
-  ` M data/derived.json` and the `::error::` line; after
-  `git checkout -- data/derived.json`, the guard exited 0. Temp dirs were
-  removed; `data/derived.json` remained `7425a331…`.
-- Node-free: `env PATH=/tmp/bunonly:/usr/bin:/bin bash -c
-  'command -v node || echo NO_NODE; bun run check'` printed `NO_NODE` and
-  `Result (28 files): 0 errors / 0 warnings / 0 hints`, exit 0 — the
-  measured reason the workflow carries no `actions/setup-node`.
-- Real GitHub Actions run:
-  [run 34802515011](https://github.com/marshalfevzi/rack-rate/actions/runs/34802515011),
-  workflow `CI`, event `pull_request`, head branch `ci/3.10-verify` at
-  commit `9765e3e`, created `2026-09-14T03:24:40Z`, job
-  `Typecheck, tests, data gate` `03:24:43Z` → `03:25:06Z` (23 s),
-  **conclusion success**: all eight steps succeeded, as did both action
-  post-steps. It was triggered by a temporary draft PR (#1) opened to fire
-  the `pull_request` event, because the `push` trigger only fires on `main`
-  and local `main` has not been pushed (`origin/main` is still `104c618`).
-  Both verification branches and their draft PRs are scaffolding, removed
-  after this entry lands.
-- The reorder was re-verified on
-  [run 34802795461](https://github.com/marshalfevzi/rack-rate/actions/runs/34802795461)
-  (`ci/3.10-verify2` at `a9ed386`, job `03:29:48Z` → `03:30:08Z`, 20 s,
-  **success**): the run's own step list reads `Derived data is not stale`
-  (7) then `Data build (validate + compute)` (8) then
-  `Compute left committed data unchanged` (9), so the ordering in the
-  committed file is what executed, not just what was written.
-- Repo gates after landing: `bun run check` exit 0 (typecheck, oxlint, oxfmt
-  clean over 46 files, `astro check` 28 files 0 errors / 0 warnings /
-  0 hints), `bun test` 72 pass / 0 fail / 231 assertions in 7 files,
-  `bun run data:check` exit 0 with `data/derived.json` still
-  `7425a331…` — no published number moved. `bun run quality`
-  (report-only, out of the gate) exits 1 on the unchanged baseline:
-  dead-code 26, dupes 10, health 143 above threshold over 606 analysed
-  files, maintainability 89.8. Adding the workflow introduced no fallow
-  finding.
-
-**Decisions taken this session**
-
-- No `bun run build` step: task 3.10's list is the CI gate, and Stage 6.1's
-  deploy workflow owns `bun run build` + `withastro/action`.
-- No `actions/setup-node` step: the check path is Bun-only, measured above;
-  the image ships Node anyway, so the absent pin is a documented
-  non-requirement.
-- The guard uses `git status --porcelain` rather than `git diff`, so a newly
-  created untracked file under `data/` also fails the job.
-- `bun run data:check` stays beside the guard: it is the staleness gate the
-  docs already advertise and it exercises the CLI's own in-memory
-  re-derivation, while the guard covers the `compute` write path.
-- `data:check` runs **before** `data:build`, not after. `compute` rewrites
-  `data/derived.json`, so checking afterwards would compare a file the job had
-  just repaired and report a stale commit as current — the staleness would
-  survive only as a guard failure with a less direct message. The order was
-  caught in review of the first draft, which had the two steps the other way
-  round; the guard still covers the write path, and the in-memory comparison
-  now sees the committed bytes.
-- The Bun version has one home, `package.json`'s `packageManager`, read by
-  `setup-bun`; the workflow carries no second copy.
-- No dependency-cache step: `bun install --frozen-lockfile` is a small share
-  of the job and a cache key is one more thing that can be wrong.
-- CI stays read-only and offline beyond the lockfile install — no secrets,
-  no fetcher, no `.env` in a clean clone — so invariants 9 and 10 hold by
-  construction.
-
-**Still open**
-
-- 3.11 remains: `/method` and the sources page still owe the real formulas
-  and the full attribution block.
-- The `push: branches: [main]` trigger has not fired yet: local `main` is
-  unpushed, so the first live use of that trigger is the owner's next push
-  to `main`; the job content itself is verified on `9765e3e`.
-- `bun run build` (Astro build → `og`) is deliberately outside CI; 6.1's
-  deploy workflow buys it.
-- CI's `validate`/`compute` run with Artificial Analysis unset, so the
-  AA-enabled publication path remains exercised by hand only.
-
-### 2026-09-14 — Stage 3.11: the method and sources pages, and the template-whitespace repair
-
-**Landed**
-
-- `apps/site/src/pages/method.astro` went from a 12-line skeleton to 386 lines
-  and five sections — "Cost per task", "The three cost bases", "Score
-  normalization and the composite", "Pareto frontier", "Missing data,
-  confidence and freshness" — carrying the quota conversion branches with the
-  committed field names read from `quotaModelDocs`, the route-cost and
-  rolling-window day formulas, the token-allowance view with
-  `DEFAULT_INPUT_OUTPUT_BLEND` and `CACHE_TIER_CAVEAT`, the committed weights
-  joined to their benchmark id/version/title, the composite coverage counts,
-  the Pareto domination and distance definitions with the committed API-list
-  frontier size, the four confidence levels, and the freshness rule with its
-  reference moment. Every figure is a core export or a value read from a
-  committed document at build time; nothing on the page is typed.
-- `apps/site/src/pages/sources.astro` (145 lines) renders the Artificial
-  Analysis state first, then all 11 committed sources with licence, URL,
-  retrieval date judged by the one freshness rule, `covers`, `changes`,
-  credited contributor, notes and a contribution verdict, then the verbatim
-  attribution block, the 7 committed plan known-gaps as "deliberately left
-  out", and the standing commitments.
-- `packages/core` gained the identifiers the pages would otherwise retype:
-  `COMPOSITE_CENTER = 50` and `COMPOSITE_SPREAD = 10` in `normalize.ts` (now
-  used by the composite and both CI endpoints), `DAYS_PER_MONTH = 30` and
-  `HOURS_PER_DAY = 24` in `cost.ts`, and `ARTIFICIAL_ANALYSIS_BENCHMARK_ID`,
-  `ARTIFICIAL_ANALYSIS_SOURCE_ID` and `BENCHMARK_SOURCE_IDS` in `schema.ts`.
-- `packages/data-cli`'s AA publication gate (`validate.ts`) and `sources.ts`
-  compare against those constants; `sources.ts` lost its private `AA_SOURCE_ID`
-  and its three hard-coded benchmark branches.
-- `apps/site/src/lib/provenance.ts` gained `requiredAttribution` (returns the
-  licence's attribution string or throws naming the id) and
-  `artificialAnalysisState` (derives the build's AA state from whether a
-  committed benchmark carries the AA id, because `apps/site` cannot read
-  `AA_PUBLISH`); `data.ts` gained `contributingSourceIds`, built once from
-  `models[].evidence`, `plans[].evidence`, `plans[].sources` and the
-  benchmark→source map. `provenance.test.ts` grew by four synthetic-input
-  cases.
-- `docs/architecture.md` gained `## Method and sources pages` (lines 517–605)
-  and `## Template whitespace` (lines 628–681).
-
-**The whitespace repair (incidental, pre-existing defect)**
-
-Astro drops a whitespace run that contains a newline between a text node and an
-adjacent tag — it is not collapsed to one space, it disappears. The rule was
-measured on a throwaway probe page with eight boundary cases and is recorded in
-`docs/architecture.md`. Three consequences were found and fixed:
-
-- `Base.astro`'s attribution footer rendered
-  `Datacurve) —<a …>https://deepswe.datacurve.ai/</a>— and Terminal-Bench` with
-  both em-dash boundaries glued, on all 52 built pages. That is the footer
-  invariant 8 leans on; six element starts were merged onto their text line and
-  two closing-anchor boundaries got an explicit space.
-- `FreshnessBadge` rendered `Freshretrieved 2026-09-09` and `CostBasisChip`
-  `API list/task`; both carry an explicit space now, and the chips read
-  `API list /task` — the reading the Stage 3.7 probe recorded as intended.
-- The new `/method` had 15 of its own glued boundaries; all were fixed before
-  the page was verified.
-
-A rescan of every built `index.html` after the repair leaves only intentional
-adjacencies (`Committed field:<code class="ml-1">`, `<a class="ml-1 …">`, and
-`SourceLink`'s `sr-only` suffix), and the built-HTML gate now asserts the
-absence of `<code>`/`<span>`/`<a>` glue.
-
-**Accuracy clauses the page review added**
-
-Reading the shipped code against the drafted copy turned up three places where
-the page would have documented the arithmetic imprecisely, all corrected before
-verification: the pair gates (`available` plus `model_scope` plus a positive
-task count, not "every model-and-plan combination"), the standard deviation
-being a population SD, and the composite CI being reported only when every
-contributing benchmark supplies an interval.
-
-**Verified**
-
-- `bun run check` exits 0: typecheck, oxlint with every rule at error severity,
-  `oxfmt --check` clean over 46 files, `astro check` over 28 files with 0
-  errors, 0 warnings, 0 hints.
-- `bun test` reports 76 pass, 0 fail, 239 assertions in 7 files (72 pass and
-  231 assertions at 3.10; the four new cases are the two helpers' coverage).
-- `bun run data:check` exits 0 and `data/derived.json` is still sha256
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: **the
-  constant extraction moved no published byte.**
-- `bun run build` exits 0 with 53 routes, and `dist/og.png` is still sha256
-  `23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed` at
-  1200×630 — the social card is deterministic across the stage.
-- A throwaway built-HTML gate (67 assertions, deleted afterwards) read
-  `data/*.json` independently of the site modules and compared it with the
-  emitted HTML: the verbatim attribution appears exactly once with its three
-  lines intact, all 11 sources render with their own URL and licence and the
-  independently computed contribution verdict, the shipped AA branch states the
-  disabled state, the two-key gate and links `CAVEATS.md`, and `/method`
-  carries `50 + 10 × weighted_z`, `tasks_per_month / 30`, `3:1`,
-  `stale after 14 days`, the two committed weights, 12 composites, 16
-  suppressed rows, 28 API-list points, 6 frontier ids and `113 committed
-  tasks`. The gate is falsifiable: it failed on the missing `CAVEATS.md` link
-  before that link was added, and mutating the emitted badge or chip whitespace
-  makes its whitespace assertions fail (0 → 2 glued sites).
-- Browser, headless Chromium against `astro preview` on the built `dist/` at
-  the real `/rack-rate` prefix: at 360 px both pages report
-  `documentElement.scrollWidth` 360 with `clientWidth` 360, zero elements past
-  the viewport, one `<main>`, one `<h1>`, zero `<script>`; `/sources`'s
-  attribution block measures 3 text lines. At 1280 px `/sources` renders 11
-  cards and a 992 px attribution block with no overflow. Rendered text was read
-  back from the DOM, which is how the badge and chip glue was caught.
-- `bun run quality` (report-only, out of the gate) exits 1 on the pre-existing
-  findings but improves on the 3.10 baseline: dead-code 26 → 17, dupes 10
-  unchanged, health 143 above threshold over 623 analysed files,
-  maintainability 89.8 → 90.5.
-
-**Still open**
-
-- Stage 4 (4.1–4.15) is next: the charts, tables, and the model, plan, compare
-  and explore pages. `/method` and `/sources` were the two pages that could
-  land before them, and they now do.
-- Every Stage 4 template inherits the whitespace obligation in
-  `docs/architecture.md`: a visible space at a line boundary between text and a
-  tag stays on that line or is written `{" "}`.
-- The 404 route still carries a canonical for a path with no page and no
-  `noindex`; that is 6.4's, unchanged by this stage.
-- `bun run quality` stays report-only; it is not a gate.
-- The `push: branches: [main]` CI trigger has still not fired: local `main` is
-  unpushed, so the first live use of that trigger is the owner's next push.
-
-### 2026-09-14 — Stage 4.1: the chart platform, and the validator that was riding along
-
-`apps/site/src/lib/charts/` holds the platform: `registry.ts` (the repository's
-only `echarts.use()` call), `theme.ts` (the `@theme` token reader and one accent
-per cost basis), `frame.ts` (the shared cartesian frame and the series marker),
-`mount.ts` (the mount helper), and `frame.test.ts` / `theme.test.ts` for the
-pure halves. 4.1 registered `CanvasRenderer`, `GridComponent`,
-`LegendComponent`, and `TooltipComponent` — the renderer plus the components the
-frame and the preserved chart features use — and each series type is registered
-by the stage that lands its first builder (4.2 scatter, 4.3 line, 4.4 heatmap
-and `visualMap`, 4.5 line, 4.6 bar, 4.7 radar). `ChartOption` is
-`ComposeOption<FrameComponentOption>`. The sentence this entry originally
-carried here — that an option object therefore cannot carry a series type no
-stage registered, and a missing `use()` is a type error rather than a blank
-chart — is false and is superseded by "Second review finding" and "Third review
-finding" below; the option type accepts any extra key, and the registry checks
-series names at mount time instead. Builders stay pure — `(data) => ChartOption`,
-no `use()`, no DOM, no clock — and `mount.ts` is the only module in the
-directory that touches `window`.
-
-**The mount contract.** `mountChart(target, option)` refuses an element that
-already holds an instance (`the element already holds a chart instance; dispose
-the existing handle first`), applies the option with `notMerge: true`, and
-returns `{ update, dispose }`. A `ResizeObserver` on the target calls
-`chart.resize()`. A `MediaQueryList` listener for
-`prefers-reduced-motion: reduce` re-applies the current option with
-`animation: !motion.matches`; it is a live listener rather than a one-time read
-because reduced motion is a setting a reader can change while the page is open.
-`update()` after `dispose()` throws `the chart was disposed; mount a new one`
-instead of silently doing nothing, and `dispose()` is idempotent, disconnects
-both listeners, and leaves the element reusable by a later mount. Token reading
-is live (`getComputedStyle(element)`), so the light scheme's token
-re-declaration reaches charts with no chart-side code.
-
-**The client bundle, measured.** The first client modules exposed a cost stage 3
-never paid: `apps/site/src/lib/provenance.ts`, which every chart option builder
-reaches, imported `ARTIFICIAL_ANALYSIS_BENCHMARK_ID` from `@rack-rate/core`,
-whose barrel re-exports `schema.ts` — the one core module that builds zod
-schemas. One id pulled the whole validator into the browser bundle. Measured
-with the bundler: importing that id produced 99,247 bytes and importing
-`roundHalfEven` 99,721, against 514 bytes for the same rounding through
-`@rack-rate/core/cost`. Three changes: the ids moved to
-`packages/core/src/ids.ts`, a zod-free module the barrel re-exports (public
-surface unchanged, one home kept); `format.ts` and `provenance.ts` import the
-narrow subpaths `@rack-rate/core/cost`, `@rack-rate/core/ids`, and
-`@rack-rate/core/freshness`; and `packages/core/package.json` declares
-`"sideEffects": false`, which is truthful for a package that is pure by
-invariant and makes a bare barrel import of a pure core value drop the schemas
-too. No built client chunk carries a zod marker. `docs/architecture.md` records
-the rule and its measurements under "Charts".
-
-**Verified**
-
-- `bun run check` exits 0: `tsc --build --force`, oxlint with every rule at
-  error severity, `oxfmt --check` clean over 53 files, `astro check` over 34
-  files with 0 errors, 0 warnings, 0 hints.
-- `bun test` reports 98 pass, 0 fail, 284 assertions in 9 files (76 pass, 231
-  assertions, 7 files at 3.11; the 22 new cases are the frame and theme suites).
-- Browser, headless Chromium against `astro preview` on the built `dist/` at the
-  real `/rack-rate` prefix, driving a throwaway probe page (deleted afterwards)
-  whose script asserted in-page and reported 0 failures:
-  - The frame's real option object drives a real chart: title
-    `API list $/task`, `yAxis.type` `log` from the caller's axis spec, tooltip
-    background `#111825` — the `--color-panel` token arriving through
-    `readChartTokens` — and `animation: true` with no reduced-motion preference.
-  - Resize: narrowing the host from 990 px to 420 px moved the canvas to 418 px
-    with a 522 px backing store at `devicePixelRatio` 1.25, through the helper's
-    own observer and never a manual `chart.resize()`.
-  - Reduced motion: emulating `reduce` flipped the live option to
-    `animation: false`; emulating `no-preference` flipped it back to `true`.
-  - Disposal: `dispose()` left 0 canvases, cleared `_echarts_instance_`, and
-    emptied the element; a second `dispose()` was a no-op; `update()` after it
-    threw `the chart was disposed; mount a new one`; remounting the same element
-    painted a chart again; a second mount threw the occupied-element error.
-  - 360 px: `documentElement.scrollWidth` 360 with `clientWidth` 360, zero
-    elements past the viewport, and both chart canvases at their host widths
-    (326 px and 254 px).
-  - Chart-free route: `/models` emits 0 `<script>` tags, 0 `modulepreload`
-    links, and its browser makes 0 `.js` requests.
-- A hidden headless page cannot measure the observer work: while the document is
-  hidden, `requestAnimationFrame` stops, so `ResizeObserver` callbacks never
-  arrive — a control observer took 0 entries while the host narrowed from 990 px
-  to 398 px and the canvas stayed at 990 px. Calling
-  `Emulation.setFocusEmulationEnabled({ enabled: true })` after
-  `page.bringToFront()` restores the loop (92 frames in 1.5 s) and the callback
-  (host 418 px, canvas 418 px). `docs/architecture.md` records the step so the
-  next stage does not re-diagnose it.
-- `bun run data:check` exits 0 and `data/derived.json` is still sha256
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`: the ids
-  split moved no published byte.
-- `bun run build` exits 0 with 53 pages, and `dist/og.png` is still sha256
-  `23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed` at
-  1200×630. With the probe deleted, `apps/site/dist/_astro/` holds no `.js` file
-  at all: every route in the 4.1 tree ships zero client JavaScript.
-- On the probe build, before deletion, the chart-bearing page made 6 `.js`
-  requests: the ECharts core chunk at 458 KB, plus option-builder, theme, frame,
-  and mount chunks at 1.5 KB, 1.7 KB, 1.5 KB, and 0.6 KB.
-- `bun run quality` (report-only, out of the gate) exits 1: dead-code 17 issues,
-  dupes 10 clone groups, health 144 above threshold over 668 analysed files,
-  maintainability 90.2. The two entries this stage owns are
-  `apps/site/src/lib/charts/mount.ts`, unreachable from any entry point, and
-  `theme.ts`'s `readChartTokens`; both are consumed by 4.2.
-
-**Review correction after the stage's own checks passed**
-
-An independent review pass on the committed chart modules found one real defect,
-in the frame. `grid.outerBoundsContain` was `"axisLabel"`, copied from the
-documented `containLabel` replacement, and ECharts skips axis-name layout
-entirely for that value (`Grid.js`, `createOrUpdateAxesView`: the name is built
-only when `outerBoundsContain === "all"`). The name was therefore drawn outside
-the plot box on every chart the frame builds: at 360 px and at 1280 px, `$/task`
-clipped in half at the canvas top and `tasks / month` fell off the right edge —
-width-independent, because the frame's own margins are. The frame comment
-claiming `"axisLabel"` contained names was wrong and is replaced. The fix is
-`outerBoundsContain: "all"`, verified by rendering the frame's own option at
-360 px (host 326 px) and at 1280 px and reading both canvases: both names fully
-inside the canvas at both widths, with the plot shrinking to fit.
-`frame.test.ts` gains a test that asserts the labelled axes and the containment
-together — it fails on `"axisLabel"` (checked by flipping the value back, 5 pass
-/ 1 fail), so the regression cannot ship silently. `bun test` is 99 pass, 286
-assertions in 9 files. No other finding from the review changed code.
-
-**Second review finding: the option type's safety claim was false**
-
-The same review pass checked the claim that `ChartOption` cannot carry a series
-type nobody registered. It cannot hold: `ComposeOption` keeps
-`ECBasicOption`'s string index signature (`shared.d.ts`; `ECUnitOption` ends in
-`| unknown`), so the alias types the *values* of declared component keys —
-`{ grid: { outerBoundsContain: "nope" } }` and `{ xAxis: { type: "nonsense" } }`
-are compile errors, confirmed by a throwaway `tsc --build` probe — but it
-accepts any extra key. `series`, `dataZoom` and an invented component key all
-compiled. The comment in `registry.ts` and the `ChartOption` row in
-`docs/architecture.md` claimed otherwise and are corrected.
-
-Registration is therefore enforced by discipline and measurement, not by types,
-and the measurement matters because ECharts 6 fails silently: with
-`CanvasRenderer`, grid, legend and tooltip registered and nothing else, mounting
-`{ series: [{ type: "scatter", data: [[1, 2]] }] }` threw nothing, logged
-nothing in either build, and left `getModel().getSeries()` empty while
-`getOption()` echoed one series in a production build and zero in a dev build.
-A plot of axes with no points reads as "no data", so each builder stage must
-prove its own series registered in its browser probe:
-`chart.getModel().getSeries().length` must equal the number of series its
-builder declares. `docs/architecture.md` records that obligation, the
-measurement, and why `mount.ts` does not call the private `getModel()` itself to
-enforce it. The review's second note — a per-series `animation: true` outranks
-the mount helper's global `animation: !prefers-reduced-motion` because ECharts
-resolves own-before-parent — is recorded as a constraint on builders; no series
-exists in 4.1, so it changes no code.
-
-**Third review finding: the guard belongs in the registry, not in `getModel()`**
-
-The correction above left registration enforced only by review, and proposed —
-superseded by this paragraph — that each builder stage prove it in its own
-browser probe with `chart.getModel().getSeries().length`. That is the wrong
-shape twice over: `getModel()` is private in ECharts' declarations, so the check
-would need an assertion plus a defensive fallback that silently disables itself
-on upgrade, and a per-stage probe is a convention rather than a guard.
-
-It is now guarded with public data only. `registry.ts` holds `SERIES_INSTALLS`,
-one row per family pairing the install object `use()` receives with the
-`series[].type` string an option must use, and `use()` is fed from those rows —
-so registering a family and teaching the guard its name are the same edit — and
-`unregisteredSeriesTypes(option)` compares an option's declared types against
-them. `mount.ts` calls it before `setOption` and throws `the option declares the
-unregistered series type scatter: add it to SERIES_INSTALLS in
-src/lib/charts/registry.ts`; the refused mount disposes its instance, so a retry
-reports the real problem instead of "already holds a chart instance".
-`registry.test.ts` covers the pure half in five cases (a missing type named once
-for two series, no series at all, a series with no `type` field, a single series
-object rather than an array), and the table starts empty, so the guard rejects
-every named family until 4.2 adds the scatter row.
-
-Verified on the built site in both directions. Unregistered: the frame option
-mounts and paints 12,229 pixels; the same option plus
-`{ type: "scatter", data: [24 points] }` throws the guard's message, leaves the
-host with zero `<canvas>` elements and zero instances behind, after which
-mounting the frame option on that same element succeeds. Registered: with a
-temporary `{ install: ScatterChart, type: "scatter" }` row the same option
-mounts silently and paints 19,000 pixels against the frame's 12,227; the row was
-then removed and the build re-verified without it. The earlier `getOption()`
-divergence (one series echoed in a production build, zero in a dev build) is
-kept in `docs/architecture.md` as the reason the option echo is not a usable
-detector either.
-
-**Still open**
-
-- 4.2 is the first consumer of the platform: until it lands, `mount.ts` and
-  `readChartTokens` are deliberately unreferenced, and the browser pass above is
-  the only thing that has executed them.
-- 4.2–4.15 remain: the six chart types, the tables and pages, and the
-  accessibility pass. Each new series type registers in `registry.ts` in its own
-  stage, and each chart page's script dynamically imports its builder.
-- Every Stage 4 template inherits the whitespace obligation in
-  `docs/architecture.md`: a visible space at a line boundary between text and a
-  tag stays on that line or is written `{" "}`.
-- The 404 route still carries a canonical for a path with no page and no
-  `noindex`; that is 6.4's, unchanged by this stage.
-- `bun run quality` stays report-only; it is not a gate.
-- The `push: branches: [main]` CI trigger has still not fired: local `main` is
-  unpushed, so the first live use of that trigger is the owner's next push.
-
-### 2026-09-14 — Stage 4.2: Pareto scatter on /explore
-
-**Landed**
-
-- `pareto-payload.ts` builds one `ParetoPayload` containing 16
-  `ParetoBasisView`s: one API-list view and 15 plan-route views. It combines
-  committed `frontiers.api` and `frontiers.plan_adjusted` from
-  `data/derived.json` with `models.json`, `benchmarks.json`, and `plans.json`.
-  The encoder escapes `<` as `\u003c`. The decoder refuses empty `bases`, or a
-  view with an empty `points` or `frontier` array; it does not revalidate fields
-  because the same build writes and reads the payload, so no external producer
-  reaches it, as recorded by its SAFETY comment.
-- `pareto.ts` builds the fixed scatter: log `$/task` x-axis, DeepSWE v1.1
-  `pass@1` y-axis, frontier polyline, dominated region, labels, tooltip,
-  inside-plus-slider zoom, and effort trails. Frontier points plus the three
-  worst-value dominated points (`distance.cost_ratio` descending) are labelled.
-  The frontier line extends to the axis maximum at the last frontier score.
-  Trails are dashed 4 px line series for models with at least two effort
-  variants, and are API-list only.
-- `pareto-page.ts` reads the inline payload, resolves the basis radio group and
-  plan select, mounts the chart, and rebuilds on every control change. Each
-  rebuild rewrites the title, note, and host `aria-label`. `explore.astro`
-  carries the controls, payload script, chart host, `/method` noscript link,
-  and dynamic page import. `registry.ts` registers the scatter and line
-  families, the `DataZoomComponent`, and the `LabelLayout` feature;
-  `FrameComponentOption` includes `DataZoomComponentOption`. `MarkAreaComponent`
-  is not registered: no option uses `markArea`, and its key was never admitted
-  by the option type, so the mid-stage registration was removed.
-
-**Measured**
-
-- All 16 views' frontier arrays and point counts equal the corresponding
-  committed derived entries exactly. The API-list view has 28 points and these
-  six frontier ids: `deepseek-v4-flash`, `deepseek-v4-pro`, `glm-5.3-flash`,
-  `gemini-3.7-flash`, `gemini-3.8-flash`, and `gpt-6-astra`.
-  `chatgpt-plus` has 6 points / 3 frontier models; `opencode-go` has
-  1 point / 1 frontier model.
-- On the built page, toggling to ChatGPT Plus changes the title to
-  `ChatGPT Plus route $/task`, names that plan in the note, changes the marker
-  accent from API to plan-route, and re-renders each selected plan, including
-  the single-point `opencode-go` view. Tab plus Arrow Right/Left switches the
-  basis. Hover reads `deepseek-v4-flash · 53.3% · $0.0304 · Ollama Pro route`
-  on the panel token. A wheel over the plot narrows the x window; the frontier's
-  painted pixels fell 1787 → 283 → 1 as the cheap end filled the window, and
-  the slider is the second draggable path.
-- With `prefers-reduced-motion: reduce`, the canvas hash was byte-identical at
-  120 ms, 370 ms, and 770 ms after switching basis. With motion allowed, the
-  frames at 120 ms and 370 ms differed.
-- At 360 px, `scrollWidth === clientWidth === 360`, no element crosses the
-  right edge, the chart host and canvas are each 328 px wide, and controls
-  wrap to one per line. The page makes four requests: the document, one CSS
-  file, the page script, and one 562 KB JavaScript chunk carrying ECharts and
-  the builder; it makes zero requests for `data/*.json`. `/models` still emits
-  zero `<script>` tags and zero `modulepreload` links.
-- The chart host's accessible name follows the active view. For ChatGPT Plus
-  it reads `6 committed models plotted against ChatGPT Plus route cost per
-  task; 3 frontier models; JavaScript is required to draw this chart.` The
-  API-list state matches the static `explore.astro` text.
-
-**Review corrections after the stage's own checks passed**
-
-- The first built chart carried ECharts' default palette on the dataZoom slider
-  — blue handles, blue filler — while every other chart colour was a token. The
-  slider's border, background, filler, both handles, data background, selected
-  data background, emphasis, and text now come from tokens, and the frontier
-  line gained an `itemStyle` in `tokens.ink` so its legend swatch matches the
-  drawn line. Measured on the rebuilt chart: zero pixels of ECharts' default
-  palette in either basis.
-- `labelLayout: { hideOverlap: true }` did nothing, because this stage
-  registered a series family but not the `LabelLayout` *feature*: without it
-  `installLabelLayout` never registers the `series:layoutlabels` lifecycle, so
-  `LabelManager.layout()` — the only caller of `hideOverlap` — never runs. All
-  nine labels were drawn on top of one another at 360 px; with the feature
-  registered, six of nine are drawn and no data label sits on another.
-- The stage registered `MarkAreaComponent` although nothing used `markArea` —
-  the dominated region is the frontier series' `areaStyle` — and the option
-  type never admitted the key. Removed, and the comment in `registry.ts`
-  corrected.
-- The chart host's `aria-label` was written once from the API-list view and
-  never rewritten, so after switching to a plan route a screen reader was told
-  28 models and an API-list basis while the chart showed the plan's own points.
-  It is now rewritten on every rebuild.
-
-**Still open**
-
-- 4.3–4.15 remain. 4.13 will replace this fixed chart with the metric/axis/filter
-  builder.
-- At 360 px the `deepseek-v4-flash` label partly covers the `60.0%` axis tick;
-  4.15's mobile pass owns that repair.
-- Plan-route views draw no effort trails by design: an effort variant's plan
-  cost is not a published figure.
-- The 404 route's canonical/`noindex` item is still 6.4's.
-
-### 2026-09-14 - Stage 4.3: bump/rank chart
-
-**Landed**
-
-- `bump-payload.ts` builds the inline ranked payload; `bump.ts` builds the
-  model lines, gap markers, tied-rank bands, and lane separator; and
-  `bump-page.ts` decodes and mounts the chart. `/explore` now carries the
-  second chart section. `frame.ts` gained category, inverse, and interval axis
-  support, and `MarkLineComponent` is registered for the tie bands and lane
-  separator.
-- Review caught all 16 gap markers collapsed onto one identical point, leaving
-  only the topmost hoverable. Per-item `symbolOffset` now spreads them into 16
-  distinct hollow markers; six real hovers named six different missing models.
-  Review also caught the doubled `not evaluated` lane label. Removing the
-  markLine label leaves the y-axis lane tick as the single label, and a unit
-  test fails if a second one appears.
-- On the same geometry, the real option painted 78,273 pixels versus 78,263
-  with `connectNulls: true` (−10); filling every gap with its lane rank painted
-  93,811 (+15,538), so both designs were refused. With `MarkLineComponent`
-  unregistered, tie-band pixels fell to 0 and the total fell 38,187 → 35,868;
-  restoring it produced 1,608 tie-band pixels, identical to the original.
-- At 360 px, `scrollWidth === clientWidth === 360`; the bump canvas is 328 px
-  wide at x = 16, the marker row stays inside the canvas, and no label pair
-  collides. The marker spread also held at 900 px.
-
-**Still open**
-
-- 4.13 replaces this fixed chart with the metric/axis/filter builder.
-- 4.15 owns the Pareto chart's 360 px label/tick collision.
-- Plan-route views draw no effort trails: an effort variant's plan cost is not
-  a published figure.
-
-### 2026-09-14 — Stage 4.4–4.15: the remaining charts, the insight pages, the mobile pass
-
-**Landed**
-
-- Four chart slices. `heatmap.ts` (diverging `visualMap` centred on 0,
-  hatched decal cells for `not evaluated`), `slope.ts` (API list against plan
-  route for one model, one line per candidate plan), `waterfall.ts` (quota →
-  used → remaining under a utilization input, deficit below zero), `radar.ts`
-  (per-index z over the models a selected plan admits) — each with its payload
-  module and its `components/*Section.astro`.
-- Five page slices. `/models` (28-row table, sortable headers with
-  `aria-sort`, name/vendor/score-floor filters that hide rather than remove),
-  `/models/[slug]` (score profile, effort ladder, priced routes, provenance
-  rail), `/plans` + `/plans/[slug]` (ranked by value multiple, the models a
-  plan unlocks), `/compare` (2–4 models, tie ranges, URL round-trip), `/`
-  (hero, the ported budget calculator, insights, entry points).
-- `/explore` gained the metric builder: y metric (any benchmark score,
-  composite `T`, tokens, steps), x metric (API list $/task, plan-adjusted
-  $/task, tokens, steps, benchmark score), chart type, vendor/effort/score-floor
-  filters, log-axis and frontier toggles, and composite weight sliders with
-  presets recomputing `T` client-side from shipped z-scores.
-- 4.14: every route carries at least one sentence computed from the committed
-  documents (e.g. `/plans`: "16 committed plans ranked by value multiple; 15
-  have a committed multiple, led by Claude Max 20x at 127.36×").
-- 4.15: measured, not asserted. Ten routes at 360 px report
-  `scrollTo(9999, 0) → 0`; every interactive element on the seven content
-  routes has an accessible name, with 28 CI bars and 7 chart hosts carrying
-  `role="img"`; `Enter` on a `/models` header button sets `aria-sort`;
-  `Space` on the Pareto "Plan route" radio re-renders and rewrites the chart's
-  accessible name. Header nav links were 16 px tall and are now 27 px.
-
-**Review caught, in this session**
-
-- The calculator resolved a plan's model only from `measured_against_model`
-  and printed "No priced route" for 13 of the 16 plans that have one — it
-  computed 2 plans where the burn-down chart computed 15. Both surfaces now call
-  `waterfall-payload.ts`, the difference is one sentence of committed data for
-  `google-ai-pro`, and the column is renamed **Model priced** because the
-  cheapest-route fallback makes "measured model" a false claim.
-- `Badge.astro` was not a containing block for its `sr-only` children, so 28
-  badges in `/models` laid their accessible text out at x = 735 inside the
-  overwide table: `documentElement.scrollWidth` was 736 at a 360 px viewport
-  and the page really scrolled 376 px into blank space — on `/models`,
-  `/models/[slug]`, `/plans`, `/plans/[slug]` and `/compare`. One
-  `relative` in the badge's class list ends it. The same class of bug put a
-  493 px `<select>` on the explore surface: a select cannot shrink below its
-  widest option without `min-w-0`.
-- The heatmap's legend and `visualMap` shared the canvas bottom, so both series
-  names sat on the colour bar, and the grid's 16 spacing units put the x-axis
-  labels in the bar's band. `gridBottom: 76` plus a right-corner legend
-  separates the bottom into the label band (488–498), the axis name (518–527)
-  and the bar with its legend (535–560) on a 576 px canvas.
-- The slice batch landed with 29 anti-slop findings across 9 files, three
-  `astro check` errors and one unused import, all cleared; `oxfmt` then
-  reflowed three blank lines the lint fix had added, so the two pass over the
-  union until both are clean.
-- Composite parity was checked rather than assumed: the payload's z-scores at
-  the committed weights reproduce every committed `composite` for the 12
-  models with `k ≥ 2` to within 0.001, and the 16 below the gate render
-  `single-source` with no `T`.
-
-**Verified**
-
-- `bun run check` green end to end: `tsc --build --force`, `oxlint` clean,
-  `oxfmt --check` clean, `astro check` 0 errors / 0 warnings / 0 hints over 63
-  files. `bun test` 138 pass / 0 fail. `bun run data:check` reports the
-  committed `derived.json` current. `bun run build` emits 53 pages plus
-  `og.png`.
-- In a real browser: seven chart hosts mount and paint (992×416 to 992×576); the
-  browser requests no `.json` path on any route; the calculator recomputes
-  $2,452.4 → $6,158.45 for Claude Pro at 600 tasks/month
-  (`20 + (600 − 103.1) × 12.3535`); `/compare` enforces the 2–4 bound with
-  its `aria-live` text matching both ends and clears the query below the
-  minimum.
-- Reduced motion: all seven charts paint under
-  `prefers-reduced-motion: reduce` (225,946 px in the Pareto canvas up to
-  251,504 px in the builder), and flipping the media feature back to
-  `no-preference` mid-session re-applies every option through `mount.ts`'s
-  `change` listener without losing a chart.
-- Degenerate inputs degrade to the default four rather than breaking:
-  `?models=not-a-model,nope`, five ids, a duplicated id, and a single id each
-  render the default selection in 6 columns / 13 rows with the status text
-  matching, and the page rewrites the query from the resolved selection.
-- `/models` sorts numerically, not lexicographically over formatted text: the
-  comparator parses `data-score` with `Number.parseFloat` and falls back to
-  `localeCompare` only for non-numeric columns, and the 28 rendered scores run
-  monotone 11.73 → 74.12 ascending, reverse, then ascending again.
-- The routes checked only for overflow were spot-checked for content:
-  `/models/gpt-6-astra` renders its own headline's 7 priced routes,
-  `/plans` renders 16 rows for 16 committed plans, `/plans/claude-pro` renders
-  the 5 admitted models, and every cost cell carries its basis chip. Zero
-  console errors across the routes visited.
-
-**Still open**
-
-- Touch targets: header nav is 27 px, but in-content prose links stay 16 px tall
-  (WCAG 2.5.8 exempts links inside a sentence) and `/compare`'s 13 px
-  checkboxes are hit through their 24 px labels.
-- 5.1 owns preference persistence (`prefs.ts`) and the wizard; `/explore`'s
-  settings are URL-encoded but not yet stored.
-- The four new builders and the metric builder ship without unit tests, unlike
-  `frame`/`pareto`/`bump`. Their options were checked only by rendering them in
-  a browser. Anything that starts relying on these builders' geometry or payload
-  shape (Stage 5's wizard, a refactor) should pin it first.
-- Stage 4 is placeholder-grade by instruction: the surface is complete and
-  measurable, not pixel-finished. A UI refactor is expected to rewrite it.
 
 ### 2026-09-16 — Design documentation: the Divine Machinery visual world (docs only)
 
@@ -2677,3 +1214,97 @@ holds documentation only.
   previous session's note, `.agents/skills/impeccable/**`, no longer exists; the
   skill now lives under `.claude/`. Recorded, not fixed — the fix is a tooling
   choice (an oxfmt ignore, or formatting files upstream will overwrite).
+
+### 2026-09-17 — Plan review session: Stages 3–4 archived, plan rebuilt, tasks reviewed
+
+No stage was opened. No source file, data file, test, chart or config changed;
+the working tree holds documentation only. The session archived two landed
+stages, rebuilt `PLAN.md` around the forward plan, repaired its cross-references,
+and assessed every planned task. The task-by-task verdict, the repairs and the
+owner decisions are recorded in
+[`docs/archive/retrospective-2026-09-17.md`](docs/archive/retrospective-2026-09-17.md).
+
+**Landed**
+
+- **Stage 3 and Stage 4 archived.** `docs/archive/stages-3.md` carries Stage 3's
+  task list, acceptance criteria, handover contract and eleven session entries;
+  `docs/archive/stages-4.md` carries Stage 4's plus its four entries. Both were
+  produced by slicing `PLAN.md` itself, so no entry was edited, reordered or
+  summarised. Each archive opens with a note that task numbers inside an archived
+  entry are the numbers in force when it was written, because the 2026-09-16
+  renumbering moved the wizard to Stage 6 and deployment to Stage 7 — an archived
+  entry that sends an item to "6.4's index hygiene" means today's 7.4.
+- **`PLAN.md` rebuilt, 2,679 → 1,191 lines.** Out: the Stage 3 and Stage 4
+  specifications and their 1,500 lines of progress-log entries. In: a
+  `## Direction` section stating the completion definition once and ruling out
+  tasks that do not move it; a one-line record of all four landed stages with an
+  archive table; and **Stage 8 — Data integrity follow-ups**, explicitly off the
+  critical path so a session can pick up 8.1 or 8.2 without entering the
+  redesign.
+- **Task review, Stages 5–7.** Four tasks changed and the rest kept as written:
+  **5.2** now pins the woff2 acquisition to recorded sha256 values per file and
+  resolves the favicon question at the 16px a tab renders, replacing a
+  "build-session decision"; **5.9** gains the obligation to unit-test the five
+  builders that were only ever verified by rendering, in the same commit as their
+  re-theme; **5.13** states the 404 canonical defect directly instead of pointing
+  at an archived note; **5.15** defines its deliverable as the corrected
+  documents rather than as a skill invocation, so it is executable without the
+  impeccable pass. **5.14** gains the four residues it must fix or exempt.
+  **6.7 was merged into 6.1**, which already required the same boundary
+  behaviour, leaving Stage 6 as 6.1–6.6.
+- **Repairs.** `docs/architecture.md` sent index hygiene to "task 6.4", which is
+  the wizard's shareable-result task; it now names 7.4. `README.md` claimed
+  "Stage 3 will add the Astro development server" and "skeleton routes pending
+  Stage 4 content", three stages stale; both were rewritten. `AGENTS.md`'s
+  layout block listed `apps/site/src/lib/prefs.ts` as present; it now marks it as
+  task 6.1, matching what `PRODUCT.md` already said.
+- **The gate repaired.** `bun run check` had been red since 2026-09-16, when the
+  vendored impeccable skill entered the tree without a lint or format exclusion;
+  the previous session recorded half of it and never ran the failing step. Both
+  tools now exclude `.claude/skills/**` alongside `tools/oxlint/anti-slop/**`,
+  and the reason is recorded in `AGENTS.md`. This matters because Stage 5's
+  acceptance opens with "`bun run check`, `bun test` and `bun run build` all exit
+  0" — the stage could not have passed before this repair.
+- **Open questions assessed against finished work.** Five live items that existed
+  only in archived "Still open" lists were promoted into the live section and an
+  owner named: the five untested builders (5.9), the eight plan rows at their
+  Stage 1 revision (8.1), the `push: branches: [main]` trigger that has never
+  fired, the deployed 404 status code (7.4), and the three accessibility
+  residues (5.14). The `AGENTS.md` item was removed because the line it described
+  was fixed. Every remaining item now states whether a task owns it.
+
+**Verified**
+
+- `bun test` 138 pass / 0 fail / 493 `expect()` calls across 14 files, unchanged
+  from Stage 4.
+- **`bun run check` is green again, and it was red before this session.** The
+  gate has been failing since the impeccable skill was vendored on 2026-09-16:
+  `bun run lint` exited 1 on
+  `.claude/skills/impeccable/scripts/live-browser-session.js` (30
+  `anti-slop/require-readable-spacing` errors), and `oxfmt --check` exited 1 on
+  seven more files under the same tree. `.claude/skills/**` is vendored upstream
+  code this repository does not own, so it is now excluded from both tools
+  exactly as `tools/oxlint/anti-slop/**` already was. No rule was weakened, no
+  severity changed, and no first-party file needed an edit. Before: `lint` exit 1.
+  After: `bun run check` exit 0 — typecheck, oxlint, `oxfmt --check` clean over 79
+  files, `astro check` over 63 files with 0 errors / 0 warnings / 0 hints. The
+  previous session recorded the formatter half as a "tooling choice" and never
+  saw the linter half, which is the half that was blocking.
+- No file under `data/**`, `packages/**` or `apps/**` was touched, and `PLAN.md`
+  plus the archive documents are outside the formatter's scope (`**/*.md`).
+- `data/derived.json` is still
+  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348` and was not
+  regenerated: **no published number moved in this session.**
+- The archive slices were checked line by line against the `PLAN.md` they came
+  from, and every relative link this session wrote resolves with its target
+  present on disk.
+
+**Decisions taken this session** (owner)
+
+- The Console Listing redesign keeps its order and its grain: Stage 5 runs before
+  the wizard and before deployment, and stays one stage of fifteen tasks.
+- The design documents keep their current owners; no consolidation, no deletion.
+- Three recorded gaps become work: the eight plan rows that fail the anchor check,
+  the two 404 evidence URLs, and unit tests for the five untested chart builders.
+- Stage 8 is scheduled off the critical path rather than as a fourth sequential
+  stage, so it cannot delay the redesign.

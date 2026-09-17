@@ -1,5 +1,11 @@
 {
-  "ignorePatterns": ["node_modules/**", "dist/**", ".astro/**", "tools/oxlint/anti-slop/**"],
+  "ignorePatterns": [
+    "node_modules/**",
+    "dist/**",
+    ".astro/**",
+    "tools/oxlint/anti-slop/**",
+    ".claude/skills/**"
+  ],
   "jsPlugins": [{ "name": "anti-slop", "specifier": "./tools/oxlint/anti-slop/index.ts" }],
   "rules": {
     "oxc/no-accumulating-spread": "error",

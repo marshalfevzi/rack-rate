@@ -24,20 +24,25 @@ vendor rate card. Every published figure traces to a citation in
    allowance, then show cost per task, break-even volume, and full-run time
    under the plan's caps.
 
-The planned site is the reader-facing view of this comparison. It keeps
+The site is the reader-facing view of this comparison. It keeps
 benchmark provenance, pricing basis, confidence, and unresolved gaps visible
 instead of turning them into a single unexplained ranking.
 
 ## Where this stands
 
-DeepSWE v1.1 and Terminal-Bench board 4-0-0 are live pulls.
-`fetch:plans` remains fail-closed because seven vendor pages are JavaScript
-shells that return 200 without quoted limit text, so `data/plans.json` remains
-at its Stage 1 revision.
+DeepSWE v1.1 and Terminal-Bench board 4-0-0 are live pulls. Eight of the
+sixteen plan rows fail the anchor check — Claude Pro, Claude Max 5x and 20x,
+ChatGPT Pro 20x, Kimi Andante and Allegretto, and GLM Coding Lite and Pro —
+because their vendor pages no longer carry the quoted limit text the fetcher
+requires. `fetch:plans` therefore fails closed and writes nothing, so
+`data/plans.json` is still at its Stage 1 revision while the model rows were
+refreshed in Stage 2; every plan-route figure is computed from a Stage 1 price.
+[`PLAN.md`](PLAN.md) task 8.1 owns that refresh.
 Artificial Analysis is off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set;
 the site builds as static output from committed data. Charts and the insight
-pages landed in Stage 4, the Console Listing redesign is Stage 5, the
-provider-selection wizard Stage 6, and deployment Stage 7
+pages landed in Stage 4; the Console Listing redesign is Stage 5, the
+provider-selection wizard Stage 6, deployment Stage 7, and Stage 8 carries the
+data-integrity follow-ups off the critical path
 (see [`PLAN.md`](PLAN.md)).
 The repository does not mirror benchmark tasks, prompts, verifiers, or patches.
 
@@ -53,21 +58,23 @@ basis, confidence, and any unresolved limitation. The join then compares each
 model's API cost with each compatible plan, preserving model scope so a plan
 cannot be used to price a model it does not support.
 
-The planned site will import committed JSON at build time. It will never fetch
-from the browser, so its built output will have no data requests and can be
-built offline.
+The site imports committed JSON at build time. It never fetches from the
+browser, so its built output makes no data requests and can be built offline.
 
 ## Quickstart
 
-Install dependencies and run the checks. Stage 3 will add the Astro development
-server and site pages:
+Install dependencies and run the checks:
 
 ```bash
 bun install
-bun run dev                 # dev server; skeleton routes pending Stage 4 content
+bun run dev                 # Astro dev server
 bun run check
 bun test
 ```
+
+Inspect the built site rather than `bun run dev` when judging chart chrome: the
+dev server injects its own toolbar, which no built route renders
+(`bun run build && bun run preview`).
 
 `bun run check` and `bun test` are the current gates; `bun run check` itself
 runs `tsc`, oxlint, a formatting check, and `astro check`.
@@ -92,7 +99,7 @@ bun run lint
 bun run format
 bun run quality
 bun run test
-bun run dev                 # dev server; skeleton routes pending Stage 4 content
+bun run dev                 # Astro dev server
 ```
 
 - `fetch` refreshes all source inputs; the source-specific commands refresh one

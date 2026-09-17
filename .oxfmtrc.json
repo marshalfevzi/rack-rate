@@ -1,4 +1,4 @@
 {
   "semi": false,
-  "ignorePatterns": ["data/**", "**/*.md", "tools/oxlint/anti-slop/**"]
+  "ignorePatterns": ["data/**", "**/*.md", "tools/oxlint/anti-slop/**", ".claude/skills/**"]
 }
