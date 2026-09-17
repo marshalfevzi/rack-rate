@@ -1,13 +1,16 @@
 ---
 import { href } from "../lib/url.ts"
+import { readoutAttributes, type ShellStampReadouts } from "../lib/readout.ts"
 
 interface Props {
   buildDate: string
   dataDate: string
   aaPublished: boolean
+  readouts: ShellStampReadouts
 }
 
-const { buildDate, dataDate, aaPublished } = Astro.props
+const { buildDate, dataDate, aaPublished, readouts } = Astro.props
+
 ---
 
 <header class="sticky top-0 z-10 h-8 w-full border-b border-rule bg-panel-2">
@@ -16,15 +19,16 @@ const { buildDate, dataDate, aaPublished } = Astro.props
 
     <div class="hidden shrink-0 items-center gap-x-1 text-micro md:flex">
       <span class="text-faint">BUILD</span>
-      <span class="tabular text-ink">{buildDate}</span>
+      <span {...readoutAttributes(readouts.build)} class="tabular text-ink">{buildDate}</span>
     </div>
 
     <div class="hidden shrink-0 items-center gap-x-1 text-micro md:flex">
       <span class="text-faint">DATA</span>
-      <span class="tabular text-ink">{dataDate}</span>
+      <span {...readoutAttributes(readouts.data)} class="tabular text-ink">{dataDate}</span>
     </div>
 
     <a
+      {...readoutAttributes(readouts.aa)}
       class="flex shrink-0 items-center gap-x-1 text-micro"
       href={`${href("/sources")}#artificial-analysis-heading`}
     >

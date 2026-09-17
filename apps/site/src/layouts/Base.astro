@@ -6,19 +6,36 @@ import { Font } from "astro:assets"
 import { absoluteUrl, asset } from "../lib/url.ts"
 
 import StatusBand from "../components/StatusBand.astro"
+import Readout from "../components/Readout.astro"
 import LaneRail from "../components/LaneRail.astro"
 import FooterIndex from "../components/FooterIndex.astro"
 
 import { lanes, isCurrent } from "../lib/nav.ts"
-import { derivedGeneratedAt, sources, models, plans, benchmarks } from "../lib/data.ts"
+import {
+  apiFrontier,
+  compositeByModel,
+  derivedGeneratedAt,
+  models,
+  plans,
+  sources,
+  benchmarks,
+  tokenAllowances,
+} from "../lib/data.ts"
+import {
+  defaultReadout,
+  shellStampReadouts,
+  type ReadoutFields,
+  type ShellStampReadouts,
+} from "../lib/readout.ts"
 import { artificialAnalysisState, newestRetrievedAt } from "../lib/provenance.ts"
 
 interface Props {
   title: string
   description: string
+  readout?: ReadoutFields
 }
 
-const { title, description } = Astro.props
+const { title, description, readout } = Astro.props
 
 const current = lanes.find((lane) => isCurrent(Astro.url.pathname, lane.path))?.path ?? null
 
@@ -29,6 +46,25 @@ const dataDate = newestRetrievedAt(sources, models, plans, benchmarks)
 
 const aaPublished = artificialAnalysisState(benchmarks).published
 
+const stampReadouts: ShellStampReadouts = shellStampReadouts({
+  buildDate,
+  dataDate,
+  benchmarks,
+  sources,
+})
+
+const pageReadout =
+  readout ??
+  defaultReadout({
+    pathname: Astro.url.pathname,
+    models,
+    plans,
+    benchmarks,
+    sources,
+    tokenAllowances,
+    apiFrontier,
+    composites: [...compositeByModel.values()],
+  })
 ---
 
 <html lang="en">
@@ -61,7 +97,13 @@ const aaPublished = artificialAnalysisState(benchmarks).published
   <body class="min-h-screen bg-canvas font-sans text-ink">
     <!-- In-page fragments bypass the helper. -->
     <a class="skip-link" href="#main">Skip to content</a>
-    <StatusBand buildDate={buildDate} dataDate={dataDate} aaPublished={aaPublished} />
+    <StatusBand
+      buildDate={buildDate}
+      dataDate={dataDate}
+      aaPublished={aaPublished}
+      readouts={stampReadouts}
+    />
+    <Readout readout={pageReadout} />
     <div class="mx-auto w-full max-w-[1440px] px-6 md:px-8 lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-8 lg:pl-0 lg:pr-8 xl:gap-x-12 xl:pr-12">
       <LaneRail lanes={lanes} current={current} buildDate={buildDate} dataDate={dataDate} />
       <slot />

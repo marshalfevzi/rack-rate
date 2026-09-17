@@ -1,17 +1,19 @@
 ---
 import Base from "./Base.astro"
+import type { ReadoutFields } from "../lib/readout.ts"
 
 interface Props {
   title: string
   description: string
   heading?: string
   lede?: string
+  readout?: ReadoutFields
 }
 
-const { title, description, heading, lede } = Astro.props
+const { title, description, heading, lede, readout } = Astro.props
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} readout={readout}>
   <main id="main" tabindex="-1" class="min-w-0 py-8">
     <h1 class="text-display">{heading ?? title}</h1>
     {lede ? <p class="text-body text-dim">{lede}</p> : null}

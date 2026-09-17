@@ -1,0 +1,91 @@
+---
+import { READOUT_FIELDS, READOUT_LABELS } from "../lib/readout.ts"
+import type { ReadoutField, ReadoutFields } from "../lib/readout.ts"
+
+interface Props {
+  readout: ReadoutFields
+}
+
+const { readout } = Astro.props
+---
+<div
+  id="cursor-readout"
+  data-readout-line
+  class="readout-line min-h-7 w-full"
+>
+  <p
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    aria-label="Cursor readout"
+    class="mx-auto flex min-h-7 w-full max-w-[1440px] flex-wrap items-center gap-x-0.5 px-6 font-mono text-micro uppercase text-ink md:flex-nowrap md:whitespace-nowrap md:px-8 lg:pl-2 lg:pr-8 xl:pr-12"
+  >
+    {
+      READOUT_FIELDS.map((field: ReadoutField, index) => (
+        <>
+          {index > 0 ? (
+            <span aria-hidden="true" class="text-faint">{" · "}</span>
+          ) : null}
+          <span class="whitespace-nowrap">
+            <span class="text-faint">{READOUT_LABELS[field]}</span>{" "}
+            <span class="tabular" data-readout-field={field}>
+              {readout[field]}
+            </span>
+          </span>
+        </>
+      ))
+    }
+  </p>
+  </div>
+
+<script>
+  import {
+    READOUT_FIELDS,
+    readoutFieldsFrom,
+    READOUT_LINE_SELECTOR,
+    READOUT_SOURCE_SELECTOR,
+  } from "../lib/readout.ts"
+  import type { ReadoutField, ReadoutFields } from "../lib/readout.ts"
+
+  const line = document.querySelector<HTMLElement>(READOUT_LINE_SELECTOR)
+
+  if (line instanceof HTMLElement) {
+    const targets = new Map<ReadoutField, HTMLElement>()
+
+    for (const field of READOUT_FIELDS) {
+      const target = line.querySelector<HTMLElement>(`[data-readout-field="${field}"]`)
+
+      if (target === null) {
+        throw new Error(`Readout: missing field target "${field}"`)
+      }
+
+      targets.set(field, target)
+    }
+
+    const apply = (record: ReadoutFields): void => {
+      for (const field of READOUT_FIELDS) {
+        const target = targets.get(field)
+
+        if (target !== undefined) {
+          target.textContent = record[field]
+        }
+      }
+    }
+
+    const update = (event: FocusEvent | PointerEvent): void => {
+      const target = event.target instanceof Element
+        ? event.target.closest(READOUT_SOURCE_SELECTOR)
+        : null
+
+      const record = target === null ? null : readoutFieldsFrom(target)
+
+      if (record !== null) {
+        apply(record)
+      }
+    }
+
+    document.addEventListener("focusin", update)
+    document.addEventListener("pointerover", update)
+  }
+</script>
+

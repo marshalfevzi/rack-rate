@@ -143,6 +143,32 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* The cursor readout is one line for the whole page. Below 768px it is
+     inline under the status band; from 768px up it is the fixed 28px line at
+     the viewport bottom, and the body reserves the same 28px so the line can
+     never cover the footer index. Position, height and the two rules only:
+     type, colour and gutters are utilities on the element. */
+  .readout-line {
+    border-bottom: 1px solid var(--color-rule);
+    background-color: var(--color-panel-2);
+  }
+
+  @media (min-width: 768px) {
+    body {
+      padding-bottom: 28px;
+    }
+
+    .readout-line {
+      position: fixed;
+      inset-inline: 0;
+      bottom: 0;
+      height: 28px;
+      z-index: 10;
+      border-top: 1px solid var(--color-rule);
+      border-bottom: 0;
+    }
+  }
+
   @media (prefers-color-scheme: light) {
     :root {
       color-scheme: light;

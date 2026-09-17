@@ -1,7 +1,13 @@
 // Astro normalises `base: undefined` to "/", so a single normalisation here
 // covers the project page and the custom domain. The build emits a directory
 // per route, so route links end in "/" and file links do not.
-const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL.replace(/\/+$/, "")
+// Astro injects BASE_URL at build time; Bun's import.meta.env has none, so the
+// helper normalises an absent base to the site root instead of throwing.
+function normalizeBase(value: string | undefined): string {
+  return value === undefined || value === "/" ? "" : value.replace(/\/+$/, "")
+}
+
+const base = normalizeBase(import.meta.env.BASE_URL)
 
 export function href(path: `/${string}`): string {
   const route = path === "/" ? "" : path.replace(/\/+$/, "")

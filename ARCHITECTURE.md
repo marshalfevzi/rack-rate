@@ -1774,6 +1774,102 @@ pass: `oxfmt` added a blank line before a list in
 `.omp/agents/reviewer.md`, which was not formatter-clean at `HEAD` (verified
 by running `oxfmt --check` on the `HEAD` revision of that file).
 
+### Stage 5 record — the cursor readout (task UI-504)
+
+`apps/site/src/components/Readout.astro` is the one document-level readout
+line. It renders exactly five fields in the frozen order `value`, `basis`,
+`confidence`, `source`, `retrieved`, with labels and `tabular` figures. The
+server record and the browser update path share the pure helpers in
+`apps/site/src/lib/readout.ts`; that module imports neither Astro nor
+`import.meta.env` nor `data.ts`. The initial record is route-aware: Overview
+and Plans use the leading token-allowance record, Models and Compare use the
+leading benchmark, the plan detail uses its price, Explore uses frontier
+coverage, Method uses composite coverage, Sources uses the AA state, `/start`
+uses `No committed rows for this view.` as its SOURCE, and an unknown pathname
+uses the literal Page-not-found record from `docs/design/surfaces.md`. The
+preview printed one line and the same five-field order on all eleven inspected
+routes: `/`, `/models/`, `/models/gpt-6-astra/`, `/plans/`,
+`/plans/claude-pro/`, `/compare/`, `/explore/`, `/start/`, `/method/`,
+`/sources/`, and `/does-not-exist/`.
+
+The shell stamps now carry the same five-field carrier on `BUILD`, `DATA`, and
+`AA`; they are not tab stops. The browser has exactly two document listeners,
+delegated `focusin` and `pointerover`, and one field-write path. A pointer
+over and keyboard focus of the band's AA anchor produced byte-identical
+`VALUE OFF · BASIS AA index · CONFIDENCE — · SOURCE AA · RETRIEVED
+2026-09-14`; a synthetic missing carrier produced
+`VALUE — · BASIS — · CONFIDENCE — · SOURCE Known gap: quota unresolved ·
+RETRIEVED —`. A real touch tap at 390px navigated to Sources and produced the
+AA record there. A tab trace of 80 steps at 768px entered no element inside
+the readout, which has no `tabindex`.
+
+The docking authority is `docs/design/surfaces.md` and decision
+`2026-09-17-002`, not the contradictory sentence in `DESIGN.md` (UI-515 owns
+that sentence). At 390 × 844 the line measured `x 0, y 32, w 390, h 49`,
+static directly below the 32px status band, with body bottom padding `0px`.
+At 768, 1024, and 1440 × 844 it measured respectively `0 … 768`,
+`0 … 1024`, and `0 … 1440` horizontally, with `y 816 … 844`, `h 28`,
+`position: fixed`, and body bottom padding `28px`. At the end of a page scroll
+the footer bottom measured `816px` at both 768px and 1440px, exactly the
+readout top, so the footer index is not covered. At 768px every inspected
+route had the readout `scrollWidth === clientWidth === 768`, and the inner row
+was one line (`28px`) at both 768px and 1024px:
+
+| Route                  | Inner row at 768 | Inner row at 1024 | `p.scrollWidth / p.clientWidth` at 768 |
+| ---------------------- | ---------------: | ----------------: | -------------------------------------: |
+| `/`                    |             28px |              28px |                              768 / 768 |
+| `/models/`             |             28px |              28px |                              768 / 768 |
+| `/models/gpt-6-astra/` |             28px |              28px |                              768 / 768 |
+| `/plans/`              |             28px |              28px |                              768 / 768 |
+| `/plans/claude-pro/`   |             28px |              28px |                              768 / 768 |
+| `/compare/`            |             28px |              28px |                              768 / 768 |
+| `/explore/`            |             28px |              28px |                              768 / 768 |
+| `/start/`              |             28px |              28px |                              768 / 768 |
+| `/method/`             |             28px |              28px |                              768 / 768 |
+| `/sources/`            |             28px |              28px |                              768 / 768 |
+| `/does-not-exist/`     |             28px |              28px |                              768 / 768 |
+
+The row settles on `gap-x-0.5` (2px) with five `whitespace-nowrap`
+label/value groups and four separator children — nine flex children and eight
+gaps. This deviates from the plan's flat eleven-child markup to preserve the
+five-field DOM contract without wrapping a label/value pair. At 768px the
+content box is 704px; the widest rendered record (`/` and `/plans`) occupies
+659.42px from the 32px left gutter to `x 691.42`, leaving 44.58px of slack.
+Data-gap paths use the `Known gap: …` source shape. The `/start` empty state
+uses `No committed rows for this view.` without that prefix, while an unknown
+pathname uses `VALUE Page not found · BASIS n/a · CONFIDENCE n/a · SOURCE
+rack-rate · RETRIEVED n/a`; all committed sources retain their labels.
+At 768px the corrected `/start` and unknown-path records left 89.5px and
+119.375px of content slack respectively; both remained 28px high at 768px
+and 1024px.
+
+The readout declares no transition. In normal motion the readout and untouched
+status-band control both computed `transition-duration: 0s`; under
+`prefers-reduced-motion: reduce` both computed `1e-05s`, the document-wide
+`0.01ms !important` policy, while the rendered record stayed byte-identical.
+This is intentional parity with the shell policy, not a readout-authored
+duration. The readout uses only the existing panel/rule tokens and existing
+type utilities; it adds no radius, shadow, gradient, blur, glow, spinner,
+shimmer, or new tab stop.
+
+One implementation deviation from the plan's file list is intentional:
+`apps/site/src/lib/url.ts` normalises an absent Bun `import.meta.env.BASE_URL`
+to the site root. The Astro build injects the value, but Bun tests otherwise
+throw while importing the pure readout helpers through `nav.ts`; this keeps
+the shared module runnable in both environments without changing route output.
+
+The built preview was exercised at `http://localhost:4321/rack-rate/` after
+`bun run build`; the build completed 53 pages and OG generation. The focused
+`bun test apps/site/src/lib/readout.test.ts` completed with 2 passes, 0
+failures, and 4 expectations. The project gates then completed as follows:
+`bun run check` exited 0 (`tsc --build --force`, `oxlint`, markdown lint
+`0 error(s) in 170 file(s)`, `oxfmt --check` clean, and `astro check` with 0
+errors and 0 warnings over 70 files); `bun test` exited 0 with 157 passes,
+0 failures, 515 expectations across 16 files; `bun run build` exited 0 with
+53 pages and `og.png` at 1200×630; and `bun run data:check` exited 0 with
+`data/derived.json` retaining SHA-256
+`7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
+
 ## Social card
 
 The root `bun run build` sequence is `data:build` → Astro build → `og`.

@@ -420,9 +420,9 @@ milestones:
       - id: UI-504
         title: The cursor readout
         description: "The cursor readout. Files: new apps/site/src/components/Readout.astro and apps/site/src/lib/readout.ts; a mount point in Base.astro; fixed-line geometry in global.css. Work: one readout element per page, aria-live='polite', printing..."
-        status: todo
+        status: done
         pre: []
-        file: docs/pm/M5/todo/UI-504.md
+        file: docs/pm/M5/done/UI-504.md
         impeccable: true
       - id: UI-505
         title: Listing primitives and the provenance components
