@@ -154,11 +154,11 @@ at 360 px, text contrast ≥ 4.5:1.
   identification block for Awesome Coding Plan (mahonzhan) rendered verbatim on
   `/sources`; credit to Datacurve for DeepSWE methodology and results;
   Terminal-Bench / Harbor Hub; `real-api-pricing` by FeiZhuLulu as prior art
-  only, with no figures copied; Lato under the SIL OFL 1.1 for the build-time
-  social card as it stands today — `docs/pm/M5/todo/UI-502.md` moves the
-  card to IBM Plex and the Lato notice leaves with the font. When an AA value is ever published, §5.1 requires the Artificial
-  Analysis logo visible on the chart plus a hyperlink, official terminology, and
-  no implication of endorsement.
+  only, with no figures copied; IBM Plex under the SIL OFL 1.1, self-hosted
+  beside its licence notice in `apps/site/src/assets/fonts/`, for the site and
+  the build-time social card. When an AA value is ever published, §5.1 requires
+  the Artificial Analysis logo visible on the chart plus a hyperlink, official
+  terminology, and no implication of endorsement.
 - **Existing mark:** `apps/site/public/favicon.svg` — a 32×32 canvas square with
   a rule border and three ascending amber bars. No raster icon and no web
   manifest ship with it. It survives the 2026-09-16 redesign unchanged;

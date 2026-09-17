@@ -406,9 +406,9 @@ milestones:
       - id: UI-502
         title: Self-hosted IBM Plex, its licence, and the two generated assets
         description: "Self-hosted IBM Plex, its licence, and the two generated assets. Files: the five latin-subset woff2 faces and the two Satori woff faces under apps/site/src/assets/fonts/, registered through the Astro Fonts API (fontProviders.local) in apps/site/astro.config.mjs, plus LICENSE.txt, global.css, apps/site/scripts/og.ts, apps/site/public/favicon.svg and apps/site/src/layouts/Base.astro; delete apps/site/assets/fonts/** once nothing references it."
-        status: todo
+        status: done
         pre: []
-        file: docs/pm/M5/todo/UI-502.md
+        file: docs/pm/M5/done/UI-502.md
         impeccable: true
       - id: UI-503
         title: Shell — status band, lane rail, drawer, workspace, footer index

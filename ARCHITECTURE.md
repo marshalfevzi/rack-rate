@@ -1401,8 +1401,8 @@ mark darkens for contrast on light grounds. `::selection` therefore pairs
 `--signal-plate` with `--color-on-signal` in both schemes.
 
 The type scale is `--text-*: initial` plus six steps. The `--text-*` namespace
-cannot carry a face, so each step's face is paired at the call site —
-`font-mono` with `text-micro` and `text-data`, the sans default with the rest.
+cannot carry a face: a step's face is a `DESIGN.md` role, applied by a utility
+or by the `.tabular` figure helper, never by the step's own declaration.
 
 | Step             | Size               | Line-height | Tracking            | Weight | Face      |
 | ---------------- | ------------------ | ----------- | ------------------- | ------ | --------- |
@@ -1413,11 +1413,15 @@ cannot carry a face, so each step's face is paired at the call site —
 | `--text-title`   | `1.25rem` (20px)   | 25px        | normal              | 600    | Plex Sans |
 | `--text-display` | `2rem` (32px)      | 36px        | `-0.02em` (-0.64px) | 600    | Plex Sans |
 
-`--font-sans` and `--font-mono` are role names at this stage and still carry
-their previous fallback stacks, so the face column names the `DESIGN.md` role
-rather than a family measured from this build: task UI-502 sets both stacks, the
-five committed woff2 faces, and the Astro `fonts` configuration
-(`fontProviders.local()`) that emits their `@font-face` rules.
+`--font-sans` and `--font-mono` are now the theme's role names for the Astro
+font variables — `--font-sans: var(--font-plex-sans)` and
+`--font-mono: var(--font-plex-mono)` — and both resolve to the measured chains
+in the UI-502 subsection below, which also records the faces and the
+configuration that emits them. The face column above is the `DESIGN.md` role
+for each step, not a per-step call site: `--text-micro` and `--text-data` are
+still unconsumed, so Tailwind still prunes both from the emitted theme until
+UI-503 and UI-505 pair a label with them. Figures bind to Plex Mono through the
+`.tabular` helper instead, whose computed chain the same subsection measures.
 
 The browser's own surfaces are themed from the same tokens, not left at their
 defaults. `:root` sets `color-scheme`, `caret-color: var(--color-signal)`,
@@ -1445,8 +1449,9 @@ Motion is unchanged: one `--default-transition-duration: 150ms`, one
 One Tailwind v4 emission note, since `--color-*: initial` now mirrors the
 existing `--text-*: initial`. Tailwind emits only the theme variables an
 emitted utility consumes, and pruning behaves identically in both namespaces:
-the built CSS at stage 5 declares nine of the ten colours — `--color-faint` is
-absent because no utility uses it yet — and four of the six type steps,
+the built CSS at stage 5 declares nine of the ten colours in its emitted
+`@layer theme` block — `--color-faint` is absent from that block because no
+utility uses it yet — and four of the six type steps in the same block,
 omitting `--text-micro` and `--text-data` for the same reason, exactly as the
 stage-4 record already documents for `--ease-standard`. The names are declared
 in source and appear in the output the moment UI-502 and its successors pair a
@@ -1455,6 +1460,118 @@ stylesheet the unique `--color-*` name set is exactly the ten frozen names, with
 no retired accent name and no default-palette variable, and
 `.text-adjusted`, `.border-adjusted`, `.text-api-ink` and `.decoration-api-ink`
 no longer exist in the output.
+
+### Stage 5 record — the self-hosted IBM Plex faces (task UI-502)
+
+Both families are registered through the Astro Fonts API with the local
+provider, under `DEC-2026-09-17-007`, so the build self-hosts every byte it
+serves: `fontProviders.local()` only maps a `src` entry through
+`createRequire`/`new URL(...)` to a filesystem path, and no code path in the
+provider fetches anything. `apps/site/astro.config.mjs` carries two
+registrations:
+
+| Family        | `cssVariable`      | Weights     | Declared fallbacks          |
+| ------------- | ------------------ | ----------- | --------------------------- |
+| IBM Plex Sans | `--font-plex-sans` | 400/500/600 | `system-ui`, `sans-serif`   |
+| IBM Plex Mono | `--font-plex-mono` | 400/500     | `ui-monospace`, `monospace` |
+
+`options.variants` is nested rather than top-level because `FontFamilySchema`
+is a strict object. Only the five woff2 faces are named in `variants.src`, so
+the two Satori `.woff` faces committed beside them are never emitted as browser
+assets; Astro writes content-hashed copies to
+`dist/_astro/fonts/<content-hash>.woff2` with the base prefix applied, and a
+page requests `/rack-rate/_astro/fonts/<content-hash>.woff2`. `Base.astro`
+renders `<Font cssVariable="--font-plex-sans" preload />` and
+`<Font cssVariable="--font-plex-mono" preload />`, and Astro inlines the
+`@font-face` rules and the custom properties in the head.
+
+Measured from the built preview at `http://localhost:4321/rack-rate/` (Astro
+7.3.2, `bun run --filter @rack-rate/site build`):
+
+| Property                           | Measured value                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `--font-plex-sans` / `--font-sans` | `"IBM Plex Sans-ae9488e500f8fb25", "IBM Plex Sans-ae9488e500f8fb25 fallback: Arial", system-ui, sans-serif`         |
+| `--font-plex-mono` / `--font-mono` | `"IBM Plex Mono-f18caff5948a4f1f", "IBM Plex Mono-f18caff5948a4f1f fallback: Courier New", ui-monospace, monospace` |
+| `@font-face` rules per page        | 10 — the five faces plus five metric-matched fallbacks                                                              |
+| Preload links per page             | 5, each `as="font" type="font/woff2" crossorigin` under `/rack-rate/_astro/fonts/`                                  |
+
+The build emits exactly five files under `dist/_astro/fonts/` —
+`58c100cc85d11210.woff2`, `ae5bc99b58cbf6a3.woff2`, `030454fc2101a8a5.woff2`,
+`d5154f33ee44a8d3.woff2` and `d1241f6ca6e4bc78.woff2` — and no `.woff`, so the
+two Satori faces never reach the browser. Both builds produced the same five
+names.
+
+The metric-matched fallbacks are named `fallback: Arial` for the three sans
+weights and `fallback: Courier New` for the two mono weights. Each carries
+`size-adjust` (101.1663% sans, 99.9837% mono), `ascent-override` and
+`descent-override`; the three sans faces also carry a `line-gap-override` of
+`0%`, which the mono faces do not. `getComputedStyle(document.body)` and the
+same call on the `h1` of each route below return the sans chain above, and an
+element carrying `.tabular` returns the mono chain. Chrome's
+`CSS.getPlatformFontsForNode` reports `IBMPlexSans-Regular` painting prose,
+`IBMPlexSans-SemiBold` painting `h1`, and an `IBMPlexMono-*` face painting the
+`.tabular` figure of every route measured — `IBMPlexMono-Medium` for the
+overview's 500- and 600-weight figures (the 20px readout and the badge legend,
+where the registry offers 400 and 500), and `IBMPlexMono-Regular` for the
+13–15px table cells, `<dd>` blocks and badge figures on `/models/`, `/plans/`,
+`/plans/claude-max-20x/`, `/models/claude-opus-5/`, `/compare/` and `/method/`.
+Those names are the response's `postScriptName` field: the same responses'
+`familyName` reads `IBM Plex Sans` or `IBM Plex Sans SemiBold` for the sans
+faces and `IBM Plex Mono` or `IBM Plex Mono Medium` for the mono ones, so a
+reader reproducing this with `CSS.getPlatformFontsForNode` matches on
+`postScriptName`.
+
+That binding is `.tabular { font-family: var(--font-mono) }` in the
+`@layer base` block of `global.css`. `.tabular` is the figure carrier the
+pages and components already mark measurements, counts, dates and percentages
+with, and before it named a family it declared only `font-variant-numeric` and
+inherited the measured `body` chain, `var(--font-sans)`. Built with that one
+declaration removed, the same elements compute the `IBM Plex Sans-*` chain and
+`CSS.getPlatformFontsForNode` reports `IBMPlexSans-Regular` — or
+`IBMPlexSans-SemiBold` for the 600-weight readout — instead of an
+`IBMPlexMono-*` face. Identifiers were already mono through Tailwind's
+preflight, which gives `code`, `kbd`, `samp` and `pre`
+`font-family: var(--default-mono-font-family, ui-monospace, …)` in the emitted
+stylesheet, so the same build paints `code` in `IBMPlexMono-Regular`. The wider
+figures add no page-level horizontal scroll: at 1440px and 360px,
+`document.documentElement.scrollWidth` equals `clientWidth` on all seven routes
+measured above.
+
+Both role variables survive in the emitted `@layer theme` block even though
+`.font-mono` is absent, for the same reason: Tailwind emits
+`--default-font-family: var(--font-sans)` and
+`--default-mono-font-family: var(--font-mono)` alongside the overridden
+namespace declarations. The mono type steps (`--text-micro`, `--text-data`) and
+`--color-faint` stay pruned from the emitted `@layer theme` block exactly as the
+UI-501 record above describes.
+
+The licence is the SIL Open Font License 1.1: `Copyright 2019 IBM Corp. All
+rights reserved.` for the Sans files and `Copyright 2017 IBM Corp. All rights
+reserved.` for the Mono files. The two upstream `LICENSE` files differ only in
+that preamble over a byte-identical OFL body, so the committed
+`apps/site/src/assets/fonts/LICENSE.txt` carries both notices and one copy of
+the shared body.
+
+Every committed face was downloaded once from the jsDelivr CDN root
+`https://cdn.jsdelivr.net/npm/` and verified against jsDelivr's recorded
+base64 SHA-256 for that path; the digests below are `shasum -a 256` over the
+committed bytes.
+
+| File                                   | Source (`…/npm/` + this path)                                                         |  Bytes | sha256                                                             |
+| -------------------------------------- | ------------------------------------------------------------------------------------- | -----: | ------------------------------------------------------------------ |
+| `ibm-plex-sans-latin-400-normal.woff2` | `@fontsource/ibm-plex-sans@5.3.0/files/ibm-plex-sans-latin-400-normal.woff2`          | 22,588 | `3b646991d30055a93a4ecc499713d4347953a74a947ecab435ab72070cbdab0e` |
+| `ibm-plex-sans-latin-500-normal.woff2` | `@fontsource/ibm-plex-sans@5.3.0/files/ibm-plex-sans-latin-500-normal.woff2`          | 24,184 | `0717336fb31fcdcde4b8deb3675bb4a0f7f6d484864afcd6751ac29975962203` |
+| `ibm-plex-sans-latin-600-normal.woff2` | `@fontsource/ibm-plex-sans@5.3.0/files/ibm-plex-sans-latin-600-normal.woff2`          | 24,252 | `8960851d691c054ed38e259bdcf1a6190d157b4203ed5bb32c632a863fb8ec2f` |
+| `ibm-plex-sans-latin-400-normal.woff`  | `@fontsource/ibm-plex-sans@5.3.0/files/ibm-plex-sans-latin-400-normal.woff`           | 22,104 | `828907bfd14855c880789878bd2b38ffd284a6c27c8b80f6069900f70dae3901` |
+| `ibm-plex-sans-latin-600-normal.woff`  | `@fontsource/ibm-plex-sans@5.3.0/files/ibm-plex-sans-latin-600-normal.woff`           | 23,876 | `7861a349af1e925a80d56547c2c9e0b1e9f6a9002a9a6867351da2f05122ad21` |
+| `ibm-plex-mono-latin-400-normal.woff2` | `@fontsource/ibm-plex-mono@5.3.0/files/ibm-plex-mono-latin-400-normal.woff2`          | 14,708 | `08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7` |
+| `ibm-plex-mono-latin-500-normal.woff2` | `@fontsource/ibm-plex-mono@5.3.0/files/ibm-plex-mono-latin-500-normal.woff2`          | 14,888 | `01d285447409c8a588692162439a038b8cbd7871309ee20267b0d2d91c6e8e22` |
+| `LICENSE.txt`                          | `@fontsource/ibm-plex-sans@5.3.0/LICENSE` + `@fontsource/ibm-plex-mono@5.3.0/LICENSE` |  5,426 | `1ce5a37e1ccedd87fc784122101278baddf7b1cd2aa57ccb3eaee6699c471e58` |
+
+The two `theme-color` metas in `Base.astro` now carry the frozen canvas values,
+`#0b0c0e` for dark and `#f4f5f6` for light, and the previously vendored `.ttf`
+pair with its separate OFL notice is deleted — `og.ts` reads only the committed
+faces above.
 
 ## Social card
 
@@ -1474,11 +1591,14 @@ The size is a contract. `Base.astro` already declares `og:image:width` 1200
 and `og:image:height` 630. Before writing, the script asserts the PNG magic
 bytes and the IHDR width and height, and throws if either assertion fails.
 
-Lato 400 and 700 are vendored under `apps/site/assets/fonts/`, with `OFL.txt`
-beside them. The licence is SIL OFL 1.1:
-`Copyright (c) 2010-2014 by tyPoland Lukasz Dziedzic
-(team@latofonts.com) with Reserved Font Name "Lato"`. `README.md` credits the
-font. The weights are static because satori does not synthesise bold; nothing
+The card's faces are the two committed Satori files,
+`ibm-plex-sans-latin-400-normal.woff` and `ibm-plex-sans-latin-600-normal.woff`
+under `apps/site/src/assets/fonts/`, read directly by `og.ts` beside the IBM
+Plex OFL 1.1 notice. Satori reads TTF, OTF and WOFF and never WOFF2 — it ships
+its own `woffToSfnt()` decompressor — so the WOFF pair, not the woff2 faces the
+browser loads, is the card's only possible source. The faces are static because
+satori synthesises no bold, so the card's two `fontWeight: 700` requests are
+mapped onto the frozen 600 step and the exact match is deterministic; nothing
 is fetched at build time (invariant 9).
 
 Satori emits glyph outlines as SVG paths rather than `<text>`. The raster step
@@ -1508,10 +1628,11 @@ in `apps/site/astro.config.mjs`; the custom-domain switch changes the card
 with no second edit.
 
 The pipeline uses no network, clock, or environment value. Two consecutive
-`bun run build` runs produced byte-identical `dist/og.png`: sha256
-`23677cc0c0657b479ac3c967711b5c1f2162e6847529214152cd3943b1af04ed`, 45,413
-bytes. `dist/` is gitignored, so the card is an artifact, never a committed
-fixture.
+site builds followed by `bun run og` — the tail of the root `build` script —
+produced a byte-identical `dist/og.png`: sha256
+`bcf190d395a4390e9bea642013858300eed76e3d61b5950ce0c8de9758a90c9d`, 44,364
+bytes, 1200×630 with a `#0b0c0e` corner pixel. `dist/` is gitignored, so the
+card is an artifact, never a committed fixture.
 
 The root `tsconfig.json` `include` now lists `apps/site/scripts`, so
 `bun run typecheck` covers build scripts as well as `src`. One API trap is

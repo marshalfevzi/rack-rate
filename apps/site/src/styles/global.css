@@ -44,11 +44,12 @@
   --text-display--letter-spacing: -0.02em;
   --text-display--font-weight: 600;
 
-  /* Roles only: task UI-502 owns these two stacks and the five @font-face rules. */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* The Astro Fonts API owns the faces: `fontProviders.local()` in
+     astro.config.mjs emits the @font-face rules and the metric-matched
+     fallbacks, and the <Font /> tags in Base.astro emit the preload links.
+     These two roles are the theme's names for the Astro variables. */
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
 
   --spacing: 0.25rem;
 
@@ -122,7 +123,10 @@
     padding: 0.5rem 1rem;
   }
 
+  /* The figure carrier: measurements, counts, dates, percentages. The family is
+     the Astro --font-plex-mono role, so Plex Mono paints every figure here. */
   .tabular {
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
 

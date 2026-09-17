@@ -103,7 +103,7 @@ function displayOrigin(html: string): string {
 }
 
 function makeCard(palette: Palette, origin: string) {
-  const headingStyle = { fontSize: 58, fontWeight: 700, color: palette.ink }
+  const headingStyle = { fontSize: 58, fontWeight: 600, color: palette.ink }
   const metaStyle = { fontSize: 30, color: palette.dim }
   const footerTextStyle = { fontSize: 22, color: palette.dim }
 
@@ -117,7 +117,7 @@ function makeCard(palette: Palette, origin: string) {
       padding: 80,
       backgroundColor: palette.canvas,
       color: palette.ink,
-      fontFamily: "Lato",
+      fontFamily: "IBM Plex Sans",
     },
     children: [
       jsxs("div", {
@@ -128,7 +128,7 @@ function makeCard(palette: Palette, origin: string) {
               display: "flex",
               alignItems: "center",
               fontSize: 36,
-              fontWeight: 700,
+              fontWeight: 600,
               color: palette.ink,
             },
             children: "rack-rate",
@@ -172,13 +172,24 @@ async function main(): Promise<void> {
   const paletteUrl = new URL("../src/styles/global.css", import.meta.url)
   const palette = readPalette(await Bun.file(paletteUrl).text())
 
-  const regularUrl = new URL("../assets/fonts/Lato-Regular.ttf", import.meta.url)
-  const boldUrl = new URL("../assets/fonts/Lato-Bold.ttf", import.meta.url)
-  const [regular, bold] = await Promise.all([readFont(regularUrl), readFont(boldUrl)])
+  // Satori reads TTF, OTF and WOFF, never WOFF2, so the card uses the two
+  // committed .woff faces. The card's 700 requests are mapped onto the 600
+  // step because satori synthesises no bold (see ARCHITECTURE.md, "Social card").
+  const regularUrl = new URL(
+    "../src/assets/fonts/ibm-plex-sans-latin-400-normal.woff",
+    import.meta.url,
+  )
+
+  const semiboldUrl = new URL(
+    "../src/assets/fonts/ibm-plex-sans-latin-600-normal.woff",
+    import.meta.url,
+  )
+
+  const [regular, semibold] = await Promise.all([readFont(regularUrl), readFont(semiboldUrl)])
 
   const fonts: Font[] = [
-    { name: "Lato", data: regular, weight: 400, style: "normal" },
-    { name: "Lato", data: bold, weight: 700, style: "normal" },
+    { name: "IBM Plex Sans", data: regular, weight: 400, style: "normal" },
+    { name: "IBM Plex Sans", data: semibold, weight: 600, style: "normal" },
   ]
 
   const indexUrl = new URL("../dist/index.html", import.meta.url)

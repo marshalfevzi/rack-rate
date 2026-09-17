@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css"
 
+import { Font } from "astro:assets"
+
 import { absoluteUrl, asset, href } from "../lib/url.ts"
 
 interface Props {
@@ -31,9 +33,11 @@ const navItems = [
     <meta name="description" content={description} />
     <link rel="canonical" href={absoluteUrl(Astro.url.pathname, Astro.site)} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#0a0e15" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0c0e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f5f6" media="(prefers-color-scheme: light)" />
     <link rel="icon" href={asset("/favicon.svg")} type="image/svg+xml" />
+    <Font cssVariable="--font-plex-sans" preload />
+    <Font cssVariable="--font-plex-mono" preload />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="rack-rate" />
     <meta property="og:title" content={title} />

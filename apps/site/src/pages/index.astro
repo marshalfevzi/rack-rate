@@ -41,6 +41,8 @@ interface BudgetPayload {
 interface BudgetDisplay {
   cost: string
   breakEven: string
+  /** True only when `breakEven` is a number; a reason and a never-breaks-even row print prose. */
+  breakEvenIsFigure: boolean
 }
 
 // This calculator ports the deleted legacy site's behavior: Q is the committed
@@ -86,7 +88,7 @@ const encodedBudget = JSON.stringify(budgetPayload).replaceAll("<", "\\u003c")
 
 function budgetDisplay(row: BudgetPayloadRow, tasks: number): BudgetDisplay {
   if (row.reason !== undefined) {
-    return { cost: row.reason, breakEven: "—" }
+    return { cost: row.reason, breakEven: "—", breakEvenIsFigure: false }
   }
 
   if (row.tasksPerMonth === null || row.apiCostPerTaskUsd === null) {
@@ -100,10 +102,17 @@ function budgetDisplay(row: BudgetPayloadRow, tasks: number): BudgetDisplay {
 
   const breakEven = row.priceUsdMonth / row.apiCostPerTaskUsd
 
+  // One branch picks the text and the figure state together: a break-even above
+  // the quota prints a sentence, and a sentence is not a figure. The comparison
+  // and every row field it reads are build-time constants, so a row's state
+  // cannot change: the client re-render below rewrites the same two strings and
+  // never has to swap the class.
+  const breaksEven = breakEven <= row.tasksPerMonth
+
   return {
     cost: formatUsd(cost),
-    breakEven:
-      breakEven > row.tasksPerMonth ? "Never breaks even at list rates" : formatTasksPerMonth(breakEven),
+    breakEven: breaksEven ? formatTasksPerMonth(breakEven) : "Never breaks even at list rates",
+    breakEvenIsFigure: breaksEven,
   }
 }
 
@@ -279,7 +288,10 @@ const benchmarkNames = benchmarks.map((benchmark) => benchmark.title).join(", ")
                   ) : null}
                 </td>
                 <td class="px-2 py-2">
-                  <span id={`budget-break-even-${row.planId}`} class="tabular">
+                  <span
+                    id={`budget-break-even-${row.planId}`}
+                    class={display.breakEvenIsFigure ? "tabular" : undefined}
+                  >
                     {display.breakEven}
                   </span>
                 </td>

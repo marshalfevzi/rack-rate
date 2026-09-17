@@ -170,9 +170,10 @@ including the Artificial Analysis position.
   > International License.
   > Link to the License: https://creativecommons.org/licenses/by/4.0/
 
-- The social card uses Lato, vendored in `apps/site/assets/fonts/` under the SIL
-  Open Font License 1.1; `OFL.txt` is kept beside the fonts. It is used only
-  to render the build-time social card.
+- The site and the social card are set in IBM Plex Sans and IBM Plex Mono,
+  self-hosted under `apps/site/src/assets/fonts/` under the SIL Open Font
+  License 1.1; `LICENSE.txt` is kept beside the faces. No font is fetched from
+  a CDN, at build time or at runtime.
 
 - [`real-api-pricing`](https://github.com/FeiZhuLulu/real-api-pricing) by
   FeiZhuLulu reached a related idea first: pricing usable model work against
