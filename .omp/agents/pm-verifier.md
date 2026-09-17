@@ -9,6 +9,10 @@ tools:
   - ast_grep
   - lsp
   - pm_doc_check
+  - yield
+  - web_search
+spawns: 
+  - scout
 read-summarize: false
 ---
 

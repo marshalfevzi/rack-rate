@@ -9,7 +9,9 @@ tools:
   - glob
   - ast_grep
   - ast_edit
-thinking-level: low
+model: 
+  - "@smol"
+thinkingLevel: medium
 autoloadSkills: [project-management]
 ---
 

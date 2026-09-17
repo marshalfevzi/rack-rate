@@ -8,6 +8,9 @@ tools:
   - ast_grep
   - web_search
   - todo
+spawns: "*"
+model: 
+  - "@plan"
 ---
 
 # Role

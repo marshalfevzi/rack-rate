@@ -12,6 +12,10 @@ tools:
   - ast_edit
   - lsp
   - todo
+spawns: "*"
+model: 
+  - "@task"
+thinkingLevel: auto
 ---
 
 # Role

@@ -1,18 +1,10 @@
 ---
 name: pm-ui-implementer
 description: Implement one UI-prefixed PM task end to end with the project design contract, impeccable craft floor, and visual evidence.
-tools:
-  - read
-  - write
-  - edit
-  - bash
-  - grep
-  - glob
-  - lsp
-  - ast_grep
-  - ast_edit
-  - browser
-  - todo
+spawns: "*"
+model: 
+  - "@task"
+thinkingLevel: auto
 autoloadSkills: [impeccable, project-management]
 ---
 
