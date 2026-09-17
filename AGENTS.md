@@ -122,8 +122,10 @@ Two ownership rules are load-bearing:
   oxfmt. Markdown contains no hard line breaks: no trailing backslash and no two-space
   break.
 - **Run the project's documented gate once, at the end.** The gate command lives
-  in `ARCHITECTURE.md` and the package manifest. A subagent does not run
-  project-wide gates; the orchestrator runs them after all edits land.
+  in `ARCHITECTURE.md` and the package manifest. Run it after a change is
+  complete, never after each edit. A single-writer subagent converges its own
+  change with one gate run at the end of its pass; when several subagents edit
+  independent slices, the orchestrator runs the gate once after all edits land.
 - **A decision gates a blocker, not the reverse.** When a task turns out to need
   a product or architecture call the documents do not already answer, write the
   decision first, then proceed.
@@ -176,3 +178,8 @@ Two ownership rules are load-bearing:
   `docs/pm/config.yml`. They load `skill://impeccable`; the design detector runs
   after UI edits. Design truth lives in `DESIGN.md` and the surface briefs, never
   copied into shipped source.
+- `omp agents unpack --project` restores OMP's bundled agent set into
+  `.omp/agents/`. Never commit those copies: they shadow identical bundled
+  definitions and drift silently. `.omp/agents/` holds only the PM specialists,
+  and the bundled `scout`, `sonic`, `task`, `reviewer` and `security-reviewer`
+  keep loading from their bundled definitions.
