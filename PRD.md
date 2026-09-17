@@ -120,7 +120,7 @@ The required gates are `bun run check`, `bun test`, and `bun run data:check`. Th
 
 ## Analytics & Monitoring
 
-No analytics snippet ships, and none may be added. The analytics snippet deleted in stage 1 is not reintroduced. The deployed site has no runtime telemetry. Source: `ARCHITECTURE.md` (Anti-signals and incumbent residue, “Dead analytics snippet”); the Product Overview above and `PRODUCT.md` (Operating Context).
+No analytics snippet ships, and none may be added. The analytics snippet deleted in stage 1 is not reintroduced. The deployed site has no runtime telemetry. Source: `ARCHITECTURE.md` (Design tokens, Anti-signals, “Dead analytics snippet”); the Product Overview above and `PRODUCT.md` (Operating Context).
 
 Operational observability is limited to the CI checks: `bun run check`, `bun test`, `bun run data:check`, and the compute-write guard. The `doctor` command probes source and vendor URLs, reports Artificial Analysis environment state, checks data-file parsing, and reports URL liveness findings. Source: `ARCHITECTURE.md` (Data CLI and Operations and commands); `docs/pm/M8/todo/DATA-801.md` and `docs/pm/M8/todo/DATA-802.md`.
 

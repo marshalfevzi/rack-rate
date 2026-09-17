@@ -113,7 +113,7 @@ encoded in the URL, composite weight sliders that recompute client-side from
 shipped per-benchmark z-scores, and a provider → plan → model selection wizard
 whose result is a shareable, stateless link.
 
-**Locked stack** (see `AGENTS.md`; do not re-litigate): Bun 1.4.2, TypeScript
+**Locked stack** (see `ARCHITECTURE.md`; do not re-litigate): Bun 1.4.2, TypeScript
 strict with no `any`, Astro 7 static output with no adapter, Tailwind v4 through
 `@tailwindcss/vite` with tokens in CSS `@theme` and no `tailwind.config.js`,
 Apache ECharts 6 driven from plain TypeScript with no React/Svelte island,
@@ -121,7 +121,8 @@ nanostores + `@nanostores/persistent` (SSR-safe), zod 4 at every trust boundary
 (HTTP response, file on disk, localStorage), committed normalized `data/*.json`,
 GitHub Pages deploy, `bun test`.
 
-**Ten invariants; violating one is a bug** (full text in `AGENTS.md`): version
+**Ten invariants; violating one is a bug** (full text in the Invariant index of
+`ARCHITECTURE.md`): version
 in row identity; missing is missing; `pass@1` and `pass@4` never share a field,
 axis or formula; every cost figure carries its basis; confidence is displayed,
 never laundered; nulls stay null; no benchmark task content in this repository

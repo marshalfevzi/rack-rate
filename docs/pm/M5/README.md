@@ -91,9 +91,12 @@ nothing else.
   toolbar, which is not app chrome and was mistaken for chart chrome in the
   earlier design session.
 
-**Reporting rule.** Each task updates its section of `ARCHITECTURE.md` as it
-lands, the way Stages 3 and 4 did. Task 5.15 re-derives the design documents from
-the shipped code afterwards.
+**Reporting rule.** A reference document holds current truth only. A task's
+measurements and build notes go in its own `## Session` section in
+`docs/pm/M5/done/<ID>.md`; `ARCHITECTURE.md` is reconciled in place to describe
+the system as it stands and is never appended with a per-task or per-stage
+record. Task 5.15 re-derives the design documents from the shipped code
+afterwards.
 
 ### Acceptance
 
