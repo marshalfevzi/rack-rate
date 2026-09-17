@@ -1415,8 +1415,9 @@ cannot carry a face, so each step's face is paired at the call site —
 
 `--font-sans` and `--font-mono` are role names at this stage and still carry
 their previous fallback stacks, so the face column names the `DESIGN.md` role
-rather than a family measured from this build: task UI-502 sets both stacks,
-the five `@font-face` rules and the woff2 files.
+rather than a family measured from this build: task UI-502 sets both stacks, the
+five committed woff2 faces, and the Astro `fonts` configuration
+(`fontProviders.local()`) that emits their `@font-face` rules.
 
 The browser's own surfaces are themed from the same tokens, not left at their
 defaults. `:root` sets `color-scheme`, `caret-color: var(--color-signal)`,

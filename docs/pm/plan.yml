@@ -405,7 +405,7 @@ milestones:
         impeccable: true
       - id: UI-502
         title: Self-hosted IBM Plex, its licence, and the two generated assets
-        description: "Self-hosted IBM Plex, its licence, and the two generated assets. Files: new apps/site/public/fonts/ibm-plex-sans-latin-{400,500,600}-normal.woff2, apps/site/public/fonts/ibm-plex-mono-latin-{400,500}-normal.woff2 and apps/site/public..."
+        description: "Self-hosted IBM Plex, its licence, and the two generated assets. Files: the five latin-subset woff2 faces and the two Satori woff faces under apps/site/src/assets/fonts/, registered through the Astro Fonts API (fontProviders.local) in apps/site/astro.config.mjs, plus LICENSE.txt, global.css, apps/site/scripts/og.ts, apps/site/public/favicon.svg and apps/site/src/layouts/Base.astro; delete apps/site/assets/fonts/** once nothing references it."
         status: todo
         pre: []
         file: docs/pm/M5/todo/UI-502.md
@@ -500,6 +500,26 @@ milestones:
         status: todo
         pre: []
         file: docs/pm/M5/todo/UI-515.md
+        impeccable: true
+      - id: APP-516
+        title: Migrate the social card from Satori to Takumi
+        description: "Migrate the social card from Satori to Takumi. Files: apps/site/scripts/og.ts, apps/site/package.json, bun.lock, the two Satori .woff faces under apps/site/src/assets/fonts/, and the Social card section of ARCHITECTURE.md. Work: replace satori 0.33.4 plus @resvg/resvg-js 2.6.2 with one takumi-js 2.14.0 render() that returns PNG bytes; the card then reads the five committed latin woff2 faces, synthesises the weight it asks for, and no longer needs its own WOFF copies."
+        status: todo
+        pre:
+          - UI-502
+        file: docs/pm/M5/todo/APP-516.md
+        impeccable: false
+      - id: UI-517
+        title: Shareable static image of a filtered chart view
+        description: "Shareable static image of a filtered chart view. Files: new apps/site/src/lib/share/{card.ts,render.ts} and card.test.ts, the six /explore plates with their control rows, and the ARCHITECTURE.md, docs/design/surfaces.md, PRD.md and PRODUCT.md records. Work: a SHARE IMAGE action in each plate's control row renders the filtered view into a 1200x630 card with Takumi's WASM build, from the same payload builders and readout contract the page already uses."
+        status: todo
+        pre:
+          - UI-504
+          - UI-505
+          - UI-509
+          - UI-511
+          - APP-516
+        file: docs/pm/M5/todo/UI-517.md
         impeccable: true
     retro: []
   - id: M6
