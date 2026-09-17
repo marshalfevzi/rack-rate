@@ -1,0 +1,48 @@
+---
+import { href } from "../lib/url.ts"
+
+interface Props {
+  buildDate: string
+  dataDate: string
+  aaPublished: boolean
+}
+
+const { buildDate, dataDate, aaPublished } = Astro.props
+---
+
+<header class="sticky top-0 z-10 h-8 w-full border-b border-rule bg-panel-2">
+  <div class="mx-auto flex h-full w-full max-w-[1440px] items-center gap-x-4 whitespace-nowrap px-6 font-mono md:px-8 lg:pl-2 lg:pr-8 xl:pr-12">
+    <a class="shrink-0 text-micro uppercase text-ink" href={href("/")}>RACK-RATE</a>
+
+    <div class="hidden shrink-0 items-center gap-x-1 text-micro md:flex">
+      <span class="text-faint">BUILD</span>
+      <span class="tabular text-ink">{buildDate}</span>
+    </div>
+
+    <div class="hidden shrink-0 items-center gap-x-1 text-micro md:flex">
+      <span class="text-faint">DATA</span>
+      <span class="tabular text-ink">{dataDate}</span>
+    </div>
+
+    <a
+      class="flex shrink-0 items-center gap-x-1 text-micro"
+      href={`${href("/sources")}#artificial-analysis-heading`}
+    >
+      <span class="sr-only">Artificial Analysis: {aaPublished ? "published" : "not published"}</span>
+      <span aria-hidden="true" class="text-faint">AA</span>
+      <span aria-hidden="true" class="tabular text-ink">{aaPublished ? "ON" : "OFF"}</span>
+    </a>
+
+    <!-- MENU controls the shared lane-rail dialog. -->
+    <button
+      id="lane-menu"
+      class="ml-auto shrink-0 text-micro uppercase text-ink lg:hidden"
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="lane-rail"
+      aria-expanded="false"
+    >
+      MENU
+    </button>
+  </div>
+</header>

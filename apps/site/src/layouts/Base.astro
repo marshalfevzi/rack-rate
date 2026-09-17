@@ -3,7 +3,15 @@ import "../styles/global.css"
 
 import { Font } from "astro:assets"
 
-import { absoluteUrl, asset, href } from "../lib/url.ts"
+import { absoluteUrl, asset } from "../lib/url.ts"
+
+import StatusBand from "../components/StatusBand.astro"
+import LaneRail from "../components/LaneRail.astro"
+import FooterIndex from "../components/FooterIndex.astro"
+
+import { lanes, isCurrent } from "../lib/nav.ts"
+import { derivedGeneratedAt, sources, models, plans, benchmarks } from "../lib/data.ts"
+import { artificialAnalysisState, newestRetrievedAt } from "../lib/provenance.ts"
 
 interface Props {
   title: string
@@ -12,16 +20,14 @@ interface Props {
 
 const { title, description } = Astro.props
 
-const navItems = [
-  { path: "/", label: "Overview" },
-  { path: "/models", label: "Models" },
-  { path: "/plans", label: "Plans" },
-  { path: "/compare", label: "Compare" },
-  { path: "/explore", label: "Explore" },
-  { path: "/start", label: "Get started" },
-  { path: "/method", label: "Method" },
-  { path: "/sources", label: "Sources" },
-] as const
+const current = lanes.find((lane) => isCurrent(Astro.url.pathname, lane.path))?.path ?? null
+
+// surfaces.md defines BUILD as the committed generation date.
+const buildDate = derivedGeneratedAt.slice(0, 10)
+
+const dataDate = newestRetrievedAt(sources, models, plans, benchmarks)
+
+const aaPublished = artificialAnalysisState(benchmarks).published
 
 ---
 
@@ -55,56 +61,11 @@ const navItems = [
   <body class="min-h-screen bg-canvas font-sans text-ink">
     <!-- In-page fragments bypass the helper. -->
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="sticky top-0 z-10 border-b border-rule bg-canvas">
-      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <a class="text-title text-ink" href={href("/")}>rack-rate</a>
-        <nav aria-label="Primary">
-          <ul class="flex flex-wrap justify-end gap-3">
-            {
-              navItems.map(({ path, label }) => {
-                const isCurrent =
-                  path === "/"
-                    ? Astro.url.pathname === href(path)
-                    : Astro.url.pathname.startsWith(href(path))
-
-                return (
-                  <li>
-                    <a
-                      class:list={[
-                        "inline-block py-1 text-meta text-dim transition-colors hover:text-ink",
-                        isCurrent && "text-ink",
-                      ]}
-                      href={href(path)}
-                      aria-current={isCurrent ? "page" : undefined}
-                    >
-                      {label}
-                    </a>
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </nav>
-      </div>
-    </header>
-
-    <slot />
-
-    <footer class="border-t border-rule text-meta text-dim">
-      <div class="mx-auto w-full max-w-6xl space-y-2 px-4 py-6">
-        <!-- Static credits; 3.11 renders the verbatim CC BY 4.0 attribution from data/sources.json on /sources. -->
-        <p>
-          Model scores from DeepSWE (Datacurve) — <a class="text-ink underline" href="https://deepswe.datacurve.ai/" rel="noreferrer">https://deepswe.datacurve.ai/</a>{" "}
-          — and Terminal-Bench (Harbor Hub) — <a class="text-ink underline" href="https://www.tbench.ai/" rel="noreferrer">https://www.tbench.ai/</a>.
-          Plan quotas from Awesome Coding Plan by mahonzhan — <a class="text-ink underline" href="https://github.com/mahonzhan/awesome-coding-plan" rel="noreferrer">https://github.com/mahonzhan/awesome-coding-plan</a>{" "}
-          — used under CC BY 4.0 — <a class="text-ink underline" href="https://creativecommons.org/licenses/by/4.0/" rel="noreferrer">https://creativecommons.org/licenses/by/4.0/</a>.
-          Prior art: real-api-pricing by FeiZhuLulu — <a class="text-ink underline" href="https://github.com/FeiZhuLulu/real-api-pricing" rel="noreferrer">https://github.com/FeiZhuLulu/real-api-pricing</a>.
-          Prices are read from vendor pricing pages and dated. Full attribution, licensing and freshness: the <a class="text-ink underline" href={href("/sources")}>Sources</a> page.
-        </p>
-        <p>
-          Artificial Analysis data is excluded from this build unless publication is explicitly enabled; the Sources page states which state this build is in.
-        </p>
-      </div>
-    </footer>
+    <StatusBand buildDate={buildDate} dataDate={dataDate} aaPublished={aaPublished} />
+    <div class="mx-auto w-full max-w-[1440px] px-6 md:px-8 lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-8 lg:pl-0 lg:pr-8 xl:gap-x-12 xl:pr-12">
+      <LaneRail lanes={lanes} current={current} buildDate={buildDate} dataDate={dataDate} />
+      <slot />
+    </div>
+    <FooterIndex lanes={lanes} current={current} />
   </body>
 </html>

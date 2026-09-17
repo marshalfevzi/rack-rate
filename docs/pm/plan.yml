@@ -413,9 +413,9 @@ milestones:
       - id: UI-503
         title: Shell — status band, lane rail, drawer, workspace, footer index
         description: "Shell — status band, lane rail, drawer, workspace, footer index. Files: apps/site/src/layouts/Base.astro, apps/site/src/layouts/Page.astro, new apps/site/src/components/StatusBand.astro, apps/site/src/components/LaneRail.astro, apps/..."
-        status: todo
+        status: done
         pre: []
-        file: docs/pm/M5/todo/UI-503.md
+        file: docs/pm/M5/done/UI-503.md
         impeccable: true
       - id: UI-504
         title: The cursor readout

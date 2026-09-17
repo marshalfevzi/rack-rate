@@ -9,6 +9,7 @@ import {
   ciGeometry,
   costBasisQualifier,
   costBasisTerm,
+  newestRetrievedAt,
   requiredAttribution,
 } from "./provenance.ts"
 
@@ -155,5 +156,24 @@ describe("artificialAnalysisState", () => {
 
     expect(state).toEqual({ published: true, entry })
     expect(state.entry?.note).toBe("committed")
+  })
+})
+
+describe("newestRetrievedAt", () => {
+  test("returns a later collection's date over the first collection's newest date", () => {
+    expect(
+      newestRetrievedAt(
+        [{ retrieved: "2026-09-13" }, { retrieved: "2026-09-14" }],
+        [{ retrieved_at: "2026-09-12" }],
+        [{ retrieved_at: "2026-09-11" }],
+        [{ retrieved_at: "2026-09-15" }],
+      ),
+    ).toBe("2026-09-15")
+  })
+
+  test("throws when all four collections are empty", () => {
+    expect(() => newestRetrievedAt([], [], [], [])).toThrow(
+      "provenance: no retrieved dates available",
+    )
   })
 })

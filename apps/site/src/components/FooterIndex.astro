@@ -1,0 +1,61 @@
+---
+import type { Lane } from "../lib/nav.ts"
+import { href } from "../lib/url.ts"
+
+interface Props {
+  lanes: readonly Lane[]
+  current: string | null
+}
+
+const { lanes, current } = Astro.props
+---
+
+<footer class="border-t border-rule bg-panel-2">
+  <div
+    class="mx-auto flex w-full max-w-[1440px] flex-col gap-y-2 px-6 py-2 md:px-8 lg:pl-2 lg:pr-8 xl:pr-12"
+  >
+    <nav aria-label="Route index">
+      <ul class="flex flex-wrap gap-x-4 gap-y-1 font-mono text-micro">
+        {
+          lanes.map((lane) => {
+            const isCurrent = current === lane.path
+
+            return (
+              <li>
+                <a
+                  class:list={[
+                    "inline-flex items-baseline gap-x-1 uppercase",
+                    isCurrent ? "text-ink" : "text-dim hover:text-ink",
+                  ]}
+                  href={href(lane.path)}
+                  aria-current={isCurrent ? "page" : undefined}
+                >
+                  {lane.number !== null && <span class="text-faint">[{lane.number}]</span>}
+                  <span>{lane.label}</span>
+                </a>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </nav>
+
+    <p class="font-mono text-micro">
+      <span class="text-faint uppercase">MAKER</span>{" "}
+      <span class="text-ink">Bosphorus Elevate</span>
+    </p>
+
+    <p class="break-words font-sans text-meta text-dim">
+      Model scores from DeepSWE (Datacurve) — <a class="text-ink underline" href="https://deepswe.datacurve.ai/" rel="noreferrer">https://deepswe.datacurve.ai/</a>{" "}
+      — and Terminal-Bench (Harbor Hub) — <a class="text-ink underline" href="https://www.tbench.ai/" rel="noreferrer">https://www.tbench.ai/</a>.
+      Plan quotas from Awesome Coding Plan by mahonzhan — <a class="text-ink underline" href="https://github.com/mahonzhan/awesome-coding-plan" rel="noreferrer">https://github.com/mahonzhan/awesome-coding-plan</a>{" "}
+      — used under CC BY 4.0 — <a class="text-ink underline" href="https://creativecommons.org/licenses/by/4.0/" rel="noreferrer">https://creativecommons.org/licenses/by/4.0/</a>.
+      Prior art: real-api-pricing by FeiZhuLulu — <a class="text-ink underline" href="https://github.com/FeiZhuLulu/real-api-pricing" rel="noreferrer">https://github.com/FeiZhuLulu/real-api-pricing</a>.
+      Prices are read from vendor pricing pages and dated. Full attribution, licensing and freshness: the <a class="text-ink underline" href={href("/sources")}>Sources</a> page.
+    </p>
+
+    <p class="break-words font-sans text-meta text-dim">
+      Artificial Analysis data is excluded from this build unless publication is explicitly enabled; the Sources page states which state this build is in.
+    </p>
+  </div>
+</footer>

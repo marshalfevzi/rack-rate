@@ -63,6 +63,34 @@ export function artificialAnalysisState<T extends { id: string }>(
   return { published: entry !== undefined, entry: entry ?? null }
 }
 
+/**
+ * Finds the newest committed date across `data/sources.json[].retrieved`,
+ * `data/models.json[].retrieved_at`, `data/plans.json[].retrieved_at`, and
+ * `data/benchmarks.json[].retrieved_at`. All four fields are date-only
+ * `YYYY-MM-DD`, so the newest date is the lexicographic maximum. An empty set
+ * throws, mirroring `data.ts`'s `derivedGeneratedAt` guard, so a build cannot
+ * print an undated stamp.
+ */
+export function newestRetrievedAt(
+  sources: readonly { retrieved: string }[],
+  models: readonly { retrieved_at: string }[],
+  plans: readonly { retrieved_at: string }[],
+  benchmarks: readonly { retrieved_at: string }[],
+): string {
+  const retrievedDates = [
+    ...sources.map(({ retrieved }) => retrieved),
+    ...models.map(({ retrieved_at }) => retrieved_at),
+    ...plans.map(({ retrieved_at }) => retrieved_at),
+    ...benchmarks.map(({ retrieved_at }) => retrieved_at),
+  ]
+
+  if (retrievedDates.length === 0) {
+    throw new Error("provenance: no retrieved dates available")
+  }
+
+  return retrievedDates.reduce((newest, retrieved) => (retrieved > newest ? retrieved : newest))
+}
+
 /** Which units `ci_lo`/`ci_hi` are in — the two-convention trap in ARCHITECTURE.md. */
 export type CiScale = "fraction" | "percent"
 

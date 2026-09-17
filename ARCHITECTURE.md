@@ -400,9 +400,11 @@ this stage.
 
 `apps/site/src/layouts/Base.astro` accepts `title` and `description`.
 `apps/site/src/layouts/Page.astro` accepts `title`, `description`, optional
-`heading`, and optional `lede`. `Base` renders the skip link, sticky header,
-and footer; the header computes `position: sticky`. `Page` is the only layout
-that renders `<main id="main" tabindex="-1">`; `Base` renders no main landmark.
+`heading`, and optional `lede`. `Base` renders the skip link, the `StatusBand`
+(the pinned 32px band), the capped shell grid that holds `LaneRail` and the
+page slot, and the `FooterIndex`; the band — not a header nav — computes
+`position: sticky`. `Page` is still the only layout that renders
+`<main id="main" tabindex="-1">`, and `Base` still renders no main landmark.
 
 `apps/site/src/lib/url.ts` exports three typed helpers:
 
@@ -448,10 +450,13 @@ site name, title, description, URL, image, image dimensions and image alt,
 then Twitter card (`summary_large_image`), title, description and image.
 
 The navigation routes are `/`, `/models`, `/plans`, `/compare`, `/explore`,
-`/start`, `/method`, and `/sources`. `aria-current="page"` is exact for the
-root route and prefix-based for the other routes: Overview is current at
-`/rack-rate/`, Models at `/rack-rate/models/`, and no item is current at
-`/rack-rate/smoke33/`.
+`/start`, `/method`, and `/sources`. The route list is backed by
+`apps/site/src/lib/nav.ts`, which exports `lanes`, `isCurrent`, and
+`laneAnchorId`; the band, the rail, the drawer, and the footer index all read
+that one module, so the route table cannot drift. `aria-current="page"` is
+exact for the root route and prefix-based for the other routes: Overview is
+current at `/rack-rate/`, Models at `/rack-rate/models/`, and no item is
+current at `/rack-rate/smoke33/`.
 
 The skip link is 1 by 1 px and clipped with `clip-path: inset(50%)` until
 focused. Headless Chromium measured its focused state at 138 by 42 px at the
@@ -460,7 +465,8 @@ top left with the 2 px ink outline. The global focus ring is
 interaction chrome spends no accent hue. `.tabular` sets
 `font-variant-numeric: tabular-nums`.
 
-The footer has two static paragraphs. The credit paragraph names
+The footer is the indexed route directory plus the maker credit, and the two
+paragraphs below are retained verbatim inside it. The credit paragraph names
 DeepSWE/Datacurve, Terminal-Bench/Harbor Hub, Awesome Coding Plan by mahonzhan
 under CC BY 4.0, real-api-pricing by FeiZhuLulu, and the Sources page. The
 Artificial Analysis paragraph states that it is excluded unless publication
@@ -1572,6 +1578,201 @@ The two `theme-color` metas in `Base.astro` now carry the frozen canvas values,
 `#0b0c0e` for dark and `#f4f5f6` for light, and the previously vendored `.ttf`
 pair with its separate OFL notice is deleted — `og.ts` reads only the committed
 faces above.
+
+### Stage 5 record — the Console Listing shell (task UI-503)
+
+No file under `apps/site/src/pages/**` was edited; every route inherits the
+shell through `Base`/`Page`. The new surface is three components and one
+module: `apps/site/src/components/StatusBand.astro` (the 32px band),
+`apps/site/src/components/LaneRail.astro` (the lane rail, the mobile drawer,
+and the keyboard model), `apps/site/src/components/FooterIndex.astro` (the
+numbered route index, the maker credit, and the retained attributions), and
+`apps/site/src/lib/nav.ts` (the single route table the band, the rail, the
+drawer, and the footer index all read). `Page.astro` renders the only `<main>`
+as `id="main"`, `tabindex="-1"`, `min-w-0 py-8`.
+`apps/site/src/lib/provenance.ts` adds `newestRetrievedAt` with two focused
+tests for the cross-collection maximum and the empty-set throw.
+
+`lanes` is ordered `01` `/` Overview, `02` `/models` Models, `03` `/plans`
+Plans, `04` `/compare` Compare, `05` `/explore` Explore, `06` `/start` Get
+started, then two reference rows with `number: null` — `/method` Method and
+`/sources` Sources. `isCurrent(pathname, path)` is exact for `/` and
+prefix-based otherwise; `laneAnchorId` yields `lane-01` through `lane-06`,
+`lane-method`, and `lane-sources`. Labels stay verbatim and only the casing
+treatment is ours (the `uppercase` utility), so a route label, order, or
+anchor cannot drift between the four consumers.
+
+The band is a `header` at `position: sticky; top: 0; z-index: 10; height: 32px;
+width: 100%` on the `--color-panel-2` ground with a 1px `--color-rule` bottom
+rule. It is full bleed at every measured width: the band width equals the
+viewport at 390, 640, 768, 1023, 1024, 1280, 1440, and 1680 while the shell
+inside stays capped. Measured pinned at `scrollY` 0, 600, and 1530, the band
+box is exactly `0 … 32`. The inner row is `mx-auto w-full max-w-[1440px]`
+`h-full` with `px-6` (24px) gutters, `md:px-8` (32px), and at `lg` `pl-2` (8px)
+with `pr-8`/`xl:pr-12` (32/48px). The row is `whitespace-nowrap` and never
+wraps.
+
+Items in order are `RACK-RATE` (link to `/`), `BUILD 2026-09-10`,
+`DATA 2026-09-14`, `AA OFF`, and `MENU`. `BUILD`/`DATA` are `hidden md:flex`:
+measured `display: none` at 390 and 640 and `flex` at 768 and up, with the
+drawer carrying the same two strings below `md`. `AA` links to
+`/rack-rate/sources/#artificial-analysis-heading`, and the built
+`sources/index.html` carries `id="artificial-analysis-heading"`. The visible
+`AA` plus state pair is `aria-hidden` with an `sr-only` expansion
+("Artificial Analysis: not published"). `MENU` is `#lane-menu`
+(`type="button"`, `aria-haspopup="dialog"`, `aria-controls="lane-rail"`,
+`aria-expanded`) and is `lg:hidden`: measured `block` at 390, 640, 768, and
+1023 and `none` at 1024 and up. The band's legends and values resolve to IBM
+Plex Mono through `font-mono` on the inner row (`StatusBand.astro:14`) paired
+with the `text-micro` step: Tailwind's `--text-*` theme namespace carries
+metrics only (the compiled `.text-micro{}` emits font-size, line-height,
+letter-spacing and font-weight and no family, and a `--text-micro--font-family`
+declaration was measured to emit nothing and was not kept), so the family comes
+from `font-mono`. Measured at 1440 the band wordmark, the `BUILD` legend and
+`#lane-menu` compute the IBM Plex Mono chain while `body` and `#main p` stay
+the IBM Plex Sans chain; `#lane-01` (representative) computes 11px, 0.88px
+tracking, weight 500, with the family chain `"IBM Plex Mono-…", "IBM Plex
+Mono-… fallback: Courier New", ui-monospace, monospace`.
+
+The stamps come from committed data only: `BUILD` is
+`derivedGeneratedAt.slice(0, 10)` (the committed generation date), `DATA` is
+`newestRetrievedAt(sources, models, plans, benchmarks)` (the newest of the
+four `retrieved`/`retrieved_at` sets), and `AA OFF` is
+`artificialAnalysisState(benchmarks).published`. `newestRetrievedAt` throws on
+an empty set, mirroring the existing generation-date guard, so a build cannot
+print an undated stamp.
+
+The rail is one element, `<dialog id="lane-rail" aria-label="Lane rail">`, and
+it carries no `open` attribute. The single `<nav>` inside keeps
+`aria-label="Lanes"`, as `docs/design/surfaces.md` requires, and the two names
+stay different so the dialog and the landmark never share one accessible name.
+The author `lg:block` beats the UA `dialog:not([open]) { display: none }` (the
+same box computes `display: none` without that utility), so the static rail is
+a plain block at desktop widths.
+Measured at 1024, 1280, and 1440 it is `x 0, y 32, 176 × 314` at
+`position: sticky; top: 32px` with `border-right: 1px --color-rule`,
+`border-bottom: 0`, ground `--color-panel-2`, `overflow-y: auto`, and
+`max-height: 868px` (`calc(100dvh - 2rem)`); at 1680 the shell centres and the
+rail sits at `x 120`. Measured sticky at `scrollY` 0, 600, and 1530, the rail
+box stays `32 … 346`. The 314 is six `h-10` rows (240) plus the 2px
+`--color-rule-strong` divider on the reference group plus two `h-9` rows (72):
+row heights measure 40 and 36 border-box (`row01` is 40 at every width where
+the rail renders), while the anchor inside a row measures 39/35 because the
+row's own 1px bottom rule sits inside the 40/36. Rows print the number in
+`--color-faint` and the label in `--color-dim`, both `uppercase` in IBM Plex
+Mono (`font-mono` with `text-micro` on the `nav`, `LaneRail.astro:35`), with
+hover `--color-ink`; the current row carries `aria-current="page"`, the
+`--signal-plate` ground, and `--color-on-signal` text (the plate measured
+`rgb(255, 176, 32)` on the current row only). Exactly one row is tabbable
+through a roving `tabindex`: with no matching route (measured on a 404 route)
+no row is current and lane `01` holds the `0`, while on `/models` the current
+row is `lane-02` and the only tabbable row.
+
+Below 1024px the same dialog is the drawer. Closed by default it is out of the
+tab order (measured `display: none`, with the mobile tab trace running skip
+link to `RACK-RATE` to `AA` to `MENU` and no rail row). `MENU` calls
+`showModal()`, so the sheet is a native modal in the top layer: measured at
+390 × 844 as `position: fixed`, `x 0, y 32, w 390, h 408`,
+`max-height: calc(100dvh - 2rem)`, `overflow-y: auto`,
+`overscroll-behavior: contain`, and a 1px bottom rule, with the page behind
+undisplaced (the main rect is unchanged while open). Below the band it prints
+`CLOSE` (`lg:hidden`, 40px row, `font-mono` with `text-micro` on the drawer row,
+`LaneRail.astro:24`), the `BUILD`/`DATA` block (`md:hidden`, `font-mono` with
+`text-micro`, `LaneRail.astro:28`), and then the same eight rows; all three
+resolve to IBM Plex Mono for the reason above, measured Mono on the `CLOSE`
+button, the `BUILD` legend and `#lane-02` in the 390 drawer. Opening the drawer
+at 1023px and resizing to 1024px closes it through
+`window.matchMedia("(min-width: 64rem)")` (`LaneRail.astro:151`), matching the
+compiled `@media (width>=64rem)` of the `lg` utilities (measured `open: false`,
+`MENU` `display: none`, rail `display: block`). On open, focus lands on the
+current row (lane `01` when nothing matches) with `aria-expanded="true"`. `Tab`
+cycles inside the dialog (no element outside it receives focus; one `Tab` from
+the last row parks `activeElement` on `document.body`, which is the
+browser-chrome hop, and
+the next `Tab` re-enters), `ArrowUp`/`ArrowDown` move one row and clamp,
+`Home`/`End` jump, `Space` activates with `Enter` left native — measured
+`Space` navigating to `/rack-rate/models/` and closing the sheet. All four
+dismissal paths were measured — `Escape`, the `CLOSE` row, a click on the
+transparent backdrop, and a lane click — each ending with
+`aria-expanded="false"` and focus back on `#lane-menu`.
+
+Scroll invariance was measured on the final build at 390 × 844 from both
+`scrollY` 900 and `scrollY` 0: opening leaves the value unchanged (900 to 900,
+0 to 0); `PageDown` and arrow keys while open leave it unchanged; a wheel over
+the panel scrolls the panel and not the page; two wheel gestures over the
+transparent backdrop leave it unchanged (900 to 900 to 900 and 0 to 0 to 0);
+`Escape` close leaves it unchanged; and after close a wheel scrolls the page
+again normally (+300). Chromium does not lock the root scroller for a modal
+`<dialog>`, so the backdrop is a wheel path to the document — and a `wheel`
+listener registered while the dialog is still `display: none` forms no
+scroll-blocking region, so its `preventDefault` arrives after the scroll
+(measured: the page moved 900 to 1300 to 1700 and 0 to 400 to 800). The rail
+therefore binds `wheel` and `touchmove` on `document`, non-passive, for as
+long as the drawer is open, removes them in the `close` handler, and prevents
+the default only when the event point is outside the panel's border box. A
+synthetic `touchmove` measures the same split: prevented on the backdrop, not
+prevented over the panel. Nothing locks `overflow` on `html`/`body` and
+nothing saves or restores scroll.
+
+`Base` wraps the rail and the slot in
+`mx-auto w-full max-w-[1440px] px-6 md:px-8 lg:grid
+lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-8 lg:pl-0 lg:pr-8 xl:gap-x-12
+xl:pr-12`, which is the 24/32/48px gutter progression under the 1440px cap.
+Measured main boxes (`x`, `width`):
+
+| Width | Main `x` | Main width | Notes                              |
+| ----- | -------: | ---------: | ---------------------------------- |
+| 390   |       24 |        342 | `px-6` gutters                     |
+| 640   |       24 |        592 | `px-6` gutters                     |
+| 768   |       32 |        704 | `md:px-8` gutters                  |
+| 1023  |       32 |        959 | `md:px-8` gutters                  |
+| 1024  |      208 |        784 | 176px rail plus 32px gap           |
+| 1280  |      224 |       1008 | 176px rail plus 32px gap           |
+| 1440  |      224 |       1168 | 176px rail plus 32px gap           |
+| 1680  |      344 |       1168 | shell centred (`x 120`, 1440 wide) |
+
+The band's wordmark, the rail's `01` text, and the footer's `[01]` land on one
+text edge: `x 8` at 1024–1440 and `x 128` at 1680. No measured width produced
+horizontal overflow (`document.documentElement.scrollWidth === innerWidth` at
+390, 640, 768, 1023, 1024, 1280, 1440, and 1680).
+
+The footer is full-bleed `--color-panel-2` with a 1px top rule (measured
+heights 149 at 1280/1440/1680, 168 at 1024, 245 at 640/768, and 379 at 390 as
+the index wraps); the inner row is capped at 1440 with the same gutters and
+`lg:pl-2`, so `[01]` sits on the same 8px text edge as the rail's `01`. The
+`Route index` nav prints `[01]` through `[06]` from the shared lanes
+(bracketed numbers as `--color-faint` legends) and then `METHOD`/`SOURCES`
+unnumbered in IBM Plex Mono (`font-mono` with `text-micro`,
+`FooterIndex.astro:18,43`); the current entry is `--color-ink` with
+`aria-current="page"`, and exactly one such entry was measured on `/` and on
+`/models`. A `MAKER` legend and the `Bosphorus Elevate` credit follow. The two
+incumbent footer paragraphs are retained verbatim as Sans prose
+(DeepSWE/Datacurve, Terminal-Bench/Harbor Hub, Awesome Coding Plan by mahonzhan
+under CC BY 4.0, real-api-pricing by FeiZhuLulu, the Sources link, and the
+Artificial Analysis exclusion statement). No footer entry duplicates a rail
+anchor id.
+
+`global.css` gains three commented rules: the skip link takes `z-index: 20`
+(the band is `z-index: 10` and later in the DOM); `dialog::backdrop` is
+`transparent` (the flat world keeps one tonal device — no scrim); and
+`:target, main` take `scroll-margin-top: 2rem`. Measured: after the skip link
+is activated `#main` is the active element and its top edge sits at 32px,
+exactly below the pinned band.
+
+Dark and light were measured on the same build at 1440: band `0,0,1440,32`,
+rail `0,32,176,314`, row 40, main `224,32,1168,2249`, footer
+`0,2281,1440,149` — identical in both, so switching `prefers-color-scheme`
+moves values and no geometry. Only values move: `--color-panel-2` `#171a1e`
+against `#edeef0`, `--color-canvas` `#0b0c0e` against `#f4f5f6`,
+`--color-dim` `rgb(154, 162, 171)` against `rgb(90, 97, 105)`, and the
+on-signal text on the plate `rgb(11, 12, 14)` against `rgb(20, 23, 26)`.
+
+`bun run check` (tsc build, oxlint, markdown-lint, `oxfmt --check`, `astro
+check`) exits 0; `astro check` reports 0 errors, 0 warnings, and 0 hints over
+67 files; 53 pages build. One pre-existing drift was repaired to let the gate
+pass: `oxfmt` added a blank line before a list in
+`.omp/agents/reviewer.md`, which was not formatter-clean at `HEAD` (verified
+by running `oxfmt --check` on the `HEAD` revision of that file).
 
 ## Social card
 

@@ -121,6 +121,19 @@
     color: var(--color-ink);
     border: 1px solid var(--color-rule);
     padding: 0.5rem 1rem;
+    /* Lift skip navigation above the pinned status band. */
+    z-index: 20;
+  }
+
+  /* Keep the lane drawer backdrop transparent against the flat shell. */
+  dialog::backdrop {
+    background: transparent;
+  }
+
+  /* Keep anchor targets clear of the pinned status band. */
+  :target,
+  main {
+    scroll-margin-top: 2rem;
   }
 
   /* The figure carrier: measurements, counts, dates, percentages. The family is

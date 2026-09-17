@@ -1,0 +1,205 @@
+---
+import { laneAnchorId, type Lane } from "../lib/nav.ts"
+import { href } from "../lib/url.ts"
+
+interface Props {
+  lanes: readonly Lane[]
+  current: string | null
+  buildDate: string
+  dataDate: string
+}
+
+const { lanes, current, buildDate, dataDate } = Astro.props
+
+const numberedLanes = lanes.filter((lane) => lane.number !== null)
+
+const referenceLanes = lanes.filter((lane) => lane.number === null)
+---
+
+<dialog
+  id="lane-rail"
+  aria-label="Lane rail"
+  class="m-0 w-full max-w-none inset-x-0 top-8 bottom-auto max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain border-b border-rule bg-panel-2 lg:sticky lg:inset-x-auto lg:w-44 lg:border-b-0 lg:border-r lg:block"
+>
+  <div class="flex h-10 items-center border-b border-rule px-2 font-mono lg:hidden">
+    <button class="text-micro text-ink uppercase" type="button" data-close>CLOSE</button>
+  </div>
+
+  <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 border-b border-rule px-2 py-2 font-mono text-micro md:hidden">
+    <dt class="text-faint">BUILD</dt>
+    <dd class="tabular text-ink">{buildDate}</dd>
+    <dt class="text-faint">DATA</dt>
+    <dd class="tabular text-ink">{dataDate}</dd>
+  </dl>
+
+  <nav aria-label="Lanes" class="font-mono text-micro">
+    <ul>
+      {
+        numberedLanes.map((lane, index) => {
+          const isCurrent = current !== null && current === lane.path
+          const isRoving = isCurrent || (current === null && index === 0)
+
+          return (
+            <li class="h-10 border-b border-rule">
+              <a
+                id={laneAnchorId(lane)}
+                href={href(lane.path)}
+                class:list={[
+                  "flex h-full items-center gap-x-2 px-2 uppercase",
+                  isCurrent ? "bg-[var(--signal-plate)] text-on-signal" : "text-dim hover:text-ink",
+                ]}
+                aria-current={isCurrent ? "page" : undefined}
+                tabindex={isRoving ? "0" : "-1"}
+              >
+                <span class:list={[isCurrent ? "text-on-signal" : "text-faint"]}>{lane.number}</span>
+                <span class:list={[isCurrent ? "text-on-signal" : "text-dim"]}>{lane.label}</span>
+              </a>
+            </li>
+          )
+        })
+      }
+    </ul>
+    <ul class="border-t-2 border-rule-strong">
+      {
+        referenceLanes.map((lane) => {
+          const isCurrent = current !== null && current === lane.path
+
+          return (
+            <li class="h-9 border-b border-rule">
+              <a
+                id={laneAnchorId(lane)}
+                href={href(lane.path)}
+                class:list={[
+                  "flex h-full items-center gap-x-2 px-2 uppercase",
+                  isCurrent ? "bg-[var(--signal-plate)] text-on-signal" : "text-dim hover:text-ink",
+                ]}
+                aria-current={isCurrent ? "page" : undefined}
+                tabindex={isCurrent ? "0" : "-1"}
+              >
+                <span class:list={[isCurrent ? "text-on-signal" : "text-dim"]}>{lane.label}</span>
+              </a>
+            </li>
+          )
+        })
+      }
+    </ul>
+  </nav>
+</dialog>
+
+<script>
+  const dialog = document.querySelector("#lane-rail")
+
+  const trigger = document.querySelector<HTMLButtonElement>("#lane-menu")
+
+  if (dialog instanceof HTMLDialogElement) {
+    const closeButton = dialog.querySelector<HTMLButtonElement>("[data-close]")
+    const rows = Array.from(dialog.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Lanes"] a[id^="lane-"]'))
+
+    const setRovingRow = (row: HTMLAnchorElement): void => {
+      for (const candidate of rows) {
+        candidate.setAttribute("tabindex", candidate === row ? "0" : "-1")
+      }
+    }
+
+    const focusRovingRow = (): void => {
+      const row = rows.find((candidate) => candidate.getAttribute("tabindex") === "0") ?? rows[0]
+      row?.focus({ preventScroll: true })
+    }
+
+    const isOutsidePanel = (event: MouseEvent | TouchEvent): boolean => {
+      const point = event instanceof TouchEvent ? event.touches[0] : event
+
+      if (point === undefined) return false
+      const { left, right, top, bottom } = dialog.getBoundingClientRect()
+
+      return point.clientX < left || point.clientX > right || point.clientY < top || point.clientY > bottom
+    }
+
+    // Chromium does not lock the root scroller for a modal dialog, and a listener on the hidden
+    // dialog forms no scroll-blocking region, so the guard is bound to the document only while the
+    // drawer is open and the transparent backdrop cannot become a wheel path to the page.
+    const blockBackdropScroll = (event: MouseEvent | TouchEvent): void => {
+      if (isOutsidePanel(event)) event.preventDefault()
+    }
+
+    closeButton?.addEventListener("click", () => {
+      if (dialog.open) dialog.close()
+    })
+
+    trigger?.addEventListener("click", () => {
+      document.addEventListener("wheel", blockBackdropScroll, { passive: false })
+      document.addEventListener("touchmove", blockBackdropScroll, { passive: false })
+
+      if (!dialog.open) dialog.showModal()
+      focusRovingRow()
+      trigger.setAttribute("aria-expanded", "true")
+    })
+
+    dialog.addEventListener("close", () => {
+      document.removeEventListener("wheel", blockBackdropScroll)
+      document.removeEventListener("touchmove", blockBackdropScroll)
+
+      trigger?.setAttribute("aria-expanded", "false")
+
+      if (trigger !== null && document.activeElement !== trigger) trigger.focus()
+    })
+
+    dialog.addEventListener("click", (event: MouseEvent) => {
+      if (event.target === dialog && dialog.open) dialog.close()
+    })
+
+    const desktopQuery = window.matchMedia("(min-width: 64rem)")
+    desktopQuery.addEventListener("change", (event: MediaQueryListEvent) => {
+      if (event.matches && dialog.open) dialog.close()
+    })
+
+    dialog.addEventListener("focusin", (event: FocusEvent) => {
+      if (event.target instanceof HTMLAnchorElement && rows.includes(event.target)) {
+        setRovingRow(event.target)
+      }
+    })
+
+    for (const row of rows) {
+      row.addEventListener("click", () => {
+        if (dialog.open) dialog.close()
+      })
+
+      row.addEventListener("keydown", (event: KeyboardEvent) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+
+        const index = rows.indexOf(row)
+        let nextIndex: number | null = null
+
+        switch (event.key) {
+          case "ArrowDown":
+            nextIndex = Math.min(index + 1, rows.length - 1)
+            break
+          case "ArrowUp":
+            nextIndex = Math.max(index - 1, 0)
+            break
+          case "Home":
+            nextIndex = 0
+            break
+          case "End":
+            nextIndex = rows.length - 1
+            break
+          case " ":
+            event.preventDefault()
+            row.click()
+
+            return
+          default:
+            return
+        }
+
+        event.preventDefault()
+        const nextRow = nextIndex === null ? undefined : rows[nextIndex]
+
+        if (nextRow !== undefined) {
+          setRovingRow(nextRow)
+          nextRow.focus({ preventScroll: true })
+        }
+      })
+    }
+  }
+</script>
