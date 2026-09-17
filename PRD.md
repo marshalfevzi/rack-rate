@@ -173,7 +173,4 @@ Operational observability is limited to the CI checks: `bun run check`, `bun tes
 - [`PRODUCT.md`](PRODUCT.md) — product truth, users, positioning, capabilities, and commitments.
 - [`DESIGN.md`](DESIGN.md) — the visual system and contrast floors.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — module boundaries, data flow, environment, and gates.
-- [`docs/pm/`](docs/pm/) — the live plan: milestones M5–M8, the task documents, the decision records, and the generated
-  index. Pre-PM stages 5, 6, 7 and 8 became milestones M5, M6, M7 and M8 in that order; stages 1–4 landed and are
-  milestones M1–M4, whose frozen stage records and session history are in [`docs/history/`](docs/history/); the data
-  contract is in [`ARCHITECTURE.md`](ARCHITECTURE.md) and the open-gap register is the table above. The pre-PM `PLAN.md` was deleted after the migration; recover it with `git show d95e6ef:PLAN.md`.
+- [`docs/pm/`](docs/pm/) — the live plan: milestones M5–M8, the task documents, the decision records, and the generated index. Pre-PM stages 5, 6, 7 and 8 became milestones M5, M6, M7 and M8 in that order; stages 1–4 landed and are milestones M1–M4, whose frozen stage records and session history are in [`docs/history/`](docs/history/); the data contract is in [`ARCHITECTURE.md`](ARCHITECTURE.md) and the open-gap register is the table above. The pre-PM `PLAN.md` was deleted after the migration; recover it with `git show d95e6ef:PLAN.md`.

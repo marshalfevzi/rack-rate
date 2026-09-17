@@ -34,16 +34,11 @@ Add the record to `data/sources.json` first. It needs a title, a url, a licence,
 
 ## Licensing what you send
 
-Code and data you contribute go out under the repo's MIT licence. The measured
-quota issue template asks you to confirm that.
+Code and data you contribute go out under the repo's MIT licence. The measured quota issue template asks you to confirm that.
 
-This matters more than usual here. Rack Rate builds on Awesome Coding Plan, which
-is CC BY 4.0, so attribution travels with those figures and must not be dropped.
-If your contribution derives from a third party dataset, say which one and under
-what terms, and add a record to `data/sources.json` before you use it.
+This matters more than usual here. Rack Rate builds on Awesome Coding Plan, which is CC BY 4.0, so attribution travels with those figures and must not be dropped. If your contribution derives from a third party dataset, say which one and under what terms, and add a record to `data/sources.json` before you use it.
 
-Accepted measurements are credited to your GitHub handle in `data/sources.json`
-unless you ask otherwise.
+Accepted measurements are credited to your GitHub handle in `data/sources.json` unless you ask otherwise.
 
 ## Environment variables
 

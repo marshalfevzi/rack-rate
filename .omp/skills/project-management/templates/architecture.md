@@ -2,9 +2,7 @@
 
 # Architecture
 
-_This document describes the system as it is now. Per-task and per-stage records belong in
-`docs/pm/<M>/done/<ID>.md` under `## Session` or in `docs/archive/`; inserting a dated record
-section is a `doc-append-record` warning._
+_This document describes the system as it is now. Per-task and per-stage records belong in `docs/pm/<M>/done/<ID>.md` under `## Session` or in `docs/archive/`; inserting a dated record section is a `doc-append-record` warning._
 
 ## Module graph
 
@@ -18,8 +16,7 @@ Describe modules and their directed dependencies. Keep the graph acyclic where b
 
 ## Boundary rules
 
-State ownership, dependency direction, public interfaces, data crossing each boundary, and rules
-for preventing UI, infrastructure, or persistence details from leaking into the domain.
+State ownership, dependency direction, public interfaces, data crossing each boundary, and rules for preventing UI, infrastructure, or persistence details from leaking into the domain.
 
 ## Subsystems
 
@@ -33,5 +30,4 @@ Describe the end-to-end flow from input through validation, processing, persiste
 
 ## Operations and commands
 
-Document local and production operations, migrations, observability, recovery, and the commands
-used to build, verify, deploy, and diagnose the system.
+Document local and production operations, migrations, observability, recovery, and the commands used to build, verify, deploy, and diagnose the system.

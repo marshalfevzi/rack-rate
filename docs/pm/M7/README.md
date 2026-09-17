@@ -21,8 +21,7 @@ retro: []
 
 ## Definition of done
 
-the site publishes itself from `main`, and the data refresh path is
-documented for contributors.
+the site publishes itself from `main`, and the data refresh path is documented for contributors.
 
 ## Stage record
 
@@ -30,12 +29,8 @@ documented for contributors.
 
 **Goal:**
 
-> **Reading these tasks.** Stage 7 tasks are written as requirements, not in the
-> Files / Work / Done-when form Stage 5 uses. A session that opens one restates
-> it in that form before writing anything, and verifies every path it names.
+> **Reading these tasks.** Stage 7 tasks are written as requirements, not in the Files / Work / Done-when form Stage 5 uses. A session that opens one restates it in that form before writing anything, and verifies every path it names.
 
 ### Acceptance
 
-Pushing to `main` deploys without manual steps; the published site matches a
-local `bun run build`; the scheduled refresh opens a reviewable PR rather than
-mutating the live site; a clean clone reproduces the build with no secrets.
+Pushing to `main` deploys without manual steps; the published site matches a local `bun run build`; the scheduled refresh opens a reviewable PR rather than mutating the live site; a clean clone reproduces the build with no secrets.

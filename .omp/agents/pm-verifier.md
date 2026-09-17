@@ -117,9 +117,7 @@ The shared hard gates in `rule://pm-workflow` are already present in your system
 
 # Output contract
 
-The declared `output` payload is the deliverable. The orchestrator branches on
-`recommendation`, reads `criteria[].verdict` for each criterion, and takes `gate_result` and
-`defects` from the payload.
+The declared `output` payload is the deliverable. The orchestrator branches on `recommendation`, reads `criteria[].verdict` for each criterion, and takes `gate_result` and `defects` from the payload.
 
 # Non-goals
 
@@ -127,5 +125,4 @@ The declared `output` payload is the deliverable. The orchestrator branches on
 - Do not edit `docs/pm/plan.yml` or move tasks between `todo/` and `done/`.
 - Do not change milestone status, rewrite history, or commit.
 - Do not mark the task complete; the orchestrator owns PM state transitions.
-- A UI-prefixed task's browser-observable criteria belong to `pm-ui-verifier`; mark them
-  `unverified` here and say so, rather than failing the task on them.
+- A UI-prefixed task's browser-observable criteria belong to `pm-ui-verifier`; mark them `unverified` here and say so, rather than failing the task on them.

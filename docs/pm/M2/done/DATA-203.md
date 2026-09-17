@@ -13,12 +13,7 @@ completed: 2026-09-14
 
 ## Scope
 
-`fetch terminal-bench` → `data/benchmarks.json#terminal-bench`.
-Parse the embedded flight data for board `4-0-0` (queryKey
-`["leaderboard","terminal-bench/terminal-bench","4-0-0"]`); on parse failure
-fall back to `harbor hub leaderboard show … --json` and log which path was
-used. Never parse `display_accuracy` / `display_cost` strings. Record board
-slug + `dataset_version_ids` UUID + `updated_at` as provenance.
+`fetch terminal-bench` → `data/benchmarks.json#terminal-bench`. Parse the embedded flight data for board `4-0-0` (queryKey `["leaderboard","terminal-bench/terminal-bench","4-0-0"]`); on parse failure fall back to `harbor hub leaderboard show … --json` and log which path was used. Never parse `display_accuracy` / `display_cost` strings. Record board slug + `dataset_version_ids` UUID + `updated_at` as provenance.
 
 ## Acceptance criteria
 

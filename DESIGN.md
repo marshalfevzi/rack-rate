@@ -286,8 +286,7 @@ The rhythm is a 4px base: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64px. Content is capp
 - At ≥1024px, the status band spans the shell, the 176px lane rail is visible, lanes `01`–`06` are numbered working surfaces, and the unnumbered `METHOD` / `SOURCES` reference group follows the 2px divider. The active lane is a `--color-signal` plate with `--color-on-signal` text.
 - Below 1024px, the lane rail leaves the canvas for a drawer; the status band remains pinned. The listing keeps its state column and, while space permits, its 40px gutter.
 - At ≥768px, edge gutters are 32px and the line-number gutter is 40px. At <768px, the gutter drops before the state column; row height becomes 44px.
-- At 390px and below, the band plus drawer remain, selection stacks before the readout, the state column remains 20px, and listing fields wrap or stack rather than create horizontal scroll. The page has no horizontal scroll at 360px.
-  When the visual gutter drops on a phone, its line identifier remains in the row's accessible name and readout so the deep-link and citation anchor survives the responsive change.
+- At 390px and below, the band plus drawer remain, selection stacks before the readout, the state column remains 20px, and listing fields wrap or stack rather than create horizontal scroll. The page has no horizontal scroll at 360px. When the visual gutter drops on a phone, its line identifier remains in the row's accessible name and readout so the deep-link and citation anchor survives the responsive change.
 
 ### Canonical listing-table anatomy
 

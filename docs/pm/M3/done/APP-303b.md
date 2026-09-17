@@ -13,17 +13,7 @@ completed: 2026-09-14
 
 ## Scope
 
-**Visual design pass** — the old site's problems are enumerated, so
-fix them deliberately rather than by taste alone. Replace the accidental
-signals the predecessor accumulated: 3D glossy ball chart markers, amber used
-for everything, monospace used for everything, dashed-rule noise, four
-competing animation durations, an emoji-based empty state, and a dead
-analytics snippet. Deliverables: a type scale and spacing rhythm (three or
-four sizes, one spacing unit), one accent per semantic role (adjusted /
-measured / API), one motion duration and one easing with
-`prefers-reduced-motion` honoured, and a two-scheme palette. Record the tokens
-and the reasoning in `docs/architecture.md` so Stage 4 does not re-invent
-them.
+**Visual design pass** — the old site's problems are enumerated, so fix them deliberately rather than by taste alone. Replace the accidental signals the predecessor accumulated: 3D glossy ball chart markers, amber used for everything, monospace used for everything, dashed-rule noise, four competing animation durations, an emoji-based empty state, and a dead analytics snippet. Deliverables: a type scale and spacing rhythm (three or four sizes, one spacing unit), one accent per semantic role (adjusted / measured / API), one motion duration and one easing with `prefers-reduced-motion` honoured, and a two-scheme palette. Record the tokens and the reasoning in `docs/architecture.md` so Stage 4 does not re-invent them.
 
 ## Acceptance criteria
 

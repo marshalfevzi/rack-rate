@@ -30,14 +30,7 @@ retro: []
 
 ## Definition of done
 
-every route renders in the locked **Console Listing** world — a
-mainframe console / ISPF panel of fixed-column listing paper, a line-number
-gutter, a carriage-control state column, printer rules and uppercase mono
-legends — so the site becomes one inspectable listing instead of a dark card
-grid with a soft hero. It is the world `DESIGN.md` names as the creative north
-star and the _Divine Machinery_ direction roll of 2026-09-16. Stage 5 changes
-presentation, composition and chart grammar only: no data, no arithmetic, no
-route identity, no schema.
+every route renders in the locked **Console Listing** world — a mainframe console / ISPF panel of fixed-column listing paper, a line-number gutter, a carriage-control state column, printer rules and uppercase mono legends — so the site becomes one inspectable listing instead of a dark card grid with a soft hero. It is the world `DESIGN.md` names as the creative north star and the _Divine Machinery_ direction roll of 2026-09-16. Stage 5 changes presentation, composition and chart grammar only: no data, no arithmetic, no route identity, no schema.
 
 ## Stage record
 
@@ -45,9 +38,7 @@ route identity, no schema.
 
 **Goal:**
 
-**The world is frozen.** `DESIGN.md` is the only owner of token values. This
-stage restates names and shell metrics because acceptance measures them, and for
-nothing else.
+**The world is frozen.** `DESIGN.md` is the only owner of token values. This stage restates names and shell metrics because acceptance measures them, and for nothing else.
 
 | Concern | Frozen names and metrics                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -66,83 +57,35 @@ nothing else.
 
 **Boundaries — what Stage 5 must not do.**
 
-- No change to `data/**`, `packages/core`, `packages/data-cli` or any formula.
-  `bun run data:check` stays exit 0 and `data/derived.json` stays
-  `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
-- No server endpoint, no client-side data request, no new dependency. Charts keep
-  reading committed payloads through the existing `*-payload.ts` modules.
-- No route, slug or URL meaning changes. `apps/site/astro.config.mjs` remains the
-  only owner of `site`/`base`, and every internal link keeps going through
-  `href()`.
-- **`apps/site/src/lib/prefs.ts` is not created in this stage.** It is task 6.1.
-  Every state mark in Stage 5 is URL or session state, the set-aside is driven by
-  filters a route already owns (score floor, vendor, reasoning effort) and by
-  `known_gaps` rows, and no surface may imply a saved preference. The `-` and `*`
-  marks consuming `ignoredModels` / `ignoredPlans` / `paidPlans` are Stage 6's;
-  Stage 5 ships the glyph grammar and the set-aside surface that will carry them.
-- **`/start` is layout only.** Task 5.12 gives it the shell, the selection
-  console, the readout and the empty/error grammar. The provider → plan → model
-  flow, the shareable result URL, the zod validation and export/import are
-  Stage 6.
-- `apps/site/scripts/og.ts` and `apps/site/public/favicon.svg` change only as
-  task 5.2 prescribes.
-- Evidence for every task is captured from a **built preview** (`bun run build`
-  then `bun run preview`), never from `astro dev`: the dev server injects its own
-  toolbar, which is not app chrome and was mistaken for chart chrome in the
-  earlier design session.
+- No change to `data/**`, `packages/core`, `packages/data-cli` or any formula. `bun run data:check` stays exit 0 and `data/derived.json` stays `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
+- No server endpoint, no client-side data request, no new dependency. Charts keep reading committed payloads through the existing `*-payload.ts` modules.
+- No route, slug or URL meaning changes. `apps/site/astro.config.mjs` remains the only owner of `site`/`base`, and every internal link keeps going through `href()`.
+- **`apps/site/src/lib/prefs.ts` is not created in this stage.** It is task 6.1. Every state mark in Stage 5 is URL or session state, the set-aside is driven by filters a route already owns (score floor, vendor, reasoning effort) and by `known_gaps` rows, and no surface may imply a saved preference. The `-` and `*` marks consuming `ignoredModels` / `ignoredPlans` / `paidPlans` are Stage 6's; Stage 5 ships the glyph grammar and the set-aside surface that will carry them.
+- **`/start` is layout only.** Task 5.12 gives it the shell, the selection console, the readout and the empty/error grammar. The provider → plan → model flow, the shareable result URL, the zod validation and export/import are Stage 6.
+- `apps/site/scripts/og.ts` and `apps/site/public/favicon.svg` change only as task 5.2 prescribes.
+- Evidence for every task is captured from a **built preview** (`bun run build` then `bun run preview`), never from `astro dev`: the dev server injects its own toolbar, which is not app chrome and was mistaken for chart chrome in the earlier design session.
 
-**Reporting rule.** A reference document holds current truth only. A task's
-measurements and build notes go in its own `## Session` section in
-`docs/pm/M5/done/<ID>.md`; `ARCHITECTURE.md` is reconciled in place to describe
-the system as it stands and is never appended with a per-task or per-stage
-record. Task 5.15 re-derives the design documents from the shipped code
-afterwards.
+**Reporting rule.** A reference document holds current truth only. A task's measurements and build notes go in its own `## Session` section in `docs/pm/M5/done/<ID>.md`; `ARCHITECTURE.md` is reconciled in place to describe the system as it stands and is never appended with a per-task or per-stage record. Task 5.15 re-derives the design documents from the shipped code afterwards.
 
 ### Acceptance
 
-`bun run check`, `bun test` and `bun run build` all exit 0; `bun run data:check`
-exits 0 with `data/derived.json` still
-`7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`. Beyond that:
+`bun run check`, `bun test` and `bun run build` all exit 0; `bun run data:check` exits 0 with `data/derived.json` still `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`. Beyond that:
 
-- Every route in the eleven-route set — the overview, `/models`,
-  `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`,
-  `/method`, `/sources` and the 404 — renders under the same status band and lane
-  rail at 1440px, 768px and 360px, in both schemes, with no horizontal scroll at
-  360px.
-- Dark and light captures of the same route have identical geometry; the
-  inversion changes values only.
-- Keyboard-only traversal reaches every chart point, table row, drawer item,
-  control-row action and the readout, at desktop and mobile width.
-- Every interactive chart and table has a real table twin carrying the same
-  values, basis, confidence, benchmark version, source and gaps.
-- Removing colour loses nothing contractual: a greyscale capture of any route
-  still shows every state, basis and confidence distinction.
-- `apps/site/src` contains no radius, shadow, gradient, blur, glow, spinner,
-  shimmer, second duration or second hue, and no colour token outside the frozen
-  ten.
-- Charts carry no `ToolboxComponent` in `registry.ts`, no chart-drawn chrome
-  outside the page control row, no gradient, no circle marker and no unlabelled
-  cost axis; `pass@1` and `pass@4` never share a field, axis or formula, and
-  `benchmark_version` stays attached to every benchmark label.
-- Five committed woff2 files, zero remote font requests, prose in Plex Sans,
-  figures in Plex Mono, and a 1200×630 social card in the console palette.
-- `apps/site/src/lib/prefs.ts` does not exist at the end of the stage and no
-  surface implies a saved preference.
-- Every evidence capture for the stage comes from a built preview, never
-  `astro dev`.
+- Every route in the eleven-route set — the overview, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`, `/sources` and the 404 — renders under the same status band and lane rail at 1440px, 768px and 360px, in both schemes, with no horizontal scroll at 360px.
+- Dark and light captures of the same route have identical geometry; the inversion changes values only.
+- Keyboard-only traversal reaches every chart point, table row, drawer item, control-row action and the readout, at desktop and mobile width.
+- Every interactive chart and table has a real table twin carrying the same values, basis, confidence, benchmark version, source and gaps.
+- Removing colour loses nothing contractual: a greyscale capture of any route still shows every state, basis and confidence distinction.
+- `apps/site/src` contains no radius, shadow, gradient, blur, glow, spinner, shimmer, second duration or second hue, and no colour token outside the frozen ten.
+- Charts carry no `ToolboxComponent` in `registry.ts`, no chart-drawn chrome outside the page control row, no gradient, no circle marker and no unlabelled cost axis; `pass@1` and `pass@4` never share a field, axis or formula, and `benchmark_version` stays attached to every benchmark label.
+- Five committed woff2 files, zero remote font requests, prose in Plex Sans, figures in Plex Mono, and a 1200×630 social card in the console palette.
+- `apps/site/src/lib/prefs.ts` does not exist at the end of the stage and no surface implies a saved preference.
+- Every evidence capture for the stage comes from a built preview, never `astro dev`.
 
 ### Contract handed to Stage 6
 
-The shell (status band, lane rail, drawer, workspace, footer index), the listing
-primitives, the cursor readout, the chart grammar and the six chart workspaces,
-all on the frozen ten tokens.
+The shell (status band, lane rail, drawer, workspace, footer index), the listing primitives, the cursor readout, the chart grammar and the six chart workspaces, all on the frozen ten tokens.
 
-Stage 6 adds behaviour, not appearance: `lib/prefs.ts` under
-`rack-rate:prefs:v1`, the `/start` flow, the shared result URL, zod validation at
-the localStorage boundary, export/import and reset, and preference-aware
-rendering — the `-` and `*` marks and the set-aside consuming `ignoredModels`,
-`ignoredPlans` and `paidPlans`.
+Stage 6 adds behaviour, not appearance: `lib/prefs.ts` under `rack-rate:prefs:v1`, the `/start` flow, the shared result URL, zod validation at the localStorage boundary, export/import and reset, and preference-aware rendering — the `-` and `*` marks and the set-aside consuming `ignoredModels`, `ignoredPlans` and `paidPlans`.
 
-Stage 6 may not add a token, a hue, a radius or a second duration, and may not
-restyle the shell. A new visual need is either a Stage 5 follow-up or a
-`DESIGN.md` change, never a page-local override.
+Stage 6 may not add a token, a hue, a radius or a second duration, and may not restyle the shell. A new visual need is either a Stage 5 follow-up or a `DESIGN.md` change, never a page-local override.

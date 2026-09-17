@@ -8,18 +8,7 @@ Load `skill://project-management` for the PRD and architecture schemas. When the
 
 1. Call `pm_plan_sync` with `{ write: false }` to understand the current project state. Read `docs/pm/config.yml`, `docs/pm/plan.yml`, `PRD.md`, and `ARCHITECTURE.md`, plus the relevant existing product/design documents. Keep generated `docs/pm/plan.yml` read-only.
 
-2. For `PRD.md`, update or create the document from `skill://project-management/templates/prd.md`,
-   retaining existing requirements and adding evidence-based overview, feature requirements,
-   non-functional requirements, technical specifications, and analytics. For `ARCHITECTURE.md`,
-   update or create it from `skill://project-management/templates/architecture.md`, retaining
-   existing decisions and documenting the module graph, boundaries, subsystems, data flow, and
-   operations. Never overwrite an existing document: report conflicts, but reconcile in place by
-   updating the owning section of `ARCHITECTURE.md` or `PRD.md` so it describes the current system,
-   and never append a dated per-task or per-stage record. Relocate existing per-task or per-stage
-   record sections to `docs/archive/` or the owning task's `## Session` section. Finish the edit
-   only when `pm_doc_check` reports no `doc-append-record` warning. Route `PRODUCT.md` and
-   `DESIGN.md` work through `skill://impeccable`, including its design JSON and
-   `**/.impeccable/surfaces/*.md` requirements.
+2. For `PRD.md`, update or create the document from `skill://project-management/templates/prd.md`, retaining existing requirements and adding evidence-based overview, feature requirements, non-functional requirements, technical specifications, and analytics. For `ARCHITECTURE.md`, update or create it from `skill://project-management/templates/architecture.md`, retaining existing decisions and documenting the module graph, boundaries, subsystems, data flow, and operations. Never overwrite an existing document: report conflicts, but reconcile in place by updating the owning section of `ARCHITECTURE.md` or `PRD.md` so it describes the current system, and never append a dated per-task or per-stage record. Relocate existing per-task or per-stage record sections to `docs/archive/` or the owning task's `## Session` section. Finish the edit only when `pm_doc_check` reports no `doc-append-record` warning. Route `PRODUCT.md` and `DESIGN.md` work through `skill://impeccable`, including its design JSON and `**/.impeccable/surfaces/*.md` requirements.
 
 3. Call `pm_doc_check` after editing. Repair every reported PM-doc error in the source documents, rerun `pm_doc_check`, and keep warnings visible. Then call `pm_plan_sync` with `{ write: true }` as the final operation so `docs/pm/plan.yml` reflects the validated records.
 

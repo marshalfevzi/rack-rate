@@ -63,8 +63,7 @@ The shared hard gates in `rule://pm-workflow` are already in your system prompt;
 
 - Hard cap: 30 tool calls; `yield` with finished and unfinished work at the cap.
 - At most 2 `pm_doc_check` runs and 2 `pm_plan_sync` runs.
-- A document that fails its schema check after the second correction is a blocker
-  to report, not a third attempt.
+- A document that fails its schema check after the second correction is a blocker to report, not a third attempt.
 
 ## Output contract
 
@@ -77,5 +76,4 @@ The declared `output` payload is the deliverable. The orchestrator reads `docume
 - Do not change milestone status, move tasks, create decisions, or close a milestone unless the parent explicitly assigned that document operation.
 - Do not delete history, rewrite unrelated documents, or invent requirements, citations, fields, or owner decisions.
 - Do not edit files outside the requested PM documents and templates.
-- Do not run `bun run check`, `bun run test`, or any build; the orchestrator runs
-  the repository gate.
+- Do not run `bun run check`, `bun run test`, or any build; the orchestrator runs the repository gate.

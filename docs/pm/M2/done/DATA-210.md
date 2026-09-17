@@ -13,12 +13,7 @@ completed: 2026-09-14
 
 ## Scope
 
-`compute` → `data/derived.json`: pairs (model × plan where
-`model_allowed`), `best_routes` per model, cross-check ratio, composite and
-frontier inputs, and the badge states (`confidence`, `freshness`,
-`price-status`, `ci`, `match`, `coverage`). Written deterministically:
-stable key order, stable numeric rounding, so re-running produces a
-byte-identical file when inputs are unchanged.
+`compute` → `data/derived.json`: pairs (model × plan where `model_allowed`), `best_routes` per model, cross-check ratio, composite and frontier inputs, and the badge states (`confidence`, `freshness`, `price-status`, `ci`, `match`, `coverage`). Written deterministically: stable key order, stable numeric rounding, so re-running produces a byte-identical file when inputs are unchanged.
 
 ## Acceptance criteria
 

@@ -13,14 +13,7 @@ completed: 2026-09-14
 
 ## Scope
 
-`validate` — every rule in `AGENTS.md` "Invariants" that is checkable
-statically, plus: evidence ids resolve to `sources.json`; `confidence` is one
-of the four levels; `quota_model` required fields present unless
-`quota_unresolved`; `pass_at_4 >= pass_at_1`; uniqueness of ids; ranges;
-`unavailable_reason` when `available: false`; the CC BY 4.0 attribution
-string for Awesome Coding Plan is present verbatim; every benchmark row
-carries a `version`; staleness warnings when `retrieved` is > 14 days old.
-Exit non-zero with a readable error list.
+`validate` — every rule in `AGENTS.md` "Invariants" that is checkable statically, plus: evidence ids resolve to `sources.json`; `confidence` is one of the four levels; `quota_model` required fields present unless `quota_unresolved`; `pass_at_4 >= pass_at_1`; uniqueness of ids; ranges; `unavailable_reason` when `available: false`; the CC BY 4.0 attribution string for Awesome Coding Plan is present verbatim; every benchmark row carries a `version`; staleness warnings when `retrieved` is > 14 days old. Exit non-zero with a readable error list.
 
 ## Acceptance criteria
 

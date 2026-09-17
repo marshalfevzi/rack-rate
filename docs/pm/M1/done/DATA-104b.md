@@ -13,25 +13,12 @@ completed: 2026-09-14
 
 ## Scope
 
-**Freeze the legacy pipeline's output as a golden fixture before
-deleting it.** The current `compute.py` works and its output
-(`data/derived.json`: 178 pairs, 28 best routes, cross-check median 1.601 over
-n=11; plus `data/derived.csv`) is a free, real regression oracle. Copy both to
-`data/fixtures/legacy-derived.json` / `.csv`, commit them, and record in the
-fixture's provenance header the exact commands that produced them
-(`python scripts/validate.py && python scripts/compute.py`) and the input
-files' hashes. Paraphrasing the invariants below is not enough — this fixture
-is what proves the TypeScript port did not silently drift:
+**Freeze the legacy pipeline's output as a golden fixture before deleting it.** The current `compute.py` works and its output (`data/derived.json`: 178 pairs, 28 best routes, cross-check median 1.601 over n=11; plus `data/derived.csv`) is a free, real regression oracle. Copy both to `data/fixtures/legacy-derived.json` / `.csv`, commit them, and record in the fixture's provenance header the exact commands that produced them (`python scripts/validate.py && python scripts/compute.py`) and the input files' hashes. Paraphrasing the invariants below is not enough — this fixture is what proves the TypeScript port did not silently drift:
 
-1. citation enforcement — a plan `evidence` id that does not resolve to
-   `data/sources.json` fails validation;
-2. the `quota_model` union `budget | credits | requests | tokens_total`, with
-   `model_scope` gating so a Claude plan can never price a Kimi model;
-3. `days_for_full_run` capped by the rolling window (5 h), not only the
-   monthly quota;
-4. `known_gaps` carried through as a backlog, not dropped.
-   Do this **before** 1.5 runs. Until this task executes, no fixture exists —
-   `data/derived.*` is legacy build output, not a committed regression oracle.
+1. citation enforcement — a plan `evidence` id that does not resolve to `data/sources.json` fails validation;
+2. the `quota_model` union `budget | credits | requests | tokens_total`, with `model_scope` gating so a Claude plan can never price a Kimi model;
+3. `days_for_full_run` capped by the rolling window (5 h), not only the monthly quota;
+4. `known_gaps` carried through as a backlog, not dropped. Do this **before** 1.5 runs. Until this task executes, no fixture exists — `data/derived.*` is legacy build output, not a committed regression oracle.
 
 ## Acceptance criteria
 

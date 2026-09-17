@@ -13,19 +13,7 @@ completed: 2026-09-14
 
 ## Scope
 
-Token-allowance view (explicit requirement: "monthly allowances per
-million token and adjusted API cost"). From the plan's quota in tokens and the
-model's measured `input_tokens_per_task` + `output_tokens_per_task`, derive:
-`tokens_per_month_allowance` = quota expressed in tokens for the selected
-model; `allowance_per_million_tokens` = the plan's blended cost per 1M tokens
-at a **stated** input:output blend (default 3:1, the blend rule shown on the
-page next to the figure); `adjusted_api_cost_per_million` = the model's list
-rate blended the same way, divided by the plan's value multiple, so "what am I
-actually paying per million" is directly comparable across plans. Record the
-blend assumption as a field on the output row, never as an implicit constant,
-and note the cache-tier caveat: cached reads price far below list, so a blend
-that ignores cache tiers misprices cache-heavy models (DeepSWE medians show
-10–40:1 input:output ratios).
+Token-allowance view (explicit requirement: "monthly allowances per million token and adjusted API cost"). From the plan's quota in tokens and the model's measured `input_tokens_per_task` + `output_tokens_per_task`, derive: `tokens_per_month_allowance` = quota expressed in tokens for the selected model; `allowance_per_million_tokens` = the plan's blended cost per 1M tokens at a **stated** input:output blend (default 3:1, the blend rule shown on the page next to the figure); `adjusted_api_cost_per_million` = the model's list rate blended the same way, divided by the plan's value multiple, so "what am I actually paying per million" is directly comparable across plans. Record the blend assumption as a field on the output row, never as an implicit constant, and note the cache-tier caveat: cached reads price far below list, so a blend that ignores cache tiers misprices cache-heavy models (DeepSWE medians show 10–40:1 input:output ratios).
 
 ## Acceptance criteria
 

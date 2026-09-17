@@ -13,11 +13,7 @@ completed: 2026-09-14
 
 ## Scope
 
-`packages/data-cli/src/http.ts` — `fetchJson`/`fetchText` with
-`AbortSignal.timeout(15_000)`, 3 attempts, exponential backoff + jitter,
-429 `Retry-After` honoured, `User-Agent: rack-rate/<version> (+repo url)`,
-raw snapshot cached under `data/raw/<source>-<YYYY-MM-DD>.json` so diffs are
-reviewable. Retry only network errors and 5xx; fail fast on 4xx.
+`packages/data-cli/src/http.ts` — `fetchJson`/`fetchText` with `AbortSignal.timeout(15_000)`, 3 attempts, exponential backoff + jitter, 429 `Retry-After` honoured, `User-Agent: rack-rate/<version> (+repo url)`, raw snapshot cached under `data/raw/<source>-<YYYY-MM-DD>.json` so diffs are reviewable. Retry only network errors and 5xx; fail fast on 4xx.
 
 ## Acceptance criteria
 
