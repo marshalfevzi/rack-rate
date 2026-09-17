@@ -12,17 +12,9 @@ tasks:
   - UI-504
   - UI-505
   - UI-506
-  - UI-507
-  - UI-508
   - UI-509
-  - UI-510
-  - UI-511
-  - UI-512
   - UI-513
-  - UI-514
-  - UI-515
   - APP-516
-  - UI-517
 retro: []
 ---
 
@@ -31,6 +23,14 @@ retro: []
 ## Definition of done
 
 every route renders in the locked **Console Listing** world — a mainframe console / ISPF panel of fixed-column listing paper, a line-number gutter, a carriage-control state column, printer rules and uppercase mono legends — so the site becomes one inspectable listing instead of a dark card grid with a soft hero. It is the world `DESIGN.md` names as the creative north star and the _Divine Machinery_ direction roll of 2026-09-16. Stage 5 changes presentation, composition and chart grammar only: no data, no arithmetic, no route identity, no schema.
+
+## Scope change — 2026-09-18
+
+The owner rejected the Console Listing as the visual direction on 2026-09-18 and opened `docs/pm/M9/README.md` to replace it. Eight remaining route-composition tasks moved to that milestone with their dependency chains: `UI-507`, `UI-508`, `UI-510`, `UI-511`, `UI-512`, `UI-514`, `UI-515` and `UI-517`. Each of them composed a route into the world that is being replaced, so leaving them here would have built five routes twice.
+
+This milestone now carries only what outlives the world it was found in. `UI-509` fixes the chart grammar: no chart draws at all today, because `apps/site/src/lib/charts/theme.ts` still reads the four colour tokens `UI-501` deleted, so every mount throws before it reaches the renderer and every plate prints `The chart could not be drawn; the static description remains available.`. `UI-513` fixes `/method`, `/sources` and the 404, including the field-level formula the owner quoted: `budget: Committed field:quota_usd_month, tasks = quota_usd_month / api_cost_per_task_usd`. `APP-516` migrates the social-card renderer and touches no visual world.
+
+The Definition of done and the acceptance text above are read against that reduced scope: the eleven-route claim and the frozen `data/derived.json` pin are inherited by `docs/pm/M9/README.md`. `UI-509` and `UI-513` remain restyles of the outgoing world, so their display work may be re-derived by `UI-902` and `UI-903` in M9; the defects they fix are fixed here rather than deferred.
 
 ## Stage record
 

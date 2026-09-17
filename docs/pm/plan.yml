@@ -438,20 +438,6 @@ milestones:
         pre: []
         file: docs/pm/M5/done/UI-506.md
         impeccable: true
-      - id: UI-507
-        title: "`/models` and `/models/[slug]`"
-        description: "/models and /models/[slug]. Files: apps/site/src/pages/models/index.astro, apps/site/src/pages/models/[slug].astro. Work: the index becomes a fixed-column listing — Model, Score (pass@1), Pass@4, API list cost/task, Cheapest usable p..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-507.md
-        impeccable: true
-      - id: UI-508
-        title: "`/plans` and `/plans/[slug]`"
-        description: "/plans and /plans/[slug]. Files: apps/site/src/pages/plans/index.astro, apps/site/src/pages/plans/[slug].astro. Work: the index becomes the sortable plan listing — rank, plan, provider, price/month, quota model, key quota, rolling wi..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-508.md
-        impeccable: true
       - id: UI-509
         title: Chart grammar — re-theme the shared frame and all six builders
         description: "Chart grammar — re-theme the shared frame and all six builders. Files: apps/site/src/lib/charts/{theme,frame,registry,mount}.ts, the six option builders (pareto, bump, heatmap, slope, waterfall, radar), their *-payload.ts and *-page...."
@@ -459,47 +445,12 @@ milestones:
         pre: []
         file: docs/pm/M5/todo/UI-509.md
         impeccable: true
-      - id: UI-510
-        title: "`/compare` — the metric matrix and its chart plate"
-        description: "/compare — the metric matrix and its chart plate. Files: apps/site/src/pages/compare.astro. Work: keep the 2–4 model selection fieldset and make the matrix a Metric | model … | Comparison table whose benchmark rows are the committed..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-510.md
-        impeccable: true
-      - id: UI-511
-        title: "`/explore` — the instrument panel"
-        description: "/explore — the instrument panel. Files: apps/site/src/pages/explore.astro. Work: keep all six chart plates (Pareto, bump/rank, heatmap, slope, waterfall, radar) in the new grammar, each with its own control row, its reserved height,..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-511.md
-        impeccable: true
-      - id: UI-512
-        title: "`/start` — the selection console at full width, layout only"
-        description: "/start — the selection console at full width, layout only. Files: apps/site/src/pages/start.astro. Work: give /start its lane, the full-width selection console layout from docs/design/surfaces.md, the readout it will write into, and..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-512.md
-        impeccable: true
       - id: UI-513
         title: "`/method`, `/sources`, `404`"
         description: "/method, /sources, 404. Files: apps/site/src/pages/method.astro, apps/site/src/pages/sources.astro, apps/site/src/pages/404.astro. Work: /method becomes the numbered arithmetic chain — formula sections with their named inputs, the q..."
         status: todo
         pre: []
         file: docs/pm/M5/todo/UI-513.md
-        impeccable: true
-      - id: UI-514
-        title: Accessibility, provenance and release reconciliation
-        description: "Accessibility, provenance and release reconciliation. Files: every file changed by 5.1–5.13. Work: walk every interactive chart, table, drawer, readout and URL control with keyboard and touch and confirm focus, reduced motion, contr..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-514.md
-        impeccable: true
-      - id: UI-515
-        title: Re-derive the design record from the built world
-        description: "Re-derive the design record from the built world. Files: DESIGN.md, docs/design/surfaces.md, apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md, ARCHITECTURE.md. Work: re-derive each document from the shipped cod..."
-        status: todo
-        pre: []
-        file: docs/pm/M5/todo/UI-515.md
         impeccable: true
       - id: APP-516
         title: Migrate the social card from Satori to Takumi
@@ -509,18 +460,6 @@ milestones:
           - UI-502
         file: docs/pm/M5/todo/APP-516.md
         impeccable: false
-      - id: UI-517
-        title: Shareable static image of a filtered chart view
-        description: "Shareable static image of a filtered chart view. Files: new apps/site/src/lib/share/{card.ts,render.ts} and card.test.ts, the six /explore plates with their control rows, and the ARCHITECTURE.md, docs/design/surfaces.md, PRD.md and PRODUCT.md records. Work: a SHARE IMAGE action in each plate's control row renders the filtered view into a 1200x630 card with Takumi's WASM build, from the same payload builders and readout contract the page already uses."
-        status: todo
-        pre:
-          - UI-504
-          - UI-505
-          - UI-509
-          - UI-511
-          - APP-516
-        file: docs/pm/M5/todo/UI-517.md
-        impeccable: true
     retro: []
   - id: M6
     title: Provider selection wizard (PLAN stage 6)
@@ -651,5 +590,110 @@ milestones:
         pre: []
         file: docs/pm/M8/todo/DATA-802.md
         impeccable: false
+    retro: []
+  - id: M9
+    title: Frontend rebuild — a world that reads, a structure that holds
+    status: in_progress
+    file: docs/pm/M9/README.md
+    tasks:
+      - id: UI-901
+        title: Choose and lock the replacement visual world
+        description: Derive three candidate visual worlds, render each as a specimen from a built preview, have the owner choose one, and replace DESIGN.md's contract with the chosen world.
+        status: todo
+        pre: []
+        file: docs/pm/M9/todo/UI-901.md
+        impeccable: true
+      - id: UI-902
+        title: Rebuild the design system from the chosen world
+        description: Turn UI-901's world into tokens, type scale, layout rhythm, shell, primitives and chart grammar, replacing the Console Listing system in place.
+        status: todo
+        pre:
+          - UI-901
+        file: docs/pm/M9/todo/UI-902.md
+        impeccable: true
+      - id: APP-904
+        title: Frontend structure — one composition convention, no page-local sprawl
+        description: Decompose every route page into composed sections under one documented convention, delete the duplicated table, filter, sort and chart-plate implementations, and record the component inventory.
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/APP-904.md
+        impeccable: false
+      - id: UI-903
+        title: Plain-language content on every route
+        description: Replace internal design vocabulary and field-level formulas with a plain answer per route, under a closed vocabulary list, verified against the rendered document.
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/UI-903.md
+        impeccable: true
+      - id: UI-507
+        title: "`/models` and `/models/[slug]`"
+        description: "/models and /models/[slug]. Files: apps/site/src/pages/models/index.astro, apps/site/src/pages/models/[slug].astro. Work: the index becomes a fixed-column listing — Model, Score (pass@1), Pass@4, API list cost/task, Cheapest usable p..."
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/UI-507.md
+        impeccable: true
+      - id: UI-508
+        title: "`/plans` and `/plans/[slug]`"
+        description: "/plans and /plans/[slug]. Files: apps/site/src/pages/plans/index.astro, apps/site/src/pages/plans/[slug].astro. Work: the index becomes the sortable plan listing — rank, plan, provider, price/month, quota model, key quota, rolling wi..."
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/UI-508.md
+        impeccable: true
+      - id: UI-510
+        title: "`/compare` — the metric matrix and its chart plate"
+        description: "/compare — the metric matrix and its chart plate. Files: apps/site/src/pages/compare.astro. Work: keep the 2–4 model selection fieldset and make the matrix a Metric | model … | Comparison table whose benchmark rows are the committed..."
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/UI-510.md
+        impeccable: true
+      - id: UI-511
+        title: "`/explore` — the instrument panel"
+        description: "/explore — the instrument panel. Files: apps/site/src/pages/explore.astro. Work: keep all six chart plates (Pareto, bump/rank, heatmap, slope, waterfall, radar) in the new grammar, each with its own control row, its reserved height,..."
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/UI-511.md
+        impeccable: true
+      - id: UI-512
+        title: "`/start` — the selection console at full width, layout only"
+        description: "/start — the selection console at full width, layout only. Files: apps/site/src/pages/start.astro. Work: give /start its lane, the full-width selection console layout from docs/design/surfaces.md, the readout it will write into, and..."
+        status: todo
+        pre:
+          - UI-902
+        file: docs/pm/M9/todo/UI-512.md
+        impeccable: true
+      - id: UI-514
+        title: Accessibility, provenance and release reconciliation
+        description: "Accessibility, provenance and release reconciliation. Files: every file changed by 5.1–5.13. Work: walk every interactive chart, table, drawer, readout and URL control with keyboard and touch and confirm focus, reduced motion, contr..."
+        status: todo
+        pre:
+          - UI-507
+          - UI-508
+          - UI-510
+          - UI-511
+          - UI-512
+        file: docs/pm/M9/todo/UI-514.md
+        impeccable: true
+      - id: UI-517
+        title: Shareable static image of a filtered chart view
+        description: "Shareable static image of a filtered chart view. Files: new apps/site/src/lib/share/{card.ts,render.ts} and card.test.ts, the six /explore plates with their control rows, and the ARCHITECTURE.md, docs/design/surfaces.md, PRD.md and PRODUCT.md records. Work: a SHARE IMAGE action in each plate's control row renders the filtered view into a 1200x630 card with Takumi's WASM build, from the same payload builders and readout contract the page already uses."
+        status: todo
+        pre:
+          - UI-511
+        file: docs/pm/M9/todo/UI-517.md
+        impeccable: true
+      - id: UI-515
+        title: Re-derive the design record from the built world
+        description: "Re-derive the design record from the built world. Files: DESIGN.md, docs/design/surfaces.md, apps/site/.impeccable/surfaces/apps-site-src-pages-index-astro.md, ARCHITECTURE.md. Work: re-derive each document from the shipped cod..."
+        status: todo
+        pre:
+          - UI-514
+        file: docs/pm/M9/todo/UI-515.md
+        impeccable: true
     retro: []
 archived: []
