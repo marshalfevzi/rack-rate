@@ -15,9 +15,10 @@ const factory: CustomToolFactory = (pi) => ({
     consequences: pi.zod.string(),
     supersedes: pi.zod.string().nullable(),
   }),
-  async execute(_id, params, _onUpdate, ctx, _signal) {
+  async execute(_id, params, _onUpdate, _ctx, _signal) {
     try {
-      const result = await createDecision(ctx.cwd, {
+      // `pi.cwd`, not `ctx.cwd`: the device transport passes a context with no `cwd`.
+      const result = await createDecision(pi.cwd, {
         title: params.title,
         status: params.status ?? "accepted",
         milestone: params.milestone,

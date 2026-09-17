@@ -8,8 +8,9 @@ const factory: CustomToolFactory = (pi) => ({
   parameters: pi.zod.object({
     write: pi.zod.boolean().optional(),
   }),
-  async execute(_id, params, _onUpdate, ctx, _signal) {
-    const result = await syncPlan(ctx.cwd, params.write !== false)
+  async execute(_id, params, _onUpdate, _ctx, _signal) {
+    // `pi.cwd`, not `ctx.cwd`: the device transport passes a context with no `cwd`.
+    const result = await syncPlan(pi.cwd, params.write !== false)
     const issues = result.model.issues
     const errors = issues.filter((item) => item.severity === "error").length
     const warnings = issues.filter((item) => item.severity === "warn").length

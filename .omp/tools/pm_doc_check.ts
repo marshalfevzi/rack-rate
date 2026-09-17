@@ -6,8 +6,9 @@ const factory: CustomToolFactory = (pi) => ({
   label: "PM Document Check",
   description: "Check PM-owned and impeccable reference documents for required structure.",
   parameters: pi.zod.object({}),
-  async execute(_id, _params, _onUpdate, ctx, _signal) {
-    const issues = await docCheck(ctx.cwd)
+  async execute(_id, _params, _onUpdate, _ctx, _signal) {
+    // `pi.cwd`, not `ctx.cwd`: the device transport passes a context with no `cwd`.
+    const issues = await docCheck(pi.cwd)
     const errors = issues.filter((item) => item.severity === "error").length
     const warnings = issues.filter((item) => item.severity === "warn").length
     const details = { ok: errors === 0, issues }

@@ -9,9 +9,10 @@ const factory: CustomToolFactory = (pi) => ({
     milestone: pi.zod.string(),
     outcome: pi.zod.enum(["closed", "continued"]).optional(),
   }),
-  async execute(_id, params, _onUpdate, ctx, _signal) {
+  async execute(_id, params, _onUpdate, _ctx, _signal) {
     try {
-      const result = await closeMilestone(ctx.cwd, {
+      // `pi.cwd`, not `ctx.cwd`: the device transport passes a context with no `cwd`.
+      const result = await closeMilestone(pi.cwd, {
         milestone: params.milestone,
         outcome: params.outcome ?? "closed",
       })

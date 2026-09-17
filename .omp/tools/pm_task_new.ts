@@ -16,9 +16,10 @@ const factory: CustomToolFactory = (pi) => ({
     body: pi.zod.string().optional(),
     unplanned: pi.zod.boolean().optional(),
   }),
-  async execute(_id, params, _onUpdate, ctx, _signal) {
+  async execute(_id, params, _onUpdate, _ctx, _signal) {
     try {
-      const result = await createTask(ctx.cwd, {
+      // `pi.cwd`, not `ctx.cwd`: the device transport passes a context with no `cwd`.
+      const result = await createTask(pi.cwd, {
         id: params.id,
         title: params.title,
         description: params.description,
