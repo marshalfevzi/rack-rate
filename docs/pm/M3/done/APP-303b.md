@@ -10,6 +10,7 @@ blocked_by: null
 created: 2026-09-14
 completed: 2026-09-14
 ---
+
 ## Scope
 
 **Visual design pass** — the old site's problems are enumerated, so

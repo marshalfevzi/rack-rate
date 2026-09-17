@@ -1,62 +1,15 @@
 import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent"
 import { docCheck, syncPlan } from "../../lib/plan.ts"
-import { isAbsolute, relative, resolve } from "node:path"
-
-function inputPath(input: unknown, cwd: string): string | undefined {
-  if (input === null || typeof input !== "object" || Array.isArray(input)) {
-    return undefined
-  }
-
-  let value: unknown
-
-  if ("path" in input && input.path !== undefined && input.path !== null) {
-    value = input.path
-  } else if ("file_path" in input && input.file_path !== undefined && input.file_path !== null) {
-    value = input.file_path
-  } else if ("filePath" in input && input.filePath !== undefined && input.filePath !== null) {
-    value = input.filePath
-  } else {
-    return undefined
-  }
-
-  if (value === undefined || value === null) return undefined
-
-  const text = String(value)
-
-  if (text.length === 0) return undefined
-
-  return resolve(cwd, text)
-}
-
-function isWithin(path: string, directory: string): boolean {
-  const relativePath = relative(directory, path)
-
-  return relativePath.length > 0 && !relativePath.startsWith("..") && !isAbsolute(relativePath)
-}
-
-function isReferencePath(path: string, cwd: string): boolean {
-  const relativePath = relative(cwd, resolve(cwd, path)).replaceAll("\\", "/")
-
-  return (
-    relativePath === "PRD.md" ||
-    relativePath === "ARCHITECTURE.md" ||
-    relativePath === "PRODUCT.md" ||
-    relativePath === "DESIGN.md" ||
-    relativePath === "CAVEATS.md" ||
-    relativePath === ".impeccable/design.json" ||
-    relativePath.startsWith(".impeccable/surfaces/")
-  )
-}
-
-function warn(pi: ExtensionAPI, message: string, error: unknown): void {
-  try {
-    const detail = error instanceof Error ? error.message : String(error)
-
-    pi.logger.warn(`[pm] ${message}: ${detail}`)
-  } catch (loggingError) {
-    void loggingError
-  }
-}
+import { lintMarkdownText } from "../../../tools/markdown-lint/index.ts"
+import {
+  isReferenceDocument,
+  isWithin,
+  isWriteTool,
+  relativeFrom,
+  toolInputPath,
+  warn,
+} from "../../lib/tool-input.ts"
+import { resolve } from "node:path"
 
 export default (pi: ExtensionAPI): void => {
   let touched = false
@@ -65,41 +18,66 @@ export default (pi: ExtensionAPI): void => {
     try {
       if (event.isError) return
 
-      if (
-        event.toolName !== "edit" &&
-        event.toolName !== "write" &&
-        event.toolName !== "ast_edit"
-      ) {
-        return
-      }
+      if (!isWriteTool(event.toolName)) return
 
-      const target = inputPath(event.input, ctx.cwd)
+      const target = toolInputPath(event.input, ctx.cwd)
 
       if (target === undefined) return
 
       const inPmTree = isWithin(target, resolve(ctx.cwd, "docs/pm"))
+      const isReference = isReferenceDocument(target, ctx.cwd)
+      const isMarkdown = target.endsWith(".md")
 
-      if (!inPmTree && !isReferencePath(target, ctx.cwd)) return
+      if (!inPmTree && !isReference && !isMarkdown) return
 
-      touched = true
+      if (inPmTree || isReference) {
+        touched = true
+      }
 
-      if (!inPmTree) return
+      const lines: string[] = []
 
-      const synced = await syncPlan(ctx.cwd)
+      if (inPmTree) {
+        const synced = await syncPlan(ctx.cwd)
 
-      const errors = synced.model.issues.filter((issue) => issue.severity === "error").length
+        const errors = synced.model.issues.filter((issue) => issue.severity === "error").length
 
-      const warnings = synced.model.issues.filter((issue) => issue.severity === "warn").length
+        const warnings = synced.model.issues.filter((issue) => issue.severity === "warn").length
 
-      const line = synced.written
-        ? `[pm] plan.yml regenerated — ${errors} error(s), ${warnings} warning(s)`
-        : "[pm] plan.yml unchanged"
+        // An error leaves the plan unwritten, so report the failure instead of "unchanged".
+        const line =
+          errors > 0
+            ? `[pm] plan.yml not written — ${errors} error(s), ${warnings} warning(s)`
+            : synced.written
+              ? `[pm] plan.yml regenerated — ${warnings} warning(s)`
+              : `[pm] plan.yml unchanged — ${warnings} warning(s)`
+
+        lines.push(line)
+      }
+
+      if (isMarkdown) {
+        try {
+          const text = await Bun.file(target).text()
+          const findings = await lintMarkdownText(text, relativeFrom(ctx.cwd, target), ctx.cwd)
+
+          for (const finding of findings) {
+            lines.push(
+              `[md] ${finding.file}:${finding.line}:${finding.column} ${finding.code} — ${finding.message}`,
+            )
+          }
+        } catch (error) {
+          warn(pi, "pm", "markdown check failed", error)
+        }
+      }
+
+      if (lines.length === 0) return
+
+      const text = lines.join("\n")
 
       return {
-        content: [...event.content, { type: "text", text: line }],
+        content: [...event.content, { type: "text", text }],
       }
     } catch (error) {
-      warn(pi, "plan guard failed", error)
+      warn(pi, "pm", "plan guard failed", error)
     }
   })
 
@@ -121,7 +99,7 @@ export default (pi: ExtensionAPI): void => {
         reason: `PM docs need attention — ${summary}`,
       }
     } catch (error) {
-      warn(pi, "session stop check failed", error)
+      warn(pi, "pm", "session stop check failed", error)
     }
   })
 }

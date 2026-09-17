@@ -15,14 +15,14 @@ source-level detail behind it.
 
 ## Summary
 
-| Source | What we take | License | Republish? | Attribution required |
-|---|---|---|---|---|
-| DeepSWE (Datacurve) | Per-config scores, cost/tokens/steps per task | Apache-2.0 | **Yes** | Credit Datacurve + link the repo |
-| Terminal-Bench / Harbor | Leaderboard rows (accuracy, CI, cost, tokens) | Apache-2.0 (tasks/harness); leaderboard numbers are factual | **Yes** | Credit Terminal-Bench + link `tbench.ai` |
-| Awesome Coding Plan | Measured monthly quotas for coding plans | **CC BY 4.0** | **Yes, with attribution** | Exact string, below — build fails without it |
-| Artificial Analysis | Intelligence/Coding/Agentic indices, index cost | Proprietary (Data Platform Terms v1.1) | **No permission granted — disabled by default**; a chart-only presentation is the best-supported variant | AA logo on charts; `Source: Artificial Analysis (artificialanalysis.ai)` + link otherwise |
-| Vendor pricing pages | Prices, quota wording | Facts; page text © vendors | Yes (paraphrase + short quote) | Link the page + retrieval date |
-| real-api-pricing | Prior art + risk calibration | MIT (its own code; AA values it publishes are **not** thereby licensed) | Do not copy figures | Credit FeiZhuLulu |
+| Source                  | What we take                                    | License                                                                 | Republish?                                                                                               | Attribution required                                                                      |
+| ----------------------- | ----------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| DeepSWE (Datacurve)     | Per-config scores, cost/tokens/steps per task   | Apache-2.0                                                              | **Yes**                                                                                                  | Credit Datacurve + link the repo                                                          |
+| Terminal-Bench / Harbor | Leaderboard rows (accuracy, CI, cost, tokens)   | Apache-2.0 (tasks/harness); leaderboard numbers are factual             | **Yes**                                                                                                  | Credit Terminal-Bench + link `tbench.ai`                                                  |
+| Awesome Coding Plan     | Measured monthly quotas for coding plans        | **CC BY 4.0**                                                           | **Yes, with attribution**                                                                                | Exact string, below — build fails without it                                              |
+| Artificial Analysis     | Intelligence/Coding/Agentic indices, index cost | Proprietary (Data Platform Terms v1.1)                                  | **No permission granted — disabled by default**; a chart-only presentation is the best-supported variant | AA logo on charts; `Source: Artificial Analysis (artificialanalysis.ai)` + link otherwise |
+| Vendor pricing pages    | Prices, quota wording                           | Facts; page text © vendors                                              | Yes (paraphrase + short quote)                                                                           | Link the page + retrieval date                                                            |
+| real-api-pricing        | Prior art + risk calibration                    | MIT (its own code; AA values it publishes are **not** thereby licensed) | Do not copy figures                                                                                      | Credit FeiZhuLulu                                                                         |
 
 ---
 
@@ -111,7 +111,7 @@ Constraints:
 - **Changes made:** selected rows are converted from the source's tables into
   this project's plan schema. That conversion is a modification and must be
   stated (CC BY 4.0 requires indicating changes). Higher subscription tiers the
-  source did not measure (Claude Max 5x/20x, ChatGPT Pro) are *this project's*
+  source did not measure (Claude Max 5x/20x, ChatGPT Pro) are _this project's_
   arithmetic on the vendor's advertised multiplier — marked `confidence: medium`
   and **not** attributed to this source as a measurement.
 - Validation must fail the build if the attribution string is missing.
@@ -187,7 +187,7 @@ Clauses that bear on this project:
   consent — which describes this project's stated purpose.
 - **§5.1** attribution by content type: charts require the **AA logo visible on
   the chart**; metrics require `Source: Artificial Analysis
-  (artificialanalysis.ai)` with a hyperlink; Derived Data requires "Based on
+(artificialanalysis.ai)` with a hyperlink; Derived Data requires "Based on
   data from Artificial Analysis" plus a non-endorsement statement.
 - **§10.3** breaches of §2.4/§2.5 are **excluded from the liability cap** and
   carry a customer indemnity; **§11.5(b)** allows immediate termination with no
@@ -239,7 +239,7 @@ Because the position is unresolved rather than cleared, the code must default to
   published here and links to Artificial Analysis instead.
 - `AA_API_KEY` set **and** `AA_PUBLISH=1` → the fetcher runs and AA values are
   published, each labelled `Source: Artificial Analysis
-  (artificialanalysis.ai)` with a link, next to the value — never buried in a
+(artificialanalysis.ai)` with a link, next to the value — never buried in a
   footer, never merged into a number that no longer shows its origin. The
   Sources page then states the exception: no redistribution right has been
   granted, the figures are included at the repository owner's risk, and readers
@@ -272,8 +272,8 @@ every one of its 202 exported rows, combined with four other leaderboards, in
 a public model-comparison product — the same shape of use the terms restrict.
 Its own `SOURCES.md` disclaims exactly the inference we must not draw: source
 links are provenance, "not a claim that third-party datasets are MIT-licensed."
-Treat it as evidence that this use is *practised publicly*, never as evidence
-that it is *permitted*.
+Treat it as evidence that this use is _practised publicly_, never as evidence
+that it is _permitted_.
 
 ## Already in `data/sources.json`
 

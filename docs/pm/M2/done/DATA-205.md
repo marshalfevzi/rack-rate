@@ -10,13 +10,14 @@ blocked_by: null
 created: 2026-09-14
 completed: 2026-09-14
 ---
+
 ## Scope
 
 `fetch plans` → `data/plans.json`. Snapshot every vendor URL into
-  `data/raw/`, extract facts with **keyword anchors that throw when the anchor
-  is missing** (fail closed, keep last-good + `stale: true`), convert CNY at a
-  recorded spot rate, and write `evidence.url` + `evidence.retrieved` per row.
-  Monthly billing only. Aggregator-only figures go to `known_gaps`.
+`data/raw/`, extract facts with **keyword anchors that throw when the anchor
+is missing** (fail closed, keep last-good + `stale: true`), convert CNY at a
+recorded spot rate, and write `evidence.url` + `evidence.retrieved` per row.
+Monthly billing only. Aggregator-only figures go to `known_gaps`.
 
 ## Acceptance criteria
 

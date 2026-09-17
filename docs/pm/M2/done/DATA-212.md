@@ -10,20 +10,21 @@ blocked_by: null
 created: 2026-09-14
 completed: 2026-09-14
 ---
+
 ## Scope
 
 Complete the CLI surface and document it in `--help` and
-  `docs/architecture.md`. The dispatcher `rack-rate-data <command>` must expose
-  at minimum: `fetch <source|all>` (gather), `fetch <source> --diff` (print
-  what moved upstream without writing — ported from the old
-  `fetch_deepswe.py --diff`), `validate` (schema, citations, versions,
-  staleness), `compute` (derive), `check` (validate + compute + verify the
-  committed `derived.json` is not stale — the CI gate), `sources` (list every
-  source with its license, attribution requirement and retrieval age), and
-  `doctor` (which sources are reachable, which env vars are set, whether
-  `AA_PUBLISH` is on, whether `data/raw` snapshots exist). Every command exits
-  non-zero on failure and prints a readable reason; no command silently writes a
-  guessed number.
+`docs/architecture.md`. The dispatcher `rack-rate-data <command>` must expose
+at minimum: `fetch <source|all>` (gather), `fetch <source> --diff` (print
+what moved upstream without writing — ported from the old
+`fetch_deepswe.py --diff`), `validate` (schema, citations, versions,
+staleness), `compute` (derive), `check` (validate + compute + verify the
+committed `derived.json` is not stale — the CI gate), `sources` (list every
+source with its license, attribution requirement and retrieval age), and
+`doctor` (which sources are reachable, which env vars are set, whether
+`AA_PUBLISH` is on, whether `data/raw` snapshots exist). Every command exits
+non-zero on failure and prints a readable reason; no command silently writes a
+guessed number.
 
 ## Acceptance criteria
 

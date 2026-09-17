@@ -13,12 +13,13 @@
     "dev": "bun run --filter @rack-rate/site dev",
     "build": "bun run data:build && bun run --filter @rack-rate/site build && bun run og",
     "preview": "bun run --filter @rack-rate/site preview",
-    "check": "bun run typecheck && bun run lint && bun run format:check && bun run --filter @rack-rate/site check",
+    "check": "bun run typecheck && bun run lint && bun run lint:md && bun run format:check && bun run --filter @rack-rate/site check",
     "typecheck": "tsc --build --force",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "format": "oxfmt",
-    "format:check": "oxfmt --check",
+    "lint:md": "bun tools/markdown-lint/cli.ts",
+    "format": "oxfmt . .omp",
+    "format:check": "oxfmt --check . .omp",
     "quality": "fallow",
     "test": "bun test --pass-with-no-tests",
     "fetch": "bun run --filter @rack-rate/data-cli cli -- fetch",
@@ -38,7 +39,8 @@
     "fallow": "3.25.0",
     "oxfmt": "0.67.0",
     "oxlint": "1.82.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "zod": "^4.6.4"
   },
   "engines": {
     "bun": ">=1.4.2"

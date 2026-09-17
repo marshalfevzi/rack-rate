@@ -141,8 +141,7 @@ than silently absorbed)
   both times; `bun run data:check` → exit 0 with equal expected/committed
   hashes.
 - `check` negative control: one pair deleted from `data/derived.json` → exit 1
-  naming the first differing top-level key (`pairs`, expected 178 vs committed
-  177) and both hashes; file restored byte-identical (`git diff --stat` empty).
+  naming the first differing top-level key (`pairs`, expected 178 vs committed 177) and both hashes; file restored byte-identical (`git diff --stat` empty).
 - `validate` negative control run here as the stage gate: a bad evidence id, a
   removed `quota_usd_month` and a mangled CC BY 4.0 attribution string → exit 1
   with three row-naming errors (`plans[0] (claude-pro)`, `plans[1] (claude-max-5x)`,

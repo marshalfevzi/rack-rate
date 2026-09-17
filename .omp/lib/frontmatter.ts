@@ -58,5 +58,5 @@ export function renderDocument(frontmatter: Record<string, unknown>, body: strin
   const yaml = emitYaml(frontmatter)
   const normalizedBody = body.startsWith("\n") ? body.slice(1) : body
 
-  return `---\n${yaml}\n---\n${normalizedBody}`
+  return `---\n${yaml}\n---\n\n${normalizedBody}`
 }

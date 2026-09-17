@@ -26,6 +26,10 @@ export interface ProjectDocs {
 export interface ProjectConfig {
   name: string
   docs: ProjectDocs
+  commands: {
+    format: string | null
+    gate: string | null
+  }
   prefixes: Map<string, PrefixConfig>
   paths: {
     milestones: string
@@ -128,6 +132,10 @@ const defaultConfig: ProjectConfig = {
     architecture: "ARCHITECTURE.md",
     constraints: null,
   },
+  commands: {
+    format: null,
+    gate: null,
+  },
   prefixes: new Map(),
   paths: {
     milestones: "docs/pm",
@@ -170,7 +178,10 @@ export async function readConfig(root: string): Promise<ProjectConfig> {
   const raw = parseYaml(text)
   const document = mapValue(raw, "root")
   const project = mapValue(document.project, "project")
-  const docs = mapValue(project, "project")
+
+  const commandValues =
+    project.commands === undefined ? {} : mapValue(project.commands, "project.commands")
+
   const prefixValues = mapValue(document.prefixes, "prefixes")
   const paths = mapValue(document.paths, "paths")
   const prefixes = new Map<string, PrefixConfig>()
@@ -192,11 +203,15 @@ export async function readConfig(root: string): Promise<ProjectConfig> {
   return {
     name: requiredString(project.name, "project.name"),
     docs: {
-      prd: requiredString(docs.prd, "project.prd"),
-      product: requiredString(docs.product, "project.product"),
-      design: requiredString(docs.design, "project.design"),
-      architecture: requiredString(docs.architecture, "project.architecture"),
-      constraints: optionalString(docs.constraints),
+      prd: requiredString(project.prd, "project.prd"),
+      product: requiredString(project.product, "project.product"),
+      design: requiredString(project.design, "project.design"),
+      architecture: requiredString(project.architecture, "project.architecture"),
+      constraints: optionalString(project.constraints),
+    },
+    commands: {
+      format: optionalString(commandValues.format),
+      gate: optionalString(commandValues.gate),
     },
     prefixes,
     paths: {
@@ -555,9 +570,12 @@ export async function loadModel(root: string): Promise<PlanModel> {
       }
     }
 
-    const retroFiles = (await markdownFiles(directory)).filter((file) =>
-      file.includes(`${sep}RETRO-`),
-    )
+    const retroFiles = (await markdownFiles(directory)).filter((file) => {
+      const relativeFile = relative(directory, file)
+
+      // Only RETRO files directly under the milestone count.
+      return !relativeFile.includes(sep) && relativeFile.startsWith("RETRO-")
+    })
 
     for (const retroFile of retroFiles) {
       const retroText = await loadText(retroFile, issues)
@@ -640,13 +658,92 @@ export async function loadModel(root: string): Promise<PlanModel> {
 
     if (archive) {
       archived.push(archive)
+      addOccurrence(occurrences, archive.id)
     }
   }
 
   const planFile = join(root, "docs/pm/plan.yml")
   const existingPlan = await loadText(planFile, issues)
-  milestones.sort((a, b) => a.file.localeCompare(b.file))
-  archived.sort((a, b) => a.file.localeCompare(b.file))
+
+  // This natural ordering exists so M10 sorts after M9.
+  function compareMilestoneIds(left: string, right: string): number {
+    let leftIndex = 0
+    let rightIndex = 0
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+      const leftCode = left.charCodeAt(leftIndex)
+      const rightCode = right.charCodeAt(rightIndex)
+      const leftIsDigit = leftCode >= 48 && leftCode <= 57
+      const rightIsDigit = rightCode >= 48 && rightCode <= 57
+      let leftEnd = leftIndex + 1
+      let rightEnd = rightIndex + 1
+
+      while (leftEnd < left.length) {
+        const code = left.charCodeAt(leftEnd)
+
+        if ((code >= 48 && code <= 57) !== leftIsDigit) {
+          break
+        }
+
+        leftEnd += 1
+      }
+
+      while (rightEnd < right.length) {
+        const code = right.charCodeAt(rightEnd)
+
+        if ((code >= 48 && code <= 57) !== rightIsDigit) {
+          break
+        }
+
+        rightEnd += 1
+      }
+
+      const leftRun = left.slice(leftIndex, leftEnd)
+      const rightRun = right.slice(rightIndex, rightEnd)
+
+      if (leftIsDigit && rightIsDigit) {
+        const leftNumber = leftRun.replace(/^0+/, "") || "0"
+        const rightNumber = rightRun.replace(/^0+/, "") || "0"
+
+        if (leftNumber.length !== rightNumber.length) {
+          return leftNumber.length < rightNumber.length ? -1 : 1
+        }
+
+        if (leftNumber !== rightNumber) {
+          return leftNumber < rightNumber ? -1 : 1
+        }
+      } else if (leftRun !== rightRun) {
+        const leftCodePoints = [...leftRun]
+        const rightCodePoints = [...rightRun]
+        const limit = Math.min(leftCodePoints.length, rightCodePoints.length)
+
+        for (let index = 0; index < limit; index += 1) {
+          const leftCodePoint = leftCodePoints[index]?.codePointAt(0) ?? 0
+          const rightCodePoint = rightCodePoints[index]?.codePointAt(0) ?? 0
+
+          if (leftCodePoint !== rightCodePoint) {
+            return leftCodePoint < rightCodePoint ? -1 : 1
+          }
+        }
+
+        if (leftCodePoints.length !== rightCodePoints.length) {
+          return leftCodePoints.length < rightCodePoints.length ? -1 : 1
+        }
+      }
+
+      leftIndex = leftEnd
+      rightIndex = rightEnd
+    }
+
+    if (leftIndex !== left.length || rightIndex !== right.length) {
+      return leftIndex === left.length ? -1 : 1
+    }
+
+    return 0
+  }
+
+  milestones.sort((a, b) => compareMilestoneIds(a.id, b.id))
+  archived.sort((a, b) => compareMilestoneIds(a.id, b.id))
 
   return {
     root,

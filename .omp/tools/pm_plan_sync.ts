@@ -39,7 +39,10 @@ const factory: CustomToolFactory = (pi) => ({
       milestones,
     }
 
-    const text = `PM plan sync: ${result.written ? "plan.yml written" : "plan.yml unchanged"}; ${errors} error(s), ${warnings} warning(s)`
+    const state =
+      errors > 0 ? "not written" : result.written ? "plan.yml written" : "plan.yml unchanged"
+
+    const text = `PM plan sync: ${state}; ${errors} error(s), ${warnings} warning(s)`
 
     return { content: [{ type: "text", text }], details }
   },

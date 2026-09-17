@@ -13,7 +13,7 @@ AI-heavy work who is choosing, for themselves, which model to run and which
 coding subscription to buy. They arrive mid-decision, on a laptop or on a
 phone, with a monthly budget, a vendor they can or will pay, and no way to
 check a vendor's marketing against their own workload. The question they hold
-is "which plan should *I* buy", and the site answers it for one person at a
+is "which plan should _I_ buy", and the site answers it for one person at a
 time.
 
 **Secondary audience, documented but not the design target:** contributors who

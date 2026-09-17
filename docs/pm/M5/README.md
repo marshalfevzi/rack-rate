@@ -23,6 +23,7 @@ tasks:
   - UI-515
 retro: []
 ---
+
 # The Console Listing redesign (PLAN stage 5)
 
 ## Definition of done
@@ -32,7 +33,7 @@ mainframe console / ISPF panel of fixed-column listing paper, a line-number
 gutter, a carriage-control state column, printer rules and uppercase mono
 legends — so the site becomes one inspectable listing instead of a dark card
 grid with a soft hero. It is the world `DESIGN.md` names as the creative north
-star and the *Divine Machinery* direction roll of 2026-09-16. Stage 5 changes
+star and the _Divine Machinery_ direction roll of 2026-09-16. Stage 5 changes
 presentation, composition and chart grammar only: no data, no arithmetic, no
 route identity, no schema.
 
@@ -40,26 +41,26 @@ route identity, no schema.
 
 ## Stage 5 — The Console Listing redesign
 
-**Goal:** 
+**Goal:**
 
 **The world is frozen.** `DESIGN.md` is the only owner of token values. This
 stage restates names and shell metrics because acceptance measures them, and for
 nothing else.
 
-| Concern | Frozen names and metrics |
-|---|---|
-| Grounds | `--color-canvas`, `--color-panel`, `--color-panel-2` |
-| Rules | `--color-rule`, `--color-rule-strong` |
-| Text | `--color-ink`, `--color-dim`, `--color-faint` (label-only, lowest contrast) |
-| Signal | `--color-signal`, `--color-on-signal` |
-| Type | `--text-micro`, `--text-meta`, `--text-body`, `--text-data`, `--text-title`, `--text-display` |
-| Faces | IBM Plex Sans for prose; IBM Plex Mono for every figure, identifier, legend and lane number |
-| Shell | status band 32px pinned; lane rail 176px, lanes `01`–`06` at 40px plus the unnumbered `METHOD`/`SOURCES` reference rows at 36px after a 2px divider, rail total 314px; data row 36px desktop / 44px mobile; line-number gutter 40px at ≥768px and the first element dropped on phones; state column 20px and never dropped; numeric columns right-aligned with a 72px minimum and 1px column-group rules |
-| Rhythm | 4px base, `4/8/12/16/24/32/48/64`; workspace max 1440px; edge gutters 24/32/48px; radius 0 everywhere |
-| Motion | one duration ≤150ms, one easing `cubic-bezier(0.2, 0, 0, 1)`, state-only, `prefers-reduced-motion` honoured |
-| State | carriage-control glyphs ` ` (live) `·` (held) `-` (excluded) `*` (committed) `!` (gap) `?` (low confidence) `+` (changed); never colour alone |
-| Basis | `plan route` solid 1px rule; `API list` hairline 1px at 50% plus an open-ended stroke; `AA index` doubled rule; every axis, chart title, column, chip and legend names its basis in words |
-| Banned | a second hue, green/red semantics, rounded corners, pills, shadow, gradient, blur, glow, spinners, shimmer, decorative dashes, monospace prose, a decorative eyebrow above a heading, motion above 150ms, and any contractual fact that exists only on hover |
+| Concern | Frozen names and metrics                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grounds | `--color-canvas`, `--color-panel`, `--color-panel-2`                                                                                                                                                                                                                                                                                                                                                     |
+| Rules   | `--color-rule`, `--color-rule-strong`                                                                                                                                                                                                                                                                                                                                                                    |
+| Text    | `--color-ink`, `--color-dim`, `--color-faint` (label-only, lowest contrast)                                                                                                                                                                                                                                                                                                                              |
+| Signal  | `--color-signal`, `--color-on-signal`                                                                                                                                                                                                                                                                                                                                                                    |
+| Type    | `--text-micro`, `--text-meta`, `--text-body`, `--text-data`, `--text-title`, `--text-display`                                                                                                                                                                                                                                                                                                            |
+| Faces   | IBM Plex Sans for prose; IBM Plex Mono for every figure, identifier, legend and lane number                                                                                                                                                                                                                                                                                                              |
+| Shell   | status band 32px pinned; lane rail 176px, lanes `01`–`06` at 40px plus the unnumbered `METHOD`/`SOURCES` reference rows at 36px after a 2px divider, rail total 314px; data row 36px desktop / 44px mobile; line-number gutter 40px at ≥768px and the first element dropped on phones; state column 20px and never dropped; numeric columns right-aligned with a 72px minimum and 1px column-group rules |
+| Rhythm  | 4px base, `4/8/12/16/24/32/48/64`; workspace max 1440px; edge gutters 24/32/48px; radius 0 everywhere                                                                                                                                                                                                                                                                                                    |
+| Motion  | one duration ≤150ms, one easing `cubic-bezier(0.2, 0, 0, 1)`, state-only, `prefers-reduced-motion` honoured                                                                                                                                                                                                                                                                                              |
+| State   | carriage-control glyphs ` ` (live) `·` (held) `-` (excluded) `*` (committed) `!` (gap) `?` (low confidence) `+` (changed); never colour alone                                                                                                                                                                                                                                                            |
+| Basis   | `plan route` solid 1px rule; `API list` hairline 1px at 50% plus an open-ended stroke; `AA index` doubled rule; every axis, chart title, column, chip and legend names its basis in words                                                                                                                                                                                                                |
+| Banned  | a second hue, green/red semantics, rounded corners, pills, shadow, gradient, blur, glow, spinners, shimmer, decorative dashes, monospace prose, a decorative eyebrow above a heading, motion above 150ms, and any contractual fact that exists only on hover                                                                                                                                             |
 
 **Boundaries — what Stage 5 must not do.**
 

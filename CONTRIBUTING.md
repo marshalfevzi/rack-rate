@@ -55,7 +55,6 @@ The data CLI loads the repository-root `.env` on every invocation, regardless of
 
 Never commit a real value.
 
-
 ## What does not belong here
 
 - Annual or promotional pricing. One billing basis keeps the comparison readable.

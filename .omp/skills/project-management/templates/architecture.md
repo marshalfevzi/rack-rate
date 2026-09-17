@@ -1,4 +1,5 @@
 <!-- dest: ARCHITECTURE.md -->
+
 # Architecture
 
 ## Module graph

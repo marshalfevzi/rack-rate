@@ -1,5 +1,7 @@
 <!-- dest: docs/pm/<M>/RETRO-YYYY-MM-DD-NNN.md -->
+
 ---
+
 id: RETRO-2026-09-17-001
 milestone: M1
 date: 2026-09-17

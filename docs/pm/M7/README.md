@@ -16,6 +16,7 @@ tasks:
   - DOC-707
 retro: []
 ---
+
 # GitHub Pages deployment (PLAN stage 7)
 
 ## Definition of done
@@ -27,7 +28,7 @@ documented for contributors.
 
 ## Stage 7 — GitHub Pages deployment
 
-**Goal:** 
+**Goal:**
 
 > **Reading these tasks.** Stage 7 tasks are written as requirements, not in the
 > Files / Work / Done-when form Stage 5 uses. A session that opens one restates

@@ -18,10 +18,13 @@ const factory: CustomToolFactory = (pi) => ({
 
       const details = { ok: true, archive: result.archive, removed: result.removed }
 
+      const text =
+        result.archive === null
+          ? `PM milestone ${params.milestone} resumed at status: in_progress; nothing was archived`
+          : `PM milestone ${params.milestone} archived at ${result.archive}`
+
       return {
-        content: [
-          { type: "text", text: `PM milestone ${params.milestone} archived at ${result.archive}` },
-        ],
+        content: [{ type: "text", text }],
         details,
       }
     } catch (error: unknown) {

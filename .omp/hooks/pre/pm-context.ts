@@ -1,59 +1,16 @@
 import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent"
-import { nextTask, planPath, syncPlan } from "../../lib/plan.ts"
-import { isAbsolute, relative, resolve } from "node:path"
+import { nextTask, syncPlan } from "../../lib/plan.ts"
+import {
+  isGeneratedPlan,
+  isWithin,
+  isWriteTool,
+  toolInputPath,
+  warn,
+} from "../../lib/tool-input.ts"
+import { resolve } from "node:path"
 
 const GENERATED_PLAN_REASON =
   "docs/pm/plan.yml is generated — edit the source docs and run pm_plan_sync"
-
-function inputPath(input: unknown, cwd: string): string | undefined {
-  if (input === null || typeof input !== "object" || Array.isArray(input)) {
-    return undefined
-  }
-
-  let value: unknown
-
-  if ("path" in input && input.path !== undefined && input.path !== null) {
-    value = input.path
-  } else if ("file_path" in input && input.file_path !== undefined && input.file_path !== null) {
-    value = input.file_path
-  } else if ("filePath" in input && input.filePath !== undefined && input.filePath !== null) {
-    value = input.filePath
-  } else {
-    return undefined
-  }
-
-  if (value === undefined || value === null) return undefined
-
-  const text = String(value)
-
-  if (text.length === 0) return undefined
-
-  return resolve(cwd, text)
-}
-
-function isWithin(path: string, directory: string): boolean {
-  const relativePath = relative(directory, path)
-
-  return relativePath.length > 0 && !relativePath.startsWith("..") && !isAbsolute(relativePath)
-}
-
-function isGeneratedPlan(path: string, cwd: string): boolean {
-  const absolutePath = resolve(cwd, path)
-  const generatedPath = resolve(cwd, planPath(cwd))
-  const normalized = absolutePath.replaceAll("\\", "/")
-
-  return absolutePath === generatedPath || normalized.endsWith("/docs/pm/plan.yml")
-}
-
-function warn(pi: ExtensionAPI, message: string, error: unknown): void {
-  try {
-    const detail = error instanceof Error ? error.message : String(error)
-
-    pi.logger.warn(`[pm] ${message}: ${detail}`)
-  } catch (loggingError) {
-    void loggingError
-  }
-}
 
 export default (pi: ExtensionAPI): void => {
   pi.on("session_start", async (_event, ctx) => {
@@ -87,15 +44,15 @@ export default (pi: ExtensionAPI): void => {
         { deliverAs: "nextTurn", triggerTurn: false },
       )
     } catch (error) {
-      warn(pi, "session context failed", error)
+      warn(pi, "pm", "session context failed", error)
     }
   })
 
   pi.on("tool_call", (event, ctx) => {
     try {
-      if (event.toolName !== "write" && event.toolName !== "edit") return
+      if (!isWriteTool(event.toolName)) return
 
-      const target = inputPath(event.input, ctx.cwd)
+      const target = toolInputPath(event.input, ctx.cwd)
 
       if (target === undefined) return
 
@@ -110,7 +67,7 @@ export default (pi: ExtensionAPI): void => {
         }
       }
     } catch (error) {
-      warn(pi, "write policy failed", error)
+      warn(pi, "pm", "write policy failed", error)
     }
   })
 }

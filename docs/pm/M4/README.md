@@ -24,6 +24,7 @@ tasks:
 retro:
   - RETRO-2026-09-17-004
 ---
+
 # Frontend build (PLAN stage 4)
 
 ## Definition of done

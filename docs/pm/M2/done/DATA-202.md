@@ -10,15 +10,16 @@ blocked_by: null
 created: 2026-09-14
 completed: 2026-09-14
 ---
+
 ## Scope
 
 `fetch deepswe` → `data/models.json`. Live artifact
-  `artifacts/v1.1/leaderboard-live.json`, fallback `v1`. Reduce one row per
-  `(model, harness, effort)` to one model row at the highest-scoring effort,
-  keeping `effort_variants`. Map `provider` from an explicit hand map
-  (the field is absent upstream on ~65/70 rows); unmapped → `null`, never a
-  guessed vendor. Use medians, not means. Carry `ci_lo`/`ci_hi`/`ci_method`,
-  `generated_at`, `n_tasks_in_set`.
+`artifacts/v1.1/leaderboard-live.json`, fallback `v1`. Reduce one row per
+`(model, harness, effort)` to one model row at the highest-scoring effort,
+keeping `effort_variants`. Map `provider` from an explicit hand map
+(the field is absent upstream on ~65/70 rows); unmapped → `null`, never a
+guessed vendor. Use medians, not means. Carry `ci_lo`/`ci_hi`/`ci_method`,
+`generated_at`, `n_tasks_in_set`.
 
 ## Acceptance criteria
 

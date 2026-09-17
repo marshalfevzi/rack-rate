@@ -1,5 +1,7 @@
 <!-- dest: docs/pm/ideas/<slug>.md -->
+
 ---
+
 id: IDEA-<slug>
 title: "Idea title"
 status: open

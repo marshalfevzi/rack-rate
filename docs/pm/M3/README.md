@@ -21,6 +21,7 @@ tasks:
 retro:
   - RETRO-2026-09-17-003
 ---
+
 # Static build framework (PLAN stage 3)
 
 ## Definition of done
@@ -68,7 +69,7 @@ gate. Stage 4 adds charts and real page content only.
   carries the base — and the OG/Twitter image is
   `absoluteUrl(asset("/og.png"), Astro.site)`.
 - `apps/site/src/layouts/Page.astro` (new): the only `<main id="main"
-  tabindex="-1">` landmark, an `h1` from `heading ?? title`, an optional lede,
+tabindex="-1">` landmark, an `h1` from `heading ?? title`, an optional lede,
   and the slot.
 - `apps/site/src/styles/global.css`: four-size type scale (`--text-*: initial`
   plus meta 13 px / body 15 px / title 22 px / display 32 px), native sans and
@@ -103,7 +104,7 @@ gate. Stage 4 adds charts and real page content only.
   13/15/22/32 px, header `position: sticky`, nav `transition` `0.15s` with
   `cubic-bezier(0.2, 0, 0, 1)`, `tabular-nums`, no horizontal scroll at 360 px
   (scrollWidth 360 at a 360 px viewport). Under `prefers-reduced-motion:
-  reduce` the transition duration becomes `0.01ms`. The skip link is 1×1 px,
+reduce` the transition duration becomes `0.01ms`. The skip link is 1×1 px,
   `clip-path: inset(50%)`, and on Tab becomes 138×42 px at the top left with
   the 2 px ink outline. `aria-current="page"` lands on Overview at
   `/rack-rate/`, on Models at `/rack-rate/models/`, and on nothing at
@@ -114,7 +115,7 @@ gate. Stage 4 adds charts and real page content only.
   17.36/18.45, dim 6.42/6.83, adjusted 5.58/5.93, measured 5.05/5.37, api
   5.16/5.49, api-ink 5.79/6.15, rule 1.23/1.30.
 - Gates: `bun run check` exit 0 (typecheck, oxlint, oxfmt over 36 files, `astro
-  check` 0 errors / 0 warnings / 0 hints), `bun test` 17 pass / 0 fail,
+check` 0 errors / 0 warnings / 0 hints), `bun test` 17 pass / 0 fail,
   `bun run data:check` exit 0 with `data/derived.json` still
   `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348` — no
   published number moved. `bun run quality` exits 1 on pre-existing findings

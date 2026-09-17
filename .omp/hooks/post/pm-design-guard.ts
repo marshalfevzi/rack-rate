@@ -1,4 +1,5 @@
 import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent"
+import { toolInputPath, warn } from "../../lib/tool-input.ts"
 import { extname, resolve } from "node:path"
 
 const UI_EXTENSIONS = {
@@ -15,32 +16,6 @@ const UI_EXTENSIONS = {
   ".ts": true,
   ".js": true,
 } satisfies Record<string, true>
-
-function inputPath(input: unknown, cwd: string): string | undefined {
-  if (input === null || typeof input !== "object" || Array.isArray(input)) {
-    return undefined
-  }
-
-  let value: unknown
-
-  if ("path" in input && input.path !== undefined && input.path !== null) {
-    value = input.path
-  } else if ("file_path" in input && input.file_path !== undefined && input.file_path !== null) {
-    value = input.file_path
-  } else if ("filePath" in input && input.filePath !== undefined && input.filePath !== null) {
-    value = input.filePath
-  } else {
-    return undefined
-  }
-
-  if (value === undefined || value === null) return undefined
-
-  const text = String(value)
-
-  if (text.length === 0) return undefined
-
-  return resolve(cwd, text)
-}
 
 function isUiPath(path: string): boolean {
   return UI_EXTENSIONS[extname(path).toLowerCase()] === true
@@ -68,16 +43,6 @@ function additionalContext(value: unknown): string | undefined {
   return context
 }
 
-function warn(pi: ExtensionAPI, message: string, error: unknown): void {
-  try {
-    const detail = error instanceof Error ? error.message : String(error)
-
-    pi.logger.warn(`[impeccable] ${message}: ${detail}`)
-  } catch (loggingError) {
-    void loggingError
-  }
-}
-
 function runDetector(pi: ExtensionAPI, root: string, payload: string): string | undefined {
   try {
     const proc = Bun.spawnSync({
@@ -87,7 +52,7 @@ function runDetector(pi: ExtensionAPI, root: string, payload: string): string | 
     })
 
     if (proc.exitCode !== 0) {
-      warn(pi, `detector exited with status ${proc.exitCode}`, proc.stderr)
+      warn(pi, "impeccable", `detector exited with status ${proc.exitCode}`, proc.stderr)
 
       return undefined
     }
@@ -97,12 +62,12 @@ function runDetector(pi: ExtensionAPI, root: string, payload: string): string | 
 
       return additionalContext(parsed)
     } catch (error) {
-      warn(pi, "detector returned invalid JSON", error)
+      warn(pi, "impeccable", "detector returned invalid JSON", error)
 
       return undefined
     }
   } catch (error) {
-    warn(pi, "detector could not run", error)
+    warn(pi, "impeccable", "detector could not run", error)
 
     return undefined
   }
@@ -132,7 +97,7 @@ export default (pi: ExtensionAPI): void => {
         return
       }
 
-      const target = inputPath(event.input, ctx.cwd)
+      const target = toolInputPath(event.input, ctx.cwd)
 
       if (target === undefined || !isUiPath(target)) return
 
@@ -153,7 +118,7 @@ export default (pi: ExtensionAPI): void => {
         content: [...event.content, { type: "text", text: findings }],
       }
     } catch (error) {
-      warn(pi, "tool result check failed", error)
+      warn(pi, "impeccable", "tool result check failed", error)
     }
   })
 
@@ -184,7 +149,7 @@ export default (pi: ExtensionAPI): void => {
         { deliverAs: "nextTurn", triggerTurn: false },
       )
     } catch (error) {
-      warn(pi, "session stop check failed", error)
+      warn(pi, "impeccable", "session stop check failed", error)
     }
   })
 }

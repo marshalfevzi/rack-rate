@@ -17,18 +17,18 @@ Site routing (from `assets/live-leaderboard-BDQndJOj.js` + `assets/deepswe-v1-1-
 
 ### Probe results (actually fetched 2026-09-14)
 
-| URL | Status | Size / notes |
-|---|---|---|
-| `https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json` | **200** `application/json` | **2518 lines**, the live actively-scored v1.1 leaderboard |
-| `https://deepswe.datacurve.ai/artifacts/v1/leaderboard-live.json` | **200** `application/json` | **975 lines**, stale v1 leaderboard, `generated_at: 2026-06-20T17:27:24.307648+00:00` |
-| `https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard.json` | **404** (HTML error page) | Does not exist |
-| `https://deepswe.datacurve.ai/artifacts/latest/leaderboard-live.json` | **404** | No `latest` pointer |
-| `https://deepswe.datacurve.ai/artifacts/index.json` | **404** | No index |
-| `https://deepswe.datacurve.ai/api/leaderboard` | **404** | No API |
-| `https://deepswe.datacurve.ai/leaderboard.json` | **404** | No root JSON |
-| `https://deepswe.datacurve.ai/artifacts/v1.1/v1-delta.json` | **200** `application/json` | **1014 lines**, v1↔v1.1 comparison (discovered in `deepswe-v1-1-Ccfwnmvs.js`) |
-| `https://deepswe.datacurve.ai/artifacts/v1/leaderboard.json` | **200** `application/json` | **446 lines**, frozen May-13 snapshot, *different older schema* (see Gotchas) |
-| `https://api.datacurve.ai/deepswe/leaderboard` | `[UNVERIFIED]` — not probed | Legacy guess from current `scripts/fetch_deepswe.py`; do not rely on |
+| URL                                                                   | Status                      | Size / notes                                                                          |
+| --------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------- |
+| `https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard-live.json`   | **200** `application/json`  | **2518 lines**, the live actively-scored v1.1 leaderboard                             |
+| `https://deepswe.datacurve.ai/artifacts/v1/leaderboard-live.json`     | **200** `application/json`  | **975 lines**, stale v1 leaderboard, `generated_at: 2026-06-20T17:27:24.307648+00:00` |
+| `https://deepswe.datacurve.ai/artifacts/v1.1/leaderboard.json`        | **404** (HTML error page)   | Does not exist                                                                        |
+| `https://deepswe.datacurve.ai/artifacts/latest/leaderboard-live.json` | **404**                     | No `latest` pointer                                                                   |
+| `https://deepswe.datacurve.ai/artifacts/index.json`                   | **404**                     | No index                                                                              |
+| `https://deepswe.datacurve.ai/api/leaderboard`                        | **404**                     | No API                                                                                |
+| `https://deepswe.datacurve.ai/leaderboard.json`                       | **404**                     | No root JSON                                                                          |
+| `https://deepswe.datacurve.ai/artifacts/v1.1/v1-delta.json`           | **200** `application/json`  | **1014 lines**, v1↔v1.1 comparison (discovered in `deepswe-v1-1-Ccfwnmvs.js`)         |
+| `https://deepswe.datacurve.ai/artifacts/v1/leaderboard.json`          | **200** `application/json`  | **446 lines**, frozen May-13 snapshot, _different older schema_ (see Gotchas)         |
+| `https://api.datacurve.ai/deepswe/leaderboard`                        | `[UNVERIFIED]` — not probed | Legacy guess from current `scripts/fetch_deepswe.py`; do not rely on                  |
 
 ### JS bundles checked (HTML `<link rel="modulepreload">` + imports, 2026-09-14)
 
@@ -148,53 +148,53 @@ Rate limits: none documented, none observed (static CDN JSON). ETag/`Last-Modifi
 
 Top-level object (`v1.1/leaderboard-live.json`):
 
-| Field | Type | Meaning |
-|---|---|---|
-| `scope` | string | Population: every rollout grouped by configuration |
-| `unit` | string | Scoring rubric (pass@1/pass@4 definitions, failure/exclusion rules, efficiency denominator) |
-| `generated_at` | string (ISO-8601, tz-aware) | Artifact build time; staleness key |
-| `n_tasks_in_set` | integer | Task-set size (113) |
-| `latest_job` | `{name: string, finished_at: string}` | Most recent Pier job rolled into the artifact |
-| `rows` | array of row objects | One per (harness, model, reasoning_effort) config |
+| Field            | Type                                  | Meaning                                                                                     |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `scope`          | string                                | Population: every rollout grouped by configuration                                          |
+| `unit`           | string                                | Scoring rubric (pass@1/pass@4 definitions, failure/exclusion rules, efficiency denominator) |
+| `generated_at`   | string (ISO-8601, tz-aware)           | Artifact build time; staleness key                                                          |
+| `n_tasks_in_set` | integer                               | Task-set size (113)                                                                         |
+| `latest_job`     | `{name: string, finished_at: string}` | Most recent Pier job rolled into the artifact                                               |
+| `rows`           | array of row objects                  | One per (harness, model, reasoning_effort) config                                           |
 
 `rows[]` field table (union over all 70 live rows; "missing" = key absent on some rows, verified):
 
-| Field | Type | Meaning / units | Nullability |
-|---|---|---|---|
-| `model` | string | Dashed model id (`gpt-6-astra`, `muse-spark-1-1`) | never null |
-| `harness` | string | Agent harness; always `mini-swe-agent` in live file | never null |
-| `provider` | string | Billing/vendor id, lowercase (`openai`) | **missing except 5× `gpt-6-astra` rows**; treat as optional |
-| `reasoning_effort` | string \| null | Effort tier: `low`/`medium`/`high`/`xhigh`/`max` (code also knows `none`/`minimal`); `null` = vendor default | null only on `kimi-k2-7-code` (`..._default` config) |
-| `config` | string | Unique config key: `mini_swe_agent_<model>_<effort>` or `..._default` when effort is null | never null |
-| `source` | string | Always `deep-swe` | never null |
-| `cost_basis` | string | Pricing note for modeled (pre-launch) cost | **missing except 5× `gpt-6-astra` rows** |
-| `pass_rate` | number 0–1 | Attempt pass rate (pass@1); primary score | never null |
-| `pass_at_1` | number 0–1 | Always equals `pass_rate` in this artifact | never null |
-| `pass_at_4` | number 0–1 | Fraction of attempted tasks with ≥1 passing rollout | never null |
-| `n_passed` | integer | Passed attempts | never null |
-| `n_attempted` | integer | Scored attempts (≈113 tasks × 4 runs; 429–452 observed) | never null |
-| `n_tasks_attempted` | integer | Distinct tasks attempted (113; v1 had one 111 row) | never null |
-| `n_tasks_passed_any` | integer | Tasks with ≥1 passing rollout | never null |
-| `completed_by_attempt` | integer[4] | Tasks completed per whole-benchmark pass | **gpt-6-astra rows only** |
-| `pass_rate_by_attempt` | number[4] | Per-pass pass rate | **gpt-6-astra rows only** |
-| `ci_passed` / `ci_attempted` | integers | Numerator/denominator for the CI (usually = n_passed/n_attempted) | never null |
-| `ci_lo` / `ci_hi` | number 0–1 | 95% run-to-run CI bounds | never null |
-| `ci_half` | number | CI half-width, in rate points | never null |
-| `n_runs` | integer | Whole-benchmark passes (4 everywhere observed) | never null |
-| `ci_method` | string | Constant: `95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))` | never null |
-| `mean_cost_usd` / `median_cost_usd` | number | USD per scored attempt (billed or `cost_basis`-modeled) | never null |
-| `mean_output_tokens` / `median_output_tokens` | number | Output tokens per attempt | never null |
-| `mean_input_tokens` / `median_input_tokens` | number | Input tokens per attempt | never null |
-| `mean_uncached_input_tokens` / `median_uncached_input_tokens` | number | Non-cached input slice | **gpt-6-astra rows only** |
-| `mean_cache_tokens` | number | Cache-affected input tokens | present on all live rows observed |
-| `mean_cache_read_tokens` / `median_cache_read_tokens` | number | Cache reads | **gpt-6-astra rows only** |
-| `mean_cache_write_tokens` / `median_cache_write_tokens` | number | Cache writes | **gpt-6-astra rows only** |
-| `mean_reasoning_tokens` / `median_reasoning_tokens` | number | Reasoning-trace tokens | **gpt-6-astra rows only** |
-| `mean_compute_units` / `median_compute_units` | number | Vendor compute units (×$2/M per `cost_basis`) | **gpt-6-astra rows only** |
-| `mean_duration_seconds` / `median_duration_seconds` | number | Wall-clock seconds per attempt (v1.1 blog: no longer emphasized) | never null |
-| `mean_agent_steps` / `median_agent_steps` | number | Agent steps per attempt | never null |
-| `median_peak_context_tokens` | number \| null | Median peak context window, tokens | **explicit `null` on all 5 `gpt-6-astra` rows**; number (sometimes `.5` from even-n median) elsewhere |
-| `median_output_tokens_to_pass` | number | Median output tokens among passing attempts (`.5` possible) | never null |
+| Field                                                         | Type           | Meaning / units                                                                                              | Nullability                                                                                           |
+| ------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `model`                                                       | string         | Dashed model id (`gpt-6-astra`, `muse-spark-1-1`)                                                            | never null                                                                                            |
+| `harness`                                                     | string         | Agent harness; always `mini-swe-agent` in live file                                                          | never null                                                                                            |
+| `provider`                                                    | string         | Billing/vendor id, lowercase (`openai`)                                                                      | **missing except 5× `gpt-6-astra` rows**; treat as optional                                           |
+| `reasoning_effort`                                            | string \| null | Effort tier: `low`/`medium`/`high`/`xhigh`/`max` (code also knows `none`/`minimal`); `null` = vendor default | null only on `kimi-k2-7-code` (`..._default` config)                                                  |
+| `config`                                                      | string         | Unique config key: `mini_swe_agent_<model>_<effort>` or `..._default` when effort is null                    | never null                                                                                            |
+| `source`                                                      | string         | Always `deep-swe`                                                                                            | never null                                                                                            |
+| `cost_basis`                                                  | string         | Pricing note for modeled (pre-launch) cost                                                                   | **missing except 5× `gpt-6-astra` rows**                                                              |
+| `pass_rate`                                                   | number 0–1     | Attempt pass rate (pass@1); primary score                                                                    | never null                                                                                            |
+| `pass_at_1`                                                   | number 0–1     | Always equals `pass_rate` in this artifact                                                                   | never null                                                                                            |
+| `pass_at_4`                                                   | number 0–1     | Fraction of attempted tasks with ≥1 passing rollout                                                          | never null                                                                                            |
+| `n_passed`                                                    | integer        | Passed attempts                                                                                              | never null                                                                                            |
+| `n_attempted`                                                 | integer        | Scored attempts (≈113 tasks × 4 runs; 429–452 observed)                                                      | never null                                                                                            |
+| `n_tasks_attempted`                                           | integer        | Distinct tasks attempted (113; v1 had one 111 row)                                                           | never null                                                                                            |
+| `n_tasks_passed_any`                                          | integer        | Tasks with ≥1 passing rollout                                                                                | never null                                                                                            |
+| `completed_by_attempt`                                        | integer[4]     | Tasks completed per whole-benchmark pass                                                                     | **gpt-6-astra rows only**                                                                             |
+| `pass_rate_by_attempt`                                        | number[4]      | Per-pass pass rate                                                                                           | **gpt-6-astra rows only**                                                                             |
+| `ci_passed` / `ci_attempted`                                  | integers       | Numerator/denominator for the CI (usually = n_passed/n_attempted)                                            | never null                                                                                            |
+| `ci_lo` / `ci_hi`                                             | number 0–1     | 95% run-to-run CI bounds                                                                                     | never null                                                                                            |
+| `ci_half`                                                     | number         | CI half-width, in rate points                                                                                | never null                                                                                            |
+| `n_runs`                                                      | integer        | Whole-benchmark passes (4 everywhere observed)                                                               | never null                                                                                            |
+| `ci_method`                                                   | string         | Constant: `95% run-to-run: SE across repeated whole-benchmark passes (1.96 * std(runs)/sqrt(R))`             | never null                                                                                            |
+| `mean_cost_usd` / `median_cost_usd`                           | number         | USD per scored attempt (billed or `cost_basis`-modeled)                                                      | never null                                                                                            |
+| `mean_output_tokens` / `median_output_tokens`                 | number         | Output tokens per attempt                                                                                    | never null                                                                                            |
+| `mean_input_tokens` / `median_input_tokens`                   | number         | Input tokens per attempt                                                                                     | never null                                                                                            |
+| `mean_uncached_input_tokens` / `median_uncached_input_tokens` | number         | Non-cached input slice                                                                                       | **gpt-6-astra rows only**                                                                             |
+| `mean_cache_tokens`                                           | number         | Cache-affected input tokens                                                                                  | present on all live rows observed                                                                     |
+| `mean_cache_read_tokens` / `median_cache_read_tokens`         | number         | Cache reads                                                                                                  | **gpt-6-astra rows only**                                                                             |
+| `mean_cache_write_tokens` / `median_cache_write_tokens`       | number         | Cache writes                                                                                                 | **gpt-6-astra rows only**                                                                             |
+| `mean_reasoning_tokens` / `median_reasoning_tokens`           | number         | Reasoning-trace tokens                                                                                       | **gpt-6-astra rows only**                                                                             |
+| `mean_compute_units` / `median_compute_units`                 | number         | Vendor compute units (×$2/M per `cost_basis`)                                                                | **gpt-6-astra rows only**                                                                             |
+| `mean_duration_seconds` / `median_duration_seconds`           | number         | Wall-clock seconds per attempt (v1.1 blog: no longer emphasized)                                             | never null                                                                                            |
+| `mean_agent_steps` / `median_agent_steps`                     | number         | Agent steps per attempt                                                                                      | never null                                                                                            |
+| `median_peak_context_tokens`                                  | number \| null | Median peak context window, tokens                                                                           | **explicit `null` on all 5 `gpt-6-astra` rows**; number (sometimes `.5` from even-n median) elsewhere |
+| `median_output_tokens_to_pass`                                | number         | Median output tokens among passing attempts (`.5` possible)                                                  | never null                                                                                            |
 
 Keying, counts, reduction (counted from the 2026-09-14 fetch by row-start lines: 70 rows, 28 distinct `model` values):
 
@@ -223,10 +223,10 @@ Keying, counts, reduction (counted from the 2026-09-14 fetch by row-start lines:
 
 ## 5. License / redistribution verdict
 
-- Repo license: **Apache License 2.0** (`github.com/datacurve-ai/deep-swe`, `LICENSE` fetched 2026-09-14; GitHub repo page also labels it "Apache License 2.0"). Quoted grant (§2): *"each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form."* Redistribution (§4) requires: *(a) give recipients a copy of this License; (b) modified files carry prominent change notices; (c) retain copyright/patent/trademark/attribution notices; (d) include any NOTICE-file attributions.*
-- Scope limit (`PROVENANCE.md`, fetched 2026-09-14): *"The Apache-2.0 license applied to this repository covers only Datacurve AI Inc.'s original contributions (task specifications, evaluation harness, verifiers, and curation). It does **not** relicense the upstream projects listed below … All listed licenses are permissive; none are copyleft or share-alike."*
+- Repo license: **Apache License 2.0** (`github.com/datacurve-ai/deep-swe`, `LICENSE` fetched 2026-09-14; GitHub repo page also labels it "Apache License 2.0"). Quoted grant (§2): _"each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form."_ Redistribution (§4) requires: _(a) give recipients a copy of this License; (b) modified files carry prominent change notices; (c) retain copyright/patent/trademark/attribution notices; (d) include any NOTICE-file attributions._
+- Scope limit (`PROVENANCE.md`, fetched 2026-09-14): _"The Apache-2.0 license applied to this repository covers only Datacurve AI Inc.'s original contributions (task specifications, evaluation harness, verifiers, and curation). It does **not** relicense the upstream projects listed below … All listed licenses are permissive; none are copyleft or share-alike."_
 - Leaderboard-data license: **none found** — no data-terms, ToS, or © notice on `/`, `/run`, `/blog/deepswe`, `/blog/deepswe-v1-1`, `/changelog`, or in `README.md`/`PROVENANCE.md` (all fetched 2026-09-14). `[UNVERIFIED]`: no footer-ToS or API-terms page was discovered; re-check if the site adds one.
-- Canary / contamination policy: the benchmark carries a canary string. This repo's own `SOURCES.md` (read 2026-09-14): *"DeepSWE task content is never mirrored here. The benchmark carries a canary string specifically to catch that, and contamination would ruin the benchmark this project depends on."* `scripts/fetch_deepswe.py`: *"This script never touches DeepSWE task content, only leaderboard metadata (model id, score, cost per task, output tokens, agent steps). The benchmark carries a canary string specifically to catch that kind of mirroring."* The `/run` page adds: *"To submit your model or agent to the leaderboard, reach out to serena@datacurve.ai"* and *"benchmark data should not appear in training data"* (search-result summary, `[UNVERIFIED]` verbatim — confirm on page before quoting externally).
+- Canary / contamination policy: the benchmark carries a canary string. This repo's own `SOURCES.md` (read 2026-09-14): _"DeepSWE task content is never mirrored here. The benchmark carries a canary string specifically to catch that, and contamination would ruin the benchmark this project depends on."_ `scripts/fetch_deepswe.py`: _"This script never touches DeepSWE task content, only leaderboard metadata (model id, score, cost per task, output tokens, agent steps). The benchmark carries a canary string specifically to catch that kind of mirroring."_ The `/run` page adds: _"To submit your model or agent to the leaderboard, reach out to serena@datacurve.ai"_ and _"benchmark data should not appear in training data"_ (search-result summary, `[UNVERIFIED]` verbatim — confirm on page before quoting externally).
 - **Verdict: YES, may republish aggregate leaderboard numbers + derived cost-per-task figures** in a public static site + repo (facts/measurements with computation on top; Apache-2.0 permits the harness/repo reuse provided §4(a)–(d) are honored), **with attribution**: link each figure to `https://deepswe.datacurve.ai/` + `https://github.com/datacurve-ai/deep-swe`, note `generated_at` + scoring version (v1.1), and carry the Apache-2.0 license copy/notice for any reused repo content. **NO to mirroring task content** (`instruction.md`, `solution.patch`, `tests/`, Dockerfiles) — canary + contamination rule. No regional/promotional pricing carve-outs needed beyond the `cost_basis` note for pre-launch models.
 
 ## 6. Recommended TS fetch strategy

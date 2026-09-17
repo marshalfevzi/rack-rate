@@ -5,6 +5,9 @@ project:
   design: DESIGN.md
   architecture: ARCHITECTURE.md
   constraints: CAVEATS.md
+  commands:
+    format: bun run format
+    gate: bun run check
 prefixes:
   COR: { domain: "core", impeccable: false }
   DATA: { domain: "data-cli", impeccable: false }

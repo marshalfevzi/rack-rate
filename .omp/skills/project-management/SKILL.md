@@ -52,47 +52,54 @@ For field definitions and generated-plan ordering, read
 ### Intake
 
 1. Run `/pm-init` to create or migrate the config, core documents, and first milestone without
-overwriting existing history.
+   overwriting existing history.
 2. Run `/pm-align` when the documents no longer describe reality. Create, split, merge, or retire
-milestones and tasks, repair prerequisite order, and reconcile the PRD and architecture.
+   milestones and tasks, repair prerequisite order, and reconcile the PRD and architecture.
 3. Capture unresolved choices with `/pm-decide` or `/pm-resolve`. A blocked task becomes runnable
-only after an accepted or deferred decision resolves its blocker.
-4. Run `pm_plan_sync` after every PM document mutation. Treat errors as a stop condition and fix
-the source document before continuing.
+   only after an accepted or deferred decision resolves its blocker.
+4. Run `pm_plan_sync` after every PM document mutation. Treat errors as a stop condition and fix the
+   source document before continuing. Markdown findings surface through `pm_doc_check` alongside plan
+   issues.
 
 ### Execution
 
 1. Run `/pm-status` for a read-only snapshot, then `/pm` for exactly one next task.
 2. `/pm` selects the first runnable `todo` task by milestone priority and task order. It restates
-the task, asks only blocking questions, plans, implements, verifies, and finishes the task.
+   the task, asks only blocking questions, plans, implements, verifies, and finishes the task.
 3. A completed task is moved to `done/` through `pm_task_finish`, receives its completion date and
-Session record, and is reflected in the generated plan.
+   Session record, and is reflected in the generated plan.
 4. When all milestone tasks are done, run `/pm-retro`. A `closed` outcome requires a completed
-closed retro; `pm_milestone_close` then writes one flat archive slice and removes the live milestone
-directory. A `continued` outcome records the retro and returns the milestone to `in_progress` so new
-tasks can be added — a milestone never rests at `status: retro`.
+   closed retro; `pm_milestone_close` then writes one flat archive slice and removes the live milestone
+   directory. A `continued` outcome records the retro and returns the milestone to `in_progress` so new
+   tasks can be added — a milestone never rests at `status: retro`.
 5. Run `/pm-docs` whenever PRD or architecture content must be brought back into agreement with the
-implementation. End with `pm_doc_check`.
+   implementation. End with `pm_doc_check`.
 
 ## Invariants
 
-| Code | Severity | Rule |
-|---|---|---|
-| `id-duplicate` | error | Task, decision, retro, and milestone ids are unique. |
-| `prefix-unknown` | error | Every task id prefix is declared in config `prefixes`. |
-| `task-missing` | error | Every milestone task entry resolves to an existing task document. |
-| `task-orphan` | warn | A milestone task document should be listed by its milestone. |
-| `pre-missing` | error | Every prerequisite names an existing task id. |
-| `pre-order` | error | Each prerequisite appears earlier in its milestone task order. |
-| `pre-cycle` | error | The prerequisite graph is acyclic. |
-| `blocked-no-decision` | error | A blocked task names an accepted or deferred decision. |
-| `decision-missing` | error | Every blocker or decision reference resolves. |
-| `done-location` | error | Done tasks live in `done/`; other task statuses do not. |
-| `done-date` | error | A done task has a `completed` date. |
-| `milestone-close-blocked` | error | A completed milestone has a closed retro and zero open tasks. |
-| `milestone-retro` | warn | All-done in-progress milestones should move to `retro`. |
-| `plan-stale` | warn | The committed generated plan differs from the freshly rendered model. |
-| `next-blocked` | warn | The next task in priority order is blocked. |
+| Code                       | Severity | Rule                                                                  |
+| -------------------------- | -------- | --------------------------------------------------------------------- |
+| `id-duplicate`             | error    | Task, decision, retro, and milestone ids are unique.                  |
+| `prefix-unknown`           | error    | Every task id prefix is declared in config `prefixes`.                |
+| `task-missing`             | error    | Every milestone task entry resolves to an existing task document.     |
+| `task-orphan`              | warn     | A milestone task document should be listed by its milestone.          |
+| `pre-missing`              | error    | Every prerequisite names an existing task id.                         |
+| `pre-order`                | error    | Each prerequisite appears earlier in its milestone task order.        |
+| `pre-cycle`                | error    | The prerequisite graph is acyclic.                                    |
+| `blocked-no-decision`      | error    | A blocked task names an accepted or deferred decision.                |
+| `decision-missing`         | error    | Every blocker or decision reference resolves.                         |
+| `done-location`            | error    | Done tasks live in `done/`; other task statuses do not.               |
+| `done-date`                | error    | A done task has a `completed` date.                                   |
+| `milestone-close-blocked`  | error    | A completed milestone has a closed retro and zero open tasks.         |
+| `milestone-retro`          | warn     | All-done in-progress milestones should move to `retro`.               |
+| `plan-stale`               | warn     | The committed generated plan differs from the freshly rendered model. |
+| `next-blocked`             | warn     | The next task in priority order is blocked.                           |
+| `frontmatter-unterminated` | error    | Markdown frontmatter must have a closing delimiter.                   |
+| `frontmatter-invalid`      | error    | Frontmatter must parse as valid YAML.                                 |
+| `frontmatter-key-missing`  | error    | Required frontmatter keys must be present.                            |
+| `hard-break-backslash`     | error    | A trailing backslash must not create a hard line break.               |
+| `hard-break-spaces`        | error    | Two trailing spaces must not create a hard line break.                |
+| `dangling-link`            | error    | Relative links must resolve to existing files or anchors.             |
 
 The runnable task is the first `todo` task in an `in_progress` milestone, then a `backlog`
 milestone, whose prerequisites are all done. `next_task` in the generated plan is the earliest
@@ -101,18 +108,18 @@ non-done candidate in that same priority order — including a `blocked` one. Wh
 
 ## Command table
 
-| Command | Purpose |
-|---|---|
-| `/pm` | Run the next task; pre-flight sync, plan, implement, verify, and finish it. |
-| `/pm-init` | Bootstrap a greenfield tree or migrate an existing plan without losing history. |
-| `/pm-align` | Reconcile documents with reality and repair task or milestone structure. |
-| `/pm-resolve` | Resolve the first blocked task with a decision, then return it to `todo`. |
-| `/pm-new-task` | Turn an idea into a task in a milestone or `unplanned/`. |
-| `/pm-prioritize` | Reorder a milestone queue and repair prerequisite order. |
-| `/pm-retro` | Facilitate a retro and close a milestone when its outcome is closed. |
-| `/pm-docs` | Update PRD or architecture documents and run document checks. |
-| `/pm-status` | Report plan state without writing the generated plan. |
-| `/pm-decide` | Record an ad-hoc decision from the user's argument. |
+| Command          | Purpose                                                                         |
+| ---------------- | ------------------------------------------------------------------------------- |
+| `/pm`            | Run the next task; pre-flight sync, plan, implement, verify, and finish it.     |
+| `/pm-init`       | Bootstrap a greenfield tree or migrate an existing plan without losing history. |
+| `/pm-align`      | Reconcile documents with reality and repair task or milestone structure.        |
+| `/pm-resolve`    | Resolve the first blocked task with a decision, then return it to `todo`.       |
+| `/pm-new-task`   | Turn an idea into a task in a milestone or `unplanned/`.                        |
+| `/pm-prioritize` | Reorder a milestone queue and repair prerequisite order.                        |
+| `/pm-retro`      | Facilitate a retro and close a milestone when its outcome is closed.            |
+| `/pm-docs`       | Update PRD or architecture documents and run document checks.                   |
+| `/pm-status`     | Report plan state without writing the generated plan.                           |
+| `/pm-decide`     | Record an ad-hoc decision from the user's argument.                             |
 
 Every mutating command finishes with `pm_plan_sync` and reports its issues. Every command may
 consult this skill and its references; the tool names in this table and the document fields in

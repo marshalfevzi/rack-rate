@@ -20,6 +20,7 @@ tasks:
 retro:
   - RETRO-2026-09-17-001
 ---
+
 # Initialization (PLAN stage 1)
 
 ## Definition of done
@@ -94,7 +95,7 @@ Progress log entry for 2026-09-14 for the post-execution state.
   1.4b.
 - **1.4b parity contract confirmed feasible; the fixture itself does not exist
   yet.** `python3 scripts/validate.py` and `python3 scripts/compute.py` both exit
-  0 today and reproduce those exact counts, so the golden fixture *can* be
+  0 today and reproduce those exact counts, so the golden fixture _can_ be
   generated before anything is deleted. Until Stage 1.4b executes, there is no
   `data/fixtures/legacy-derived.json` — `data/derived.*` is a legacy build
   artifact, not a committed fixture. Input hashes recorded for provenance:
@@ -157,7 +158,7 @@ Artificial Analysis **off by default** because no redistribution right exists.
 - **Strategy C**: one root `tsconfig.json`, with no project references. A
   referenced project requires `composite: true`, which cannot coexist with the
   root's no-emit typecheck (`TS6310: Referenced project '…' may not disable
-  emit`). An `include` with no matching file is also a hard error
+emit`). An `include` with no matching file is also a hard error
   (`TS18003: No inputs were found in config file`), so 1.2 and 1.3 landed in
   the same wave. `apps/site/tsconfig.json` extends the root, and
   `lib: ["ES2023","DOM"]` is deliberate and blanket.

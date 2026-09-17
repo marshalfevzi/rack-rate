@@ -1,4 +1,12 @@
 {
   "semi": false,
-  "ignorePatterns": ["data/**", "**/*.md", "tools/oxlint/anti-slop/**", ".claude/skills/**"]
+  "ignorePatterns": ["data/**", "tools/oxlint/anti-slop/**", ".claude/**", "docs/history/**"],
+  "overrides": [
+    {
+      "files": ["**/*.md"],
+      "options": {
+        "embeddedLanguageFormatting": "off"
+      }
+    }
+  ]
 }

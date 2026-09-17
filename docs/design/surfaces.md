@@ -8,16 +8,16 @@ The product is `rack-rate`. Bosphorus Elevate is credited as maker in the footer
 
 ### Frame and responsive geometry
 
-| Region | Desktop (1440) | Tablet (768–1023) | Phone (390 and below) |
-| --- | --- | --- | --- |
-| Content width | `max-width: 1440px`; edge gutter `48px` at `≥1280px` | edge gutter `32px` at `≥768px` | edge gutter `24px` |
-| Status band | pinned at the top, `32px` high | same | same; reduced contents |
-| Lane rail | left rail, `176px` wide, lanes `01–06`, `40px` rows, 1px rules, then unnumbered `METHOD`/`SOURCES` reference rows | dropped at the `1024px` boundary; opened by the band drawer | drawer, opened by `MENU`; it does not displace page content |
-| Readout line | one fixed `28px` line at the viewport bottom; page body reserves `28px` bottom padding | same | docks inline directly below the status band and updates in place |
-| Table row | `36px` | `36px` | `44px` |
-| Line-number gutter | `40px` | `28px` from the `768px` breakpoint | dropped at the `480px` breakpoint |
-| State cell | `20px`, carriage-control column | `20px` | never dropped; glyph moves to the leading edge of the key cell, separated by `8px`; key-cell left padding is removed |
-| Rules | 1px structural rules; 2px section and table-head rules | same | same |
+| Region             | Desktop (1440)                                                                                                    | Tablet (768–1023)                                           | Phone (390 and below)                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Content width      | `max-width: 1440px`; edge gutter `48px` at `≥1280px`                                                              | edge gutter `32px` at `≥768px`                              | edge gutter `24px`                                                                                                   |
+| Status band        | pinned at the top, `32px` high                                                                                    | same                                                        | same; reduced contents                                                                                               |
+| Lane rail          | left rail, `176px` wide, lanes `01–06`, `40px` rows, 1px rules, then unnumbered `METHOD`/`SOURCES` reference rows | dropped at the `1024px` boundary; opened by the band drawer | drawer, opened by `MENU`; it does not displace page content                                                          |
+| Readout line       | one fixed `28px` line at the viewport bottom; page body reserves `28px` bottom padding                            | same                                                        | docks inline directly below the status band and updates in place                                                     |
+| Table row          | `36px`                                                                                                            | `36px`                                                      | `44px`                                                                                                               |
+| Line-number gutter | `40px`                                                                                                            | `28px` from the `768px` breakpoint                          | dropped at the `480px` breakpoint                                                                                    |
+| State cell         | `20px`, carriage-control column                                                                                   | `20px`                                                      | never dropped; glyph moves to the leading edge of the key cell, separated by `8px`; key-cell left padding is removed |
+| Rules              | 1px structural rules; 2px section and table-head rules                                                            | same                                                        | same                                                                                                                 |
 
 The drop order is deliberate: lane rail first; at `768px`, repeated table heads are dropped and the line-number gutter shrinks to `28px`; at `480px`, the line-number gutter drops. The state mark remains available at every width. At `360px`, rows use the stacked listing behavior in [Listing table anatomy](#listing-table-anatomy), so there is no horizontal page scroll.
 
@@ -40,14 +40,14 @@ At phone width the band keeps `RACK-RATE`, `AA {ON|OFF}`, and `MENU` in that ord
 
 The rail is a single `nav` landmark labelled `Lanes`. It has six numbered working surfaces followed by an unnumbered reference group. Numbers are stable keyboard and footer anchors.
 
-| Lane | Label | Route |
-| --- | --- | --- |
-| `01` | `OVERVIEW` | `/` |
-| `02` | `MODELS` | `/models`, `/models/[slug]` |
-| `03` | `PLANS` | `/plans`, `/plans/[slug]` |
-| `04` | `COMPARE` | `/compare` |
-| `05` | `EXPLORE` | `/explore` |
-| `06` | `GET STARTED` | `/start` |
+| Lane | Label         | Route                       |
+| ---- | ------------- | --------------------------- |
+| `01` | `OVERVIEW`    | `/`                         |
+| `02` | `MODELS`      | `/models`, `/models/[slug]` |
+| `03` | `PLANS`       | `/plans`, `/plans/[slug]`   |
+| `04` | `COMPARE`     | `/compare`                  |
+| `05` | `EXPLORE`     | `/explore`                  |
+| `06` | `GET STARTED` | `/start`                    |
 
 After lane 06, a 2px rule separates the reference group. `METHOD` and `SOURCES` are unnumbered, 36px rows with `--color-dim` labels and the same hover and focus treatment. They are reference material, not tools. The rail's total height is `314px`: six `40px` lane rows, a 2px separator, and two `36px` reference rows. Detail routes highlight their parent working lane; `/404` has no active lane and leaves every row available.
 
@@ -81,19 +81,19 @@ The first focusable item is `Skip to content`, which targets `#main`. It is visu
 
 `Operate` pages have a first action in the opening listing or control row. `Read` pages put the evidence heading and its first cited value in the opening viewport. Every URL-backed control writes its current value to the URL and restores it from the URL on reload. The values below use the names already present in the route code or committed data.
 
-| Route | Mode | First five seconds | Primary layout blocks | Mobile collapse rule |
-| --- | --- | --- | --- | --- |
-| `/` | Operate | Choose a plan, model, and monthly task count; see the effective monthly cost and break-even tasks. | Split console; selection listing; readout listing; set-aside; headline index. | Selection stacks above readout; plan, model, and task fields stay first; readout remains directly below band. |
-| `/models` | Operate | Search or filter a model and compare `Score (pass@1)`, `Pass@4`, cheapest usable plan, and `Days to full run`. | Filter row; model listing; set-aside; cursor readout. | Repeated head drops at `768px`; rows stack at `360px` with all fields retained as labelled lines. |
-| `/models/[slug]` | Read | Confirm the model's `pass@1`, separate `pass@4`, cost basis, and available plan routes. | Score profile; effort ladder; priced route listing; provenance rail; outbound benchmark listing. | Two score blocks stack; each table becomes labelled records; provenance follows routes. |
-| `/plans` | Operate | Sort the plan listing by value multiple or inspect price, quota, cost/task, and models unlocked. | Sortable plan listing; set-aside; cursor readout. | Long rows become records in field priority order; no horizontal scroll. |
-| `/plans/[slug]` | Read | Read price/quota basis, then scan models unlocked by this plan. | Plan details; quota explanation; method; known gaps; models-unlocked listing. | Detail fields become one column; models listing becomes records; gap text remains adjacent to the affected value. |
-| `/compare` | Operate | Select two to four models and immediately see benchmark scores, CI, API list cost, and plan-route rows. | Model selection row; comparison listing; tie rule; cursor readout. | Selection becomes a full-width fieldset; the comparison matrix becomes metric records with one model block per record. |
-| `/explore` | Operate | Switch cost basis or plan and inspect the Pareto frontier; the benchmark rank and metric builders remain below. | Pareto; bump; heatmap; slope; waterfall; radar; metric builder; table twins. | Charts keep reserved height; controls wrap; each chart's twin table follows its plot and keeps the same basis words. |
-| `/start` | Operate | Select provider, plan, model, and usage, then read a ranked recommendation with cost/task and break-even volume. | Three-step selection console; recommendation readout; provenance line. | Steps become one vertical listing; completed steps remain editable and the recommendation follows. |
-| `/method` | Read | Find the formula and its named inputs, then verify benchmark version and composite coverage rules. | Formula sections; quota branch listing; cost-basis legend; benchmark-weight listing; confidence/freshness index. | Formula lines wrap as prose; tables become labelled records; code field names remain intact. |
-| `/sources` | Read | Confirm the Artificial Analysis gate, then inspect a source's licence, coverage, changes, and retrieval date. | AA state readout; source listing; required attribution; deliberate gaps; commitments. | Source records stack; each date and licence stays in the opening source block. |
-| `404` | Read | Return to `/`, `/models`, or `/plans` without guessing what failed. | Not-found readout; indexed links. | Links stack at full width; shell and drawer remain unchanged. |
+| Route            | Mode    | First five seconds                                                                                               | Primary layout blocks                                                                                            | Mobile collapse rule                                                                                                   |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `/`              | Operate | Choose a plan, model, and monthly task count; see the effective monthly cost and break-even tasks.               | Split console; selection listing; readout listing; set-aside; headline index.                                    | Selection stacks above readout; plan, model, and task fields stay first; readout remains directly below band.          |
+| `/models`        | Operate | Search or filter a model and compare `Score (pass@1)`, `Pass@4`, cheapest usable plan, and `Days to full run`.   | Filter row; model listing; set-aside; cursor readout.                                                            | Repeated head drops at `768px`; rows stack at `360px` with all fields retained as labelled lines.                      |
+| `/models/[slug]` | Read    | Confirm the model's `pass@1`, separate `pass@4`, cost basis, and available plan routes.                          | Score profile; effort ladder; priced route listing; provenance rail; outbound benchmark listing.                 | Two score blocks stack; each table becomes labelled records; provenance follows routes.                                |
+| `/plans`         | Operate | Sort the plan listing by value multiple or inspect price, quota, cost/task, and models unlocked.                 | Sortable plan listing; set-aside; cursor readout.                                                                | Long rows become records in field priority order; no horizontal scroll.                                                |
+| `/plans/[slug]`  | Read    | Read price/quota basis, then scan models unlocked by this plan.                                                  | Plan details; quota explanation; method; known gaps; models-unlocked listing.                                    | Detail fields become one column; models listing becomes records; gap text remains adjacent to the affected value.      |
+| `/compare`       | Operate | Select two to four models and immediately see benchmark scores, CI, API list cost, and plan-route rows.          | Model selection row; comparison listing; tie rule; cursor readout.                                               | Selection becomes a full-width fieldset; the comparison matrix becomes metric records with one model block per record. |
+| `/explore`       | Operate | Switch cost basis or plan and inspect the Pareto frontier; the benchmark rank and metric builders remain below.  | Pareto; bump; heatmap; slope; waterfall; radar; metric builder; table twins.                                     | Charts keep reserved height; controls wrap; each chart's twin table follows its plot and keeps the same basis words.   |
+| `/start`         | Operate | Select provider, plan, model, and usage, then read a ranked recommendation with cost/task and break-even volume. | Three-step selection console; recommendation readout; provenance line.                                           | Steps become one vertical listing; completed steps remain editable and the recommendation follows.                     |
+| `/method`        | Read    | Find the formula and its named inputs, then verify benchmark version and composite coverage rules.               | Formula sections; quota branch listing; cost-basis legend; benchmark-weight listing; confidence/freshness index. | Formula lines wrap as prose; tables become labelled records; code field names remain intact.                           |
+| `/sources`       | Read    | Confirm the Artificial Analysis gate, then inspect a source's licence, coverage, changes, and retrieval date.    | AA state readout; source listing; required attribution; deliberate gaps; commitments.                            | Source records stack; each date and licence stays in the opening source block.                                         |
+| `404`            | Read    | Return to `/`, `/models`, or `/plans` without guessing what failed.                                              | Not-found readout; indexed links.                                                                                | Links stack at full width; shell and drawer remain unchanged.                                                          |
 
 ## Per-route specifications
 
@@ -420,15 +420,15 @@ Every table, including chart twins, uses this canonical anatomy.
 
 All plots reserve their box before ECharts mounts. The static table twin and accessible name are rendered regardless of chart availability. Heights below are the reserved plot box, not the control or note rows.
 
-| Route section | Chart | Control row | Reserved dimensions | Table twin columns |
-| --- | --- | --- | --- | --- |
-| `/explore` Pareto | Pareto scatter, score versus cost | `COST BASIS`: `API list` or `PLAN route`; `PLAN` selector; `TABLE VIEW` | `320px` below `640px`; `416px` at `≥640px`; full available width | `model`, `score`, `cost`, `frontier`, `reasoning_effort` |
-| `/explore` rank | Bump rank across benchmark versions | `BENCHMARK VERSIONS` readout and `TABLE VIEW`; no floating toolbox | `384px` below `640px`; `512px` at `≥640px`; full available width | `model`, `DeepSWE v1.1`, `Terminal-Bench 4.0`, `rank`, `confidence` |
-| `/explore` strength | Heatmap, model strength by benchmark | `BENCHMARK VERSION` legend and `TABLE VIEW` | `576px` at all widths; full available width | `model`, `DeepSWE v1.1 z`, `Terminal-Bench 4.0 z` |
-| `/explore` savings | Slope, API list versus plan route | `MODEL` selector; `TABLE VIEW` | `320px` below `640px`; `416px` at `≥640px`; full available width | `model`, `api_cost_per_task_usd`, `routeCostPerTaskUsd`, `savingsMultiple`, `planName` |
-| `/explore` quota | Waterfall, quota burn-down | `PLAN` selector; `UTILIZATION (TASKS PER MONTH)` number field; `TABLE VIEW` | `320px` below `640px`; `416px` at `≥640px`; full available width | `planName`, `modelName`, `tasksPerMonth`, `costPerTaskUsd`, `apiCostPerTaskUsd`, `priceUsdMonth`, `reason` |
-| `/explore` admitted models | Radar, per-index z for selected plan | `PLAN` selector; `TABLE VIEW` | `384px` below `640px`; `448px` at `≥640px`; full available width | `model`, benchmark-version axis labels, `planName` |
-| `/explore` builder | Metric builder | `Y METRIC`, `X METRIC`, `CHART TYPE`, `VENDOR`, `REASONING EFFORT`, `SCORE FLOOR`, `LOG X AXIS`, `FRONTIER`; weights and presets below | `320px` below `640px`; `416px` at `≥640px`; full available width | `model`, selected Y metric, selected X metric, `provider`, `effort`, `x`, `y` |
+| Route section              | Chart                                | Control row                                                                                                                            | Reserved dimensions                                              | Table twin columns                                                                                         |
+| -------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `/explore` Pareto          | Pareto scatter, score versus cost    | `COST BASIS`: `API list` or `PLAN route`; `PLAN` selector; `TABLE VIEW`                                                                | `320px` below `640px`; `416px` at `≥640px`; full available width | `model`, `score`, `cost`, `frontier`, `reasoning_effort`                                                   |
+| `/explore` rank            | Bump rank across benchmark versions  | `BENCHMARK VERSIONS` readout and `TABLE VIEW`; no floating toolbox                                                                     | `384px` below `640px`; `512px` at `≥640px`; full available width | `model`, `DeepSWE v1.1`, `Terminal-Bench 4.0`, `rank`, `confidence`                                        |
+| `/explore` strength        | Heatmap, model strength by benchmark | `BENCHMARK VERSION` legend and `TABLE VIEW`                                                                                            | `576px` at all widths; full available width                      | `model`, `DeepSWE v1.1 z`, `Terminal-Bench 4.0 z`                                                          |
+| `/explore` savings         | Slope, API list versus plan route    | `MODEL` selector; `TABLE VIEW`                                                                                                         | `320px` below `640px`; `416px` at `≥640px`; full available width | `model`, `api_cost_per_task_usd`, `routeCostPerTaskUsd`, `savingsMultiple`, `planName`                     |
+| `/explore` quota           | Waterfall, quota burn-down           | `PLAN` selector; `UTILIZATION (TASKS PER MONTH)` number field; `TABLE VIEW`                                                            | `320px` below `640px`; `416px` at `≥640px`; full available width | `planName`, `modelName`, `tasksPerMonth`, `costPerTaskUsd`, `apiCostPerTaskUsd`, `priceUsdMonth`, `reason` |
+| `/explore` admitted models | Radar, per-index z for selected plan | `PLAN` selector; `TABLE VIEW`                                                                                                          | `384px` below `640px`; `448px` at `≥640px`; full available width | `model`, benchmark-version axis labels, `planName`                                                         |
+| `/explore` builder         | Metric builder                       | `Y METRIC`, `X METRIC`, `CHART TYPE`, `VENDOR`, `REASONING EFFORT`, `SCORE FLOOR`, `LOG X AXIS`, `FRONTIER`; weights and presets below | `320px` below `640px`; `416px` at `≥640px`; full available width | `model`, selected Y metric, selected X metric, `provider`, `effort`, `x`, `y`                              |
 
 The dimensions use the existing `h-80`, `h-96`, `sm:h-[26rem]`, `sm:h-[28rem]`, `sm:h-[32rem]`, and `h-[36rem]` reservations expressed in pixels here. Controls sit in the page row above the box. ECharts toolbox controls are banned; zoom, frontier, table view, and basis changes have named page controls. A changed selection updates the cursor readout rather than creating a second tooltip.
 
@@ -438,18 +438,18 @@ Chart table twins follow the canonical listing anatomy. Their basis is in the ax
 
 The component inventory stays factored, but its incumbent visual treatment changes to the console grammar. The map names the current files.
 
-| Component file | Routes | Status in Divine Machinery |
-| --- | --- | --- |
-| `apps/site/src/components/Badge.astro` | `/`, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`, `/sources` | **Changes and survives.** It becomes a square inline field marker with no radius and no hue tone. It carries short functional labels only. |
-| `apps/site/src/components/CostBasisChip.astro` | `/`, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method` | **Changes and survives.** It prints `API LIST`, `PLAN ROUTE`, or `AA INDEX` in words and uses the solid, hairline/open, or doubled stroke grammar. Cost bases are not hue-coded. |
-| `apps/site/src/components/ConfidenceBadge.astro` | `/`, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method` | **Changes and survives.** It prints `MEASURED`, `HIGH`, `MEDIUM`, or `LOW` as a square state label. Confidence is never encoded only by a colour. |
-| `apps/site/src/components/FreshnessBadge.astro` | `/models`, `/models/[slug]`, `/plans/[slug]`, `/method`, `/sources` | **Changes and survives.** It prints freshness plus `retrieved {date}` in the source line; no pill shape. |
-| `apps/site/src/components/SourceLink.astro` | `/models/[slug]`, `/plans/[slug]`, `/method`, `/sources`, footer | **Changes and survives.** It remains a text link with the source title, licence, and retrieval date available to the cursor readout and accessible name. |
-| `apps/site/src/components/CiBar.astro` | `/models`, `/models/[slug]`, `/compare` table twin | **Changes and survives.** It is a 1px interval rule with a value mark; confidence controls stroke weight. A missing interval prints the missing state instead of an invented bar. |
-| `apps/site/src/components/HeatmapSection.astro` | `/explore` | **Changes and survives.** It owns the heatmap plot, fixed reservation, table twin, accessible name, `!` gaps, and cursor readout. |
-| `apps/site/src/components/SlopeSection.astro` | `/explore` | **Changes and survives.** It owns the model control row, named API list/plan route axes, plot reservation, twin, and readout. |
-| `apps/site/src/components/WaterfallSection.astro` | `/explore` | **Changes and survives.** It owns the interactive plan/utilization plot, twin, and gap reason. `/` uses the same payload grammar in its budget readout without mounting this wrapper. |
-| `apps/site/src/components/RadarSection.astro` | `/explore` | **Changes and survives.** It owns the plan selector, admitted-model scope, fixed plot, twin, and missing-value rule. |
+| Component file                                    | Routes                                                                                                               | Status in Divine Machinery                                                                                                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/site/src/components/Badge.astro`            | `/`, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`, `/sources` | **Changes and survives.** It becomes a square inline field marker with no radius and no hue tone. It carries short functional labels only.                                            |
+| `apps/site/src/components/CostBasisChip.astro`    | `/`, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`             | **Changes and survives.** It prints `API LIST`, `PLAN ROUTE`, or `AA INDEX` in words and uses the solid, hairline/open, or doubled stroke grammar. Cost bases are not hue-coded.      |
+| `apps/site/src/components/ConfidenceBadge.astro`  | `/`, `/models`, `/models/[slug]`, `/plans`, `/plans/[slug]`, `/compare`, `/explore`, `/start`, `/method`             | **Changes and survives.** It prints `MEASURED`, `HIGH`, `MEDIUM`, or `LOW` as a square state label. Confidence is never encoded only by a colour.                                     |
+| `apps/site/src/components/FreshnessBadge.astro`   | `/models`, `/models/[slug]`, `/plans/[slug]`, `/method`, `/sources`                                                  | **Changes and survives.** It prints freshness plus `retrieved {date}` in the source line; no pill shape.                                                                              |
+| `apps/site/src/components/SourceLink.astro`       | `/models/[slug]`, `/plans/[slug]`, `/method`, `/sources`, footer                                                     | **Changes and survives.** It remains a text link with the source title, licence, and retrieval date available to the cursor readout and accessible name.                              |
+| `apps/site/src/components/CiBar.astro`            | `/models`, `/models/[slug]`, `/compare` table twin                                                                   | **Changes and survives.** It is a 1px interval rule with a value mark; confidence controls stroke weight. A missing interval prints the missing state instead of an invented bar.     |
+| `apps/site/src/components/HeatmapSection.astro`   | `/explore`                                                                                                           | **Changes and survives.** It owns the heatmap plot, fixed reservation, table twin, accessible name, `!` gaps, and cursor readout.                                                     |
+| `apps/site/src/components/SlopeSection.astro`     | `/explore`                                                                                                           | **Changes and survives.** It owns the model control row, named API list/plan route axes, plot reservation, twin, and readout.                                                         |
+| `apps/site/src/components/WaterfallSection.astro` | `/explore`                                                                                                           | **Changes and survives.** It owns the interactive plan/utilization plot, twin, and gap reason. `/` uses the same payload grammar in its budget readout without mounting this wrapper. |
+| `apps/site/src/components/RadarSection.astro`     | `/explore`                                                                                                           | **Changes and survives.** It owns the plan selector, admitted-model scope, fixed plot, twin, and missing-value rule.                                                                  |
 
 Removed from the incumbent world: rounded/pill rendering, coloured API/measured/adjusted tones, card-grid presentation, floating chart toolbox, and the old generic header/navigation layout. No listed data or provenance component is removed; each remains a named consumer of the shared system.
 
@@ -459,35 +459,35 @@ Functional labels are uppercase mono legends of 24 characters or fewer. Sentence
 
 Use these display aliases where current code headings would exceed 24 characters; the accessible name and source field retain the current code name:
 
-| Functional legend | Current field or route label |
-| --- | --- |
-| `MODEL` | `Model` / `model` |
-| `SCORE (PASS@1)` | `Score (pass@1)` |
-| `PASS@4` | `Pass@4` |
-| `API LIST COST/TASK` | `API list cost/task` |
-| `CHEAPEST USABLE PLAN` | `Cheapest usable plan` |
-| `VALUE MULTIPLE` | `Value multiple` |
-| `DAYS TO FULL RUN` | `Days to full run` |
-| `EFFORT` | `Effort` / `effort` |
-| `COMPOSITE COVERAGE` | `Composite coverage` |
-| `TASKS/MONTH` | `tasks/month` |
-| `QUOTA MODEL` | `quota model` |
-| `KEY QUOTA` | `key quota` |
-| `ROLLING WINDOW` | `rolling window` |
-| `MEASURED-AGAINST MODEL` | `measured-against model` |
-| `COST/TASK · MEASURED` | `cost/task · measured model` |
-| `MODELS UNLOCKED` | `models unlocked` |
-| `DAYS/FULL RUN` | `days/full run` |
-| `CONFIDENCE` | `confidence` |
-| `FRESHNESS` | `freshness` |
-| `SOURCE` | source line and `SourceLink` |
-| `RETRIEVED` | retrieved date |
-| `SET-ASIDE` | excluded-row rail |
-| `FILTER` | filter row |
-| `READOUT` | cursor readout |
-| `API LIST` | `api-list` cost basis |
-| `PLAN ROUTE` | `plan-route` cost basis |
-| `AA INDEX` | `aa-index` cost basis |
+| Functional legend        | Current field or route label |
+| ------------------------ | ---------------------------- |
+| `MODEL`                  | `Model` / `model`            |
+| `SCORE (PASS@1)`         | `Score (pass@1)`             |
+| `PASS@4`                 | `Pass@4`                     |
+| `API LIST COST/TASK`     | `API list cost/task`         |
+| `CHEAPEST USABLE PLAN`   | `Cheapest usable plan`       |
+| `VALUE MULTIPLE`         | `Value multiple`             |
+| `DAYS TO FULL RUN`       | `Days to full run`           |
+| `EFFORT`                 | `Effort` / `effort`          |
+| `COMPOSITE COVERAGE`     | `Composite coverage`         |
+| `TASKS/MONTH`            | `tasks/month`                |
+| `QUOTA MODEL`            | `quota model`                |
+| `KEY QUOTA`              | `key quota`                  |
+| `ROLLING WINDOW`         | `rolling window`             |
+| `MEASURED-AGAINST MODEL` | `measured-against model`     |
+| `COST/TASK · MEASURED`   | `cost/task · measured model` |
+| `MODELS UNLOCKED`        | `models unlocked`            |
+| `DAYS/FULL RUN`          | `days/full run`              |
+| `CONFIDENCE`             | `confidence`                 |
+| `FRESHNESS`              | `freshness`                  |
+| `SOURCE`                 | source line and `SourceLink` |
+| `RETRIEVED`              | retrieved date               |
+| `SET-ASIDE`              | excluded-row rail            |
+| `FILTER`                 | filter row                   |
+| `READOUT`                | cursor readout               |
+| `API LIST`               | `api-list` cost basis        |
+| `PLAN ROUTE`             | `plan-route` cost basis      |
+| `AA INDEX`               | `aa-index` cost basis        |
 
 The exact state strings are:
 

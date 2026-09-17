@@ -99,11 +99,30 @@ export async function finishTask(
   let commitSha: string | null = null
 
   if (input.commit) {
-    await runGit(root, [
-      "add",
-      relativeFile(task.file.replace(/\/todo\//, "/done/")),
-      "docs/pm/plan.yml",
-    ])
+    const formatCommand = model.config.commands.format
+
+    if (formatCommand !== null && formatCommand.trim().length > 0) {
+      const command = formatCommand.trim().split(/\s+/)
+      let stderr = ""
+      let exitCode = 0
+
+      try {
+        // The command comes from docs/pm/config.yml so the harness stays project-agnostic.
+        const process = Bun.spawnSync({ cmd: command, cwd: root, stderr: "pipe" })
+        stderr = new TextDecoder().decode(process.stderr).trim()
+        exitCode = process.exitCode
+      } catch (error: unknown) {
+        stderr = error instanceof Error ? error.message : String(error)
+        exitCode = 1
+      }
+
+      if (exitCode !== 0) {
+        throw new Error(`Format command failed before commit: ${stderr}`)
+      }
+    }
+
+    // /pm runs exactly one task per session, so the whole tree belongs to this commit.
+    await runGit(root, ["add", "-A"])
     await runGit(root, ["commit", "-m", `${task.id}: ${task.title}`])
     commitSha = await runGit(root, ["rev-parse", "HEAD"])
   }

@@ -39,18 +39,20 @@ context files are discovered and loaded for you.
 
 ## 3. Command surface
 
-| Command | Purpose |
-|---|---|
-| `/pm` | Run the next task: pre-flight checks, plan, delegate, verify, finish. |
-| `/pm-init` | Initialize or migrate the project into the PM document tree. |
-| `/pm-status` | Read-only: current milestone, next task, blockers, issues. |
-| `/pm-align` | Reconcile documents with reality; split/merge/create/delete work. |
-| `/pm-resolve` | Resolve the first blocked task by writing a decision. |
-| `/pm-new-task` | Turn ideas into task documents. |
-| `/pm-prioritize` | Reorder a milestone's tasks and repair prerequisite order. |
-| `/pm-retro` | Run a retrospective; close the milestone when it passes. |
-| `/pm-docs` | Create or update `PRD.md` / `ARCHITECTURE.md`. |
-| `/pm-decide` | Write an ad-hoc decision record. |
+| Command          | Purpose                                                               |
+| ---------------- | --------------------------------------------------------------------- |
+| `/pm`            | Run the next task: pre-flight checks, plan, delegate, verify, finish. |
+| `/pm-init`       | Initialize or migrate the project into the PM document tree.          |
+| `/pm-status`     | Read-only: current milestone, next task, blockers, issues.            |
+| `/pm-align`      | Reconcile documents with reality; split/merge/create/delete work.     |
+| `/pm-resolve`    | Resolve the first blocked task by writing a decision.                 |
+| `/pm-new-task`   | Turn ideas into task documents.                                       |
+| `/pm-prioritize` | Reorder a milestone's tasks and repair prerequisite order.            |
+| `/pm-retro`      | Run a retrospective; close the milestone when it passes.              |
+| `/pm-docs`       | Create or update `PRD.md` / `ARCHITECTURE.md`.                        |
+| `/pm-decide`     | Write an ad-hoc decision record.                                      |
+
+The Markdown gate runs through `/pm`, alongside the plan and document checks.
 
 Load `skill://project-management` for the document schemas, the validation
 invariants, and the templates. It is the reference for the doc tree; this file
@@ -115,6 +117,10 @@ Two ownership rules are load-bearing:
   it gone. A UI change is checked against the running surface. A feature is
   proven by exercising it, not by a green type-check. Report exactly what you
   ran; never claim a check you did not execute.
+- **Markdown is linted and formatted.** All Markdown is linted by `bun run lint:md` for
+  frontmatter shape, hard line breaks, and dangling relative links, and formatted by
+  oxfmt. Markdown contains no hard line breaks: no trailing backslash and no two-space
+  break.
 - **Run the project's documented gate once, at the end.** The gate command lives
   in `ARCHITECTURE.md` and the package manifest. A subagent does not run
   project-wide gates; the orchestrator runs them after all edits land.
@@ -146,6 +152,8 @@ Two ownership rules are load-bearing:
   reason recorded in `ARCHITECTURE.md`, because they are not ours to fix.
 - Generated artifacts (derived data, build output) are deterministic and
   committed only when the project says so; never hand-edit them.
+
+- **Formatting is clean before commit.** `bun run format` must pass before committing.
 
 ## 8. Harness notes for maintainers
 

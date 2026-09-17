@@ -189,7 +189,7 @@ Measured plan usage is more valuable than an estimate. If you have run a plan
 to exhaustion and counted its allowance, a real measurement is welcome.
 
 Open the
-[measured-quota issue form](../../issues/new?template=measured-quota.yml),
+[`measured-quota issue form`](https://github.com/marshalfevzi/rack-rate/issues/new?template=measured-quota.yml),
 defined at `.github/ISSUE_TEMPLATE/measured-quota.yml`. Send what you know and
 say what you could not measure. Every accepted real measurement is credited to
 the contributor's handle in `data/sources.json`.

@@ -1,5 +1,7 @@
 <!-- dest: docs/pm/decisions/YYYY-MM-DD-NNN.md -->
+
 ---
+
 id: DEC-2026-09-17-001
 date: 2026-09-17
 status: accepted

@@ -1,4 +1,3 @@
-import { execFile } from "node:child_process"
 import { access, readdir, readFile, writeFile } from "node:fs/promises"
 import type { Dirent } from "node:fs"
 import { join, relative, sep } from "node:path"
@@ -15,6 +14,7 @@ import {
   readConfig,
 } from "./model.ts"
 import { emitYaml, asString } from "./yaml.ts"
+import { lintMarkdown } from "../../tools/markdown-lint/index.ts"
 
 function makeIssue(
   severity: Issue["severity"],
@@ -25,8 +25,8 @@ function makeIssue(
   return { severity, code, message, path }
 }
 
-function hasIssue(issues: Issue[], code: string, path: string): boolean {
-  return issues.some((item) => item.code === code && item.path === path)
+function hasIssue(issues: Issue[], code: string, path: string, message: string): boolean {
+  return issues.some((item) => item.code === code && item.path === path && item.message === message)
 }
 
 function addIssue(
@@ -36,7 +36,7 @@ function addIssue(
   message: string,
   path: string,
 ): void {
-  if (!hasIssue(issues, code, path)) {
+  if (!hasIssue(issues, code, path, message)) {
     issues.push(makeIssue(severity, code, message, path))
   }
 }
@@ -493,11 +493,10 @@ function planArchive(archive: ArchivedMilestone) {
   }
 }
 
-export function renderPlan(model: PlanModel, lastCommit: string): string {
+export function renderPlan(model: PlanModel): string {
   const value = {
     project: {
       name: model.config.name,
-      last_commit: lastCommit,
       prd: model.config.docs.prd,
       product: model.config.docs.product,
       design: model.config.docs.design,
@@ -519,8 +518,7 @@ export async function syncPlan(
   write = true,
 ): Promise<{ model: PlanModel; written: boolean; plan: string }> {
   const model = await loadModel(root)
-  const lastCommit = await gitHead(root)
-  const plan = renderPlan(model, lastCommit)
+  const plan = renderPlan(model)
   const issues = validate(model)
 
   if (
@@ -542,6 +540,11 @@ export async function syncPlan(
   const hasErrors = issues.some((item) => item.severity === "error")
 
   if (!write || hasErrors) {
+    return { model, written: false, plan }
+  }
+
+  // `written` reports a real change, so an unchanged plan never rewrites the file.
+  if (model.existingPlan === plan) {
     return { model, written: false, plan }
   }
 
@@ -824,7 +827,7 @@ export async function docCheck(root: string): Promise<Issue[]> {
   const currentPlan = model.existingPlan
 
   if (currentPlan !== null && currentPlan !== undefined) {
-    const fresh = renderPlan(model, await gitHead(root))
+    const fresh = renderPlan(model)
 
     if (currentPlan !== fresh) {
       issues.push(
@@ -838,20 +841,18 @@ export async function docCheck(root: string): Promise<Issue[]> {
     }
   }
 
+  const markdown = await lintMarkdown({ root })
+
+  issues.push(
+    ...markdown.issues.map((issue) =>
+      makeIssue(
+        issue.severity,
+        issue.code,
+        `${issue.message} (line ${issue.line}, column ${issue.column})`,
+        issue.file,
+      ),
+    ),
+  )
+
   return issues
-}
-
-export async function gitHead(root: string): Promise<string> {
-  return new Promise((resolve) => {
-    execFile("git", ["rev-parse", "HEAD"], { cwd: root }, (error, stdout) => {
-      if (error) {
-        resolve("unknown")
-
-        return
-      }
-
-      const value = stdout.trim()
-      resolve(value.length > 0 ? value : "unknown")
-    })
-  })
 }

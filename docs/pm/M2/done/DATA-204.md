@@ -10,19 +10,20 @@ blocked_by: null
 created: 2026-09-14
 completed: 2026-09-14
 ---
+
 ## Scope
 
 `fetch artificial-analysis` → `data/benchmarks.json#artificial-analysis`.
-  Gated and **off by default**: no redistribution right has been granted, so the
-  fetcher runs only when `AA_API_KEY` is set **and** `AA_PUBLISH=1`; otherwise it
-  skips with a clear message and AA is excluded from data, composites and the
-  site (the Sources page links out instead). When enabled:
-  `GET /api/v2/language/models/free?page=N` with `x-api-key`, paginate via
-  `pagination.has_more`, abort if `intelligence_index_version` changes
-  mid-pagination, and record `intelligence_index_version` + `fetchedAt`.
-  `validate` warns loudly and the build logs a banner whenever publication is on.
-  *(See `docs/data-sources.md` for the exact terms and the unresolved-exception
-  position this fetcher operates under.)*
+Gated and **off by default**: no redistribution right has been granted, so the
+fetcher runs only when `AA_API_KEY` is set **and** `AA_PUBLISH=1`; otherwise it
+skips with a clear message and AA is excluded from data, composites and the
+site (the Sources page links out instead). When enabled:
+`GET /api/v2/language/models/free?page=N` with `x-api-key`, paginate via
+`pagination.has_more`, abort if `intelligence_index_version` changes
+mid-pagination, and record `intelligence_index_version` + `fetchedAt`.
+`validate` warns loudly and the build logs a banner whenever publication is on.
+_(See `docs/data-sources.md` for the exact terms and the unresolved-exception
+position this fetcher operates under.)_
 
 ## Acceptance criteria
 

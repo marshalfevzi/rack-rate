@@ -1,4 +1,5 @@
 <!-- dest: PRD.md -->
+
 # Product Requirements Document
 
 ## Product Overview
@@ -7,9 +8,9 @@ Describe the product, target users, problem, desired outcome, and non-goals.
 
 ## Feature Requirements
 
-| ID | Feature | User value | Priority | Acceptance criteria |
-|---|---|---|---|---|
-| FR-001 | Feature name | User outcome | Must | Observable completion condition |
+| ID     | Feature      | User value   | Priority | Acceptance criteria             |
+| ------ | ------------ | ------------ | -------- | ------------------------------- |
+| FR-001 | Feature name | User outcome | Must     | Observable completion condition |
 
 ## Non-Functional Requirements
 

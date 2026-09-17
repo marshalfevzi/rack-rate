@@ -10,6 +10,7 @@ blocked_by: null
 created: 2026-09-14
 completed: 2026-09-14
 ---
+
 ## Scope
 
 `data/*.json` migrated to the new schema: existing `models.json` (28 models), `plans.json` (16 plans), `sources.json` (9 records) stay as the seed; add `benchmarks.json` skeleton with one `deepswe` entry carrying `version`, `generated_at`, `task_count`.

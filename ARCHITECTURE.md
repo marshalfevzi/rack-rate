@@ -59,7 +59,7 @@ upstream boards and vendor pages
 The fetch step is fail-closed: a missing research anchor or an unreachable
 vendor page keeps the last-good sources and exits `1`, and `--diff` writes no
 file at all. `validate` is the trust boundary for committed documents,
-`compute` is deterministic, and `check` is the staleness gate CI runs *before*
+`compute` is deterministic, and `check` is the staleness gate CI runs _before_
 the write path so a stale committed file cannot be repaired by accident. The
 site consumes committed bytes only, which is why a clean clone with no `.env`
 still builds and why Artificial Analysis is absent from every output unless
@@ -175,7 +175,7 @@ their names and meanings so the fixture stays comparable.
 Two naming traps to avoid when writing the parity assertion:
 
 - The legacy metadata key is **`generated_from`** (counts of inputs used), not
-  `generated_at`. Add a real `generated_at` timestamp as a *new* key in Stage 2;
+  `generated_at`. Add a real `generated_at` timestamp as a _new_ key in Stage 2;
   do not repurpose `generated_from`.
 - The cross-check rows live under **`cross_check.pairs`** with a nested
   **`cross_check.summary`**. Parity must compare `cross_check.pairs` (11 rows)
@@ -187,21 +187,33 @@ Two naming traps to avoid when writing the parity assertion:
 Root scripts call the same dispatcher as the installed `rack-rate-data`
 binary.
 
-| Command | What it does | Gate? |
-|---|---|---|
-| `bun run check` | `typecheck` (tsc) → `lint` (oxlint, every rule at error) → `format:check` (oxfmt) → `astro check` | yes — code quality |
-| `bun test` | the test suite (`bun test --pass-with-no-tests`) | yes |
-| `bun run data:check` | validates inputs, recomputes `data/derived.json` in memory, compares bytes | yes — staleness |
-| `bun run build` | `data:build` → Astro build → `og`, writing `dist/` including the social card | — |
-| `bun run preview` | serves the built site; the only surface evidence may be captured from | — |
-| `bun run data:build` | `validate` then `compute` — the write path | — |
-| `bun run fetch[:<source>]` | refreshes one source or all four; `--diff` is a dry run that writes nothing and exits `1` when committed data would change | — |
-| `bun run quality` | the `fallow` report over dead code, duplication and complexity | advisory |
+| Command                    | What it does                                                                                                                             | Gate?                  |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `bun run check`            | `typecheck` (tsc) → `lint` (oxlint, every rule at error) → Markdown lint → formatting (oxfmt over TypeScript and Markdown) → site checks | yes — code quality     |
+| `bun run lint:md`          | Markdown frontmatter, hard-break, and dangling-relative-link checks                                                                      | yes — document quality |
+| `bun test`                 | the test suite (`bun test --pass-with-no-tests`)                                                                                         | yes                    |
+| `bun run data:check`       | validates inputs, recomputes `data/derived.json` in memory, compares bytes                                                               | yes — staleness        |
+| `bun run build`            | `data:build` → Astro build → `og`, writing `dist/` including the social card                                                             | —                      |
+| `bun run preview`          | serves the built site; the only surface evidence may be captured from                                                                    | —                      |
+| `bun run data:build`       | `validate` then `compute` — the write path                                                                                               | —                      |
+| `bun run fetch[:<source>]` | refreshes one source or all four; `--diff` is a dry run that writes nothing and exits `1` when committed data would change               | —                      |
+| `bun run quality`          | the `fallow` report over dead code, duplication and complexity                                                                           | advisory               |
 
 `.github/workflows/ci.yml` runs `check`, `test`, `data:check`, `data:build` and
 a guard that fails when the compute write path leaves `data/` dirty. It never
 fetches upstream and references no secrets. Deployment to GitHub Pages is
 PLAN stage 7 (`docs/pm/M7/README.md`).
+
+### Document and tooling boundaries
+
+`tools/markdown-lint/` is first-party and is typechecked through the root
+`tsconfig.json`. `tools/oxlint/anti-slop/` and `.claude/**` are vendored and
+excluded whole from both lint and format. `docs/history/**` is frozen pre-PM
+history, so Markdown link checking and formatting exclude it; its relative links
+deliberately reference files deleted on 2026-09-17 (see
+[the relocation note](docs/history/stages-1-2.md#relocation-note-appended-2026-09-17-not-a-rewrite)).
+The `.omp` harness imports `tools/markdown-lint` for its post-edit and document
+checks.
 
 ## Data CLI
 
@@ -394,11 +406,11 @@ that renders `<main id="main" tabindex="-1">`; `Base` renders no main landmark.
 
 `apps/site/src/lib/url.ts` exports three typed helpers:
 
-- `href(path: \`/${string}\`): string` is the route builder. It joins the
-  path to `import.meta.env.BASE_URL` and adds a trailing slash except for the
+- `href(path: \`/${string}\`): string`is the route builder. It joins the
+path to`import.meta.env.BASE_URL` and adds a trailing slash except for the
   root.
-- `asset(path: \`/${string}\`): string` is the file builder. It joins the
-  path to `import.meta.env.BASE_URL` without adding a trailing slash. `Base`
+- `asset(path: \`/${string}\`): string`is the file builder. It joins the
+path to`import.meta.env.BASE_URL`without adding a trailing slash.`Base`
   uses it for the OG and Twitter image path.
 - `absoluteUrl(relativePath: string, site: URL | undefined): string` turns an
   already base-relative path from `href()`, `asset()`, or `Astro.url.pathname`
@@ -409,11 +421,11 @@ that renders `<main id="main" tabindex="-1">`; `Base` renders no main landmark.
 The module reads `import.meta.env.BASE_URL` once at module scope. Measured
 helper outputs are:
 
-| Call | Project page (`base: "/rack-rate"`) | Custom domain (`base === "/"`) |
-|---|---|---|
-| `href("/")` | `/rack-rate/` | `/` |
-| `href("/models")` | `/rack-rate/models/` | `/models/` |
-| `asset("/og.png")` | `/rack-rate/og.png` | `/og.png` |
+| Call               | Project page (`base: "/rack-rate"`) | Custom domain (`base === "/"`) |
+| ------------------ | ----------------------------------- | ------------------------------ |
+| `href("/")`        | `/rack-rate/`                       | `/`                            |
+| `href("/models")`  | `/rack-rate/models/`                | `/models/`                     |
+| `asset("/og.png")` | `/rack-rate/og.png`                 | `/og.png`                      |
 
 Measured `absoluteUrl("/rack-rate/models/", site)` as
 `https://marshalfevzi.github.io/rack-rate/models/` and
@@ -469,19 +481,19 @@ route URL ends in `/` and is served from `<route>/index.html` — `href()` suppl
 that trailing slash. The 404 route is the exception: it builds to
 `dist/404.html`, which GitHub Pages serves for any unmatched path.
 
-| Route | File | Content stage |
-|---|---|---|
-| `/` | `index.astro` | 4.12 |
-| `/models` | `models/index.astro` | 4.8 |
-| `/models/[slug]` | `models/[slug].astro` | 4.9 |
-| `/plans` | `plans/index.astro` | 4.10 |
-| `/plans/[slug]` | `plans/[slug].astro` | 4.10 |
-| `/compare` | `compare.astro` | 4.11 |
-| `/explore` | `explore.astro` | 4.13 |
-| `/start` | `start.astro` | 5.3 |
-| `/method` | `method.astro` | 3.11 |
-| `/sources` | `sources.astro` | 3.11 |
-| `404` | `404.astro` | — |
+| Route            | File                  | Content stage |
+| ---------------- | --------------------- | ------------- |
+| `/`              | `index.astro`         | 4.12          |
+| `/models`        | `models/index.astro`  | 4.8           |
+| `/models/[slug]` | `models/[slug].astro` | 4.9           |
+| `/plans`         | `plans/index.astro`   | 4.10          |
+| `/plans/[slug]`  | `plans/[slug].astro`  | 4.10          |
+| `/compare`       | `compare.astro`       | 4.11          |
+| `/explore`       | `explore.astro`       | 4.13          |
+| `/start`         | `start.astro`         | 5.3           |
+| `/method`        | `method.astro`        | 3.11          |
+| `/sources`       | `sources.astro`       | 3.11          |
+| `404`            | `404.astro`           | —             |
 
 Both dynamic routes build `getStaticPaths` from committed rows — 28
 `/models/<id>` pages from `data/models.json`, 16 `/plans/<id>` pages from
@@ -547,25 +559,25 @@ page. `apps/site/src/lib/format.ts` is pure TypeScript: no `import.meta.env`,
 DOM, or Astro import, so `.astro` frontmatter and `bun test` use the same
 function.
 
-| Export | Unit in the data | Rule | Example |
-|---|---|---|---|
-| `MISSING` | absent value | the single placeholder | `"—"` |
-| `formatPercent(v)` | percent units, 0–100 (`score_pct`, `composites.rows[].composite`, `benchmarks[].rows[].score`, `benchmarks[].rows[].ci_*`, `score_pass_at_4_pct`; display-only: pass@4 never feeds a score or a composite — invariant 3) | half-even to 1 dp, `%` suffix, no space | `74.12 → "74.1%"`, `0 → "0.0%"` |
-| `formatFractionAsPercent(v)` | fraction, 0–1 (`models[].ci_lo`/`ci_hi`, utilization `U = T_actual / Q`) | ×100, then the percent rule | `0.7124964807371247 → "71.2%"` |
-| `formatPoints(v)` | percentage-point delta (`Δy = Y_frontier(x) − y`) | always-signed, half-even to 1 dp, `" pp"` suffix | `4.2 → "+4.2 pp"`, `-1.06 → "-1.1 pp"`, `0 → "+0.0 pp"` |
-| `formatPercentRange(lo, hi)` | percent units, 0–100 | the percent rule on both ends, en dash `–` between, one `%` at the end; either end missing → `MISSING` | `71.25, 76.98 → "71.2–77.0%"` |
-| `formatFractionAsPercentRange(lo, hi)` | fractions, 0–1 | the fraction rule on both ends, as above | `0.7124964807371247, 0.7698044042186275 → "71.2–77.0%"` |
-| `formatUsd(v)` | USD **amount**: `price_usd_month`, `quota_usd_month`, `rolling_window_usd`, a measured run total | up to 2 dp half-even, trailing zeros trimmed, thousands grouped, `$` prefix | `20 → "$20"`, `7.23 → "$7.23"`, `9603.86 → "$9,603.86"`, `25472 → "$25,472"` |
-| `formatUsdPerTask(v)` | USD / task, **both** bases (`cost_per_task_usd`, `api_cost_per_task_usd`) | half-even to 4 dp (fixed), thousands grouped, `$` prefix | `0.0304 → "$0.0304"`, `23.2774 → "$23.2774"` |
-| `formatUsdPerMillionTokens(v)` | USD / 1M tokens (`allowance_per_million_tokens`, `adjusted_api_cost_per_million`) | half-even to 4 dp (fixed), `$` prefix | `0.0017 → "$0.0017"`, `4.7563 → "$4.7563"` |
-| `formatTasksPerMonth(v)` | tasks / month (`tasks_per_month`, `tasks_by_dollars`, `tasks_by_tokens`) | half-even to 1 dp, grouped | `5233.18 → "5,233.2"`, `0.64 → "0.6"` |
-| `formatDays(v)` | days (`days_for_full_run`) | half-even to 1 dp, grouped | `5.15 → "5.2"`, `5260.69 → "5,260.7"` |
-| `formatCount(v)` | integer count (`agent_steps_per_task`, `steps`, `task_count`, `n_tasks_attempted`, `k`, `pair_count`, `requests_month`, `rolling_window_hours`) | half-even to **up to 1 dp**, trailing zeros trimmed, grouped | `113 → "113"`, `90.5 → "90.5"`, `2400 → "2,400"` |
-| `formatTokens(v)` | token quantity (`input_tokens_per_task`, `tokens_input`, `tokens_month`, `tokens_per_task`, `tokens_per_month_allowance`, `cross_check_tokens_month`) | **three significant digits** with a `K`/`M`/`B` suffix (base 1000), trailing zeros trimmed; below 1000 the grouped integer | `1163918 → "1.16M"`, `62795056 → "62.8M"`, `76390578947 → "76.4B"`, `616 → "616"`, `999999 → "1M"` |
-| `formatTokensExact(v)` | token quantity, tooltip/table detail | half-even to 0 dp, grouped | `1163918 → "1,163,918"` |
-| `formatMultiple(v)` | unitless multiplier (`value_multiple`, `cross_check.pairs[].ratio`, `cross_check.summary.*_ratio`) | up to 2 dp half-even, trailing zeros trimmed, `×` suffix (U+00D7), no space | `3 → "3×"`, `127.36 → "127.36×"`, `1.601 → "1.6×"`, `1.006 → "1.01×"` |
-| `formatZ(v)` | z-score (`composites.rows[].weighted_z`, `normalize` z) | always-signed, half-even to 2 dp, no suffix | `1.5656 → "+1.57"`, `-2.9945 → "-2.99"`, `0 → "+0.00"` |
-| `formatFxRate(v)` | CNY→USD spot rate (`plans[].fx.rate`) | half-even to 4 dp (fixed), no symbol, grouped | `6.7787 → "6.7787"` |
+| Export                                 | Unit in the data                                                                                                                                                                                                         | Rule                                                                                                                       | Example                                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `MISSING`                              | absent value                                                                                                                                                                                                             | the single placeholder                                                                                                     | `"—"`                                                                                              |
+| `formatPercent(v)`                     | percent units, 0–100 (`score_pct`, `composites.rows[].composite`, `benchmarks[].rows[].score`, `benchmarks[].rows[].ci_*`, `score_pass_at_4_pct`; display-only: pass@4 never feeds a score or a composite — invariant 3) | half-even to 1 dp, `%` suffix, no space                                                                                    | `74.12 → "74.1%"`, `0 → "0.0%"`                                                                    |
+| `formatFractionAsPercent(v)`           | fraction, 0–1 (`models[].ci_lo`/`ci_hi`, utilization `U = T_actual / Q`)                                                                                                                                                 | ×100, then the percent rule                                                                                                | `0.7124964807371247 → "71.2%"`                                                                     |
+| `formatPoints(v)`                      | percentage-point delta (`Δy = Y_frontier(x) − y`)                                                                                                                                                                        | always-signed, half-even to 1 dp, `" pp"` suffix                                                                           | `4.2 → "+4.2 pp"`, `-1.06 → "-1.1 pp"`, `0 → "+0.0 pp"`                                            |
+| `formatPercentRange(lo, hi)`           | percent units, 0–100                                                                                                                                                                                                     | the percent rule on both ends, en dash `–` between, one `%` at the end; either end missing → `MISSING`                     | `71.25, 76.98 → "71.2–77.0%"`                                                                      |
+| `formatFractionAsPercentRange(lo, hi)` | fractions, 0–1                                                                                                                                                                                                           | the fraction rule on both ends, as above                                                                                   | `0.7124964807371247, 0.7698044042186275 → "71.2–77.0%"`                                            |
+| `formatUsd(v)`                         | USD **amount**: `price_usd_month`, `quota_usd_month`, `rolling_window_usd`, a measured run total                                                                                                                         | up to 2 dp half-even, trailing zeros trimmed, thousands grouped, `$` prefix                                                | `20 → "$20"`, `7.23 → "$7.23"`, `9603.86 → "$9,603.86"`, `25472 → "$25,472"`                       |
+| `formatUsdPerTask(v)`                  | USD / task, **both** bases (`cost_per_task_usd`, `api_cost_per_task_usd`)                                                                                                                                                | half-even to 4 dp (fixed), thousands grouped, `$` prefix                                                                   | `0.0304 → "$0.0304"`, `23.2774 → "$23.2774"`                                                       |
+| `formatUsdPerMillionTokens(v)`         | USD / 1M tokens (`allowance_per_million_tokens`, `adjusted_api_cost_per_million`)                                                                                                                                        | half-even to 4 dp (fixed), `$` prefix                                                                                      | `0.0017 → "$0.0017"`, `4.7563 → "$4.7563"`                                                         |
+| `formatTasksPerMonth(v)`               | tasks / month (`tasks_per_month`, `tasks_by_dollars`, `tasks_by_tokens`)                                                                                                                                                 | half-even to 1 dp, grouped                                                                                                 | `5233.18 → "5,233.2"`, `0.64 → "0.6"`                                                              |
+| `formatDays(v)`                        | days (`days_for_full_run`)                                                                                                                                                                                               | half-even to 1 dp, grouped                                                                                                 | `5.15 → "5.2"`, `5260.69 → "5,260.7"`                                                              |
+| `formatCount(v)`                       | integer count (`agent_steps_per_task`, `steps`, `task_count`, `n_tasks_attempted`, `k`, `pair_count`, `requests_month`, `rolling_window_hours`)                                                                          | half-even to **up to 1 dp**, trailing zeros trimmed, grouped                                                               | `113 → "113"`, `90.5 → "90.5"`, `2400 → "2,400"`                                                   |
+| `formatTokens(v)`                      | token quantity (`input_tokens_per_task`, `tokens_input`, `tokens_month`, `tokens_per_task`, `tokens_per_month_allowance`, `cross_check_tokens_month`)                                                                    | **three significant digits** with a `K`/`M`/`B` suffix (base 1000), trailing zeros trimmed; below 1000 the grouped integer | `1163918 → "1.16M"`, `62795056 → "62.8M"`, `76390578947 → "76.4B"`, `616 → "616"`, `999999 → "1M"` |
+| `formatTokensExact(v)`                 | token quantity, tooltip/table detail                                                                                                                                                                                     | half-even to 0 dp, grouped                                                                                                 | `1163918 → "1,163,918"`                                                                            |
+| `formatMultiple(v)`                    | unitless multiplier (`value_multiple`, `cross_check.pairs[].ratio`, `cross_check.summary.*_ratio`)                                                                                                                       | up to 2 dp half-even, trailing zeros trimmed, `×` suffix (U+00D7), no space                                                | `3 → "3×"`, `127.36 → "127.36×"`, `1.601 → "1.6×"`, `1.006 → "1.01×"`                              |
+| `formatZ(v)`                           | z-score (`composites.rows[].weighted_z`, `normalize` z)                                                                                                                                                                  | always-signed, half-even to 2 dp, no suffix                                                                                | `1.5656 → "+1.57"`, `-2.9945 → "-2.99"`, `0 → "+0.00"`                                             |
+| `formatFxRate(v)`                      | CNY→USD spot rate (`plans[].fx.rate`)                                                                                                                                                                                    | half-even to 4 dp (fixed), no symbol, grouped                                                                              | `6.7787 → "6.7787"`                                                                                |
 
 Display rounding follows the `PLAN`'s Stage 2 precision rule: round what this
 repo computes, keep upstream precision in the data, and let the format layer
@@ -603,14 +615,14 @@ carry "where did this come from" for a figure. They take parsed values and rende
 words, geometry and citations — never a figure of their own — so the number stays
 owned by `format.ts` and the cost basis by the chip.
 
-| Component | Props | Renders |
-|---|---|---|
-| `Badge.astro` | `{ tone?: "neutral" \| "api" \| "adjusted"; title?: string; class?: string }` | the one chip shell (`inline-flex … border-rule text-meta`) the three badges share, so the chip markup exists once |
-| `ConfidenceBadge.astro` | `{ level: Confidence }` | the level word, prefixed by an `sr-only` "Confidence: ", with the level's definition in `title` |
-| `FreshnessBadge.astro` | `{ freshness: Freshness; retrievedAt: string }` | the `Fresh`/`Stale` word plus `retrieved <date>` in `tabular` digits, definition in `title` |
-| `CostBasisChip.astro` | `{ basis: CostBasisKind; planName?: string; unit?: CostUnit; status?: CostBasisStatus }` | the basis label, the unit (`/task`, `/mo`, `/1M tokens`) and, when the status is not `list`, the qualifier (`expected launch`, `disputed`, `unknown basis`) |
-| `SourceLink.astro` | `{ id: string; label?: string }` | one external anchor to the source's `url`, `title` = title · licence · retrieval date, plus an `sr-only` new-tab note |
-| `CiBar.astro` | `{ value: number; lo?: number; hi?: number; ciScale: CiScale; method?: string; class?: string }` | the interval bar with its composed accessible name, or `— no interval reported` |
+| Component               | Props                                                                                            | Renders                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Badge.astro`           | `{ tone?: "neutral" \| "api" \| "adjusted"; title?: string; class?: string }`                    | the one chip shell (`inline-flex … border-rule text-meta`) the three badges share, so the chip markup exists once                                           |
+| `ConfidenceBadge.astro` | `{ level: Confidence }`                                                                          | the level word, prefixed by an `sr-only` "Confidence: ", with the level's definition in `title`                                                             |
+| `FreshnessBadge.astro`  | `{ freshness: Freshness; retrievedAt: string }`                                                  | the `Fresh`/`Stale` word plus `retrieved <date>` in `tabular` digits, definition in `title`                                                                 |
+| `CostBasisChip.astro`   | `{ basis: CostBasisKind; planName?: string; unit?: CostUnit; status?: CostBasisStatus }`         | the basis label, the unit (`/task`, `/mo`, `/1M tokens`) and, when the status is not `list`, the qualifier (`expected launch`, `disputed`, `unknown basis`) |
+| `SourceLink.astro`      | `{ id: string; label?: string }`                                                                 | one external anchor to the source's `url`, `title` = title · licence · retrieval date, plus an `sr-only` new-tab note                                       |
+| `CiBar.astro`           | `{ value: number; lo?: number; hi?: number; ciScale: CiScale; method?: string; class?: string }` | the interval bar with its composed accessible name, or `— no interval reported`                                                                             |
 
 `apps/site/src/lib/provenance.ts` is the vocabulary and the arithmetic:
 `CONFIDENCE_TERMS`, `FRESHNESS_TERMS`, `COST_BASIS_TERMS`, `COST_UNIT_LABELS`,
@@ -708,12 +720,12 @@ code: no fetch, no environment read, and no `<script>` tag reaches either
 built page. Figures come from core exports or committed documents, never typed
 copy.
 
-| New export | Structural use |
-|---|---|
-| `packages/core/src/normalize.ts`: `COMPOSITE_CENTER = 50` and `COMPOSITE_SPREAD = 10` | the composite and both CI endpoints use the same identifiers, so the page can print `50 + 10 × weighted_z` from the math it describes |
-| `packages/core/src/cost.ts`: `DAYS_PER_MONTH = 30` and `HOURS_PER_DAY = 24` | `daysForFullRun` owns the quota-to-days conversion constants |
-| `packages/core/src/ids.ts`: `ARTIFICIAL_ANALYSIS_BENCHMARK_ID = "artificial-analysis"` and `ARTIFICIAL_ANALYSIS_SOURCE_ID = "src-artificial-analysis"` | the AA identity decides the licensing gate and the source identity keeps attribution on one spelling |
-| `packages/core/src/ids.ts`: `BENCHMARK_SOURCE_IDS: ReadonlyMap<string, string>` | `deepswe` maps to `src-deepswe-data`, `terminal-bench` to `src-terminal-bench`, and `artificial-analysis` to `src-artificial-analysis`, so attribution follows one benchmark-to-source relation |
+| New export                                                                                                                                             | Structural use                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/core/src/normalize.ts`: `COMPOSITE_CENTER = 50` and `COMPOSITE_SPREAD = 10`                                                                  | the composite and both CI endpoints use the same identifiers, so the page can print `50 + 10 × weighted_z` from the math it describes                                                           |
+| `packages/core/src/cost.ts`: `DAYS_PER_MONTH = 30` and `HOURS_PER_DAY = 24`                                                                            | `daysForFullRun` owns the quota-to-days conversion constants                                                                                                                                    |
+| `packages/core/src/ids.ts`: `ARTIFICIAL_ANALYSIS_BENCHMARK_ID = "artificial-analysis"` and `ARTIFICIAL_ANALYSIS_SOURCE_ID = "src-artificial-analysis"` | the AA identity decides the licensing gate and the source identity keeps attribution on one spelling                                                                                            |
+| `packages/core/src/ids.ts`: `BENCHMARK_SOURCE_IDS: ReadonlyMap<string, string>`                                                                        | `deepswe` maps to `src-deepswe-data`, `terminal-bench` to `src-terminal-bench`, and `artificial-analysis` to `src-artificial-analysis`, so attribution follows one benchmark-to-source relation |
 
 The three ids and the map moved to `packages/core/src/ids.ts` in 4.1. They hold
 no zod value, and they sat in the one core module that does: importing
@@ -819,19 +831,19 @@ Stage 4.1 landed the chart platform in `apps/site/src/lib/charts/`. Its five
 modules, one job each, are joined in 4.2 by the payload, builder, and page
 adapter:
 
-| Module | Job |
-|---|---|
-| `registry.ts` | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, `ScatterChart`/`scatter`, `LineChart`/`line`, `DataZoomComponent`, and the `LabelLayout` feature; re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>`. `FrameComponentOption` includes `DataZoomComponentOption`. |
-| `theme.ts` | `ChartTokens` and the two ways to build them: `chartTokensFrom(lookup, rootFontSizePx)` is pure and tested, `readChartTokens(element)` reads the live element. Plus one accent per cost basis (`costBasisColor`, `basisTextColor`), so invariant 4's three quantities stay three colours. |
-| `frame.ts` | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. `input.gridBottom` lets a builder reserve room under the plot for a control of its own (the Pareto slider). |
-| `mount.ts` | `mountChart(target, option)` → `{ update, dispose }`, plus `ChartHandle`. |
-| `pareto-payload.ts` | Builds the inline `ParetoPayload` from committed derived frontiers and source data, encodes/decodes the JSON boundary, and owns `chartAriaLabel(view)` — the chart's accessible name, shared by the server template and the client rebuild so the two cannot drift. |
-| `pareto.ts` | Pure Pareto scatter option and tooltip builders: axes, frontier, dominated region, labels, effort trails, zoom, and tokens. |
-| `pareto-page.ts` | Browser-only adapter that decodes the inline payload, resolves controls, mounts the option, and rebuilds the title, note, and accessible name. |
-| `bump-payload.ts` | Builds the inline `BumpPayload`: one ranked column per committed benchmark version, model-aligned cells, tied rank groups, and the not-evaluated lane. |
-| `bump.ts` | Pure bump/rank option and tooltip builders: model lines, gap markers, tied-rank bands, and the lane separator. |
-| `bump-page.ts` | Browser-only adapter that decodes `#bump-data`, reads chart tokens, mounts the bump option, and reports a static fallback when drawing fails. |
-| `*.test.ts` | The pure halves: token parsing, frame layout, axis formatters, basis titles, marker geometry. |
+| Module              | Job                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `registry.ts`       | The only module that calls `echarts.use()`. Registers `CanvasRenderer`, `GridComponent`, `LegendComponent`, `TooltipComponent`, `ScatterChart`/`scatter`, `LineChart`/`line`, `DataZoomComponent`, and the `LabelLayout` feature; re-exports `init`/`getInstanceByDom`, and types `ChartOption = ComposeOption<FrameComponentOption>`. `FrameComponentOption` includes `DataZoomComponentOption`. |
+| `theme.ts`          | `ChartTokens` and the two ways to build them: `chartTokensFrom(lookup, rootFontSizePx)` is pure and tested, `readChartTokens(element)` reads the live element. Plus one accent per cost basis (`costBasisColor`, `basisTextColor`), so invariant 4's three quantities stay three colours.                                                                                                         |
+| `frame.ts`          | `cartesianFrame(input)` → `{ title, option }`, and `seriesMarker(tokens)`. The frame styles grid, axes, tooltip chrome, and legend; a builder adds its own series. `input.gridBottom` lets a builder reserve room under the plot for a control of its own (the Pareto slider).                                                                                                                    |
+| `mount.ts`          | `mountChart(target, option)` → `{ update, dispose }`, plus `ChartHandle`.                                                                                                                                                                                                                                                                                                                         |
+| `pareto-payload.ts` | Builds the inline `ParetoPayload` from committed derived frontiers and source data, encodes/decodes the JSON boundary, and owns `chartAriaLabel(view)` — the chart's accessible name, shared by the server template and the client rebuild so the two cannot drift.                                                                                                                               |
+| `pareto.ts`         | Pure Pareto scatter option and tooltip builders: axes, frontier, dominated region, labels, effort trails, zoom, and tokens.                                                                                                                                                                                                                                                                       |
+| `pareto-page.ts`    | Browser-only adapter that decodes the inline payload, resolves controls, mounts the option, and rebuilds the title, note, and accessible name.                                                                                                                                                                                                                                                    |
+| `bump-payload.ts`   | Builds the inline `BumpPayload`: one ranked column per committed benchmark version, model-aligned cells, tied rank groups, and the not-evaluated lane.                                                                                                                                                                                                                                            |
+| `bump.ts`           | Pure bump/rank option and tooltip builders: model lines, gap markers, tied-rank bands, and the lane separator.                                                                                                                                                                                                                                                                                    |
+| `bump-page.ts`      | Browser-only adapter that decodes `#bump-data`, reads chart tokens, mounts the bump option, and reports a static fallback when drawing fails.                                                                                                                                                                                                                                                     |
+| `*.test.ts`         | The pure halves: token parsing, frame layout, axis formatters, basis titles, marker geometry.                                                                                                                                                                                                                                                                                                     |
 
 `MarkAreaComponent` is deliberately absent: no option uses `markArea`, and the
 option type never admitted that key. A mid-stage registration was removed;
@@ -1014,7 +1026,7 @@ applies the option with `notMerge: true`, and returns a handle:
   retry reports the real problem instead of "already holds a chart instance".
   ECharts itself would render axes around an empty plot and stay silent.
 - `update(option)` after `dispose()` throws `the chart was disposed; mount a
-  new one`. A silent no-op would hide a page that threw its handle away.
+new one`. A silent no-op would hide a page that threw its handle away.
 - `dispose()` is idempotent, disconnects the observer and the listener, and
   empties the element, so a later `mountChart` on the same element works.
 
@@ -1070,7 +1082,7 @@ nowhere and is drawn outside the canvas. Measured before the fix, on the frame's
 own option at two widths: `$/task` clipped in half at the canvas top and
 `tasks / month` off the right edge, at both 360 px and 1280 px — the defect was
 width-independent because the margins are. The frame test asserts the labelled
-axes *and* the `"all"` containment together, so a regression to `"axisLabel"`
+axes _and_ the `"all"` containment together, so a regression to `"axisLabel"`
 fails a test rather than shipping a clipped chart.
 
 **Verification.** The mount contract is checked in a real browser, and a hidden
@@ -1117,7 +1129,7 @@ below the gate and must render `single-source` with no `T`.
   are `position: absolute`; with an unpositioned `inline-flex` badge inside a
   wide table inside an `overflow-x-auto` wrapper, the containing block is the
   initial containing block, so 28 badges in `/models` laid their accessible text
-  out at x = 735 inside the overwide table and stretched the *document* with
+  out at x = 735 inside the overwide table and stretched the _document_ with
   them. `documentElement.scrollWidth` read 736 against a 360 px viewport and
   `window.scrollTo(9999, 0)` moved 376 px into blank space — on `/models`,
   `/models/[slug]`, `/plans`, `/plans/[slug]` and `/compare`. Hiding the
@@ -1154,16 +1166,16 @@ between a text node and an adjacent tag disappears from output entirely. The
 space is not collapsed to one space; it is dropped. Same-line whitespace
 survives. This is a property of the template language, not of CSS.
 
-| Source | Emitted |
-|---|---|
-| `text1` newline `<code>A</code>` | `text1<code>A</code>` |
-| `text2 {" "}` newline `<code>B</code>` | `text2  <code>B</code>` (the explicit expression's space survives; the newline-indent run collapses, so the source carries two spaces where a reader sees one) |
-| `text3 <code>C</code>` (one line) | `text3 <code>C</code>` |
-| `<code>D</code>` newline `text4` | `<code>D</code>text4` |
-| `<code` newline `>E</code` newline `>` newline `text5` | `<code>E</code>text5` |
-| `<code>F</code>{" "}` newline `text6` | `<code>F</code> text6` |
-| `<code` newline `>G</code>{" "}` newline `text7` | `<code>G</code> text7` |
-| `{label}&nbsp;<code>H</code>` | preserved |
+| Source                                                 | Emitted                                                                                                                                                        |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text1` newline `<code>A</code>`                       | `text1<code>A</code>`                                                                                                                                          |
+| `text2 {" "}` newline `<code>B</code>`                 | `text2  <code>B</code>` (the explicit expression's space survives; the newline-indent run collapses, so the source carries two spaces where a reader sees one) |
+| `text3 <code>C</code>` (one line)                      | `text3 <code>C</code>`                                                                                                                                         |
+| `<code>D</code>` newline `text4`                       | `<code>D</code>text4`                                                                                                                                          |
+| `<code` newline `>E</code` newline `>` newline `text5` | `<code>E</code>text5`                                                                                                                                          |
+| `<code>F</code>{" "}` newline `text6`                  | `<code>F</code> text6`                                                                                                                                         |
+| `<code` newline `>G</code>{" "}` newline `text7`       | `<code>G</code> text7`                                                                                                                                         |
+| `{label}&nbsp;<code>H</code>`                          | preserved                                                                                                                                                      |
 
 The rule has two directions: it drops the run before an opening tag and after
 a closing tag. The two safe forms are a same-line space and the explicit
@@ -1216,29 +1228,29 @@ is the default. `@theme` emits the custom properties and their Tailwind
 utilities, and utilities continue to read `var(--color-*)` when the light
 scheme re-declares the values.
 
-| Token | Dark hex | Light hex | Semantic role |
-|---|---|---|---|
-| `--color-canvas` | `#0a0e15` | `#f7f8fa` | page background |
-| `--color-panel` | `#111825` | `#ffffff` | raised surface: cards, tables, nav |
-| `--color-rule` | `#1d2735` | `#dce2ea` | hairline border / divider |
-| `--color-ink` | `#eaeef5` | `#0f141d` | primary text |
-| `--color-dim` | `#a3b0c4` | `#4f5b73` | secondary text |
-| `--color-adjusted` | `#ffb020` | `#8a5a00` | plan-adjusted cost basis |
-| `--color-measured` | `#45d97f` | `#1a7a45` | measured quota basis |
-| `--color-api` | `#5c6a80` | `#5c6a80` | API-list cost basis, marker/stroke |
-| `--color-api-ink` | `#8a97ab` | `#55627a` | API-list cost basis, text |
+| Token              | Dark hex  | Light hex | Semantic role                      |
+| ------------------ | --------- | --------- | ---------------------------------- |
+| `--color-canvas`   | `#0a0e15` | `#f7f8fa` | page background                    |
+| `--color-panel`    | `#111825` | `#ffffff` | raised surface: cards, tables, nav |
+| `--color-rule`     | `#1d2735` | `#dce2ea` | hairline border / divider          |
+| `--color-ink`      | `#eaeef5` | `#0f141d` | primary text                       |
+| `--color-dim`      | `#a3b0c4` | `#4f5b73` | secondary text                     |
+| `--color-adjusted` | `#ffb020` | `#8a5a00` | plan-adjusted cost basis           |
+| `--color-measured` | `#45d97f` | `#1a7a45` | measured quota basis               |
+| `--color-api`      | `#5c6a80` | `#5c6a80` | API-list cost basis, marker/stroke |
+| `--color-api-ink`  | `#8a97ab` | `#55627a` | API-list cost basis, text          |
 
 ### Dark scheme contrast
 
-| Pair | Canvas | Panel | AA threshold | Verdict |
-|---|---:|---:|---:|---|
-| ink | 16.61:1 | 15.28:1 | 4.5:1 text | PASS |
-| dim | 8.80:1 | 8.10:1 | 4.5:1 text | PASS |
-| adjusted | 10.57:1 | 9.72:1 | 4.5:1 text | PASS |
-| measured | 10.57:1 | 9.72:1 | 4.5:1 text | PASS |
-| api | 3.52:1 | 3.24:1 | 3:1 UI | PASS |
-| api-ink | 6.53:1 | 6.01:1 | 4.5:1 text | PASS |
-| rule | 1.28:1 | 1.18:1 | — | measured |
+| Pair     |  Canvas |   Panel | AA threshold | Verdict  |
+| -------- | ------: | ------: | -----------: | -------- |
+| ink      | 16.61:1 | 15.28:1 |   4.5:1 text | PASS     |
+| dim      |  8.80:1 |  8.10:1 |   4.5:1 text | PASS     |
+| adjusted | 10.57:1 |  9.72:1 |   4.5:1 text | PASS     |
+| measured | 10.57:1 |  9.72:1 |   4.5:1 text | PASS     |
+| api      |  3.52:1 |  3.24:1 |       3:1 UI | PASS     |
+| api-ink  |  6.53:1 |  6.01:1 |   4.5:1 text | PASS     |
+| rule     |  1.28:1 |  1.18:1 |            — | measured |
 
 The dark text roles pass 4.5:1. `api` passes the 3:1 non-text/UI threshold
 and is marker/stroke only; `api-ink` is text-safe. `rule` is hairline
@@ -1246,15 +1258,15 @@ decoration and carries no threshold.
 
 ### Light scheme contrast
 
-| Pair | Canvas | Panel | AA threshold | Verdict |
-|---|---:|---:|---:|---|
-| ink | 17.36:1 | 18.45:1 | 4.5:1 text | PASS |
-| dim | 6.42:1 | 6.83:1 | 4.5:1 text | PASS |
-| adjusted | 5.58:1 | 5.93:1 | 4.5:1 text | PASS |
-| measured | 5.05:1 | 5.37:1 | 4.5:1 text | PASS |
-| api | 5.16:1 | 5.49:1 | 4.5:1 text | PASS |
-| api-ink | 5.79:1 | 6.15:1 | 4.5:1 text | PASS |
-| rule | 1.23:1 | 1.30:1 | — | measured |
+| Pair     |  Canvas |   Panel | AA threshold | Verdict  |
+| -------- | ------: | ------: | -----------: | -------- |
+| ink      | 17.36:1 | 18.45:1 |   4.5:1 text | PASS     |
+| dim      |  6.42:1 |  6.83:1 |   4.5:1 text | PASS     |
+| adjusted |  5.58:1 |  5.93:1 |   4.5:1 text | PASS     |
+| measured |  5.05:1 |  5.37:1 |   4.5:1 text | PASS     |
+| api      |  5.16:1 |  5.49:1 |   4.5:1 text | PASS     |
+| api-ink  |  5.79:1 |  6.15:1 |   4.5:1 text | PASS     |
+| rule     |  1.23:1 |  1.30:1 |            — | measured |
 
 Every text role clears 4.5:1 in the light scheme. `api` also clears 4.5:1
 there, but remains the marker/stroke token so chart code does not branch on
@@ -1266,12 +1278,12 @@ decoration without a threshold.
 `--text-*: initial` removes the default Tailwind font-size namespace. The
 shipped scale is:
 
-| Token | Rem / line height | Computed size | Use |
-|---|---|---:|---|
-| `--text-meta` | 0.8125rem / 1.45 | 13 px | badges, table metadata, nav, footer |
-| `--text-body` | 0.9375rem / 1.6 | 15 px | paragraphs and table cells |
-| `--text-title` | 1.375rem / 1.25 | 22 px | section headings and subpage h1 |
-| `--text-display` | 2rem / 1.15 | 32 px | `/` hero h1 |
+| Token            | Rem / line height | Computed size | Use                                 |
+| ---------------- | ----------------- | ------------: | ----------------------------------- |
+| `--text-meta`    | 0.8125rem / 1.45  |         13 px | badges, table metadata, nav, footer |
+| `--text-body`    | 0.9375rem / 1.6   |         15 px | paragraphs and table cells          |
+| `--text-title`   | 1.375rem / 1.25   |         22 px | section headings and subpage h1     |
+| `--text-display` | 2rem / 1.15       |         32 px | `/` hero h1                         |
 
 `--font-sans` is the native UI stack and is the body default. `--font-mono`
 is the native mono stack, opt-in for code and identifiers only. Measured
@@ -1308,15 +1320,15 @@ avoidance toggle to document; a toggle is deferred to task 6.1.
 
 ### Anti-signals
 
-| Predecessor signal | Shipped replacement |
-|---|---|
-| 3D glossy ball chart markers | Flat filled circles with a 1 px `--color-rule` stroke; no gradient, glow, or shadow |
-| Amber for everything / a second accent hue | One accent per cost-basis role, plus an ink focus ring |
-| Monospace for everything | Sans body, mono opt-in, and `tabular-nums` for figures |
-| Dashed-rule noise | One solid 1 px `--color-rule` hairline |
-| Four competing animation durations | One 150 ms duration and one easing |
-| Emoji empty state | Text-only empty states, rendered by Stage 4 |
-| Dead analytics snippet | None exists; task 1.5 deleted it and nothing re-adds it |
+| Predecessor signal                         | Shipped replacement                                                                 |
+| ------------------------------------------ | ----------------------------------------------------------------------------------- |
+| 3D glossy ball chart markers               | Flat filled circles with a 1 px `--color-rule` stroke; no gradient, glow, or shadow |
+| Amber for everything / a second accent hue | One accent per cost-basis role, plus an ink focus ring                              |
+| Monospace for everything                   | Sans body, mono opt-in, and `tabular-nums` for figures                              |
+| Dashed-rule noise                          | One solid 1 px `--color-rule` hairline                                              |
+| Four competing animation durations         | One 150 ms duration and one easing                                                  |
+| Emoji empty state                          | Text-only empty states, rendered by Stage 4                                         |
+| Dead analytics snippet                     | None exists; task 1.5 deleted it and nothing re-adds it                             |
 
 Stage 4 receives three load-bearing rules: chart markers are flat filled
 circles with a 1 px `--color-rule` stroke and no gradient, glow, or shadow;
@@ -1402,16 +1414,17 @@ It has a 15-minute timeout, `contents: read` permission, and concurrency
 group `ci-${{ github.ref }}` with in-progress runs cancelled. It runs on
 pushes to `main`, pull requests, and manual dispatches.
 
-| Step | Command | What it proves |
-|---|---|---|
-| Checkout | `actions/checkout@v7` | The job uses the repository contents. |
-| Bun setup | `oven-sh/setup-bun@v2` | Bun reads `bun@1.4.2` from the root `package.json`. |
-| Install | `bun install --frozen-lockfile` | Dependencies match the committed `bun.lock`. |
-| Code checks | `bun run check` | Typecheck, lint, format check and Astro check pass. |
-| Tests | `bun test` | The test suite passes. |
-| Data staleness | `bun run data:check` | In-memory re-derivation matches the committed bytes. |
-| Data build | `bun run data:build` | Validation passes, then `compute` derives the data file. |
-| Compute guard | `changes="$(git status --porcelain -- data/)"` | The compute write path leaves `data/` unchanged. |
+| Step            | Command                                        | What it proves                                                                                        |
+| --------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Checkout        | `actions/checkout@v7`                          | The job uses the repository contents.                                                                 |
+| Bun setup       | `oven-sh/setup-bun@v2`                         | Bun reads `bun@1.4.2` from the root `package.json`.                                                   |
+| Install         | `bun install --frozen-lockfile`                | Dependencies match the committed `bun.lock`.                                                          |
+| Code checks     | `bun run check`                                | Typecheck, lint, Markdown lint, formatting (oxfmt over TypeScript and Markdown) and site checks pass. |
+| Markdown checks | `bun run lint:md`                              | Markdown frontmatter, hard-break, and dangling-relative-link checks pass.                             |
+| Tests           | `bun test`                                     | The test suite passes.                                                                                |
+| Data staleness  | `bun run data:check`                           | In-memory re-derivation matches the committed bytes.                                                  |
+| Data build      | `bun run data:build`                           | Validation passes, then `compute` derives the data file.                                              |
+| Compute guard   | `changes="$(git status --porcelain -- data/)"` | The compute write path leaves `data/` unchanged.                                                      |
 
 `data:check` runs before `data:build` on purpose: `compute` rewrites
 `data/derived.json`, so running it first would repair a stale committed file

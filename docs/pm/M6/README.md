@@ -14,18 +14,19 @@ tasks:
   - APP-606
 retro: []
 ---
+
 # Provider selection wizard (PLAN stage 6)
 
 ## Definition of done
 
-"which plan should *I* buy" becomes a guided flow, and the answers
+"which plan should _I_ buy" becomes a guided flow, and the answers
 persist offline.
 
 ## Stage record
 
 ## Stage 6 — Provider selection wizard
 
-**Goal:** 
+**Goal:**
 
 > **Reading these tasks.** Stage 6 tasks are written as requirements, not in the
 > Files / Work / Done-when form Stage 5 uses. A session that opens one restates

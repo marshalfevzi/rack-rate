@@ -1,0 +1,9 @@
+{
+  "requiredFrontmatterKeys": [
+    {
+      "globs": ["docs/pm/**/*.md"],
+      "keys": ["id"]
+    }
+  ],
+  "exclude": [".claude/**", "docs/history/**", "tools/oxlint/anti-slop/**"]
+}

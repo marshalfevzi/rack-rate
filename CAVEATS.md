@@ -45,16 +45,16 @@ only with attribution"**; "Self-serve … Internal use only; no redistribution."
 
 ### 1.2 The clauses that bear on this project
 
-| Clause | What it says | Why it matters here |
-|---|---|---|
-| **§1.9** | "Competitive Product" = any product "whose primary purpose is benchmarking, ranking, comparison, competitive intelligence, or **model/provider selection guidance**" | Describes this project's stated purpose |
-| **§1.10** | "Derived Data" **excludes** "raw Data points republished in any format", "structured or tabular reproductions", and "any output where the underlying Data remains individually identifiable" | AA index values in our JSON are *not* Derived Data — they are raw Data points |
-| **§2.3 All Tiers** | (a) Internal Use; **(b) "share charts and visualizations publicly, subject to the attribution requirements in Section 5"**; (c) brief citation of individual Data points, "provided such citations … do not reproduce Data in a structured, tabular, or machine-readable format" | The carve-out — see 1.3 |
-| **§2.4** | Forbids distributing raw Data files, providing **bulk machine-readable exports** (CSV/Excel/JSON), **embedding** raw Data in "any customer-facing product, API, dashboard, or service", and **combining** Data with third-party data into a product available to a third party | Our committed JSON + combined leaderboards |
-| **§2.5(a)** | "Create, develop, or operate a Competitive Product" without prior written consent | The central restriction |
-| **§5.1** | Attribution by content type. Charts: **"Artificial Analysis logo must be visible on the chart"**. Data & metrics: `Source: Artificial Analysis (artificialanalysis.ai)` with a hyperlink. Derived Data: "Based on data from Artificial Analysis" plus a non-endorsement statement | Our attribution obligations, and the logo rule |
-| **§10.3** | Breaches of §2.4 / §2.5 are **excluded from the liability cap** and carry a customer indemnity | Exposure is uncapped for exactly these clauses |
-| **§11.5(b)** | Immediate termination, no refund, for use "in connection with a Competitive Product" | Enforcement is not merely theoretical |
+| Clause             | What it says                                                                                                                                                                                                                                                                      | Why it matters here                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **§1.9**           | "Competitive Product" = any product "whose primary purpose is benchmarking, ranking, comparison, competitive intelligence, or **model/provider selection guidance**"                                                                                                              | Describes this project's stated purpose                                       |
+| **§1.10**          | "Derived Data" **excludes** "raw Data points republished in any format", "structured or tabular reproductions", and "any output where the underlying Data remains individually identifiable"                                                                                      | AA index values in our JSON are _not_ Derived Data — they are raw Data points |
+| **§2.3 All Tiers** | (a) Internal Use; **(b) "share charts and visualizations publicly, subject to the attribution requirements in Section 5"**; (c) brief citation of individual Data points, "provided such citations … do not reproduce Data in a structured, tabular, or machine-readable format"  | The carve-out — see 1.3                                                       |
+| **§2.4**           | Forbids distributing raw Data files, providing **bulk machine-readable exports** (CSV/Excel/JSON), **embedding** raw Data in "any customer-facing product, API, dashboard, or service", and **combining** Data with third-party data into a product available to a third party    | Our committed JSON + combined leaderboards                                    |
+| **§2.5(a)**        | "Create, develop, or operate a Competitive Product" without prior written consent                                                                                                                                                                                                 | The central restriction                                                       |
+| **§5.1**           | Attribution by content type. Charts: **"Artificial Analysis logo must be visible on the chart"**. Data & metrics: `Source: Artificial Analysis (artificialanalysis.ai)` with a hyperlink. Derived Data: "Based on data from Artificial Analysis" plus a non-endorsement statement | Our attribution obligations, and the logo rule                                |
+| **§10.3**          | Breaches of §2.4 / §2.5 are **excluded from the liability cap** and carry a customer indemnity                                                                                                                                                                                    | Exposure is uncapped for exactly these clauses                                |
+| **§11.5(b)**       | Immediate termination, no refund, for use "in connection with a Competitive Product"                                                                                                                                                                                              | Enforcement is not merely theoretical                                         |
 
 ### 1.3 The one carve-out worth knowing
 
@@ -120,7 +120,7 @@ Three states, ascending exposure (specified in `docs/pm/M7/todo/DOC-702b.md`):
 
 In every state:
 
-- A key *alone* never activates publication — `AA_API_KEY` **and**
+- A key _alone_ never activates publication — `AA_API_KEY` **and**
   `AA_PUBLISH=1` are both required.
 - The AA index is always a **separate, labelled axis** carrying its own
   `intelligence_index_version`; it is never averaged into a composite that
@@ -187,7 +187,7 @@ and require `k >= 2`; otherwise the composite is suppressed and badged
 
 `measured | high | medium | low`, carried from `data/plans.json`. Concretely:
 
-- Figures the awesome-coding-plan project *measured* are stronger evidence than
+- Figures the awesome-coding-plan project _measured_ are stronger evidence than
   our arithmetic on a vendor's advertised multiplier.
 - **Vendor multiplier arithmetic is `medium` at best.** "At least 5× the usage
   per session" is a marketing claim, not a measurement.
@@ -213,8 +213,8 @@ labelling. This is the most common way a chart of this kind becomes misleading.
 
 ### 2.6 Quotas are measured, not guaranteed
 
-A coding plan's monthly allowance is a *measurement of observed behaviour under
-a workload convention*, not a contractual entitlement. Providers change limits,
+A coding plan's monthly allowance is a _measurement of observed behaviour under
+a workload convention_, not a contractual entitlement. Providers change limits,
 rate-limit windows, and model routing without notice. Rolling-window caps (for
 example a 5 h window) can bind before the monthly cap does — which is why
 `days_for_full_run` takes the minimum of the monthly rate and the

@@ -27,12 +27,9 @@
     "project": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "last_commit", "prd", "product", "design", "architecture"],
+      "required": ["name", "prd", "product", "design", "architecture"],
       "properties": {
         "name": {
-          "type": "string"
-        },
-        "last_commit": {
           "type": "string"
         },
         "prd": {
@@ -143,7 +140,6 @@
     {
       "project": {
         "name": "rack-rate",
-        "last_commit": "0123456789abcdef0123456789abcdef01234567",
         "prd": "PRD.md",
         "product": "PRODUCT.md",
         "design": "DESIGN.md",

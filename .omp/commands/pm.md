@@ -16,4 +16,12 @@ Load `skill://project-management` before making any decision; use its document s
 
 5. **Verify and repair.** Dispatch `pm-verifier` independently after implementation. Require it to compare the diff with `docs/pm/<M>/todo/<ID>.md`, check every acceptance criterion, and report reproducible evidence and remaining defects without editing. Fix all reported lint and type errors and any acceptance defect, rerun the relevant checks, and have `pm-verifier` re-check until the task is genuinely complete.
 
-6. **Finish.** Update only the task frontmatter in `docs/pm/<M>/todo/<ID>.md` (or its unplanned path) to `status: done` once verification passes. Call `pm_task_finish` with the task id, a concise session summary containing the evidence, and `commit: true`; this moves the task to `docs/pm/<M>/done/<ID>.md` and appends the session record. Then call `pm_plan_sync` with `{ write: true }` as the final synchronization, and report its `issues`, generated `docs/pm/plan.yml` state, completed task path, verification evidence, and commit result. Leave any reported error or warning visible rather than masking it.
+6. **Finish.** Ensure the working tree is formatted before finishing. `pm_task_finish` itself runs the
+   configured `project.commands.format` and then stages the whole tree. The `bun run check` gate must
+   pass before the task is finished. Update only the task frontmatter in `docs/pm/<M>/todo/<ID>.md` (or
+   its unplanned path) to `status: done` once verification passes. Call `pm_task_finish` with the task
+   id, a concise session summary containing the evidence, and `commit: true`; this moves the task to
+   `docs/pm/<M>/done/<ID>.md` and appends the session record. Then call `pm_plan_sync` with `{ write: true }` as
+   the final synchronization, and report its `issues`, generated `docs/pm/plan.yml` state, completed task
+   path, verification evidence, and commit result. Leave any reported error or warning visible rather than
+   masking it.
