@@ -616,74 +616,87 @@ keeps invariant 4 visible; both landed in 3.7.
 
 ## Provenance components
 
-`apps/site/src/components/` holds six components: a chip shell and the five that
-carry "where did this come from" for a figure. They take parsed values and render
-words, geometry and citations — never a figure of their own — so the number stays
-owned by `format.ts` and the cost basis by the chip.
+`apps/site/src/components/` holds six provenance components: a badge shell, three
+evidence badges, a cost-basis chip, a source link, and the confidence-interval
+rule. They take parsed values and render words, geometry and citations — never a
+figure of their own — so the number stays owned by `format.ts`, the vocabulary
+by `provenance.ts`, and citations by `data/sources.json`.
 
-| Component               | Props                                                                                            | Renders                                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Badge.astro`           | `{ tone?: "neutral" \| "api" \| "adjusted"; title?: string; class?: string }`                    | the one chip shell (`inline-flex … border-rule text-meta`) the three badges share, so the chip markup exists once                                           |
-| `ConfidenceBadge.astro` | `{ level: Confidence }`                                                                          | the level word, prefixed by an `sr-only` "Confidence: ", with the level's definition in `title`                                                             |
-| `FreshnessBadge.astro`  | `{ freshness: Freshness; retrievedAt: string }`                                                  | the `Fresh`/`Stale` word plus `retrieved <date>` in `tabular` digits, definition in `title`                                                                 |
-| `CostBasisChip.astro`   | `{ basis: CostBasisKind; planName?: string; unit?: CostUnit; status?: CostBasisStatus }`         | the basis label, the unit (`/task`, `/mo`, `/1M tokens`) and, when the status is not `list`, the qualifier (`expected launch`, `disputed`, `unknown basis`) |
-| `SourceLink.astro`      | `{ id: string; label?: string }`                                                                 | one external anchor to the source's `url`, `title` = title · licence · retrieval date, plus an `sr-only` new-tab note                                       |
-| `CiBar.astro`           | `{ value: number; lo?: number; hi?: number; ciScale: CiScale; method?: string; class?: string }` | the interval bar with its composed accessible name, or `— no interval reported`                                                                             |
+| Component               | Props                                                                                                                                                              | Renders                                                                                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Badge.astro`           | `{ title?: string; state?: PrimitiveState; reason?: string; class?: string }`                                                                                      | a square 1px framed evidence marker at `--text-meta`; state is exposed as `data-state`, disabled as `aria-disabled`, and empty/loading/error use explicit static text |
+| `ConfidenceBadge.astro` | `{ level: Confidence; state?: PrimitiveState; reason?: string }`                                                                                                   | the confidence term from `CONFIDENCE_TERMS`, prefixed by an `sr-only` "Confidence: ", through the shared badge shell                                                  |
+| `FreshnessBadge.astro`  | `{ freshness: Freshness; retrievedAt: string; state?: PrimitiveState; reason?: string }`                                                                           | the freshness term plus `retrieved <date>` in `tabular` digits, with its definition in `title`, through the shared badge shell                                        |
+| `CostBasisChip.astro`   | `{ basis: CostBasisKind; planName?: string; unit?: CostUnit; status?: CostBasisStatus; state?: PrimitiveState; reason?: string; class?: string }`                  | the basis label, unit and optional qualifier from `provenance.ts`, using the solid, open-ended hairline, or doubled stroke grammar                                    |
+| `SourceLink.astro`      | `{ id: string; label?: string; state?: PrimitiveState; reason?: string; class?: string }`                                                                          | one external text anchor with `title` = title · licence · retrieval date, plus an `sr-only` new-tab note; unknown ids still throw at build time                       |
+| `CiBar.astro`           | `{ value: number; lo?: number; hi?: number; ciScale: CiScale; method?: string; confidence?: Confidence; state?: PrimitiveState; reason?: string; class?: string }` | a square-ended 1px interval rule with value mark and confidence stroke weight, or `— no interval reported`; missing endpoints never become a bar                      |
 
+The eight listing primitives share the same state vocabulary and fixed geometry:
+`PrimitiveState` is `default | disabled | loading | empty | error`, rendered as
+`data-state` with a paired treatment class, and disabled primitives expose
+`aria-disabled="true"` (plus native `disabled` on Plate buttons). The state mark
+column is owned by `StateCell`; its `StateMarkKind` alphabet and descriptions
+come from `STATE_MARKS` and `STATE_MARK_TERMS`. `LISTING_COPY` owns the empty,
+filter, composite, Artificial Analysis gate, and set-aside strings.
+
+| Primitive           | Props                                                                                                                                                                                              | Contract                                                                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SectionHead.astro` | `{ title: string; number?: string; id?: string; as?: "h2" \| "h3"; state?: PrimitiveState; reason?: string; class?: string }`                                                                      | 2px opener, title plus optional uppercase mono number, and state text; an error requires a reason.                                                                    |
+| `Plate.astro`       | `{ active?: boolean; state?: PrimitiveState; as?: "span" \| "button" \| "a"; href?: string; reason?: string; class?: string }` plus rest attributes                                                | neutral panel plate by default, signal plate only when active, and caller attributes pass through to the element.                                                     |
+| `Chip.astro`        | `{ label: string; basis?: CostBasisKind; active?: boolean; state?: PrimitiveState; reason?: string; class?: string }`                                                                              | square basis/filter frame with solid, open-ended hairline, or doubled rule; amber is reserved for an active plan-route basis.                                         |
+| `ControlRow.astro`  | `{ label: string; state?: PrimitiveState; reason?: string; emptyMessage?: string; class?: string }` plus default slot                                                                              | labelled `role="group"` strip with top/bottom 1px rules, wrapping controls, and owned empty/error copy.                                                               |
+| `StateCell.astro`   | `{ mark?: StateMarkKind; as?: "td" \| "th" \| "span"; state?: PrimitiveState; reason?: string; class?: string }`                                                                                   | one carriage-control glyph, an `sr-only` mark label, and the mark description in `title`; loading reserves `?` for low confidence and error uses `!` plus its reason. |
+| `Gutter.astro`      | `{ line?: number \| string \| null; as?: "td" \| "th" \| "span"; state?: PrimitiveState; class?: string }`                                                                                         | right-aligned tabular line number, 40px at ≥768px, 28px at 480–767px, and visually dropped below 480px without removing the element.                                  |
+| `SetAside.astro`    | `{ rows: number; label?: string; state?: PrimitiveState; reason?: string; class?: string }` plus default slot                                                                                      | titled visible set-aside rail with the same row grammar; zero rows or empty state prints `LISTING_COPY.noExcludedRows`.                                               |
+| `EmptyState.astro`  | `{ variant: "gap"; reason: string } \| { variant: "empty" \| "filtered-to-nothing" \| "suppressed-composite" \| "aa-gate-off"; reason?: undefined; state?: PrimitiveState }` plus `class?: string` | variant copy comes from `LISTING_COPY`; gap copy calls `gapReason` from `readout.ts`.                                                                                 |
+
+`apps/site/src/lib/provenance.ts` remains pure TypeScript, so `.astro` frontmatter
+and `bun test` call the same vocabulary and geometry helpers.
 `apps/site/src/lib/provenance.ts` is the vocabulary and the arithmetic:
-`CONFIDENCE_TERMS`, `FRESHNESS_TERMS`, `COST_BASIS_TERMS`, `COST_UNIT_LABELS`,
-`costBasisTerm`, `costBasisQualifier` and `ciGeometry`. Its types are derived
-from the data contract — `Confidence` is `Plan["confidence"]`, `Freshness` is
-`PairBadge["freshness"]`, `CostBasisStatus` is
-`Model["cost_basis"] | NonNullable<Plan["price_status"]>` — so a new level or
-status fails the build inside the module instead of rendering an unlabelled
-badge. The module is pure TypeScript, so `.astro` frontmatter and `bun test` call
-the same function.
+`PrimitiveState`, `StateMarkKind`, `STATE_MARKS`, `STATE_MARK_TERMS`,
+`LISTING_COPY`, `CONFIDENCE_TERMS`, `FRESHNESS_TERMS`, `COST_BASIS_TERMS`,
+`COST_UNIT_LABELS`, `costBasisTerm`, `costBasisQualifier` and `ciGeometry`.
+Its types remain derived from the data contract — `Confidence` is
+`Plan["confidence"]`, `Freshness` is `PairBadge["freshness"]`, and
+`CostBasisStatus` is `Model["cost_basis"] | NonNullable<Plan["price_status"]>` —
+so a new level or status fails inside the module instead of rendering an
+unlabelled badge. The module is pure TypeScript, so `.astro` frontmatter and
+`bun test` call the same vocabulary and geometry helpers.
 
 Five rules the components encode:
 
-1. **One accent per role.** `neutral` (`text-dim`) for confidence, freshness and
-   the AA index basis; `text-api-ink` for the API-list basis; `text-adjusted` for
-   a `{plan} route`. `--color-measured` stays reserved for the measured quota
-   basis, which no 3.7 component renders. Nothing spends an accent on chrome, on
-   an interval or on interaction.
+1. **One state mechanism.** Every primitive emits `data-state` from
+   `PrimitiveState`; disabled state also emits `aria-disabled="true"` and a real
+   Plate button receives native `disabled`. Loading is static text, never a
+   spinner or shimmer, and empty/error text preserves the relevant source or
+   gap reason.
 2. **A basis label names its quantity.** `costBasisTerm("plan-route")` throws
    without a plan name, because `{plan} route` without the plan names nothing.
 3. **Absent stays absent.** `CiBar` renders text, never a bar, when either
    endpoint is missing: a bar drawn from one end would invent the other, the same
    rule the range formatters apply to the printed range.
 4. **The interval is never zoomed.** `ciGeometry` maps the interval onto the
-   unit's full domain (`0–1` for a fraction, `0–100` for percent), so a 5.7-point
-   interval reads as one. `leftPct` and `widthPct` round to 3 dp with the width
-   taken as a delta between the rounded ends, so `leftPct + widthPct` lands
-   exactly on the interval's high end; out-of-domain values clamp instead of
-   rescaling the track; a transposed pair is ordered rather than drawn inside
-   out; the interval's 2 px minimum width is CSS, not geometry.
+   unit's full domain (`0–1` for a fraction, `0–100` for percent), so a narrow
+   interval reads as narrow. `leftPct` and `widthPct` round to 3 dp with the
+   width taken as a delta between the rounded ends; out-of-domain values clamp
+   instead of rescaling the track, and a transposed pair is ordered rather than
+   drawn inside out.
 5. **One freshness rule.** `isStale` and `freshnessOf` ship in `@rack-rate/core`
    with `STALE_AFTER_DAYS` at 14 and the reference moment as an argument.
-   `compute` imports them for the committed `PairBadge.freshness`, and a row's
-   verdict is `freshnessOf(row.retrieved_at, derivedGeneratedAt)`. The extraction
-   deleted `compute.ts`'s private copy of the rule, and `bun run data:check`
-   proves the move changed no byte of `derived.json`. The research pass's
-   30/90-day `aging` ladder was not adopted: the committed vocabulary is
-   `fresh | stale`.
+   `compute` imports them for committed freshness, and a row's verdict is
+   `freshnessOf(row.retrieved_at, derivedGeneratedAt)`.
 
 `derivedGeneratedAt` in `lib/data.ts` is that reference moment: `compute` writes
 the newest upstream `generated_at` into `derived.json`, so a badge is dated
 against committed data rather than the wall clock and two builds of one commit
-age identically. It is read once through the same fail-fast guard as the computed
-sections, because a dated row cannot exist without it.
+age identically. `SourceLink` still throws for an id not in `data/sources.json`;
+the source title, licence, and retrieval date remain in its title and no
+`data-readout*` attribute is emitted by the link.
 
-`SourceLink` throws for an id that is not in `data/sources.json` rather than
-degrading to plain text. `bun run validate` already enforces evidence and source
-referential integrity, and invariant 8 makes attribution load-bearing, so a
-citation that cannot resolve fails the build; the accessor's `undefined`-degrades
-rule covers an id upstream retired, not a missing citation.
-
-Stage 4's rule, unchanged from the plan: every published figure ships inside at
-least one of these components, so provenance is structural rather than a footer
-paragraph. Until then the components are unreachable from any entry point and
-`fallow` reports them as unused files — expected, not stale.
+The historical Stage 4 probe below records the pre-redesign visual treatment;
+the Stage 5 record that follows is the evidence for the square console grammar.
+Every published figure remains inside at least one provenance component, so
+provenance is structural rather than a footer paragraph.
 
 Measured on the 3.7 probe build (54 pages; the throwaway page was deleted
 afterwards): the gpt-6-astra interval emitted
@@ -1869,6 +1882,70 @@ errors and 0 warnings over 70 files); `bun test` exited 0 with 157 passes,
 53 pages and `og.png` at 1200×630; and `bun run data:check` exited 0 with
 `data/derived.json` retaining SHA-256
 `7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`.
+
+### Stage 5 record — listing primitives and provenance components (task UI-505)
+
+UI-505 replaces the provenance presentation and adds eight listing primitives
+under the Console Listing grammar. `apps/site/src/lib/provenance.ts` now owns
+`PrimitiveState`, the seven-mark `StateMarkKind` alphabet, `STATE_MARKS`,
+`STATE_MARK_TERMS`, and the five exact `LISTING_COPY` strings. Every changed
+component emits `data-state`; disabled state emits `aria-disabled="true"`, and a
+Plate button also emits native `disabled`. `SourceLink` remains a text link and
+still throws at build time for an unknown source id; it emits no `data-readout*`
+attributes.
+
+The shipped contracts are recorded in the `## Provenance components` table
+above. `SectionHead` renders a 2px opener and requires an error reason, `Plate`
+forwards caller attributes, `Chip` carries the three basis stroke grammars, and
+`ControlRow` is a labelled `role="group"` strip. `StateCell` renders one
+carriage-control glyph with its `sr-only` term label and description in `title`.
+`StateCell` and `Gutter` carry the row-height utilities; `Gutter` retains its
+element while dropping below 480px, `SetAside` keeps excluded rows visible and
+prints the zero-row copy, and `EmptyState` maps variants to `LISTING_COPY` while
+calling `gapReason` for a gap. `CiBar` is a 1px interval rule with a value mark;
+confidence changes only the measured stroke weight.
+
+The temporary evidence page rendered all fourteen components and was deleted
+before the final build. The built-preview measurements were:
+
+| Viewport   | Data row | State cell |                Gutter | Document width |
+| ---------- | -------: | ---------: | --------------------: | -------------: |
+| 1440 × 900 |     36px |       20px |                  40px |         1440px |
+| 768 × 900  |     36px |       20px |                  40px |          768px |
+| 600 × 900  |     36px |       20px |                  28px |          600px |
+| 390 × 900  |     44px |       20px | 0px (`display: none`) |          390px |
+
+The fixture's default live state cell contained exactly one blank glyph and an
+`sr-only` `Live` label. Its zero-row set-aside contained
+`No excluded rows in this view.`. The computed focus treatment was a 2px solid
+`rgb(255, 176, 32)` outline with a 2px offset. Across 75 state-marked fixture
+nodes, computed `border-radius` was `0px`, `box-shadow` was `none`,
+`background-image` was `none`, and `filter` was `none`. Confidence interval
+inspection measured a 1px track and interval heights of 2px (`measured`),
+1.5px (`high`), 1px (`medium`), and 0.75px (`low`).
+
+At 1440 × 900 the light-scheme capture retained 36px, 20px, and 40px geometry,
+with `scrollWidth === clientWidth === 1440`; the computed light canvas and
+panel tokens were `#f4f5f6` and `#fff`. The dark captures at 1440, 768, and
+390px and the runtime greyscale capture at 390px retained the same structure;
+the 390px dark and greyscale captures both measured
+`scrollWidth === clientWidth === 390`. The built `/models/`, `/plans/`,
+`/method/`, and `/sources/` routes all loaded with their existing titles and
+the rewritten provenance markup; inspected `data-state` elements on those
+routes had `border-radius: 0px`.
+
+`bun run --filter @rack-rate/site build` completed the temporary fixture with
+54 pages. After deleting the fixture, `bun run build` completed 53 pages and
+generated the 1200 × 630 social card. The project gates then completed as
+follows: `bun run check` exited 0 (`tsc --build --force`, `oxlint`, markdown
+lint `0 error(s) in 165 file(s)`, `oxfmt --check` clean, and `astro check` with
+0 errors, 0 warnings and 0 hints over 78 files); `bun test` exited 0 with 157
+passes, 0 failures and 515 expectations across 16 files; and `bun run data:check`
+exited 0 with `data/derived.json` retaining SHA-256
+`7425a331008fe0a1281a6d4f0bf4f350987f656cd135141a1ac69ef3f2317348`. The deferred consumers are UI-506
+through UI-513: overview and listing routes, plan/model detail, comparison,
+explore charts, and the method copy migration consume these primitives without
+changing data or arithmetic.
 
 ## Social card
 

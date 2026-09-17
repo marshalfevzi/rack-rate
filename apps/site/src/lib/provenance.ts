@@ -94,10 +94,86 @@ export function newestRetrievedAt(
 /** Which units `ci_lo`/`ci_hi` are in — the two-convention trap in ARCHITECTURE.md. */
 export type CiScale = "fraction" | "percent"
 
+/** Shared console state vocabulary for every listing primitive. */
+export type PrimitiveState = "default" | "disabled" | "loading" | "empty" | "error"
+
+/** The carriage-control mark kinds used by rows, readouts and set-aside records. */
+export type StateMarkKind =
+  | "live"
+  | "held"
+  | "excluded"
+  | "committed"
+  | "gap"
+  | "low-confidence"
+  | "changed"
+
+export const STATE_MARKS = {
+  live: " ",
+  held: "·",
+  excluded: "-",
+  committed: "*",
+  gap: "!",
+  "low-confidence": "?",
+  changed: "+",
+} satisfies Record<StateMarkKind, string>
+
 export interface Term {
   label: string
   description: string
 }
+
+export const STATE_MARK_TERMS = {
+  live: {
+    label: "Live",
+    description:
+      "Live, ordinary row. No preference flag; it is the default view in rack-rate:prefs:v1.",
+  },
+  held: {
+    label: "Held",
+    description:
+      "Held or shortlisted. The v1 preference shape has no separate shortlist key; hold is URL/session state, not a fabricated persistent field.",
+  },
+  excluded: {
+    label: "Excluded",
+    description:
+      "Excluded. ignoredModels or ignoredPlans in rack-rate:prefs:v1; nothing disappears.",
+  },
+  committed: {
+    label: "Committed",
+    description:
+      "Committed, paid, or already owned. paidPlans in rack-rate:prefs:v1 covers paid/already-owned plan state; there is no separate owned key.",
+  },
+  gap: {
+    label: "Gap",
+    description: "Gap: missing data. Data known_gaps, not a preference; null remains null.",
+  },
+  "low-confidence": {
+    label: "Low confidence",
+    description:
+      "Low confidence: aggregator-only or vendor-multiplier figure. Confidence vocabulary measured | high | medium | low; ? is the low state, not a preference.",
+  },
+  changed: {
+    label: "Changed",
+    description:
+      "Changed this session. Session/URL delta; it is not persisted as a new key in rack-rate:prefs:v1.",
+  },
+} satisfies Record<StateMarkKind, Term>
+
+/** Fixed listing copy keeps empty and gate explanations identical across routes. */
+export const LISTING_COPY = {
+  empty: "No committed rows for this view.",
+  filteredToNothing: "No rows match the current filters.",
+  suppressedComposite: "Composite suppressed: fewer than two benchmark versions (single-source).",
+  artificialAnalysisOff: "Artificial Analysis is not published in this build.",
+  noExcludedRows: "No excluded rows in this view.",
+} satisfies Record<
+  | "empty"
+  | "filteredToNothing"
+  | "suppressedComposite"
+  | "artificialAnalysisOff"
+  | "noExcludedRows",
+  string
+>
 
 export const CONFIDENCE_TERMS = {
   measured: {

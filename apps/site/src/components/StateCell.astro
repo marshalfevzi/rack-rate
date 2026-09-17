@@ -1,0 +1,66 @@
+---
+import {
+  STATE_MARKS,
+  STATE_MARK_TERMS,
+  type StateMarkKind,
+} from "../lib/provenance.ts"
+
+
+const { mark = "live", as = "td", state = "default", reason, class: className } = Astro.props
+
+const renderedMark: StateMarkKind =
+  state === "error" ? "gap" : state === "empty" ? "live" : state === "loading" && mark !== "low-confidence" ? "live" : mark
+
+const term = STATE_MARK_TERMS[renderedMark]
+
+const glyph = STATE_MARKS[renderedMark]
+
+const cellClasses = [
+  "relative h-11 min-h-11 w-5 min-w-5 align-middle border-r border-rule px-0 text-center font-mono text-micro min-[768px]:h-9 min-[768px]:min-h-9",
+  state === "disabled"
+    ? "text-dim opacity-60"
+    : state === "loading" || state === "empty" || state === "error"
+      ? "text-dim"
+      : "text-ink",
+  renderedMark === "committed" || renderedMark === "changed" ? "text-signal" : null,
+  className,
+]
+
+const annotation = state === "loading" ? "LOADING" : state === "error" && reason ? reason : null
+---
+
+{as === "th" ? (
+  <th
+    scope="row"
+    class:list={cellClasses}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+    title={term.description}
+  >
+    <span aria-hidden="true">{glyph}</span>
+    <span class="sr-only">{term.label}</span>
+    {annotation ? <span class="absolute left-6 top-1 z-10 whitespace-nowrap bg-panel-2 px-1 font-sans text-meta text-dim">{annotation}</span> : null}
+  </th>
+) : as === "span" ? (
+  <span
+    class:list={cellClasses}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+    title={term.description}
+  >
+    <span aria-hidden="true">{glyph}</span>
+    <span class="sr-only">{term.label}</span>
+    {annotation ? <span class="absolute left-6 top-1 z-10 whitespace-nowrap bg-panel-2 px-1 font-sans text-meta text-dim">{annotation}</span> : null}
+  </span>
+) : (
+  <td
+    class:list={cellClasses}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+    title={term.description}
+  >
+    <span aria-hidden="true">{glyph}</span>
+    <span class="sr-only">{term.label}</span>
+    {annotation ? <span class="absolute left-6 top-1 z-10 whitespace-nowrap bg-panel-2 px-1 font-sans text-meta text-dim">{annotation}</span> : null}
+  </td>
+)}

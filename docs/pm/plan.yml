@@ -427,9 +427,9 @@ milestones:
       - id: UI-505
         title: Listing primitives and the provenance components
         description: "Listing primitives and the provenance components. Files: rewrite apps/site/src/components/{Badge,CostBasisChip,ConfidenceBadge,FreshnessBadge,SourceLink,CiBar}.astro; new apps/site/src/components/{SectionHead,Plate,Chip,ControlRow,St..."
-        status: todo
+        status: done
         pre: []
-        file: docs/pm/M5/todo/UI-505.md
+        file: docs/pm/M5/done/UI-505.md
         impeccable: true
       - id: UI-506
         title: "`/` — the split console"

@@ -1,0 +1,42 @@
+---
+import { LISTING_COPY } from "../lib/provenance.ts"
+
+
+
+const { title, number, id, as = "h2", state = "default", reason, class: className } = Astro.props
+
+if (state === "error" && reason === undefined) {
+  throw new Error("SectionHead: an error state needs a reason")
+}
+
+const stateMessage =
+  state === "loading"
+    ? "Loading"
+    : state === "empty"
+      ? LISTING_COPY.empty
+      : state === "error"
+        ? reason
+        : null
+
+const stateClasses =
+  state === "disabled" ? "text-dim opacity-60" : state === "loading" ? "text-dim" : "text-ink"
+---
+
+<div
+  class:list={["border-t-2 border-b border-rule-strong py-3", stateClasses, className]}
+  data-state={state}
+  aria-disabled={state === "disabled" ? "true" : undefined}
+>
+  {as === "h3" ? (
+    <h3 id={id} class="flex items-baseline gap-2 text-title font-sans">
+      {number ? <span class="font-mono text-micro uppercase text-faint">{number}</span> : null}
+      <span>{title}</span>
+    </h3>
+  ) : (
+    <h2 id={id} class="flex items-baseline gap-2 text-title font-sans">
+      {number ? <span class="font-mono text-micro uppercase text-faint">{number}</span> : null}
+      <span>{title}</span>
+    </h2>
+  )}
+  {stateMessage ? <p class="mt-2 font-sans text-meta">{stateMessage}</p> : null}
+</div>

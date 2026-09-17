@@ -1,0 +1,75 @@
+---
+import { LISTING_COPY, type PrimitiveState } from "../lib/provenance.ts"
+
+type PlateRestAttributes = Partial<{
+  id: string | null
+  type: "submit" | "reset" | "button" | null
+  "aria-current": boolean | "false" | "true" | "page" | "step" | "location" | "date" | "time" | null
+}>
+
+type PlateProps = {
+  active?: boolean
+  state?: PrimitiveState
+  as?: "span" | "button" | "a"
+  href?: string
+  reason?: string
+  class?: string
+} & PlateRestAttributes
+
+const props: PlateProps = Astro.props
+
+const {
+  active = false,
+  state = "default",
+  as = "span",
+  href,
+  reason,
+  class: className,
+  ...rest
+} = props
+
+const stateText =
+  state === "loading"
+    ? "Loading"
+    : state === "empty"
+      ? LISTING_COPY.empty
+      : state === "error"
+        ? reason ?? LISTING_COPY.empty
+        : null
+
+const isActive = active && state !== "disabled"
+
+const stateClasses =
+  state === "disabled"
+    ? "border-rule text-dim opacity-60"
+    : state === "loading" || state === "empty" || state === "error"
+      ? "border-rule bg-panel text-dim"
+      : isActive
+        ? "border-signal bg-[var(--signal-plate)] text-on-signal"
+        : "border-rule bg-panel text-ink hover:border-rule-strong"
+
+const common: PlateRestAttributes & {
+  class: string
+  "data-state": PrimitiveState
+} = {
+  ...rest,
+  class: ["inline-flex items-center border px-2 py-1 font-mono text-micro uppercase", stateClasses, className]
+    .filter(Boolean)
+    .join(" "),
+  "data-state": state,
+}
+---
+
+{as === "button" ? (
+  <button {...common} disabled={state === "disabled"} aria-disabled={state === "disabled" ? "true" : undefined}>
+    {stateText ?? <slot />}
+  </button>
+) : as === "a" ? (
+  <a {...common} href={href} aria-disabled={state === "disabled" ? "true" : undefined}>
+    {stateText ?? <slot />}
+  </a>
+) : (
+  <span {...common}>
+    {stateText ?? <slot />}
+  </span>
+)}

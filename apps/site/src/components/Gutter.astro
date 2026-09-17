@@ -1,0 +1,39 @@
+---
+
+const { line, as = "td", state = "default", class: className } = Astro.props
+
+const classes = [
+  "hidden h-11 min-h-11 min-[480px]:table-cell min-[480px]:w-7 min-[768px]:h-9 min-[768px]:min-h-9 min-[768px]:w-10 min-w-7 border-r border-rule pr-2 text-right font-mono text-micro tabular",
+  state === "disabled" ? "text-dim opacity-60" : state === "loading" ? "text-dim" : "text-ink",
+  className,
+]
+
+const value = line === null || line === undefined ? "" : line
+---
+
+{as === "th" ? (
+  <th
+    scope="row"
+    class:list={classes}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+  >
+    {value}
+  </th>
+) : as === "span" ? (
+  <span
+    class:list={[...classes.slice(0, 1), "min-[480px]:inline-block", ...classes.slice(1)]}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+  >
+    {value}
+  </span>
+) : (
+  <td
+    class:list={classes}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+  >
+    {value}
+  </td>
+)}

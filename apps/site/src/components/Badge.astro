@@ -1,26 +1,34 @@
 ---
-const TONE_CLASSES = {
-  neutral: "text-dim",
-  api: "text-api-ink",
-  adjusted: "text-adjusted",
-} satisfies Record<"neutral" | "api" | "adjusted", string>
+import { LISTING_COPY, type PrimitiveState } from "../lib/provenance.ts"
 
 interface Props {
-  tone?: "neutral" | "api" | "adjusted"
   title?: string
+  state?: PrimitiveState
+  reason?: string
   class?: string
 }
 
-const { tone = "neutral", title, class: className } = Astro.props
+const { title, state = "default", reason, class: className } = Astro.props
+
+const stateText =
+  state === "loading"
+    ? "Loading"
+    : state === "empty"
+      ? LISTING_COPY.empty
+      : state === "error"
+        ? reason ?? LISTING_COPY.empty
+        : null
 ---
 
 <span
   class:list={[
-    "relative inline-flex items-baseline gap-1 rounded-xs border border-rule px-1.5 py-0.5 text-meta",
-    TONE_CLASSES[tone],
+    "inline-flex items-baseline gap-1 border border-rule px-1.5 py-0.5 font-mono text-meta uppercase",
+    state === "disabled" ? "text-dim opacity-60" : state === "loading" ? "text-dim" : "text-ink",
     className,
   ]}
+  data-state={state}
+  aria-disabled={state === "disabled" ? "true" : undefined}
   title={title}
 >
-  <slot />
+  {stateText ?? <slot />}
 </span>

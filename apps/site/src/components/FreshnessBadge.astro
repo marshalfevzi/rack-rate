@@ -1,18 +1,20 @@
 ---
 import Badge from "./Badge.astro"
-import { FRESHNESS_TERMS, type Freshness } from "../lib/provenance.ts"
+import { FRESHNESS_TERMS, type Freshness, type PrimitiveState } from "../lib/provenance.ts"
 
 interface Props {
   freshness: Freshness
   retrievedAt: string
+  state?: PrimitiveState
+  reason?: string
 }
 
-const { freshness, retrievedAt } = Astro.props
+const { freshness, retrievedAt, state = "default", reason } = Astro.props
 
 const term = FRESHNESS_TERMS[freshness]
 ---
 
-<Badge title={`${term.description} Retrieved ${retrievedAt}.`}>
+<Badge state={state} reason={reason} title={`${term.description} Retrieved ${retrievedAt}.`}>
   {term.label}{" "}
   <span class="tabular">retrieved {retrievedAt}</span>
 </Badge>

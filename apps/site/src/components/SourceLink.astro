@@ -2,26 +2,50 @@
 import type { Source } from "@rack-rate/core"
 
 import { sourcesById } from "../lib/data.ts"
+import { LISTING_COPY, type PrimitiveState } from "../lib/provenance.ts"
 
 interface Props {
   id: string
   label?: string
+  state?: PrimitiveState
+  reason?: string
+  class?: string
 }
 
-const { id, label } = Astro.props
+const { id, label, state = "default", reason, class: className } = Astro.props
 
 const source: Source | undefined = sourcesById.get(id)
 
 if (source === undefined) {
   throw new Error(`SourceLink: source id "${id}" is not in data/sources.json`)
 }
+
+const stateLabel =
+  state === "loading"
+    ? "Loading source"
+    : state === "empty"
+      ? LISTING_COPY.empty
+      : state === "error"
+        ? reason ?? LISTING_COPY.empty
+        : label ?? source.title
 ---
+
 <a
   href={source.url}
   target="_blank"
   rel="noopener noreferrer"
-  class="text-api-ink underline decoration-rule underline-offset-2 transition-colors hover:decoration-api-ink"
+  class:list={[
+    "font-sans text-meta text-ink underline decoration-rule underline-offset-2 transition-colors hover:decoration-rule-strong",
+    state === "disabled"
+      ? "pointer-events-none text-dim opacity-60"
+      : state === "loading" || state === "empty" || state === "error"
+        ? "text-dim"
+        : null,
+    className,
+  ]}
+  data-state={state}
+  aria-disabled={state === "disabled" ? "true" : undefined}
   title={`${source.title} · ${source.license_short ?? source.license} · retrieved ${source.retrieved}`}
 >
-  {label ?? source.title}<span class="sr-only"> (opens in a new tab)</span>
+  {stateLabel}<span class="sr-only"> (opens in a new tab)</span>
 </a>

@@ -1,0 +1,46 @@
+---
+import { LISTING_COPY, type PrimitiveState } from "../lib/provenance.ts"
+
+interface Props {
+  label: string
+  state?: PrimitiveState
+  reason?: string
+  emptyMessage?: string
+  class?: string
+}
+
+const {
+  label,
+  state = "default",
+  reason,
+  emptyMessage,
+  class: className,
+} = Astro.props
+
+const message = state === "empty" ? (emptyMessage ?? LISTING_COPY.empty) : reason ?? LISTING_COPY.empty
+---
+
+<div
+  role="group"
+  aria-label={label}
+  class:list={[
+    "flex flex-wrap items-center gap-2 border-t border-b border-rule px-2 py-2",
+    state === "disabled"
+      ? "text-dim opacity-60"
+      : state === "loading" || state === "empty" || state === "error"
+        ? "text-dim"
+        : "text-ink",
+    className,
+  ]}
+  data-state={state}
+  aria-disabled={state === "disabled" ? "true" : undefined}
+>
+  <span class="font-sans text-meta">{label}</span>
+  {state === "empty" ? (
+    <span class="font-sans text-meta text-dim">{message}</span>
+  ) : (
+    <slot />
+  )}
+  {state === "loading" ? <span class="font-mono text-micro uppercase text-dim">Loading</span> : null}
+  {state === "error" ? <span class="font-sans text-meta text-dim">{message}</span> : null}
+</div>

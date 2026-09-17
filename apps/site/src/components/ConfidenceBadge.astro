@@ -1,17 +1,19 @@
 ---
 import Badge from "./Badge.astro"
-import { CONFIDENCE_TERMS, type Confidence } from "../lib/provenance.ts"
+import { CONFIDENCE_TERMS, type Confidence, type PrimitiveState } from "../lib/provenance.ts"
 
 interface Props {
   level: Confidence
+  state?: PrimitiveState
+  reason?: string
 }
 
-const { level } = Astro.props
+const { level, state = "default", reason } = Astro.props
 
 const term = CONFIDENCE_TERMS[level]
 ---
 
-<Badge title={term.description}>
+<Badge state={state} reason={reason} title={term.description}>
   <span class="sr-only">Confidence: </span>
   {term.label}
 </Badge>

@@ -16,7 +16,7 @@ import { ARTIFICIAL_ANALYSIS_SOURCE_ID, BENCHMARK_SOURCE_IDS } from "@rack-rate/
 
 import { formatCount, formatMultiple, formatPercent, formatUsd, MISSING } from "./format.ts"
 import { isCurrent, lanes } from "./nav.ts"
-import { artificialAnalysisState, COST_BASIS_TERMS } from "./provenance.ts"
+import { artificialAnalysisState, COST_BASIS_TERMS, LISTING_COPY } from "./provenance.ts"
 
 /** The five fields, in the order they print and in no other. */
 export const READOUT_FIELDS = ["value", "basis", "confidence", "source", "retrieved"] as const
@@ -392,7 +392,7 @@ export function defaultReadout(input: DefaultReadoutInput): ReadoutFields {
         value: MISSING,
         basis: MISSING,
         confidence: MISSING,
-        source: "No committed rows for this view.",
+        source: LISTING_COPY.empty,
         retrieved: MISSING,
       }
     default:

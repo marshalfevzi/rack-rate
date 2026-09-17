@@ -1,0 +1,45 @@
+---
+import { LISTING_COPY, type PrimitiveState } from "../lib/provenance.ts"
+
+interface Props {
+  rows: number
+  label?: string
+  state?: PrimitiveState
+  reason?: string
+  class?: string
+}
+
+const { rows, label = "SET-ASIDE", state = "default", reason, class: className } = Astro.props
+
+const empty = rows === 0 || state === "empty"
+
+const message = reason ?? LISTING_COPY.empty
+---
+
+<section
+  class:list={[
+    "border-t-2 border-rule-strong bg-panel-2 px-3 py-2",
+    state === "disabled"
+      ? "text-dim opacity-60"
+      : state === "loading" || state === "empty" || state === "error"
+        ? "text-dim"
+        : "text-ink",
+    className,
+  ]}
+  data-state={state}
+  aria-disabled={state === "disabled" ? "true" : undefined}
+>
+  <h2 class="border-b border-rule pb-2 font-mono text-micro uppercase text-dim">{label}</h2>
+  {state === "error" ? (
+    <p class="py-3 font-sans text-meta text-dim">{message}</p>
+  ) : empty ? (
+    <p class="py-3 font-sans text-meta text-dim">{LISTING_COPY.noExcludedRows}</p>
+  ) : (
+    <>
+      <div class="divide-y divide-rule">
+        <slot />
+      </div>
+      {state === "loading" ? <p class="py-2 font-mono text-micro uppercase text-dim">Loading</p> : null}
+    </>
+  )}
+</section>

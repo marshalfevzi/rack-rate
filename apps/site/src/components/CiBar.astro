@@ -1,7 +1,11 @@
 ---
-import type { CiScale } from "../lib/provenance.ts"
-
-import { ciGeometry } from "../lib/provenance.ts"
+import {
+  ciGeometry,
+  LISTING_COPY,
+  type CiScale,
+  type Confidence,
+  type PrimitiveState,
+} from "../lib/provenance.ts"
 import {
   MISSING,
   formatFractionAsPercentRange,
@@ -15,10 +19,23 @@ interface Props {
   hi?: number
   ciScale: CiScale
   method?: string
+  confidence?: Confidence
+  state?: PrimitiveState
+  reason?: string
   class?: string
 }
 
-const { value, lo, hi, ciScale, method, class: className } = Astro.props
+const {
+  value,
+  lo,
+  hi,
+  ciScale,
+  method,
+  confidence,
+  state = "default",
+  reason,
+  class: className,
+} = Astro.props
 
 const valueText = ciScale === "fraction" ? formatPercent(value * 100) : formatPercent(value)
 
@@ -34,27 +51,48 @@ const accessibleName = geometry
   : `${valueText} — no interval reported`
 
 const intervalStyle = geometry
-  ? `left:${geometry.leftPct}%;width:${geometry.widthPct}%;min-width:2px`
+  ? `left:${geometry.leftPct}%;width:${geometry.widthPct}%;min-width:2px;height:${confidence === "measured" ? "2px" : confidence === "high" ? "1.5px" : confidence === "low" ? "0.75px" : "1px"};top:50%;transform:translateY(-50%)`
   : ""
 
 const valueStyle = geometry ? `left:${geometry.valuePct}%` : ""
+
+const errorText = reason ?? LISTING_COPY.empty
 ---
 
-{geometry ? (
+{geometry && state !== "empty" && state !== "error" ? (
   <span
     role="img"
-    aria-label={accessibleName}
-    title={accessibleName}
-    class:list={["relative inline-block h-1 w-full min-w-16 rounded-xs bg-rule", className]}
+    aria-label={state === "loading" ? "Loading interval" : accessibleName}
+    title={state === "loading" ? "Loading interval" : accessibleName}
+    class:list={[
+      "relative inline-block h-px w-full min-w-16 bg-rule",
+      state === "disabled" || state === "loading" ? "opacity-60" : null,
+      className,
+    ]}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
   >
     <span
-      class="absolute inset-y-0 rounded-xs bg-dim"
+      class="absolute inset-y-0 bg-dim"
       style={intervalStyle}
     ></span>
     <span class="absolute inset-y-0 w-0.5 bg-ink" style={valueStyle}></span>
+    {state === "loading" ? <span class="sr-only">Loading interval</span> : null}
+  </span>
+) : state === "error" ? (
+  <span
+    class:list={["font-sans text-meta text-dim", className]}
+    data-state={state}
+    title={errorText}
+  >
+    {MISSING} {errorText}
   </span>
 ) : (
-  <span class:list={["text-meta text-dim", className]} title="No interval reported for this row.">
+  <span
+    class:list={["font-sans text-meta text-dim", className]}
+    data-state={state}
+    aria-disabled={state === "disabled" ? "true" : undefined}
+  >
     {MISSING} no interval reported
   </span>
 )}

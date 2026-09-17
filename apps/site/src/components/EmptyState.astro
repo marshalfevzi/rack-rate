@@ -1,0 +1,40 @@
+---
+import { gapReason } from "../lib/readout.ts"
+import { LISTING_COPY, type PrimitiveState } from "../lib/provenance.ts"
+
+type Variant = "empty" | "filtered-to-nothing" | "suppressed-composite" | "aa-gate-off"
+
+type Props =
+  | { variant: "gap"; reason: string; state?: PrimitiveState; class?: string }
+  | { variant: Variant; reason?: undefined; state?: PrimitiveState; class?: string }
+
+const { variant, reason, state = "empty", class: className } = Astro.props
+
+const message =
+  variant === "gap"
+    ? gapReason(reason)
+    : variant === "filtered-to-nothing"
+      ? LISTING_COPY.filteredToNothing
+      : variant === "suppressed-composite"
+        ? LISTING_COPY.suppressedComposite
+        : variant === "aa-gate-off"
+          ? LISTING_COPY.artificialAnalysisOff
+          : LISTING_COPY.empty
+---
+
+<p
+  role="status"
+  class:list={[
+    "border-t border-b border-rule py-3 font-sans text-body",
+    state === "disabled"
+      ? "text-dim opacity-60"
+      : state === "loading" || state === "empty" || state === "error"
+        ? "text-dim"
+        : "text-ink",
+    className,
+  ]}
+  data-state={state}
+  aria-disabled={state === "disabled" ? "true" : undefined}
+>
+  {state === "loading" ? "Loading" : message}
+</p>
