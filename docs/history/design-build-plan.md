@@ -1,5 +1,11 @@
 # Divine Machinery build plan
 
+> **Relocation note (appended 2026-09-17, not a rewrite).** This file refers to the
+> pre-PM tree: `PLAN.md` and `docs/architecture.md` were superseded by `docs/pm/` and
+> `ARCHITECTURE.md` on 2026-09-17 and deleted, and `docs/design/build-plan.md` became
+> `docs/history/design-build-plan.md`. Relative links to them no longer resolve; recover
+> the old files with `git show d95e6ef:<path>`.
+
 This is the implementation record for the replacement visual world, **Divine
 Machinery**, in `apps/site`. It is a design record, not authorization to edit
 source during a documentation session. `DESIGN.md` owns the durable system;

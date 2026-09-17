@@ -1,5 +1,11 @@
 # Retrospective — 2026-09-17 plan review session
 
+> **Relocation note (appended 2026-09-17, not a rewrite).** This file refers to the
+> pre-PM tree: `PLAN.md` and `docs/architecture.md` were superseded by `docs/pm/` and
+> `ARCHITECTURE.md` on 2026-09-17 and deleted, and `docs/design/build-plan.md` became
+> `docs/history/design-build-plan.md`. Relative links to them no longer resolve; recover
+> the old files with `git show d95e6ef:<path>`.
+
 Append-only record of one session. `PLAN.md` is the live plan; this file is the
 review that reshaped it, and the task-by-task verdict it rests on. Read
 [`PLAN.md`](../../PLAN.md) first.

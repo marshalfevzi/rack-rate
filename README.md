@@ -37,13 +37,13 @@ because their vendor pages no longer carry the quoted limit text the fetcher
 requires. `fetch:plans` therefore fails closed and writes nothing, so
 `data/plans.json` is still at its Stage 1 revision while the model rows were
 refreshed in Stage 2; every plan-route figure is computed from a Stage 1 price.
-[`PLAN.md`](PLAN.md) task 8.1 owns that refresh.
+[`docs/pm/M4/todo/DATA-801.md`](docs/pm/M4/todo/DATA-801.md) owns that refresh.
 Artificial Analysis is off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set;
 the site builds as static output from committed data. Charts and the insight
 pages landed in Stage 4; the Console Listing redesign is Stage 5, the
 provider-selection wizard Stage 6, deployment Stage 7, and Stage 8 carries the
 data-integrity follow-ups off the critical path
-(see [`PLAN.md`](PLAN.md)).
+(see [`docs/pm/`](docs/pm/)).
 The repository does not mirror benchmark tasks, prompts, verifiers, or patches.
 
 ## The method

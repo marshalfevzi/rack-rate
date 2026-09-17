@@ -70,7 +70,9 @@ docs/pm/
   <milestone>/done/          finished task documents (session history appended)
   <milestone>/RETRO-*.md     retrospectives
 
-docs/archive/                flat, append-only archive of closed milestones
+docs/archive/                flat PM archive slices, written by pm_milestone_close
+docs/history/                pre-PM stage history (stages 1-4 and the 2026-09-17
+                             plan review), moved out of docs/archive
 ```
 
 ```
@@ -88,7 +90,8 @@ Two ownership rules are load-bearing:
 
 - **`docs/pm/plan.yml` and `docs/archive/**` are generated or append-only.** A
   hook blocks direct edits to both. Edit the source documents and let
-  `pm_plan_sync` regenerate the index.
+  `pm_plan_sync` regenerate the index. `docs/history/**` is frozen history: it
+  records what a pre-PM stage did, while a live document owns the current truth.
 - **A blocked task is frozen.** It may not change until a decision record
   resolves it (`/pm-resolve`). Marking work blocked without opening a decision is
   a process violation, not a status.

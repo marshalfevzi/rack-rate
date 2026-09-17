@@ -21,6 +21,188 @@ graph LR
   `packages/data-cli/src/main.ts` statically routes commands and never guesses
   an exit code.
 
+## Subsystems
+
+Three packages, with one direction of dependency:
+
+- **`packages/core`** (`@rack-rate/core`) — the pure domain: the zod schemas
+  every committed document is parsed with, the comparison math (`cost`,
+  `normalize`, `pareto`, `insights`), the shared identifiers in `ids.ts`, and
+  the one freshness rule in `freshness.ts`. No `fetch`, no filesystem, no
+  clock. Its public surface is a barrel plus narrow subpaths
+  (`@rack-rate/core/cost`, `/ids`, `/freshness`) that carry no zod value, so a
+  client bundle can import one value without linking the validator. See
+  "Invariant index", "Formatting", "Charts" and "Method and sources pages".
+- **`packages/data-cli`** (`@rack-rate/data-cli`) — the only package allowed
+  network or filesystem access, and the owner of the `rack-rate-data <command>`
+  surface. See "Data CLI" and "Environment".
+- **`apps/site`** (`@rack-rate/site`) — the Astro static build. It reads
+  `@rack-rate/core` and the committed `data/*.json` at build time, never
+  fetches, and ships no server. See "Site configuration", "Crawl and discovery
+  files", "Layouts and links", "Routes and data access", "Provenance
+  components", "Charts", "Template whitespace", "Design tokens", "Social card"
+  and "TypeScript configuration".
+
+## Data flow
+
+```text
+upstream boards and vendor pages
+  -> rack-rate-data fetch <deepswe|terminal-bench|plans|artificial-analysis|all>
+  -> data/{models,plans,benchmarks,sources}.json   committed, schema-validated
+  -> rack-rate-data validate                       schemas, citations, versions, AA gate
+  -> rack-rate-data compute                        pure core math -> data/derived.json
+  -> rack-rate-data check                          recompute in memory, compare bytes
+  -> Astro build (apps/site)                       build-time only, no fetch
+  -> dist/ + dist/og.png                           static output for GitHub Pages
+```
+
+The fetch step is fail-closed: a missing research anchor or an unreachable
+vendor page keeps the last-good sources and exits `1`, and `--diff` writes no
+file at all. `validate` is the trust boundary for committed documents,
+`compute` is deterministic, and `check` is the staleness gate CI runs *before*
+the write path so a stale committed file cannot be repaired by accident. The
+site consumes committed bytes only, which is why a clean clone with no `.env`
+still builds and why Artificial Analysis is absent from every output unless
+publication is explicitly enabled.
+
+## Data contract (target schema)
+
+Migrated verbatim from the pre-PM plan's data-contract section on 2026-09-17
+(`git show d95e6ef:PLAN.md`). `packages/core/src/schema.ts` is the executable shape;
+this section is the written record of it.
+
+Shapes are frozen in Stage 1.3 and consumed by every later stage.
+
+### `data/sources.json` — unchanged in spirit
+
+`{ id, title, url, license, license_short?, retrieved, covers, changes,
+attribution?, credited_contributor?, notes?, summary? }`. `attribution` is
+required when the license demands it (Awesome Coding Plan) and validated.
+
+### `data/models.json` — one row per model
+
+Existing fields (`id`, `name`, `provider`, `score_pct`, `score_pass_at_4_pct`,
+`reasoning_effort`, `api_cost_per_task_usd`, `input_tokens_per_task`,
+`output_tokens_per_task`, `agent_steps_per_task`, `n_tasks_attempted`,
+`evidence`, `effort_variants`) plus:
+
+- `provider_slug` — stable key for grouping; `null` when unmapped.
+- `benchmark_version` — e.g. `deepswe@1.1` (part of row identity).
+- `ci_lo`, `ci_hi`, `ci_method` — carried through, never recomputed.
+- `cost_basis` — `list` | `expected-launch` | `disputed`.
+- `retrieved_at` — drives the freshness badge.
+
+### `data/plans.json` — one row per plan
+
+Existing fields (`id`, `name`, `provider`, `price_usd_month`, `quota_model`,
+`quota_usd_month`/`credits_month`/`requests_month`/`tokens_month`,
+`rolling_window_hours`, `rolling_window_usd`, `measured_against_model`,
+`confidence`, `method`, `evidence`, `sources`, `available`, `model_scope`,
+`cross_check_tokens_month`, `known_gaps`) plus:
+
+- `price_status` — `list` | `disputed`.
+- `quota_unresolved` + `quota_note` — for Google AI credits and SuperGrok.
+- `fx` — `{ rate, date }` when the source price is CNY.
+- `retrieved_at`.
+
+### `data/benchmarks.json` — new
+
+```jsonc
+{
+  "benchmarks": [{
+    "id": "deepswe",
+    "version": "1.1",              // part of row identity
+    "title": "DeepSWE v1.1",
+    "url": "https://deepswe.datacurve.ai/",
+    "generated_at": "2026-09-03T22:24:37Z",
+    "task_count": 113,
+    "unit": "pass@1",              // pass@1 | accuracy | index
+    "scale": "0-1",                // 0-1 | 0-100 | z
+    "retrieved_at": "2026-09-14",
+    "rows": [{
+      "model_id": "gpt-6-astra",
+      "score": 74.12,
+      "ci_lo": 71.25, "ci_hi": 76.98,
+      "cost_per_task_usd": 5.6717,
+      "cost_basis": "expected-launch",
+      "tokens_input": 1163918, "tokens_output": 28542, "steps": 26,
+      "provenance": { "board": "…", "dataset_version_id": "…" }
+    }]
+  }]
+}
+```
+
+Terminal-Bench and Artificial Analysis are additional entries in this array,
+each with its own `version` and provenance block. Artificial Analysis is present
+only when publication is explicitly enabled (see `docs/data-sources.md`);
+otherwise the array has no AA entry and no AA axis appears anywhere. `MISSING`
+in a benchmark means the model has no row — never a zero.
+
+### `data/derived.json` — generated, deterministic
+
+Shape confirmed against the live legacy output on 2026-09-14 (178 pairs, 28 best
+routes, 5 known gaps). The port must reproduce these keys — do not invent a new
+shape:
+
+```jsonc
+{
+  "generated_from": { "models": 28, "plans": 16, "task_count": 113 },
+  "pairs": [{
+    "model_id", "model_name", "provider", "score_pct",
+    "plan_id", "plan_name", "price_usd_month",
+    "quota_method",              // which conversion branch was used
+    "tasks_per_month",
+    "cost_per_task_usd", "api_cost_per_task_usd",
+    "days_for_full_run",
+    "confidence"
+  }],
+  "best_routes": [ /* same row shape; cheapest pair per model — 28 rows */ ],
+  "cross_check": {
+    "pairs": [ /* 11 rows: plan_id, plan_name, model_id, model_name,
+                  tasks_by_dollars, tasks_by_tokens, ratio */ ],
+    "summary": { "median_ratio": 1.601, "min_ratio": 1.006,
+                 "max_ratio": 6.713, "pair_count": 11 }
+  },
+  "known_gaps": [ /* 5 rows, shape { plan, provider, reason, url? } */ ]
+}
+```
+
+Stage 2 **adds** to this file rather than reshaping it: `composites`,
+`frontiers` (`api` and per-plan `plan_adjusted`), `dominated`,
+`token_allowances` (see 2.7b), and the per-row badge objects. Existing keys keep
+their names and meanings so the fixture stays comparable.
+
+Two naming traps to avoid when writing the parity assertion:
+
+- The legacy metadata key is **`generated_from`** (counts of inputs used), not
+  `generated_at`. Add a real `generated_at` timestamp as a *new* key in Stage 2;
+  do not repurpose `generated_from`.
+- The cross-check rows live under **`cross_check.pairs`** with a nested
+  **`cross_check.summary`**. Parity must compare `cross_check.pairs` (11 rows)
+  and `cross_check.summary.{median_ratio,min_ratio,max_ratio,pair_count}` —
+  there is no `rows` array and no top-level `n`.
+
+## Operations and commands
+
+Root scripts call the same dispatcher as the installed `rack-rate-data`
+binary.
+
+| Command | What it does | Gate? |
+|---|---|---|
+| `bun run check` | `typecheck` (tsc) → `lint` (oxlint, every rule at error) → `format:check` (oxfmt) → `astro check` | yes — code quality |
+| `bun test` | the test suite (`bun test --pass-with-no-tests`) | yes |
+| `bun run data:check` | validates inputs, recomputes `data/derived.json` in memory, compares bytes | yes — staleness |
+| `bun run build` | `data:build` → Astro build → `og`, writing `dist/` including the social card | — |
+| `bun run preview` | serves the built site; the only surface evidence may be captured from | — |
+| `bun run data:build` | `validate` then `compute` — the write path | — |
+| `bun run fetch[:<source>]` | refreshes one source or all four; `--diff` is a dry run that writes nothing and exits `1` when committed data would change | — |
+| `bun run quality` | the `fallow` report over dead code, duplication and complexity | advisory |
+
+`.github/workflows/ci.yml` runs `check`, `test`, `data:check`, `data:build` and
+a guard that fails when the compute write path leaves `data/` dirty. It never
+fetches upstream and references no secrets. Deployment to GitHub Pages is
+PLAN stage 7 (`docs/pm/M3/README.md`).
+
 ## Data CLI
 
 The root scripts call the same dispatcher as the installed `rack-rate-data`
@@ -1024,7 +1206,7 @@ intentional.
 
 > **Superseded, not deleted.** Stage 5 replaces this nine-token set, the type
 > scale and both anti-signal lists in this section with the Console Listing
-> system in `DESIGN.md` (`PLAN.md` 5.1–5.15). The values and contrast evidence
+> system in `DESIGN.md` (`docs/pm/M1/README.md`, tasks 5.1–5.15). The values and contrast evidence
 > below describe the implementation as it stood through Stage 4 and stay as that
 > stage's record. An implementer working on 5.1 or later reads `DESIGN.md`.
 

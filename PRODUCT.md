@@ -38,13 +38,13 @@ Answers two questions from public data with published arithmetic:
    allowance, and show cost per task, break-even volume, and how long a full
    benchmark run would take under the plan's caps.
 
-Success is defined in `PLAN.md`: a visitor picks their provider/plan, sees which
+Success is defined in the plan (`docs/pm/`): a visitor picks their provider/plan, sees which
 models that plan can run and what each costs them per task, compares those
 models across several benchmarks with the Pareto frontier drawn on both the
 API-list and plan-adjusted axes, reads where each number came from, and can
 carry their ignored/paid/already-owned choices between visits — on a phone,
 on a static site, with no server. The URL carries that state today; the
-persisted store is `PLAN.md` task 6.1.
+persisted store is `docs/pm/M2/todo/APP-601.md`.
 
 ## Positioning
 
@@ -84,8 +84,8 @@ The mechanism a neighbouring comparison product could not truthfully copy:
   `fetch`, no `fs`, no clock).
 - The visitor's real scene is a purchase decision: mid-research, often on a
   phone, comparing a handful of models and plans. Ignored models/plans, paid
-  plans and other answers are shareable through the URL today; `PLAN.md` task
-  6.1 plans to persist them in `localStorage` under one versioned key
+  plans and other answers are shareable through the URL today; `docs/pm/M2/todo/APP-601.md`
+  plans to persist them in `localStorage` under one versioned key
   namespace, `rack-rate:prefs:v1` (`apps/site/src/lib/prefs.ts`, not yet in the
   tree).
 - Inputs are four upstream sources: DeepSWE v1.1, Terminal-Bench board 4-0-0,
@@ -139,8 +139,8 @@ Analysis publication state (task 7.2b; an owner risk decision, `CAVEATS.md`
 MiniMax Coding Plan Plus's FX conversion; the Z.ai GLM international credit
 formula's output weight. These live in `known_gaps`, never as a guessed number.
 
-**Accessibility requirements already committed** (`PLAN.md` 4.15, Stage 6
-acceptance): keyboard traversal of every chart, table semantics, visible focus
+**Accessibility requirements already committed** (`docs/history/stages-4.md` 4.15 and the M2 acceptance in
+`docs/pm/M2/README.md`): keyboard traversal of every chart, table semantics, visible focus
 states, `prefers-reduced-motion` honoured, touch targets, no horizontal scroll
 at 360 px, text contrast ≥ 4.5:1.
 
@@ -155,7 +155,7 @@ at 360 px, text contrast ≥ 4.5:1.
   `/sources`; credit to Datacurve for DeepSWE methodology and results;
   Terminal-Bench / Harbor Hub; `real-api-pricing` by FeiZhuLulu as prior art
   only, with no figures copied; Lato under the SIL OFL 1.1 for the build-time
-  social card as it stands today — `PLAN.md` task 5.2 moves the
+  social card as it stands today — `docs/pm/M1/todo/UI-502.md` moves the
   card to IBM Plex and the Lato notice leaves with the font. When an AA value is ever published, §5.1 requires the Artificial
   Analysis logo visible on the chart plus a hyperlink, official terminology, and
   no implication of endorsement.
@@ -172,7 +172,7 @@ at 360 px, text contrast ≥ 4.5:1.
   refuses the category default — the dark card grid with a soft hero, a
   floating chart mock-up and three accent colours — and equally its opposite,
   the warm-cream editorial hero. `DESIGN.md` holds the durable system,
-  `docs/design/surfaces.md` the per-route layout, and `PLAN.md` Stage 5 the
+  `docs/design/surfaces.md` the per-route layout, and `docs/pm/M1/README.md` the
   sequencing; seed keys `8e5f39de` (world) and `4c59a482` (composition).
 - **Maker, not brand:** rack-rate is an independent product. Bosphorus Elevate
   is credited as its maker in the footer and on `/method`, and contributes no
@@ -202,7 +202,7 @@ at 360 px, text contrast ≥ 4.5:1.
   citations with `license`, `retrieved` and `attribution`
   (`data/sources.json`).
 - **Frozen parity fixtures:** `data/fixtures/legacy-derived.json` and
-  `legacy-derived.csv` with their sha256 recorded in `PLAN.md` — the port-parity
+  `legacy-derived.csv` with their sha256 recorded in `data/fixtures/README.md` — the port-parity
   oracle asserted in `bun test`.
 - **Cited research:** seven files in `docs/research/` (DeepSWE, Terminal-Bench
   and Harbor, subscription plans, Artificial Analysis, insight methodology,
@@ -216,8 +216,8 @@ at 360 px, text contrast ≥ 4.5:1.
   any build where `AA_PUBLISH` is not exactly `1`, and never any benchmark task,
   prompt, verifier or patch. `DESIGN.md` (written 2026-09-16 as the pre-build
   contract for the Divine Machinery redesign), `docs/design/surfaces.md`, and
-  `docs/design/build-plan.md` (incumbent diagnosis, frozen implementation
-  contract, risk register) are the visual sources of truth; `docs/architecture.md`
+  `docs/history/design-build-plan.md` (incumbent diagnosis, frozen implementation
+  contract, risk register) are the visual sources of truth; `ARCHITECTURE.md`
   and the committed CSS, components and chart option builders remain the record
   of the implementation.
 
@@ -238,7 +238,7 @@ at 360 px, text contrast ≥ 4.5:1.
 
 ## Accessibility & Inclusion
 
-Requirements committed in `PLAN.md`: keyboard traversal for every interactive
+Requirements committed in the plan (`docs/pm/`): keyboard traversal for every interactive
 chart and table, real table semantics, visible focus states,
 `prefers-reduced-motion` honoured globally, adequate touch targets, a 360 px
 layout with no horizontal scroll on every route, and text contrast of at least

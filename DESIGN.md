@@ -369,7 +369,7 @@ The carriage-control column contains one glyph and never relies on colour. The g
 | `?` | Low confidence: aggregator-only or vendor-multiplier figure. | State cell and confidence badge/readout. | Confidence vocabulary `measured|high|medium|low`; `?` is the low state, not a preference. |
 | `+` | Changed this session. | State cell and status band/readout when a local change is committed. | Session/URL delta; it is not persisted as a new key in `rack-rate:prefs:v1`. |
 
-The persisted preference namespace is `rack-rate:prefs:v1`, planned by `PLAN.md` task 6.1: `apps/site/src/lib/prefs.ts` does not exist in this tree yet, so no mark is persistable today. When that store lands it carries `ignoredModels`, `ignoredPlans`, `paidPlans`, `vendor`, `currency`, `budgetCeiling`, `weights`, and `benchmarkFilters`; until then every mark above is session or URL state. Marks that describe evidence (`!`, `?`) stay with data and confidence; marks that describe a transient interaction (`·`, `+`) stay in URL/session state. This preserves the planned preference schema without inventing a key.
+The persisted preference namespace is `rack-rate:prefs:v1`, planned by `docs/pm/M2/todo/APP-601.md`: `apps/site/src/lib/prefs.ts` does not exist in this tree yet, so no mark is persistable today. When that store lands it carries `ignoredModels`, `ignoredPlans`, `paidPlans`, `vendor`, `currency`, `budgetCeiling`, `weights`, and `benchmarkFilters`; until then every mark above is session or URL state. Marks that describe evidence (`!`, `?`) stay with data and confidence; marks that describe a transient interaction (`·`, `+`) stay in URL/session state. This preserves the planned preference schema without inventing a key.
 
 ## Do's and Don'ts
 

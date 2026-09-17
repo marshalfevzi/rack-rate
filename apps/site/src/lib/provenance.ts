@@ -63,7 +63,7 @@ export function artificialAnalysisState<T extends { id: string }>(
   return { published: entry !== undefined, entry: entry ?? null }
 }
 
-/** Which units `ci_lo`/`ci_hi` are in — the two-convention trap in docs/architecture.md. */
+/** Which units `ci_lo`/`ci_hi` are in — the two-convention trap in ARCHITECTURE.md. */
 export type CiScale = "fraction" | "percent"
 
 export interface Term {

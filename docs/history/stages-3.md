@@ -1,5 +1,11 @@
 # PLAN archive — Stage 3 (static build framework) and its session history
 
+> **Relocation note (appended 2026-09-17, not a rewrite).** This file refers to the
+> pre-PM tree: `PLAN.md` and `docs/architecture.md` were superseded by `docs/pm/` and
+> `ARCHITECTURE.md` on 2026-09-17 and deleted, and `docs/design/build-plan.md` became
+> `docs/history/design-build-plan.md`. Relative links to them no longer resolve; recover
+> the old files with `git show d95e6ef:<path>`.
+
 Append-only history for the `rack-rate` rewrite. `PLAN.md` is the live plan; a
 stage's task list, acceptance criteria, handover contract and progress-log
 entries move here once the stage has landed. Do not rewrite what is here.

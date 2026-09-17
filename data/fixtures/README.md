@@ -1,4 +1,4 @@
-# Legacy pipeline fixture (frozen by PLAN.md 1.4b, 2026-09-14)
+# Legacy pipeline fixture (frozen by stage 1.4b, 2026-09-14)
 
 `legacy-derived.json` and `legacy-derived.csv` are the **unmodified** output of
 the legacy Python pipeline, copied before Stage 1.5 deleted it. They are the

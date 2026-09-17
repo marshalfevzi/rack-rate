@@ -26,7 +26,7 @@ Intentional deviations from the bundle:
   dependency, and the Effect rule set is registered only when it does.
 - `rules/*.test.ts` were not shipped in the bundle although
   `vendor/eslint-stylistic/UPSTREAM.md` refers to them. Rule behaviour here is
-  verified by the `.oxlintrc.json` probe described in `PLAN.md` task 1.10's
+  verified by the `.oxlintrc.json` probe described in `docs/history/stages-1-2.md` task 1.10's
   verification, not by ported tests.
 
 Update procedure: read

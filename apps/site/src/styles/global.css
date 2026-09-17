@@ -3,7 +3,7 @@
 /*
  * This is the only CSS entry. @theme emits custom properties and utilities.
  * The API basis needs two tokens because --color-api does not reach 4.5:1 as
- * text; the numbers live in docs/architecture.md.
+ * text; the numbers live in ARCHITECTURE.md.
  */
 @theme {
   --color-canvas: #0a0e15;

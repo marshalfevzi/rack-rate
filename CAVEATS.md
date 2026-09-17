@@ -8,9 +8,9 @@ Two files are authoritative and this one summarises them. If they disagree,
 **they win, and this file is the bug**:
 
 - `docs/data-sources.md` — per-source licensing and redistribution verdicts.
-- `PLAN.md` — live stages, the `known_gaps` backlog, and the newest log entry.
-  A closed stage's task list, acceptance criteria and history are in
-  `docs/archive/stages-1-2.md`.
+- `docs/pm/` — live milestones, tasks and decisions, plus the generated plan
+  index. The pre-PM stage history (stages 1-4 and the 2026-09-17 plan review)
+  lives in `docs/history/`.
 
 Nothing here is legal advice. The Artificial Analysis position in particular is
 the repository owner's risk decision, not a legal conclusion.
@@ -106,7 +106,7 @@ Do not cite it as permission in this repo.
 question so that gaining or losing permission is a configuration change rather
 than a refactor.
 
-Three states, ascending exposure (specified in `PLAN.md` task 7.2b):
+Three states, ascending exposure (specified in `docs/pm/M3/todo/DOC-702b.md`):
 
 1. **`AA_PUBLISH=0` — the default.** The AA fetcher is skipped. AA is absent
    from `data/benchmarks.json`, from every composite, and from the built site.
@@ -158,7 +158,7 @@ The options:
   converts any of the above from inference into permission, and it costs
   nothing. §4.1 notes Commercial terms are provisioned via an Order Form.
 
-Whatever ships, `PLAN.md` 7.2b requires the choice and its reasoning to be
+Whatever ships, `docs/pm/M3/todo/DOC-702b.md` requires the choice and its reasoning to be
 recorded at deployment time.
 
 ---

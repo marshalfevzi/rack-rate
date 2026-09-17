@@ -91,7 +91,7 @@ export type FrameComponentOption =
 // reject an unregistered key: ComposeOption keeps ECBasicOption's string index
 // signature, so `series` and invented keys compile whether or not anything
 // registered them. That is why registration is checked by name at mount time —
-// see docs/architecture.md, "What the option type does and does not enforce".
+// see ARCHITECTURE.md, "What the option type does and does not enforce".
 export type ChartOption = ComposeOption<FrameComponentOption>
 
 /** The one field the registration guard reads out of a series entry. */
