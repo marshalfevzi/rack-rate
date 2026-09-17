@@ -5,5 +5,10 @@
       "keys": ["id"]
     }
   ],
-  "exclude": [".claude/**", "docs/history/**", "tools/oxlint/anti-slop/**"]
+  "exclude": [
+    ".claude/**",
+    "docs/history/**",
+    "tools/oxlint/anti-slop/**",
+    ".omp/skills/project-management/templates/config.md"
+  ]
 }

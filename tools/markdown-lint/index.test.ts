@@ -76,6 +76,64 @@ describe("Markdown lint frontmatter", () => {
 })
 
 describe("Markdown lint line rules", () => {
+  test("reports wrapped prose lines", async () => {
+    const root = await temporaryRoot()
+
+    expect(
+      await fixtureCodes(root, "notes.md", "first paragraph line\nsecond paragraph line\n"),
+    ).toEqual(["wrapped-prose"])
+  })
+
+  test("does not report adjacent list items", async () => {
+    const root = await temporaryRoot()
+
+    expect(await fixtureCodes(root, "notes.md", "- first item\n- second item\n")).toEqual([])
+  })
+
+  test("reports a wrapped continuation inside a list item", async () => {
+    const root = await temporaryRoot()
+
+    expect(await fixtureCodes(root, "notes.md", "- first item\n  continuation line\n")).toEqual([
+      "wrapped-prose",
+    ])
+  })
+
+  test("does not report table rows", async () => {
+    const root = await temporaryRoot()
+
+    expect(await fixtureCodes(root, "notes.md", "| first | second |\n| --- | --- |\n")).toEqual([])
+  })
+
+  test("does not report prose-like lines inside a fenced block", async () => {
+    const root = await temporaryRoot()
+
+    expect(await fixtureCodes(root, "notes.md", "```\nfirst line\nsecond line\n```\n")).toEqual([])
+  })
+
+  test("does not report frontmatter lines", async () => {
+    const root = await temporaryRoot()
+
+    expect(
+      await fixtureCodes(
+        root,
+        "notes.md",
+        "<!-- dest: notes.md -->\n\n---\ntitle: first line\ndescription: second line\n---\n",
+      ),
+    ).toEqual([])
+  })
+
+  test("reports only the hard-break code after a hard break", async () => {
+    const root = await temporaryRoot()
+
+    expect(await fixtureCodes(root, "notes.md", "line  \nnext\n")).toEqual(["hard-break-spaces"])
+  })
+
+  test("does not report an indented code block", async () => {
+    const root = await temporaryRoot()
+
+    expect(await fixtureCodes(root, "notes.md", "\n    first line\n    second line\n")).toEqual([])
+  })
+
   test("reports a backslash hard break", async () => {
     const root = await temporaryRoot()
 
@@ -84,10 +142,10 @@ describe("Markdown lint line rules", () => {
     ])
   })
 
-  test("does not report an escaped literal backslash", async () => {
+  test("reports a wrapped line after an escaped literal backslash", async () => {
     const root = await temporaryRoot()
 
-    expect(await fixtureCodes(root, "notes.md", "line \\\\\nnext\n")).toEqual([])
+    expect(await fixtureCodes(root, "notes.md", "line \\\\\nnext\n")).toEqual(["wrapped-prose"])
   })
 
   test("reports two trailing spaces", async () => {

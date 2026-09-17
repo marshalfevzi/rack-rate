@@ -19,6 +19,7 @@ export type MarkdownCode =
   | "frontmatter-key-missing"
   | "hard-break-backslash"
   | "hard-break-spaces"
+  | "wrapped-prose"
   | "dangling-link"
   | "unreadable-file"
 
@@ -51,6 +52,35 @@ interface LinkTarget {
   offset: number
 }
 
+type ContentKind =
+  | "blank"
+  | "fence"
+  | "heading"
+  | "thematic"
+  | "setext"
+  | "table"
+  | "list"
+  | "html"
+  | "refdef"
+  | "code"
+  | "prose"
+
+interface Fence {
+  char: string
+  length: number
+}
+
+interface QuoteSplit {
+  prefix: string
+  content: string
+}
+
+interface ScannedLine {
+  prefix: string
+  kind: ContentKind
+  hardBreak: boolean
+}
+
 const frontmatterSchema = z.record(z.string(), z.unknown())
 
 const linkPattern =
@@ -58,7 +88,100 @@ const linkPattern =
 
 const uriSchemePattern = /^[A-Za-z][A-Za-z0-9+.-]*:/u
 
-const fencePattern = /^(?:`{3,}|~{3,})/u
+function splitQuote(line: string): QuoteSplit {
+  let index = 0
+  let prefix = ""
+
+  while (index < line.length) {
+    let cursor = index
+
+    while (line[cursor] === " ") {
+      cursor += 1
+    }
+
+    if (line[cursor] !== ">") {
+      break
+    }
+
+    cursor += 1
+
+    if (line[cursor] === " ") {
+      cursor += 1
+    }
+
+    prefix = line.slice(0, cursor)
+    index = cursor
+  }
+
+  return { prefix, content: line.slice(index) }
+}
+
+function fenceOpen(line: string): Fence | undefined {
+  const match = /^ {0,3}(`{3,}|~{3,})(.*)$/u.exec(line)
+
+  if (match === null) {
+    return undefined
+  }
+
+  const marker = match[1] ?? ""
+
+  if (marker.startsWith("`") && (match[2] ?? "").includes("`")) {
+    return undefined
+  }
+
+  return { char: marker[0] ?? "`", length: marker.length }
+}
+
+function fenceClose(line: string, fence: Fence): boolean {
+  const marker = fence.char === "`" ? "`" : "~"
+  const pattern = new RegExp(`^ {0,3}${marker}{${fence.length},}\\s*$`, "u")
+
+  return pattern.test(line)
+}
+
+function kindOfContent(content: string, previousIsBlankOrCode: boolean): ContentKind {
+  if (content.trim() === "") {
+    return "blank"
+  }
+
+  if (fenceOpen(content) !== undefined) {
+    return "fence"
+  }
+
+  if (/^ {0,3}#{1,6}(\s|$)/u.test(content)) {
+    return "heading"
+  }
+
+  if (/^ {0,3}([-*_])(\s*\1){2,}\s*$/u.test(content)) {
+    return "thematic"
+  }
+
+  if (/^ {0,3}(=+|-+)\s*$/u.test(content)) {
+    return "setext"
+  }
+
+  if (/^ {0,3}\|/u.test(content) || /^ {0,3}:?-{2,}:?(\s*\|\s*:?-{2,}:?)+/u.test(content)) {
+    return "table"
+  }
+
+  if (/^ {0,3}([-*+]|\d{1,9}[.)])(\s|$)/u.test(content)) {
+    return "list"
+  }
+
+  if (/^ {0,3}</u.test(content)) {
+    return "html"
+  }
+
+  if (/^ {0,3}\[[^\]]*\]:/u.test(content) || /^ {0,3}\[\^/u.test(content)) {
+    return "refdef"
+  }
+
+  if (/^ {4,}\S/u.test(content) && previousIsBlankOrCode) {
+    return "code"
+  }
+
+  return "prose"
+}
 
 function globPattern(glob: string): RegExp {
   let pattern = "^"
@@ -109,14 +232,29 @@ function issue(
 
 function parseFrontmatter(text: string, file: string): FrontmatterResult {
   const lines = text.split(/\r?\n/u)
+  let openingLine = -1
 
-  if (lines[0] !== "---") {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index] ?? ""
+
+    if (line.trim() === "" || /^\s*<!--.*-->\s*$/u.test(line)) {
+      continue
+    }
+
+    if (line === "---") {
+      openingLine = index
+    }
+
+    break
+  }
+
+  if (openingLine === -1) {
     return { issues: [], scanStart: 0 }
   }
 
   let closingLine = -1
 
-  for (let index = 1; index < lines.length; index += 1) {
+  for (let index = openingLine + 1; index < lines.length; index += 1) {
     if (lines[index] === "---") {
       closingLine = index
       break
@@ -126,13 +264,19 @@ function parseFrontmatter(text: string, file: string): FrontmatterResult {
   if (closingLine === -1) {
     return {
       issues: [
-        issue("frontmatter-unterminated", file, 1, 1, "frontmatter block is not terminated"),
+        issue(
+          "frontmatter-unterminated",
+          file,
+          openingLine + 1,
+          1,
+          "frontmatter block is not terminated",
+        ),
       ],
       scanStart: lines.length,
     }
   }
 
-  const block = lines.slice(1, closingLine).join("\n")
+  const block = lines.slice(openingLine + 1, closingLine).join("\n")
   let parsed: unknown
 
   try {
@@ -143,7 +287,7 @@ function parseFrontmatter(text: string, file: string): FrontmatterResult {
         issue(
           "frontmatter-invalid",
           file,
-          1,
+          openingLine + 1,
           1,
           `frontmatter YAML could not be parsed: ${String(error)}`,
         ),
@@ -156,7 +300,15 @@ function parseFrontmatter(text: string, file: string): FrontmatterResult {
 
   if (!result.success) {
     return {
-      issues: [issue("frontmatter-invalid", file, 1, 1, "frontmatter must be a YAML mapping")],
+      issues: [
+        issue(
+          "frontmatter-invalid",
+          file,
+          openingLine + 1,
+          1,
+          "frontmatter must be a YAML mapping",
+        ),
+      ],
       scanStart: closingLine + 1,
     }
   }
@@ -183,7 +335,7 @@ function parseFrontmatter(text: string, file: string): FrontmatterResult {
         issue(
           "frontmatter-key-missing",
           file,
-          1,
+          openingLine + 1,
           1,
           `frontmatter key "${key}" is required by ${glob}`,
         ),
@@ -229,28 +381,80 @@ async function scanMarkdown(
 ): Promise<MarkdownIssue[]> {
   const lines = text.split(/\r?\n/u)
   const issues: MarkdownIssue[] = []
-  let inFence = false
+  let fence: Fence | undefined
+  let codeRun = false
+  let previousState: ScannedLine | undefined
 
   for (let index = scanStart; index < lines.length; index += 1) {
     const line = lines[index] ?? ""
-    const trimmed = line.trim()
+    const previousRaw = index > scanStart ? (lines[index - 1] ?? "") : ""
+    const previousBlank = index > scanStart ? previousRaw.trim() === "" : true
 
-    if (line.startsWith("    ")) {
+    if (fence !== undefined) {
+      if (fenceClose(line, fence)) {
+        fence = undefined
+      }
+
+      codeRun = false
+      previousState = undefined
+
       continue
     }
 
-    if (fencePattern.test(trimmed)) {
-      inFence = !inFence
+    const opening = fenceOpen(line)
+
+    if (opening !== undefined) {
+      fence = opening
+      codeRun = false
+      previousState = undefined
 
       continue
     }
 
-    if (inFence || trimmed.length === 0) {
+    const { prefix, content } = splitQuote(line)
+    const kind = kindOfContent(content, previousBlank || codeRun)
+
+    if (kind === "blank") {
+      codeRun = false
+      previousState = undefined
+
       continue
     }
 
-    const content = line.replace(/\s+$/u, "")
-    const backslashes = content.match(/\\+$/u)
+    if (kind === "code") {
+      codeRun = true
+      previousState = undefined
+
+      continue
+    }
+
+    codeRun = false
+
+    const contentWithoutTrailingWhitespace = line.replace(/\s+$/u, "")
+    const backslashes = contentWithoutTrailingWhitespace.match(/\\+$/u)
+    const trailingSpaces = line.match(/ +$/u)
+
+    const hardBreak =
+      (trailingSpaces !== null && trailingSpaces[0].length >= 2) ||
+      (backslashes !== null && backslashes[0].length % 2 === 1)
+
+    if (
+      kind === "prose" &&
+      previousState !== undefined &&
+      (previousState.kind === "prose" || previousState.kind === "list") &&
+      previousState.prefix === prefix &&
+      !previousState.hardBreak
+    ) {
+      issues.push(
+        issue(
+          "wrapped-prose",
+          file,
+          index + 1,
+          1,
+          "wrapped prose line belongs on the previous line; keep the paragraph on one line",
+        ),
+      )
+    }
 
     if (backslashes !== null && backslashes[0].length % 2 === 1) {
       issues.push(
@@ -258,13 +462,11 @@ async function scanMarkdown(
           "hard-break-backslash",
           file,
           index + 1,
-          content.length - backslashes[0].length + 1,
+          contentWithoutTrailingWhitespace.length - backslashes[0].length + 1,
           "hard line break (backslash at end of line)",
         ),
       )
     }
-
-    const trailingSpaces = line.match(/ +$/u)
 
     if (trailingSpaces !== null && trailingSpaces[0].length >= 2) {
       issues.push(
@@ -309,6 +511,14 @@ async function scanMarkdown(
         ),
       )
     }
+
+    if (kind === "prose" || kind === "list") {
+      previousState = { prefix, kind, hardBreak }
+
+      continue
+    }
+
+    previousState = undefined
   }
 
   return issues

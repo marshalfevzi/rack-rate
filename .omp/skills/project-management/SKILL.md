@@ -5,8 +5,7 @@ description: Load for planning, task execution, milestone or retro work, and doc
 
 # Project management
 
-This skill is the operating model for the repository's document-backed planning system. Load the
-schemas before creating or changing a PM document, and use the templates as the starting point.
+This skill is the operating model for the repository's document-backed planning system. Load the schemas before creating or changing a PM document, and use the templates as the starting point.
 
 ## Vocabulary
 
@@ -38,56 +37,33 @@ docs/pm/
 docs/archive/<M>-<slug>.md     # one flat slice per closed milestone
 ```
 
-`PRD.md` and `ARCHITECTURE.md` sit at the repository root and are PM-owned. `PRODUCT.md`,
-`DESIGN.md`, `.impeccable/design.json`, and the UI surface briefs also sit at the root and belong to
-the product/design (impeccable) workflow. All of them are validated during document reconciliation.
+`PRD.md` and `ARCHITECTURE.md` sit at the repository root and are PM-owned. `PRODUCT.md`, `DESIGN.md`, `.impeccable/design.json`, and the UI surface briefs also sit at the root and belong to the product/design (impeccable) workflow. All of them are validated during document reconciliation.
 
-For field definitions and generated-plan ordering, read
-`skill://project-management/reference/schemas.md`. Copy skeletons from
-`skill://project-management/templates/`. The complete lifecycle is in
-`skill://project-management/reference/workflow.md`.
+For field definitions and generated-plan ordering, read `skill://project-management/reference/schemas.md`. Copy skeletons from `skill://project-management/templates/`. The complete lifecycle is in `skill://project-management/reference/workflow.md`.
 
 ## Reference documents
 
-Reference-document policy: `PRD.md`, `ARCHITECTURE.md`, `PRODUCT.md`, `DESIGN.md` and
-`CAVEATS.md` hold current truth only. Per-task and per-stage records belong in the task document's
-`## Session` section or `docs/archive/`; never append them to a reference document. `pm_doc_check`
-reports a `doc-append-record` warning when one is present, and `/pm-align` relocates it.
+Reference-document policy: `PRD.md`, `ARCHITECTURE.md`, `PRODUCT.md`, `DESIGN.md` and `CAVEATS.md` hold current truth only. Per-task and per-stage records belong in the task document's `## Session` section or `docs/archive/`; never append them to a reference document. `pm_doc_check` reports a `doc-append-record` warning when one is present, and `/pm-align` relocates it.
 
-- The per-task record for a finished task lives in `docs/pm/<M>/done/<ID>.md` under `## Session`;
-  the flat per-milestone record lives in `docs/archive/<M>-<slug>.md`; `ARCHITECTURE.md` and
-  `PRD.md` are reconciled in place so they describe the system as it is now.
+- The per-task record for a finished task lives in `docs/pm/<M>/done/<ID>.md` under `## Session`; the flat per-milestone record lives in `docs/archive/<M>-<slug>.md`; `ARCHITECTURE.md` and `PRD.md` are reconciled in place so they describe the system as it is now.
 
 ## Lifecycle: intake → execution
 
 ### Intake
 
-1. Run `/pm-init` to create or migrate the config, core documents, and first milestone without
-   overwriting existing history.
-2. Run `/pm-align` when the documents no longer describe reality. Create, split, merge, or retire
-   milestones and tasks, repair prerequisite order, and reconcile the PRD and architecture.
-3. Capture unresolved choices with `/pm-decide` or `/pm-resolve`. A blocked task becomes runnable
-   only after an accepted or deferred decision resolves its blocker.
-4. Run `pm_plan_sync` after every PM document mutation. Treat errors as a stop condition and fix the
-   source document before continuing. Markdown findings surface through `pm_doc_check` alongside plan
-   issues.
+1. Run `/pm-init` to create or migrate the config, core documents, and first milestone without overwriting existing history.
+2. Run `/pm-align` when the documents no longer describe reality. Create, split, merge, or retire milestones and tasks, repair prerequisite order, and reconcile the PRD and architecture.
+3. Capture unresolved choices with `/pm-decide` or `/pm-resolve`. A blocked task becomes runnable only after an accepted or deferred decision resolves its blocker.
+4. Run `pm_plan_sync` after every PM document mutation. Treat errors as a stop condition and fix the source document before continuing. Markdown findings surface through `pm_doc_check` alongside plan issues.
 
 ### Execution
 
 1. Run `/pm-status` for a read-only snapshot, then `/pm` for exactly one next task.
-2. `/pm` selects the first runnable `todo` task by milestone priority and task order. It restates
-   the task, asks only blocking questions, plans, implements, verifies, and finishes the task.
-3. A completed task is moved to `done/` through `pm_task_finish`, receives its completion date and
-   Session record, and is reflected in the generated plan.
-4. When a task's measurements or build notes need keeping, they belong in that task's `## Session`
-   section; nothing is appended to a reference document, and a `doc-append-record` warning is
-   cleared with `/pm-align`.
-5. When all milestone tasks are done, run `/pm-retro`. A `closed` outcome requires a completed
-   closed retro; `pm_milestone_close` then writes one flat archive slice and removes the live milestone
-   directory. A `continued` outcome records the retro and returns the milestone to `in_progress` so new
-   tasks can be added — a milestone never rests at `status: retro`.
-6. Run `/pm-docs` whenever PRD or architecture content must be brought back into agreement with the
-   implementation. End with `pm_doc_check`.
+2. `/pm` selects the first runnable `todo` task by milestone priority and task order. It restates the task, asks only blocking questions, plans, implements, verifies, and finishes the task.
+3. A completed task is moved to `done/` through `pm_task_finish`, receives its completion date and Session record, and is reflected in the generated plan.
+4. When a task's measurements or build notes need keeping, they belong in that task's `## Session` section; nothing is appended to a reference document, and a `doc-append-record` warning is cleared with `/pm-align`.
+5. When all milestone tasks are done, run `/pm-retro`. A `closed` outcome requires a completed closed retro; `pm_milestone_close` then writes one flat archive slice and removes the live milestone directory. A `continued` outcome records the retro and returns the milestone to `in_progress` so new tasks can be added — a milestone never rests at `status: retro`.
+6. Run `/pm-docs` whenever PRD or architecture content must be brought back into agreement with the implementation. End with `pm_doc_check`.
 
 ## Invariants
 
@@ -114,12 +90,10 @@ reports a `doc-append-record` warning when one is present, and `/pm-align` reloc
 | `frontmatter-key-missing`  | error    | Required frontmatter keys must be present.                                                                                                                     |
 | `hard-break-backslash`     | error    | A trailing backslash must not create a hard line break.                                                                                                        |
 | `hard-break-spaces`        | error    | Two trailing spaces must not create a hard line break.                                                                                                         |
+| `wrapped-prose`            | error    | A prose line must not be soft-wrapped; a paragraph, list item, or table row stays on one line.                                                                 |
 | `dangling-link`            | error    | Relative links must resolve to existing files or anchors.                                                                                                      |
 
-The runnable task is the first `todo` task in an `in_progress` milestone, then a `backlog`
-milestone, whose prerequisites are all done. `next_task` in the generated plan is the earliest
-non-done candidate in that same priority order — including a `blocked` one. When its `status` is
-`blocked`, stop and point to `/pm-resolve` instead of bypassing the queue.
+The runnable task is the first `todo` task in an `in_progress` milestone, then a `backlog` milestone, whose prerequisites are all done. `next_task` in the generated plan is the earliest non-done candidate in that same priority order — including a `blocked` one. When its `status` is `blocked`, stop and point to `/pm-resolve` instead of bypassing the queue.
 
 ## Command table
 
@@ -136,13 +110,8 @@ non-done candidate in that same priority order — including a `blocked` one. Wh
 | `/pm-status`     | Report plan state without writing the generated plan.                           |
 | `/pm-decide`     | Record an ad-hoc decision from the user's argument.                             |
 
-Every mutating command finishes with `pm_plan_sync` and reports its issues. Every command may
-consult this skill and its references; the tool names in this table and the document fields in
-`skill://project-management/reference/schemas.md` are canonical.
+Every mutating command finishes with `pm_plan_sync` and reports its issues. Every command may consult this skill and its references; the tool names in this table and the document fields in `skill://project-management/reference/schemas.md` are canonical.
 
 ## Generated-plan rule
 
-`docs/pm/plan.yml` is generated from the source documents. Never hand-edit `plan.yml`; edit the
-source frontmatter or body, then run `pm_plan_sync`. The generated file starts with
-`# GENERATED by pm_plan_sync — do not edit`, uses the fixed key order in the schema reference, and
-is the checker-visible summary rather than an additional source of truth.
+`docs/pm/plan.yml` is generated from the source documents. Never hand-edit `plan.yml`; edit the source frontmatter or body, then run `pm_plan_sync`. The generated file starts with `# GENERATED by pm_plan_sync — do not edit`, uses the fixed key order in the schema reference, and is the checker-visible summary rather than an additional source of truth.

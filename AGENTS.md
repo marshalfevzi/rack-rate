@@ -1,9 +1,6 @@
 # AGENTS.md — how to work in this repository
 
-This file is the agent operating contract for any repository that uses the
-`project-management` harness in `.omp/`. It is intentionally project-agnostic:
-scope, stack, boundaries and product truth live in the reference documents the
-project generates, not here.
+This file is the agent operating contract for any repository that uses the `project-management` harness in `.omp/`. It is intentionally project-agnostic: scope, stack, boundaries and product truth live in the reference documents the project generates, not here.
 
 ---
 
@@ -12,30 +9,17 @@ project generates, not here.
 Before any task, in this order:
 
 1. **This file** — the process contract.
-2. **`docs/pm/plan.yml`** — the generated plan index: milestones, tasks, status,
-   and the next runnable task. If it is missing, the project is not initialized
-   yet: stop and run `/pm-init`. Do not invent a plan.
-3. **`docs/pm/<milestone>/README.md`** and the task document named by
-   `plan.yml` — the scope you are allowed to execute.
-4. **The reference documents the task touches** — `PRD.md` (scope, requirements,
-   data rules), `ARCHITECTURE.md` (module boundaries, gates, commands),
-   `PRODUCT.md` (durable product truth), `DESIGN.md` (visual system).
-   These are authoritative. If this file and a reference document disagree, the
-   reference document wins for project facts and this file wins for process.
+2. **`docs/pm/plan.yml`** — the generated plan index: milestones, tasks, status, and the next runnable task. If it is missing, the project is not initialized yet: stop and run `/pm-init`. Do not invent a plan.
+3. **`docs/pm/<milestone>/README.md`** and the task document named by `plan.yml` — the scope you are allowed to execute.
+4. **The reference documents the task touches** — `PRD.md` (scope, requirements, data rules), `ARCHITECTURE.md` (module boundaries, gates, commands), `PRODUCT.md` (durable product truth), `DESIGN.md` (visual system). These are authoritative. If this file and a reference document disagree, the reference document wins for project facts and this file wins for process.
 
-Never `grep`/`glob` for `AGENTS.md`, `CLAUDE.md`, `.cursorrules` or similar:
-context files are discovered and loaded for you.
+Never `grep`/`glob` for `AGENTS.md`, `CLAUDE.md`, `.cursorrules` or similar: context files are discovered and loaded for you.
 
 ## 2. The one rule that matters: one task per session
 
-- **One task per session.** `/pm` selects and runs exactly one task from the
-  plan. Do not start a second task because the first finished early.
-- **A task that cannot run stops immediately.** If the next task is blocked, has
-  an unmet prerequisite, or does not exist, stop and name the command that fixes
-  it. Never work around a blocker by shrinking the task.
-- **Scope is the task document, end to end.** Every acceptance criterion in the
-  task doc is in scope; anything not named there is not. Reducing scope requires
-  explicit approval in the conversation, not a judgment call.
+- **One task per session.** `/pm` selects and runs exactly one task from the plan. Do not start a second task because the first finished early.
+- **A task that cannot run stops immediately.** If the next task is blocked, has an unmet prerequisite, or does not exist, stop and name the command that fixes it. Never work around a blocker by shrinking the task.
+- **Scope is the task document, end to end.** Every acceptance criterion in the task doc is in scope; anything not named there is not. Reducing scope requires explicit approval in the conversation, not a judgment call.
 
 ## 3. Command surface
 
@@ -54,9 +38,7 @@ context files are discovered and loaded for you.
 
 The Markdown gate runs through `/pm`, alongside the plan and document checks.
 
-Load `skill://project-management` for the document schemas, the validation
-invariants, and the templates. It is the reference for the doc tree; this file
-does not duplicate it.
+Load `skill://project-management` for the document schemas, the validation invariants, and the templates. It is the reference for the doc tree; this file does not duplicate it.
 
 ## 4. Where things live
 
@@ -90,96 +72,41 @@ docs/history/                pre-PM stage history (stages 1-4 and the 2026-09-17
 
 Two ownership rules are load-bearing:
 
-- **`docs/pm/plan.yml` and `docs/archive/**` are generated or append-only.** A
-  hook blocks direct edits to both. Edit the source documents and let
-  `pm_plan_sync` regenerate the index. `docs/history/**` is frozen history: it
-  records what a pre-PM stage did, while a live document owns the current truth.
-- **A blocked task is frozen.** It may not change until a decision record
-  resolves it (`/pm-resolve`). Marking work blocked without opening a decision is
-  a process violation, not a status.
+- **`docs/pm/plan.yml` and `docs/archive/**` are generated or append-only.** A hook blocks direct edits to both. Edit the source documents and let `pm_plan_sync` regenerate the index. `docs/history/**` is frozen history: it records what a pre-PM stage did, while a live document owns the current truth.
+- **A blocked task is frozen.** It may not change until a decision record resolves it (`/pm-resolve`). Marking work blocked without opening a decision is a process violation, not a status.
 
 ## 5. Working agreement for agents
 
-- **Read the task document and its acceptance criteria before writing code.**
-  Do the whole task; do not deliver stubs, placeholders, mocks, no-ops, or
-  "follow-ups". If a prerequisite is genuinely unreachable, finish everything
-  reachable and state exactly what is missing.
-- **Prefer extending an existing module over adding a new file.** Delete the
-  code a change obsoletes: no shims, no aliases, no deprecated paths, no dead
-  re-exports. A clean cutover migrates every caller.
-- **Fix the source, never the symptom.** Do not suppress a warning, special-case
-  an input, or narrow the problem to make a gate pass.
-- **Add a test only where a plausible bug would fail it.** Assert the observable
-  contract — a computed value, a boundary, a thrown validation error — never
-  wiring, field copies, defaults, or source text. Delete existing tests that pin
-  implementation detail rather than re-pinning them after a change.
-- **Verify before declaring done.** A bug fix reproduces the failure and shows
-  it gone. A UI change is checked against the running surface. A feature is
-  proven by exercising it, not by a green type-check. Report exactly what you
-  ran; never claim a check you did not execute.
-- **Markdown is linted and formatted.** All Markdown is linted by `bun run lint:md` for
-  frontmatter shape, hard line breaks, and dangling relative links, and formatted by
-  oxfmt. Markdown contains no hard line breaks: no trailing backslash and no two-space
-  break.
-- **Run the project's documented gate once, at the end.** The gate command lives
-  in `ARCHITECTURE.md` and the package manifest. Run it after a change is
-  complete, never after each edit. A single-writer subagent converges its own
-  change with one gate run at the end of its pass; when several subagents edit
-  independent slices, the orchestrator runs the gate once after all edits land.
-- **A decision gates a blocker, not the reverse.** When a task turns out to need
-  a product or architecture call the documents do not already answer, write the
-  decision first, then proceed.
-- **Never commit secrets.** Environment templates carry placeholders, never
-  values; secrets are never logged or written into documents.
-- **Record unresolved facts, do not guess them.** If a source, citation, or
-  upstream fact cannot be resolved, record it as a known gap in the owning
-  document; do not invent a number.
+- **Read the task document and its acceptance criteria before writing code.** Do the whole task; do not deliver stubs, placeholders, mocks, no-ops, or "follow-ups". If a prerequisite is genuinely unreachable, finish everything reachable and state exactly what is missing.
+- **Prefer extending an existing module over adding a new file.** Delete the code a change obsoletes: no shims, no aliases, no deprecated paths, no dead re-exports. A clean cutover migrates every caller.
+- **Fix the source, never the symptom.** Do not suppress a warning, special-case an input, or narrow the problem to make a gate pass.
+- **Add a test only where a plausible bug would fail it.** Assert the observable contract — a computed value, a boundary, a thrown validation error — never wiring, field copies, defaults, or source text. Delete existing tests that pin implementation detail rather than re-pinning them after a change.
+- **Verify before declaring done.** A bug fix reproduces the failure and shows it gone. A UI change is checked against the running surface. A feature is proven by exercising it, not by a green type-check. Report exactly what you ran; never claim a check you did not execute.
+- **Markdown is linted and formatted.** All Markdown is linted by `bun run lint:md` for frontmatter shape, hard line breaks, wrapped prose, and dangling relative links, and formatted by oxfmt. Markdown is never folded: no trailing backslash, no two-space break, and no wrapped prose — one line per paragraph, list item, blockquote paragraph, and table row, so a newline always separates blocks.
+- **Run the project's documented gate once, at the end.** The gate command lives in `ARCHITECTURE.md` and the package manifest. Run it after a change is complete, never after each edit. A single-writer subagent converges its own change with one gate run at the end of its pass; when several subagents edit independent slices, the orchestrator runs the gate once after all edits land.
+- **A decision gates a blocker, not the reverse.** When a task turns out to need a product or architecture call the documents do not already answer, write the decision first, then proceed.
+- **Never commit secrets.** Environment templates carry placeholders, never values; secrets are never logged or written into documents.
+- **Record unresolved facts, do not guess them.** If a source, citation, or upstream fact cannot be resolved, record it as a known gap in the owning document; do not invent a number.
 
 ## 6. Evidence discipline
 
-- Every published figure traces to a source. A number without a source does not
-  ship. The project's data rules live in `PRD.md`; the boundary rules live in
-  `ARCHITECTURE.md`.
-- Missing data stays missing: nulls are not defaulted, absent rows are not
-  scored as zero, and confidence is displayed rather than laundered.
-- Claims about code, tools, tests or sources must be grounded in something you
-  actually ran or read. Mark inference as inference.
+- Every published figure traces to a source. A number without a source does not ship. The project's data rules live in `PRD.md`; the boundary rules live in `ARCHITECTURE.md`.
+- Missing data stays missing: nulls are not defaulted, absent rows are not scored as zero, and confidence is displayed rather than laundered.
+- Claims about code, tools, tests or sources must be grounded in something you actually ran or read. Mark inference as inference.
 - Format the answer to the ask: facts, decisions, evidence, risks. No ceremony.
 
 ## 7. Quality gates and vendored code
 
-- First-party code is never exempted from the project's linters or type-checker
-  to make a change pass. Weaken no rule and lower no severity.
-- Vendored upstream trees and generated output are excluded whole, with the
-  reason recorded in `ARCHITECTURE.md`, because they are not ours to fix.
-- Generated artifacts (derived data, build output) are deterministic and
-  committed only when the project says so; never hand-edit them.
+- First-party code is never exempted from the project's linters or type-checker to make a change pass. Weaken no rule and lower no severity.
+- Vendored upstream trees and generated output are excluded whole, with the reason recorded in `ARCHITECTURE.md`, because they are not ours to fix.
+- Generated artifacts (derived data, build output) are deterministic and committed only when the project says so; never hand-edit them.
 
 - **Formatting is clean before commit.** `bun run format` must pass before committing.
 
 ## 8. Harness notes for maintainers
 
-- `.omp/**` executes inside the OMP host process. It is not part of the root
-  TypeScript project, so `tsc` does not type-check it and `bun test` does not
-  cover it. Verify harness changes with a fixture smoke run: build a throwaway
-  `docs/pm/` tree in a temp directory, then exercise `loadModel`, `validate`,
-  `nextTask`, `renderPlan`, `syncPlan`, `docCheck`, the `ops` mutations, and the
-  tool and hook factories against it. Do not silently add `.omp/**` to the
-  tsconfig project — its imports of host-provided types are not installable here.
-- `.omp/**` is linted with every project rule except three scoped overrides
-  (`no-runtime-typeof`, `no-unknown-parameters`, `no-unsafe-dictionary-type`).
-  Those rules assume a schema-parsed product boundary; the harness parses
-  untyped YAML and frontmatter at its own edge. The override is recorded in
-  `.oxlintrc.json`; do not widen it.
-- Harness hooks regenerate `docs/pm/plan.yml` and report drift. They never move
-  a task, never archive a milestone, and never commit. Only an explicit
-  `pm_task_finish` invocation does that.
-- UI-affecting tasks carry a prefix marked `impeccable: true` in
-  `docs/pm/config.yml`. They load `skill://impeccable`; the design detector runs
-  after UI edits. Design truth lives in `DESIGN.md` and the surface briefs, never
-  copied into shipped source.
-- `omp agents unpack --project` restores OMP's bundled agent set into
-  `.omp/agents/`. Never commit those copies: they shadow identical bundled
-  definitions and drift silently. `.omp/agents/` holds only the PM specialists,
-  and the bundled `scout`, `sonic`, `task`, `reviewer` and `security-reviewer`
-  keep loading from their bundled definitions.
+- `.omp/**` executes inside the OMP host process. It is not part of the root TypeScript project, so `tsc` does not type-check it and `bun test` does not cover it. Verify harness changes with a fixture smoke run: build a throwaway `docs/pm/` tree in a temp directory, then exercise `loadModel`, `validate`, `nextTask`, `renderPlan`, `syncPlan`, `docCheck`, the `ops` mutations, and the tool and hook factories against it. Do not silently add `.omp/**` to the tsconfig project — its imports of host-provided types are not installable here.
+- `.omp/**` is linted with every project rule except three scoped overrides (`no-runtime-typeof`, `no-unknown-parameters`, `no-unsafe-dictionary-type`). Those rules assume a schema-parsed product boundary; the harness parses untyped YAML and frontmatter at its own edge. The override is recorded in `.oxlintrc.json`; do not widen it.
+- Harness hooks regenerate `docs/pm/plan.yml` and report drift. They never move a task, never archive a milestone, and never commit. Only an explicit `pm_task_finish` invocation does that.
+- UI-affecting tasks carry a prefix marked `impeccable: true` in `docs/pm/config.yml`. They load `skill://impeccable`; the design detector runs after UI edits. Design truth lives in `DESIGN.md` and the surface briefs, never copied into shipped source.
+- `omp agents unpack --project` restores OMP's bundled agent set into `.omp/agents/`. Never commit those copies: they shadow identical bundled definitions and drift silently. `.omp/agents/` holds only the PM specialists, and the bundled `scout`, `sonic`, `task`, `reviewer` and `security-reviewer` keep loading from their bundled definitions.
