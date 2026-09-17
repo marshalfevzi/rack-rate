@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-17T00:00:00.000Z",
+  "title": "Design System: Rack Rate — Console Listing",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "background",
+        "displayName": "Canvas — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#0B0C0E",
+        "tonalRamp": [
+          "oklch(15% 0.0046 264.4)",
+          "oklch(26% 0.0046 264.4)",
+          "oklch(38% 0.0046 264.4)",
+          "oklch(50% 0.0046 264.4)",
+          "oklch(62% 0.0046 264.4)",
+          "oklch(74% 0.0046 264.4)",
+          "oklch(86% 0.0046 264.4)",
+          "oklch(95% 0.0046 264.4)"
+        ]
+      },
+      "panel": {
+        "role": "background",
+        "displayName": "Panel — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#121417",
+        "tonalRamp": [
+          "oklch(15% 0.0069 258.4)",
+          "oklch(26% 0.0069 258.4)",
+          "oklch(38% 0.0069 258.4)",
+          "oklch(50% 0.0069 258.4)",
+          "oklch(62% 0.0069 258.4)",
+          "oklch(74% 0.0069 258.4)",
+          "oklch(86% 0.0069 258.4)",
+          "oklch(95% 0.0069 258.4)"
+        ]
+      },
+      "panel-2": {
+        "role": "background",
+        "displayName": "Panel 2 — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#171A1E",
+        "tonalRamp": [
+          "oklch(15% 0.0091 255.6)",
+          "oklch(26% 0.0091 255.6)",
+          "oklch(38% 0.0091 255.6)",
+          "oklch(50% 0.0091 255.6)",
+          "oklch(62% 0.0091 255.6)",
+          "oklch(74% 0.0091 255.6)",
+          "oklch(86% 0.0091 255.6)",
+          "oklch(95% 0.0091 255.6)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#262A30",
+        "tonalRamp": [
+          "oklch(15% 0.0124 258.4)",
+          "oklch(26% 0.0124 258.4)",
+          "oklch(38% 0.0124 258.4)",
+          "oklch(50% 0.0124 258.4)",
+          "oklch(62% 0.0124 258.4)",
+          "oklch(74% 0.0124 258.4)",
+          "oklch(86% 0.0124 258.4)",
+          "oklch(95% 0.0124 258.4)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#3A4048",
+        "tonalRamp": [
+          "oklch(15% 0.0159 255.6)",
+          "oklch(26% 0.0159 255.6)",
+          "oklch(38% 0.0159 255.6)",
+          "oklch(50% 0.0159 255.6)",
+          "oklch(62% 0.0159 255.6)",
+          "oklch(74% 0.0159 255.6)",
+          "oklch(86% 0.0159 255.6)",
+          "oklch(95% 0.0159 255.6)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#E8EAED",
+        "tonalRamp": [
+          "oklch(15% 0.0046 258.3)",
+          "oklch(26% 0.0046 258.3)",
+          "oklch(38% 0.0046 258.3)",
+          "oklch(50% 0.0046 258.3)",
+          "oklch(62% 0.0046 258.3)",
+          "oklch(74% 0.0046 258.3)",
+          "oklch(86% 0.0046 258.3)",
+          "oklch(95% 0.0046 258.3)"
+        ]
+      },
+      "dim": {
+        "role": "neutral",
+        "displayName": "Dim — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#9AA2AB",
+        "tonalRamp": [
+          "oklch(15% 0.0160 251.2)",
+          "oklch(26% 0.0160 251.2)",
+          "oklch(38% 0.0160 251.2)",
+          "oklch(50% 0.0160 251.2)",
+          "oklch(62% 0.0160 251.2)",
+          "oklch(74% 0.0160 251.2)",
+          "oklch(86% 0.0160 251.2)",
+          "oklch(95% 0.0160 251.2)"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#808790",
+        "tonalRamp": [
+          "oklch(15% 0.0159 254.7)",
+          "oklch(26% 0.0159 254.7)",
+          "oklch(38% 0.0159 254.7)",
+          "oklch(50% 0.0159 254.7)",
+          "oklch(62% 0.0159 254.7)",
+          "oklch(74% 0.0159 254.7)",
+          "oklch(86% 0.0159 254.7)",
+          "oklch(95% 0.0159 254.7)"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#FFB020",
+        "tonalRamp": [
+          "oklch(15% 0.1650 75.0)",
+          "oklch(26% 0.1650 75.0)",
+          "oklch(38% 0.1650 75.0)",
+          "oklch(50% 0.1650 75.0)",
+          "oklch(62% 0.1650 75.0)",
+          "oklch(74% 0.1650 75.0)",
+          "oklch(86% 0.1650 75.0)",
+          "oklch(95% 0.1650 75.0)"
+        ]
+      },
+      "on-signal": {
+        "role": "neutral",
+        "displayName": "On Signal — canonical token; synthesized tonal ramp preview (not shipped)",
+        "canonical": "#0B0C0E",
+        "tonalRamp": [
+          "oklch(15% 0.0046 264.4)",
+          "oklch(26% 0.0046 264.4)",
+          "oklch(38% 0.0046 264.4)",
+          "oklch(50% 0.0046 264.4)",
+          "oklch(62% 0.0046 264.4)",
+          "oklch(74% 0.0046 264.4)",
+          "oklch(86% 0.0046 264.4)",
+          "oklch(95% 0.0046 264.4)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "micro": {
+        "displayName": "Micro — IBM Plex Mono",
+        "purpose": "Uppercase functional legends, lane numbers, status band, column heads, state keys; tracking `0.08em`."
+      },
+      "meta": {
+        "displayName": "Meta — IBM Plex Sans",
+        "purpose": "Metadata, footnotes, source lines, compact controls."
+      },
+      "body": {
+        "displayName": "Body — IBM Plex Sans",
+        "purpose": "Prose, labels, and readable control text; prose measure 62–72ch."
+      },
+      "data": {
+        "displayName": "Data — IBM Plex Mono",
+        "purpose": "Tabular figures and measurement cells in tables."
+      },
+      "title": {
+        "displayName": "Title — IBM Plex Sans",
+        "purpose": "Section heads and subpage heads."
+      },
+      "display": {
+        "displayName": "Display — IBM Plex Sans",
+        "purpose": "Page h1."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state-transition-duration",
+        "value": "150ms",
+        "purpose": "One state-transition duration (<=150ms); motion is state-only. prefers-reduced-motion: reduce makes state changes immediate, disables chart animation, and keeps the same focus, labels, readout, and table semantics."
+      },
+      {
+        "name": "state-transition-easing",
+        "value": "cubic-bezier(0.2, 0, 0, 1)",
+        "purpose": "The single easing for state-only rule, text, plate, selection, focus, lane, drawer, and cursor-readout changes; prefers-reduced-motion: reduce makes state changes immediate."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "rail-to-drawer",
+        "value": "1024px",
+        "purpose": "The 176px lane rail is desktop-only at ≥1024px; below 1024px it leaves the canvas for a drawer while the status band remains pinned."
+      },
+      {
+        "name": "workspace-max",
+        "value": "1440px",
+        "purpose": "Content is capped at 1440px."
+      },
+      {
+        "name": "line-number-gutter-switch",
+        "value": "768px",
+        "purpose": "At ≥768px the line-number gutter is 40px; below 768px the gutter drops before the state column."
+      },
+      {
+        "name": "edge-gutters",
+        "value": "24px mobile; 32px at ≥768px; 48px at ≥1280px",
+        "purpose": "The shell uses 24px mobile edge gutters, 32px at ≥768px, and 48px at ≥1280px."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Listing Row",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "A fixed-column inspectable record that keeps state, identity, value, basis, confidence, source, and retrieved date together.",
+      "html": "<div class=\"ds-listing-row\" role=\"row\" tabindex=\"0\" data-state=\"default\" aria-label=\"Line {line}; value {value}; basis plan route; confidence {measured|high|medium|low}; source {source}; retrieved {retrieved}\"><span class=\"ds-row-state\" role=\"gridcell\" aria-label=\"Live row\"><span class=\"ds-row-state-mark\" aria-hidden=\"true\"></span></span><span class=\"ds-row-line\" role=\"gridcell\">LINE</span><span class=\"ds-row-identity\" role=\"gridcell\">MODEL / PLAN</span><span class=\"ds-row-value\" role=\"gridcell\">VALUE</span><span class=\"ds-row-basis\" role=\"gridcell\">plan route</span><span class=\"ds-row-confidence\" role=\"gridcell\">CONFIDENCE</span><span class=\"ds-row-source\" role=\"gridcell\">SOURCE · retrieved {date}</span></div>",
+      "css": ".ds-listing-row { display: grid; grid-template-columns: 20px 40px minmax(12ch, 1fr) minmax(72px, max-content) max-content max-content minmax(18ch, auto); align-items: center; min-height: 36px; padding: 0 8px; background-color: var(--color-panel); color: var(--color-ink); border-bottom: 1px solid var(--color-rule); font-family: \"IBM Plex Mono\", monospace; font-size: 0.875rem; font-weight: 400; line-height: 20px; font-variant-numeric: tabular-nums; transition: background-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-listing-row:hover { background-color: var(--color-panel-2); color: var(--color-ink); } .ds-listing-row:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-row-state, .ds-row-line { border-right: 1px solid var(--color-rule); } .ds-row-state { min-height: 36px; display: grid; place-items: center; } .ds-row-state-mark::before { content: \" \"; } .ds-listing-row[data-state=\"held\"] .ds-row-state-mark::before { content: \"·\"; } .ds-listing-row[data-state=\"excluded\"] .ds-row-state-mark::before { content: \"-\"; } .ds-listing-row[data-state=\"committed\"] .ds-row-state-mark::before { content: \"*\"; color: var(--color-signal); } .ds-listing-row[data-state=\"gap\"] .ds-row-state-mark::before { content: \"!\"; color: var(--color-signal); } .ds-listing-row[data-state=\"low-confidence\"] .ds-row-state-mark::before { content: \"?\"; } .ds-listing-row[data-state=\"changed\"] .ds-row-state-mark::before { content: \"+\"; color: var(--color-signal); } .ds-listing-row[data-state=\"disabled\"] { color: var(--color-dim); } .ds-listing-row[data-state=\"loading\"] .ds-row-source::after { content: \" · pending\"; color: var(--color-dim); } .ds-listing-row[data-state=\"empty\"] .ds-row-source::after { content: \" · No committed rows for this view.\"; color: var(--color-dim); } .ds-listing-row[data-state=\"error\"] .ds-row-source::after { content: \" · source gap\"; color: var(--color-dim); } @media (max-width: 767px) { .ds-listing-row { min-height: 44px; grid-template-columns: 20px minmax(12ch, 1fr) minmax(72px, max-content); } .ds-row-line { display: none; } .ds-row-basis, .ds-row-confidence, .ds-row-source { grid-column: 2 / -1; } } @media (prefers-reduced-motion: reduce) { .ds-listing-row { transition: none; } }"
+    },
+    {
+      "name": "State Cell",
+      "kind": "custom",
+      "description": "The 20px carriage-control cell that communicates live, held, excluded, committed, gap, low-confidence, and changed states with glyphs.",
+      "html": "<span class=\"ds-state-cell\" role=\"img\" tabindex=\"0\" data-state=\"live\" aria-label=\"Live row\"><span class=\"ds-state-glyph\" aria-hidden=\"true\"></span></span>",
+      "css": ".ds-state-cell { display: inline-grid; place-items: center; width: 20px; min-width: 20px; min-height: 36px; background-color: var(--color-panel); color: var(--color-ink); border-right: 1px solid var(--color-rule); font-family: \"IBM Plex Mono\", monospace; font-size: 0.6875rem; font-weight: 500; line-height: 16px; letter-spacing: 0.08em; transition: background-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-state-cell:hover { background-color: var(--color-panel-2); color: var(--color-ink); } .ds-state-cell:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-state-glyph::before { content: \" \"; } .ds-state-cell[data-state=\"held\"] .ds-state-glyph::before { content: \"·\"; } .ds-state-cell[data-state=\"excluded\"] .ds-state-glyph::before { content: \"-\"; } .ds-state-cell[data-state=\"committed\"] .ds-state-glyph::before { content: \"*\"; color: var(--color-signal); } .ds-state-cell[data-state=\"gap\"] .ds-state-glyph::before { content: \"!\"; color: var(--color-signal); } .ds-state-cell[data-state=\"low-confidence\"] .ds-state-glyph::before { content: \"?\"; } .ds-state-cell[data-state=\"changed\"] .ds-state-glyph::before { content: \"+\"; color: var(--color-signal); } .ds-state-cell[data-state=\"disabled\"] { color: var(--color-dim); } .ds-state-cell[data-state=\"loading\"] .ds-state-glyph::before { content: \"?\"; } .ds-state-cell[data-state=\"empty\"] .ds-state-glyph::before { content: \" \"; } .ds-state-cell[data-state=\"error\"] .ds-state-glyph::before { content: \"!\"; color: var(--color-signal); } @media (max-width: 767px) { .ds-state-cell { min-height: 44px; } } @media (prefers-reduced-motion: reduce) { .ds-state-cell { transition: none; } }"
+    },
+    {
+      "name": "Badge Shell",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "A square evidence badge for confidence, freshness, and provenance labels that remain readable beside a value.",
+      "html": "<span class=\"ds-badge-shell\" role=\"status\" tabindex=\"0\" data-state=\"default\" aria-label=\"Confidence: measured|high|medium|low\">CONFIDENCE</span>",
+      "css": ".ds-badge-shell { display: inline-flex; align-items: baseline; min-height: 19px; padding: 4px 8px; background-color: var(--color-panel); color: var(--color-dim); border: 1px solid var(--color-rule); border-radius: 0; font-family: \"IBM Plex Sans\", sans-serif; font-size: 0.8125rem; font-weight: 400; line-height: 19px; transition: border-color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-badge-shell:hover { border-color: var(--color-rule-strong); color: var(--color-ink); } .ds-badge-shell:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-badge-shell[data-state=\"active\"] { background-color: var(--color-ink); color: var(--color-canvas); } .ds-badge-shell[data-state=\"active\"]::before { content: \"+\"; margin-right: 4px; color: var(--color-signal); } .ds-badge-shell[data-state=\"disabled\"] { color: var(--color-dim); border-color: var(--color-rule); } .ds-badge-shell[data-state=\"loading\"]::after { content: \" · pending\"; color: var(--color-dim); } .ds-badge-shell[data-state=\"empty\"]::after { content: \" · missing badge\"; color: var(--color-dim); } .ds-badge-shell[data-state=\"error\"]::after { content: \" · provenance error\"; color: var(--color-dim); } @media (prefers-reduced-motion: reduce) { .ds-badge-shell { transition: none; } }"
+    },
+    {
+      "name": "Cost-Basis Chip",
+      "kind": "chip",
+      "refersTo": "chip-basis",
+      "description": "A labelled cost-basis chip that uses words and stroke grammar for plan route, API list, or AA index without hue coding.",
+      "html": "<button class=\"ds-cost-basis-chip\" type=\"button\" data-basis=\"plan-route\" data-state=\"default\" aria-pressed=\"false\">PLAN ROUTE</button>",
+      "css": ".ds-cost-basis-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 4px 8px; background-color: var(--color-panel); color: var(--color-ink); border: 1px solid var(--color-rule); border-radius: 0; font-family: \"IBM Plex Mono\", monospace; font-size: 0.6875rem; font-weight: 500; line-height: 16px; letter-spacing: 0.08em; cursor: pointer; transition: border-color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-cost-basis-chip:hover { border-color: var(--color-rule-strong); } .ds-cost-basis-chip:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-cost-basis-chip:active { background-color: var(--color-ink); color: var(--color-canvas); } .ds-cost-basis-chip[data-basis=\"api-list\"] { border-right-color: transparent; } .ds-cost-basis-chip[data-basis=\"aa-index\"] { border-style: double; border-width: 3px; } .ds-cost-basis-chip[data-basis=\"plan-route\"][data-state=\"active\"] { background-color: var(--color-signal); color: var(--color-on-signal); border-color: var(--color-signal); } .ds-cost-basis-chip[data-basis=\"plan-route\"][data-state=\"active\"]::before { content: \"+\"; } .ds-cost-basis-chip[data-state=\"disabled\"] { color: var(--color-dim); border-color: var(--color-rule); cursor: default; } .ds-cost-basis-chip[data-state=\"loading\"]::after { content: \" · pending\"; color: var(--color-dim); } .ds-cost-basis-chip[data-state=\"empty\"]::after { content: \" · no filter\"; color: var(--color-dim); } .ds-cost-basis-chip[data-state=\"error\"]::after { content: \" · source gap\"; color: var(--color-dim); } @media (prefers-reduced-motion: reduce) { .ds-cost-basis-chip { transition: none; } }"
+    },
+    {
+      "name": "CI Bar",
+      "kind": "custom",
+      "description": "A compact confidence-interval bar for a measured value, with a readable accessible interval and a distinct value marker.",
+      "html": "<span class=\"ds-ci-bar\" role=\"img\" tabindex=\"0\" data-state=\"default\" aria-label=\"{value} (interval {lo} to {hi}; {measured|high|medium|low})\"><span class=\"ds-ci-range\" style=\"left: 8%; width: 84%;\"></span><span class=\"ds-ci-value\" style=\"left: 68%;\"></span></span>",
+      "css": ".ds-ci-bar { position: relative; display: inline-block; width: 100%; min-width: 64px; height: 4px; background-color: var(--color-rule); border: 1px solid var(--color-rule); border-radius: 0; transition: background-color 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-ci-bar:hover { background-color: var(--color-rule-strong); border-color: var(--color-rule-strong); } .ds-ci-bar:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-ci-range { position: absolute; top: 0; bottom: 0; background-color: var(--color-dim); } .ds-ci-value { position: absolute; top: -1px; bottom: -1px; width: 2px; background-color: var(--color-ink); } .ds-ci-bar[data-state=\"active\"] .ds-ci-value { background-color: var(--color-signal); } .ds-ci-bar[data-state=\"active\"]::after { content: \"+\"; position: absolute; top: -16px; right: 0; color: var(--color-signal); font-family: \"IBM Plex Mono\", monospace; font-size: 0.6875rem; } .ds-ci-bar[data-state=\"disabled\"] { background-color: var(--color-rule); } .ds-ci-bar[data-state=\"disabled\"] .ds-ci-range, .ds-ci-bar[data-state=\"disabled\"] .ds-ci-value { background-color: var(--color-dim); } .ds-ci-bar[data-state=\"loading\"]::after { content: \"pending interval\"; position: absolute; top: 8px; left: 0; color: var(--color-dim); font-family: \"IBM Plex Sans\", sans-serif; font-size: 0.8125rem; } .ds-ci-bar[data-state=\"empty\"] { background-color: transparent; border-color: var(--color-rule); } .ds-ci-bar[data-state=\"empty\"]::after { content: \"no interval reported\"; position: absolute; top: 8px; left: 0; color: var(--color-dim); font-family: \"IBM Plex Sans\", sans-serif; font-size: 0.8125rem; white-space: nowrap; } .ds-ci-bar[data-state=\"error\"]::after { content: \"! source gap\"; position: absolute; top: 8px; left: 0; color: var(--color-dim); font-family: \"IBM Plex Mono\", monospace; font-size: 0.6875rem; } @media (prefers-reduced-motion: reduce) { .ds-ci-bar { transition: none; } }"
+    },
+    {
+      "name": "Control Row",
+      "kind": "custom",
+      "description": "A labelled, wrapping strip of URL-backed controls that preserves values and state without horizontal overflow.",
+      "html": "<form class=\"ds-control-row\" aria-label=\"Selection controls\" data-state=\"default\"><label class=\"ds-control-label\" for=\"ds-tasks\">TASKS/MONTH</label><input class=\"ds-control-input\" id=\"ds-tasks\" type=\"number\" value=\"300\" inputmode=\"numeric\"><button class=\"ds-control-button\" type=\"button\">APPLY <span aria-hidden=\"true\">+</span></button></form>",
+      "css": ".ds-control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--color-rule); border-bottom: 1px solid var(--color-rule); color: var(--color-dim); font-family: \"IBM Plex Sans\", sans-serif; font-size: 0.8125rem; font-weight: 400; line-height: 19px; transition: border-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-control-row:hover { border-color: var(--color-rule-strong); } .ds-control-row:focus-within { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-control-label { font-family: \"IBM Plex Mono\", monospace; font-size: 0.6875rem; font-weight: 500; line-height: 16px; letter-spacing: 0.08em; } .ds-control-input, .ds-control-button { min-height: 36px; padding: 8px 12px; border: 1px solid var(--color-rule); border-radius: 0; font-family: \"IBM Plex Sans\", sans-serif; font-size: 0.9375rem; font-weight: 400; line-height: 24px; } .ds-control-input { width: 8ch; background-color: var(--color-panel); color: var(--color-ink); caret-color: var(--color-signal); font-variant-numeric: tabular-nums; } .ds-control-button { background-color: var(--color-panel); color: var(--color-ink); cursor: pointer; transition: border-color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-control-input:hover, .ds-control-button:hover { border-color: var(--color-rule-strong); } .ds-control-input:focus-visible, .ds-control-button:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-control-button:active { background-color: var(--color-ink); color: var(--color-canvas); } .ds-control-row[data-state=\"active\"] .ds-control-button { background-color: var(--color-signal); color: var(--color-on-signal); border-color: var(--color-signal); } .ds-control-row[data-state=\"disabled\"] { color: var(--color-dim); } .ds-control-row[data-state=\"disabled\"] .ds-control-input, .ds-control-row[data-state=\"disabled\"] .ds-control-button { color: var(--color-dim); border-color: var(--color-rule); cursor: default; } .ds-control-row[data-state=\"loading\"]::after { content: \" · pending\"; color: var(--color-dim); } .ds-control-row[data-state=\"empty\"]::after { content: \" · no options\"; color: var(--color-dim); } .ds-control-row[data-state=\"error\"]::after { content: \" · validation/source error\"; color: var(--color-dim); } @media (prefers-reduced-motion: reduce) { .ds-control-row, .ds-control-button { transition: none; } }"
+    },
+    {
+      "name": "Pinned Status Band",
+      "kind": "custom",
+      "refersTo": "status-band",
+      "description": "The pinned 32px status landmark carrying build, data retrieval, and Artificial Analysis gate state above the console.",
+      "html": "<header class=\"ds-status-band\" role=\"status\" aria-live=\"polite\" tabindex=\"0\" data-state=\"default\"><span class=\"ds-status-mark\" aria-hidden=\"true\"></span><span class=\"ds-status-key\">RACK-RATE</span><span class=\"ds-status-value\">BUILD {date} · DATA {date} · AA {ON|OFF}</span></header>",
+      "css": ".ds-status-band { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 4px 8px; background-color: var(--color-panel-2); color: var(--color-dim); border-bottom: 1px solid var(--color-rule); border-radius: 0; font-family: \"IBM Plex Mono\", monospace; font-size: 0.6875rem; font-weight: 500; line-height: 16px; letter-spacing: 0.08em; transition: border-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1); } .ds-status-band:hover { border-bottom-color: var(--color-rule); color: var(--color-dim); } .ds-status-band:focus-visible { outline: 2px solid var(--color-signal); outline-offset: 2px; } .ds-status-mark { display: inline-block; min-width: 1ch; } .ds-status-band[data-state=\"active\"] { color: var(--color-signal); } .ds-status-band[data-state=\"active\"] .ds-status-mark::before { content: \"+\"; } .ds-status-band[data-state=\"disabled\"] { color: var(--color-dim); } .ds-status-band[data-state=\"loading\"]::after { content: \" · PENDING\"; color: var(--color-dim); } .ds-status-band[data-state=\"empty\"]::after { content: \" · NO STATUS\"; color: var(--color-dim); } .ds-status-band[data-state=\"error\"]::after { content: \" · ! SOURCE GAP\"; color: var(--color-dim); } @media (prefers-reduced-motion: reduce) { .ds-status-band { transition: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Console Listing",
+    "overview": "**Status.** This is the pre-build contract for a replacement visual world. It is locked from the incumbent screenshots in `.impeccable/review/incumbent/` and the current tokens in `apps/site/src/styles/global.css`. When implementation lands, the documenter re-derives this contract from the built world. It supersedes the incumbent anti-signals and the three-basis accent palette.\n\n**Creative North Star: “The Console Listing.”** Rack Rate is a mainframe console / ISPF panel made legible for a public purchase decision. A software practitioner reads it at a desk or on a phone under ordinary monitor or room light, carrying a plan choice, a model choice, and a need to check the arithmetic. Fixed-column listing paper, a line-number gutter, a carriage-control state column, printer rules, and uppercase legends make every row inspectable. The surfaces own one idea: a sourced number is useful only when its value, basis, confidence, and origin stay together.\n\nThis is an independent rack-rate product. Bosphorus Elevate is credited as maker only in the footer/about context; its atmospheric photo aesthetic is not inherited. The world refuses both the dark-SaaS-neon default and its warm-cream editorial opposite. It is dark by default, with a strict light inversion that changes values, never structure. Imagery is limited to data graphics and authored technical figures.",
+    "keyCharacteristics": [
+      "Fixed-column console listing with line numbers, carriage-control marks, printer rules, and functional uppercase legends.",
+      "Status band pinned above a numbered lane rail on desktop; band plus drawer on mobile.",
+      "Split-console entry: selection on the left, a pre-filled readout listing on the right, with every control represented in the URL.",
+      "One cursor readout that always identifies value, basis, confidence, source, and `retrieved` date.",
+      "Monochrome grounds plus one amber signal; cost bases are distinguished by words and stroke grammar, not hue.",
+      "Flat, square, evidence-first surfaces with state-only motion."
+    ],
+    "rules": [
+      {
+        "name": "The One Signal Rule",
+        "body": "Amber is the only chromatic value on the site and it means active, selected or attention. It holds under a tenth of any screen; its rarity is the point.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mark, Not The Colour Rule",
+        "body": "State, severity, cost basis and confidence are carried by a glyph, a stroke pattern or an inversion — never by hue. A screenshot in greyscale must lose nothing contractual.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gutter Rule",
+        "body": "Every listing row carries a line number. It is an anchor for deep links and citations, and it is the first element dropped on a phone.",
+        "section": "layout"
+      },
+      {
+        "name": "The Never Alone Rule",
+        "body": "A figure never appears without its basis. The readout line is the one place that fact always exists, and it must be readable without hover, by keyboard and by touch.",
+        "section": "layout"
+      },
+      {
+        "name": "The 0-Radius Rule",
+        "body": "Nothing is rounded — plates, inputs, buttons, chips, dialogs, markers.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Flat Rule",
+        "body": "No shadow, gradient, blur or glow anywhere. Depth is the rule hierarchy (1px structural, 2px section opener, 2px table head, 1px column group) and the three neutral grounds.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Nothing Disappears Rule",
+        "body": "An excluded row moves to the visible set-aside rail with its `-` mark; it is never hidden, deleted or faded to nothing.",
+        "section": "do's and don'ts"
+      },
+      {
+        "name": "The Missing Rule",
+        "body": "A gap prints as a gap: open stroke, hatch, `!` mark and the reason recorded in `known_gaps` — never a zero, never an interpolated line.",
+        "section": "do's and don'ts"
+      },
+      {
+        "name": "The Silence Rule",
+        "body": "No ornament, no emoji, no marketing adjective, nothing decorative that is not a measurement or a rule.",
+        "section": "do's and don'ts"
+      }
+    ],
+    "dos": [
+      "**Do** use the Console Listing anatomy: pinned status band, numbered lane rail, line-number gutter, carriage-control cell, fixed columns, printer rules, and visible set-aside rows.",
+      "**Do** keep each figure with its basis, confidence, citation, and `retrieved` date; expose the same facts to keyboard and touch users.",
+      "**Do** keep `benchmark_version` in row identity; keep missing values null; suppress composites under `k < 2` and badge them `single-source`.",
+      "**Do** keep `pass@1` and `pass@4` in separate fields, axes, and formulas; only `pass@1` feeds scores and composites.",
+      "**Do** build offline from committed data with zero browser data requests; keep Artificial Analysis off unless both `AA_API_KEY` and `AA_PUBLISH=1` are set, and show the gate state on Sources.",
+      "**Do** provide keyboard traversal for every chart and table, real table semantics, visible 2px amber focus with 2px offset, honoured `prefers-reduced-motion`, usable touch targets, no horizontal scroll at 360px, and text contrast ≥4.5:1.",
+      "**Do** theme browser surfaces: selection uses the active signal and `--color-on-signal` text; the caret uses the signal; focus uses a 2px amber ring offset 2px; scrollbar track uses the panel-2 ground and thumb uses the strong rule; numerals use tabular figures; underlines use a 2px offset.",
+      "**Do** keep `--color-faint` at the lowest text contrast, reserved for uppercase mono legends at ≥11px; keep every future token at ≥4.5:1 against panel-2."
+    ],
+    "donts": [
+      "**Don't** use rounded corners or pills.",
+      "**Don't** use shadows, glow, gradient, blur, or glass.",
+      "**Don't** introduce a second hue or green/red semantic colour.",
+      "**Don't** use decorative imagery, photography, illustration, or emoji.",
+      "**Don't** use card grids, floating mockups, logo walls, testimonials, or invented proof.",
+      "**Don't** use spinners or shimmer skeletons.",
+      "**Don't** use decorative dashed borders; dashes are reserved for the uncertainty/gap grammar.",
+      "**Don't** use monospace for prose paragraphs.",
+      "**Don't** use a decorative eyebrow or kicker above a heading; uppercase mono is reserved for functional labels, field names, column heads, lane numbers, and status keys.",
+      "**Don't** reserve a brand accent panel for decoration; amber means active or attention.",
+      "**Don't** use motion above 150ms or hide information on hover only; basis, confidence, and source stay readable by keyboard and touch."
+    ]
+  }
+}
