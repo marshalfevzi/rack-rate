@@ -13,6 +13,8 @@ tools:
   - web_search
 spawns: 
   - scout
+model: 
+  - "@advisor"
 read-summarize: false
 ---
 

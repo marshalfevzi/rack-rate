@@ -1,19 +1,8 @@
 ---
 name: pm-implementer
 description: Implement one non-UI PM task end to end, validate it with the repository gates, and report evidence.
-tools:
-  - read
-  - write
-  - edit
-  - bash
-  - grep
-  - glob
-  - ast_grep
-  - ast_edit
-  - lsp
-  - todo
 spawns: "*"
-model: 
+model:
   - "@task"
 thinkingLevel: auto
 ---
