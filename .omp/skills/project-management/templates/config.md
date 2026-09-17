@@ -1,0 +1,21 @@
+<!-- dest: docs/pm/config.yml -->
+project:
+  name: rack-rate
+  prd: PRD.md
+  product: PRODUCT.md
+  design: DESIGN.md
+  architecture: ARCHITECTURE.md
+  constraints: null
+prefixes:
+  COR: { domain: "core", impeccable: false }
+  DATA: { domain: "data-cli", impeccable: false }
+  APP: { domain: "site", impeccable: false }
+  UI: { domain: "design", impeccable: true }
+  DOC: { domain: "docs", impeccable: false }
+  PM: { domain: "process", impeccable: false }
+paths:
+  milestones: docs/pm
+  archive: docs/archive
+  ideas: docs/pm/ideas
+  unplanned: docs/pm/unplanned
+  decisions: docs/pm/decisions

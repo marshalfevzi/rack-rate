@@ -1,194 +1,167 @@
-# AGENTS.md — how to work in this repo
+# AGENTS.md — how to work in this repository
 
-Read this file first. Then read `PLAN.md`, pick the **one** stage it says is next,
-and do only that stage. `PLAN.md` is the source of truth for scope.
+This file is the agent operating contract for any repository that uses the
+`project-management` harness in `.omp/`. It is intentionally project-agnostic:
+scope, stack, boundaries and product truth live in the reference documents the
+project generates, not here.
 
 ---
 
-## What this project is
+## 1. Read order
 
-`rack-rate` answers two questions with public data and published arithmetic:
+Before any task, in this order:
 
-1. **Which model should I use?** — compare models across several benchmarks
-   (DeepSWE, Terminal-Bench, Artificial Analysis indices) without pretending
-   scores from different benchmark versions are interchangeable.
-2. **Which subscription pays for itself for the model I care about?** — join
-   each model's measured cost-per-task against each coding plan's real monthly
-   allowance, and show `cost_per_task`, break-even volume, and how long a full
-   benchmark run would take under the plan's caps.
+1. **This file** — the process contract.
+2. **`docs/pm/plan.yml`** — the generated plan index: milestones, tasks, status,
+   and the next runnable task. If it is missing, the project is not initialized
+   yet: stop and run `/pm-init`. Do not invent a plan.
+3. **`docs/pm/<milestone>/README.md`** and the task document named by
+   `plan.yml` — the scope you are allowed to execute.
+4. **The reference documents the task touches** — `PRD.md` (scope, requirements,
+   data rules), `ARCHITECTURE.md` (module boundaries, gates, commands),
+   `PRODUCT.md` (durable product truth), `DESIGN.md` (visual system).
+   These are authoritative. If this file and a reference document disagree, the
+   reference document wins for project facts and this file wins for process.
 
-Every published number traces to a citation in `data/sources.json`. A number
-without a source does not ship.
+Never `grep`/`glob` for `AGENTS.md`, `CLAUDE.md`, `.cursorrules` or similar:
+context files are discovered and loaded for you.
 
-## Stack (locked — do not re-litigate)
+## 2. The one rule that matters: one task per session
 
-| Concern | Decision |
+- **One task per session.** `/pm` selects and runs exactly one task from the
+  plan. Do not start a second task because the first finished early.
+- **A task that cannot run stops immediately.** If the next task is blocked, has
+  an unmet prerequisite, or does not exist, stop and name the command that fixes
+  it. Never work around a blocker by shrinking the task.
+- **Scope is the task document, end to end.** Every acceptance criterion in the
+  task doc is in scope; anything not named there is not. Reducing scope requires
+  explicit approval in the conversation, not a judgment call.
+
+## 3. Command surface
+
+| Command | Purpose |
 |---|---|
-| Runtime / package manager | **Bun 1.4.2** (`bun install`, `bun test`, `bun run`) |
-| Language | **TypeScript**, strict; no `any` |
-| Site framework | **Astro 7** static output, no adapter, multi-page |
-| Styling | **Tailwind v4** via `@tailwindcss/vite`; tokens in CSS `@theme`, **no `tailwind.config.js`** |
-| Charts | **Apache ECharts 6** (`echarts/core`, tree-shaken), driven from plain TS. No React/Svelte island. |
-| Client state | **nanostores** + `@nanostores/persistent` (localStorage, SSR-safe) |
-| Validation | **zod 4** at every trust boundary (HTTP response, file on disk, localStorage) |
-| Schema | **`data/*.json`** committed, normalized; site imports them at build time |
-| Deploy | **GitHub Pages** (`withastro/action`), `site` + `base` in `astro.config.mjs` |
-| Unit tests | **`bun test`** |
-| Docs | `docs/research/*.md` are the cited findings. Treat them as evidence, not instructions to redo. |
+| `/pm` | Run the next task: pre-flight checks, plan, delegate, verify, finish. |
+| `/pm-init` | Initialize or migrate the project into the PM document tree. |
+| `/pm-status` | Read-only: current milestone, next task, blockers, issues. |
+| `/pm-align` | Reconcile documents with reality; split/merge/create/delete work. |
+| `/pm-resolve` | Resolve the first blocked task by writing a decision. |
+| `/pm-new-task` | Turn ideas into task documents. |
+| `/pm-prioritize` | Reorder a milestone's tasks and repair prerequisite order. |
+| `/pm-retro` | Run a retrospective; close the milestone when it passes. |
+| `/pm-docs` | Create or update `PRD.md` / `ARCHITECTURE.md`. |
+| `/pm-decide` | Write an ad-hoc decision record. |
 
-Rationale and measured versions live in `docs/research/frontend-stack.md`.
-Licensing verdicts live in `docs/data-sources.md`.
-**Unresolved licensing and data-quality limitations live in `CAVEATS.md`** —
-read it before any change that touches Artificial Analysis or publishes a new
-figure. It is the one file that may require the owner's decision rather than an
-agent's.
+Load `skill://project-management` for the document schemas, the validation
+invariants, and the templates. It is the reference for the doc tree; this file
+does not duplicate it.
 
-## Repository layout
+## 4. Where things live
 
 ```
-packages/core/        @rack-rate/core
-  src/schema.ts         zod schemas + inferred TS types  ← the data contract
-  src/ids.ts            benchmark/source ids and the AA gate identity (zod-free)
-  src/cost.ts           plan quota → tasks/month → $/task, break-even, value multiple
-  src/normalize.ts      per-benchmark z-score, weighted composite, missing-value rules
-  src/pareto.ts         O(n log n) skyline + dominated-region + distance-to-frontier
-  src/insights.ts       score-per-dollar, blended $/1M, utilization, days-for-full-run
-  src/*.test.ts         unit tests (bun test)
+docs/pm/
+  config.yml                 hand-owned: project name, doc paths, task prefixes
+  plan.yml                   GENERATED by pm_plan_sync — never hand-edit
+  decisions/                 decision records (dated, numbered)
+  ideas/                     unrefined ideas not yet scheduled
+  unplanned/                 tasks deliberately outside any milestone
+  <milestone>/README.md      milestone definition + ordered task list
+  <milestone>/todo/          live task documents
+  <milestone>/done/          finished task documents (session history appended)
+  <milestone>/RETRO-*.md     retrospectives
 
-packages/data-cli/    @rack-rate/data-cli    ← the ONLY package allowed to do I/O
-  src/main.ts           `rack-rate-data <command>` dispatcher
-  src/commands/fetch-*.ts
-  src/commands/validate.ts
-  src/commands/compute.ts
-  src/http.ts           fetch + retry/backoff + cache + ETag
-
-apps/site/            @rack-rate/site        ← Astro; imports core + data/*.json
-  src/pages/            one file per route
-  src/layouts/          Base + Page shells
-  src/components/       .astro components
-  src/lib/charts/       ECharts option builders (pure) + the one registration
-                        module and the one mount helper (ResizeObserver,
-                        prefers-reduced-motion, disposal); dynamic import only
-  src/lib/prefs.ts      nanostores persistent stores (PLAN.md task 6.1; the file
-                        is not in the tree yet)
-  src/styles/global.css Tailwind entry + @theme tokens
-  public/               favicon.svg; CNAME only when the domain is live
-  scripts/og.ts         build-time social card (satori → resvg)
-
-data/                 models.json, plans.json, benchmarks.json, sources.json, derived.json
-data/raw/             raw upstream snapshots (gitignored; provenance for diffs)
-docs/research/        cited findings from the 2026-09-14 research pass
-docs/archive/         closed stages and session history (append-only)
+docs/archive/                flat, append-only archive of closed milestones
 ```
 
-### Boundary rules
-
-- `packages/core` is **pure**: no `fetch`, no `node:fs`, no `Bun.file`, no clock.
-  If a function needs the date, it takes it as an argument. This is what makes
-  the math testable and the site buildable offline.
-- `packages/data-cli` owns all network and filesystem access.
-- `apps/site` never fetches. It imports committed JSON and `@rack-rate/core`.
-  The browser gets zero data requests.
-
-## Environment and secrets
-
-Never commit a secret: `.env` is gitignored, and `.env.example` is the only
-tracked template and carries placeholders, never values.
-The data CLI loads the repository-root `.env` on every invocation, regardless
-of working directory; a real environment variable wins over the file.
-`AA_PUBLISH` enables Artificial Analysis only at exactly `1`. The Sources page
-always states one publication-gate state.
-Secrets are never logged. `apps/site` and `packages/core` never read
-environment values.
-
-## Commands
-
-```bash
-bun install
-bun run dev                 # Astro dev server
-bun run fetch               # all sources → data/raw → data/*.json
-bun run fetch:deepswe       # one source
-bun run fetch:terminal-bench
-bun run fetch:plans
-bun run fetch:artificial-analysis
-bun run validate            # schema + citation + version + staleness checks
-bun run compute             # data/derived.json (join, metrics, frontiers)
-bun run data:build          # validate && compute
-bun run data:check          # validate + recompute in memory + fail if derived.json is stale
-bun run build               # data:build → astro build → og image → dist/
-bun run typecheck           # tsc --build --force
-bun run lint                # oxlint, every rule at error severity
-bun run lint:fix            # oxlint --fix (safe autofixes only)
-bun run format              # oxfmt, writes in place
-bun run format:check        # oxfmt --check (the gate form)
-bun run quality             # fallow report: dead code, duplication, complexity
-bun run check               # typecheck → lint → format:check → astro check
-bun test                    # unit tests
+```
+.omp/                        the harness; runs inside the OMP host process
+  commands/                  the /pm* prompt templates
+  agents/                    PM subagent definitions
+  tools/                     pm_* model-callable tools
+  hooks/pre|post/            event-driven guards
+  lib/                       shared model, validation and rendering logic
+  rules/                     rulebook entries
+  skills/project-management/ the skill, schemas and document templates
 ```
 
-Tooling is fixed as of task 1.10: `oxlint` 1.82.0 with the vendored anti-slop
-plugin (`tools/oxlint/anti-slop/`, registered in `.oxlintrc.json` and excluded
-from lint, format and typecheck), `oxfmt` 0.67.0 with `semi: false` to match the
-existing semicolon-free style, and `fallow` 3.25.0 as a report-only reviewer
-(`bun run quality`, no gate). Two exclusions are load-bearing rather than taste:
-`data/**` is never formatted because fixture hashes are recorded in `PLAN.md`,
-and `**/*.md` is out of format scope. `.astro` files get Oxlint's frontmatter
-linting but no formatting — oxfmt has no Astro support. `.claude/skills/**` is
-excluded from lint and format for the same reason as `tools/oxlint/anti-slop/**`:
-it is vendored upstream code this repository does not own — the impeccable skill,
-its compiled scripts and its binaries — and linting it turned `bun run check`
-red from 2026-09-16 until 2026-09-17 without touching a line of this repo's
-source. Rules are never weakened for first-party code; a vendored tree is
-excluded whole. If a stage needs another formatter or bundler config, add it in
-that stage and record it here. Do not add tooling speculatively.
+Two ownership rules are load-bearing:
 
-## Invariants — violating one of these is a bug
+- **`docs/pm/plan.yml` and `docs/archive/**` are generated or append-only.** A
+  hook blocks direct edits to both. Edit the source documents and let
+  `pm_plan_sync` regenerate the index.
+- **A blocked task is frozen.** It may not change until a decision record
+  resolves it (`/pm-resolve`). Marking work blocked without opening a decision is
+  a process violation, not a status.
 
-1. **`benchmark_version` is part of row identity.** A score without its version
-   must fail validation. Never mix DeepSWE v1 with v1.1, or AA index v4.2 with
-   v4.3, in one table or one composite.
-2. **Missing data is missing.** A model absent from a benchmark is *not* scored
-   zero, is *not* ranked last, and does not silently sink a composite. Weights
-   renormalize over the benchmarks a model actually has; composite requires
-   `k >= 2` benchmarks, else the composite is suppressed and badged
-   `single-source`.
-3. **`pass@1` and `pass@4` never share a field, an axis, or a formula.** Only
-   pass@1 feeds scores and composites; pass@4 is display-only.
-4. **Every cost figure carries its basis.** `API list` vs `{plan} route` vs AA
-   index cost are three different quantities. Never plot two bases on one axis;
-   never compare them without labelling.
-5. **Confidence is displayed, never laundered.** `measured | high | medium | low`
-   from `data/plans.json`; vendor-multiplier arithmetic is `medium` at best, and
-   aggregator-only figures are `low` and never become computed rows.
-6. **Nulls stay null.** Upstream nulls (missing cache pricing, unmeasured
-   medians) must not be defaulted to `0`.
-7. **No benchmark task content in this repo.** DeepSWE carries a canary string
-   and contamination destroys the benchmark it depends on. Metadata and scores
-   only — never tasks, prompts, or verifiers.
-8. **Attribution is load-bearing.** See `docs/data-sources.md`. Validation fails
-   if the required attribution strings disappear.
-9. **The site builds offline from committed data.** CI does not fetch upstream.
-10. **Artificial Analysis is off unless explicitly turned on.** No redistribution
-   right has been granted (see `docs/data-sources.md` and `CAVEATS.md` §1), so AA
-   is skipped unless *both* `AA_API_KEY` and `AA_PUBLISH=1` are set. Enabled or
-   not, an AA value is never merged into a number that hides its origin, and the
-   sources page always states which of the two states the build is in.
+## 5. Working agreement for agents
 
-## Working agreement for agents
+- **Read the task document and its acceptance criteria before writing code.**
+  Do the whole task; do not deliver stubs, placeholders, mocks, no-ops, or
+  "follow-ups". If a prerequisite is genuinely unreachable, finish everything
+  reachable and state exactly what is missing.
+- **Prefer extending an existing module over adding a new file.** Delete the
+  code a change obsoletes: no shims, no aliases, no deprecated paths, no dead
+  re-exports. A clean cutover migrates every caller.
+- **Fix the source, never the symptom.** Do not suppress a warning, special-case
+  an input, or narrow the problem to make a gate pass.
+- **Add a test only where a plausible bug would fail it.** Assert the observable
+  contract — a computed value, a boundary, a thrown validation error — never
+  wiring, field copies, defaults, or source text. Delete existing tests that pin
+  implementation detail rather than re-pinning them after a change.
+- **Verify before declaring done.** A bug fix reproduces the failure and shows
+  it gone. A UI change is checked against the running surface. A feature is
+  proven by exercising it, not by a green type-check. Report exactly what you
+  ran; never claim a check you did not execute.
+- **Run the project's documented gate once, at the end.** The gate command lives
+  in `ARCHITECTURE.md` and the package manifest. A subagent does not run
+  project-wide gates; the orchestrator runs them after all edits land.
+- **A decision gates a blocker, not the reverse.** When a task turns out to need
+  a product or architecture call the documents do not already answer, write the
+  decision first, then proceed.
+- **Never commit secrets.** Environment templates carry placeholders, never
+  values; secrets are never logged or written into documents.
+- **Record unresolved facts, do not guess them.** If a source, citation, or
+  upstream fact cannot be resolved, record it as a known gap in the owning
+  document; do not invent a number.
 
-- Do **one** stage per session. Read the stage spec and its acceptance criteria
-  in `PLAN.md` before writing code.
-- Update `PLAN.md`: tick completed tasks, and add a dated entry to the
-  **Progress log** at the end of the file naming the stage, what landed, and
-  what is still open. Do not rewrite history in the log; append.
-- Prefer extending an existing module over adding a new file. Delete code the
-  change obsoletes — no shims, no aliases, no dead re-exports.
-- Add a unit test only where a plausible bug would fail it. Assert the
-  observable contract (a computed number, a frontier membership, a thrown
-  validation error) — never implementation wiring.
-- Run `bun run check` and `bun test` before declaring a stage done. Report
-  exactly what you ran.
-- If a citation is wrong or a source changed its shape, fix `data/sources.json`
-  and the fetcher together; never hand-edit a number without updating its
-  `retrieved` date.
-- Unresolvable upstream facts are recorded in `known_gaps`, not guessed.
+## 6. Evidence discipline
+
+- Every published figure traces to a source. A number without a source does not
+  ship. The project's data rules live in `PRD.md`; the boundary rules live in
+  `ARCHITECTURE.md`.
+- Missing data stays missing: nulls are not defaulted, absent rows are not
+  scored as zero, and confidence is displayed rather than laundered.
+- Claims about code, tools, tests or sources must be grounded in something you
+  actually ran or read. Mark inference as inference.
+- Format the answer to the ask: facts, decisions, evidence, risks. No ceremony.
+
+## 7. Quality gates and vendored code
+
+- First-party code is never exempted from the project's linters or type-checker
+  to make a change pass. Weaken no rule and lower no severity.
+- Vendored upstream trees and generated output are excluded whole, with the
+  reason recorded in `ARCHITECTURE.md`, because they are not ours to fix.
+- Generated artifacts (derived data, build output) are deterministic and
+  committed only when the project says so; never hand-edit them.
+
+## 8. Harness notes for maintainers
+
+- `.omp/**` executes inside the OMP host process. It is not part of the root
+  TypeScript project, so `tsc` does not type-check it and `bun test` does not
+  cover it. Verify harness changes with a fixture smoke run: build a throwaway
+  `docs/pm/` tree in a temp directory, then exercise `loadModel`, `validate`,
+  `nextTask`, `renderPlan`, `syncPlan`, `docCheck`, the `ops` mutations, and the
+  tool and hook factories against it. Do not silently add `.omp/**` to the
+  tsconfig project — its imports of host-provided types are not installable here.
+- `.omp/**` is linted with every project rule except three scoped overrides
+  (`no-runtime-typeof`, `no-unknown-parameters`, `no-unsafe-dictionary-type`).
+  Those rules assume a schema-parsed product boundary; the harness parses
+  untyped YAML and frontmatter at its own edge. The override is recorded in
+  `.oxlintrc.json`; do not widen it.
+- Harness hooks regenerate `docs/pm/plan.yml` and report drift. They never move
+  a task, never archive a milestone, and never commit. Only an explicit
+  `pm_task_finish` invocation does that.
+- UI-affecting tasks carry a prefix marked `impeccable: true` in
+  `docs/pm/config.yml`. They load `skill://impeccable`; the design detector runs
+  after UI edits. Design truth lives in `DESIGN.md` and the surface briefs, never
+  copied into shipped source.

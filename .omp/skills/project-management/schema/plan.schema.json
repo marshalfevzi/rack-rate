@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rack-rate.local/schemas/project-management/plan.schema.json",
+  "title": "Generated rack-rate project plan",
+  "description": "The generated YAML model emitted to docs/pm/plan.yml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project", "milestones", "archived"],
+  "properties": {
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/milestone"
+      }
+    },
+    "archived": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/archived"
+      }
+    }
+  },
+  "$defs": {
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "last_commit", "prd", "product", "design", "architecture"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "last_commit": {
+          "type": "string"
+        },
+        "prd": {
+          "type": "string"
+        },
+        "product": {
+          "type": "string"
+        },
+        "design": {
+          "type": "string"
+        },
+        "architecture": {
+          "type": "string"
+        }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status", "file", "tasks", "retro"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/milestoneStatus"
+        },
+        "file": {
+          "type": "string"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/task"
+          }
+        },
+        "retro": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "description", "status", "pre", "file", "impeccable"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/taskStatus"
+        },
+        "pre": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "file": {
+          "type": "string"
+        },
+        "impeccable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "archived": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status", "file"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "const": "completed"
+        },
+        "file": {
+          "type": "string"
+        }
+      }
+    },
+    "milestoneStatus": {
+      "type": "string",
+      "enum": ["backlog", "in_progress", "retro", "completed"]
+    },
+    "taskStatus": {
+      "type": "string",
+      "enum": ["todo", "done", "blocked"]
+    }
+  },
+  "examples": [
+    {
+      "project": {
+        "name": "rack-rate",
+        "last_commit": "0123456789abcdef0123456789abcdef01234567",
+        "prd": "PRD.md",
+        "product": "PRODUCT.md",
+        "design": "DESIGN.md",
+        "architecture": "ARCHITECTURE.md"
+      },
+      "milestones": [
+        {
+          "id": "M1",
+          "title": "Foundation",
+          "status": "in_progress",
+          "file": "docs/pm/M1/README.md",
+          "tasks": [
+            {
+              "id": "COR-005",
+              "title": "Define domain model",
+              "description": "Document the core model",
+              "status": "todo",
+              "pre": [],
+              "file": "docs/pm/M1/todo/COR-005.md",
+              "impeccable": false
+            }
+          ],
+          "retro": []
+        }
+      ],
+      "archived": [
+        {
+          "id": "M0",
+          "title": "Bootstrap",
+          "status": "completed",
+          "file": "docs/archive/M0-bootstrap.md"
+        }
+      ]
+    }
+  ]
+}
