@@ -44,7 +44,7 @@ models across several benchmarks with the Pareto frontier drawn on both the
 API-list and plan-adjusted axes, reads where each number came from, and can
 carry their ignored/paid/already-owned choices between visits — on a phone,
 on a static site, with no server. The URL carries that state today; the
-persisted store is `docs/pm/M2/todo/APP-601.md`.
+persisted store is `docs/pm/M6/todo/APP-601.md`.
 
 ## Positioning
 
@@ -84,7 +84,7 @@ The mechanism a neighbouring comparison product could not truthfully copy:
   `fetch`, no `fs`, no clock).
 - The visitor's real scene is a purchase decision: mid-research, often on a
   phone, comparing a handful of models and plans. Ignored models/plans, paid
-  plans and other answers are shareable through the URL today; `docs/pm/M2/todo/APP-601.md`
+  plans and other answers are shareable through the URL today; `docs/pm/M6/todo/APP-601.md`
   plans to persist them in `localStorage` under one versioned key
   namespace, `rack-rate:prefs:v1` (`apps/site/src/lib/prefs.ts`, not yet in the
   tree).
@@ -139,8 +139,8 @@ Analysis publication state (task 7.2b; an owner risk decision, `CAVEATS.md`
 MiniMax Coding Plan Plus's FX conversion; the Z.ai GLM international credit
 formula's output weight. These live in `known_gaps`, never as a guessed number.
 
-**Accessibility requirements already committed** (`docs/history/stages-4.md` 4.15 and the M2 acceptance in
-`docs/pm/M2/README.md`): keyboard traversal of every chart, table semantics, visible focus
+**Accessibility requirements already committed** (`docs/history/stages-4.md` 4.15 and the M6 acceptance in
+`docs/pm/M6/README.md`): keyboard traversal of every chart, table semantics, visible focus
 states, `prefers-reduced-motion` honoured, touch targets, no horizontal scroll
 at 360 px, text contrast ≥ 4.5:1.
 
@@ -155,7 +155,7 @@ at 360 px, text contrast ≥ 4.5:1.
   `/sources`; credit to Datacurve for DeepSWE methodology and results;
   Terminal-Bench / Harbor Hub; `real-api-pricing` by FeiZhuLulu as prior art
   only, with no figures copied; Lato under the SIL OFL 1.1 for the build-time
-  social card as it stands today — `docs/pm/M1/todo/UI-502.md` moves the
+  social card as it stands today — `docs/pm/M5/todo/UI-502.md` moves the
   card to IBM Plex and the Lato notice leaves with the font. When an AA value is ever published, §5.1 requires the Artificial
   Analysis logo visible on the chart plus a hyperlink, official terminology, and
   no implication of endorsement.
@@ -172,7 +172,7 @@ at 360 px, text contrast ≥ 4.5:1.
   refuses the category default — the dark card grid with a soft hero, a
   floating chart mock-up and three accent colours — and equally its opposite,
   the warm-cream editorial hero. `DESIGN.md` holds the durable system,
-  `docs/design/surfaces.md` the per-route layout, and `docs/pm/M1/README.md` the
+  `docs/design/surfaces.md` the per-route layout, and `docs/pm/M5/README.md` the
   sequencing; seed keys `8e5f39de` (world) and `4c59a482` (composition).
 - **Maker, not brand:** rack-rate is an independent product. Bosphorus Elevate
   is credited as its maker in the footer and on `/method`, and contributes no

@@ -201,7 +201,7 @@ binary.
 `.github/workflows/ci.yml` runs `check`, `test`, `data:check`, `data:build` and
 a guard that fails when the compute write path leaves `data/` dirty. It never
 fetches upstream and references no secrets. Deployment to GitHub Pages is
-PLAN stage 7 (`docs/pm/M3/README.md`).
+PLAN stage 7 (`docs/pm/M7/README.md`).
 
 ## Data CLI
 
@@ -268,7 +268,7 @@ the code-quality gate (typecheck, lint, formatting and site checks).
 
 ## Invariant index
 
-The full invariant text is in [AGENTS.md](../AGENTS.md), under “Invariants”.
+The full invariant text is in [AGENTS.md](AGENTS.md), under “Invariants”.
 This index keeps the load-bearing rules visible at the architecture boundary:
 
 1. `benchmark_version` is part of row identity; benchmark versions are never
@@ -285,12 +285,12 @@ This index keeps the load-bearing rules visible at the architecture boundary:
 7. Benchmark task content never belongs in this repository; metadata and scores
    only.
 8. Attribution is load-bearing; validation fails if required attribution
-   strings disappear. See [docs/data-sources.md](data-sources.md).
+   strings disappear. See [docs/data-sources.md](docs/data-sources.md).
 9. The site builds offline from committed data; CI does not fetch upstream.
 10. Artificial Analysis is off unless explicitly enabled with both
     `AA_API_KEY` and `AA_PUBLISH=1`; its values remain separately labelled and
     are never merged into a number that hides their origin. See
-    [CAVEATS.md §1](../CAVEATS.md#1-artificial-analysis--the-unresolved-one)
+    [CAVEATS.md §1](CAVEATS.md#1-artificial-analysis--the-unresolved-one)
     for the repository owner's unresolved position.
 
 ## Site configuration
@@ -1206,7 +1206,7 @@ intentional.
 
 > **Superseded, not deleted.** Stage 5 replaces this nine-token set, the type
 > scale and both anti-signal lists in this section with the Console Listing
-> system in `DESIGN.md` (`docs/pm/M1/README.md`, tasks 5.1–5.15). The values and contrast evidence
+> system in `DESIGN.md` (`docs/pm/M5/README.md`, tasks 5.1–5.15). The values and contrast evidence
 > below describe the implementation as it stood through Stage 4 and stay as that
 > stage's record. An implementer working on 5.1 or later reads `DESIGN.md`.
 

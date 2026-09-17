@@ -1,6 +1,6 @@
 # Surface layout: Divine Machinery
 
-This file specifies route composition and responsive behavior for the replacement visual world. It does not define the design system. Token names, values, typefaces, stroke grammar, and chart rules are defined in [`DESIGN.md`](../../DESIGN.md). This file uses those tokens by role and records only layout metrics and route behavior. Sequencing and implementation order belong in [`docs/pm/M1/README.md`](../pm/M1/README.md).
+This file specifies route composition and responsive behavior for the replacement visual world. It does not define the design system. Token names, values, typefaces, stroke grammar, and chart rules are defined in [`DESIGN.md`](../../DESIGN.md). This file uses those tokens by role and records only layout metrics and route behavior. Sequencing and implementation order belong in [`docs/pm/M5/README.md`](../pm/M5/README.md).
 
 The product is `rack-rate`. Bosphorus Elevate is credited as maker in the footer and on About copy; its photo treatment is not part of these surfaces. The shell and every route are a console listing: fixed columns, line-number gutters, a carriage-control state cell, and explicit provenance.
 

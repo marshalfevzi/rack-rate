@@ -18,7 +18,7 @@ leaves with a plan chosen and a cost per task understood.
 **Job.** Compare models across benchmark versions without mixing them, and price each
 model's work through a real plan allowance instead of a rate card. **Action.** Pick a
 plan and models; the URL carries the choice today and the planned
-`rack-rate:prefs:v1` store (`docs/pm/M2/todo/APP-601.md`) will carry it across visits.
+`rack-rate:prefs:v1` store (`docs/pm/M6/todo/APP-601.md`) will carry it across visits.
 **Proof.** Committed `data/*.json` only: every figure carries a basis, a confidence mark,
 a source and a `retrieved` date. No invented proof exists on this site and none may be
 added: no users, no testimonials, no logos, no traffic, no endorsement.
