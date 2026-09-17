@@ -1221,6 +1221,8 @@ intentional.
 > system in `DESIGN.md` (`docs/pm/M5/README.md`, tasks 5.1–5.15). The values and contrast evidence
 > below describe the implementation as it stood through Stage 4 and stay as that
 > stage's record. An implementer working on 5.1 or later reads `DESIGN.md`.
+> Task UI-501 landed that replacement; the section's last subsection is the
+> stage-5 record of what `global.css` now ships.
 
 `apps/site/src/styles/global.css` is the single CSS entry: one
 `@import "tailwindcss"`, one `@theme`, and one `@layer base`. The dark scheme
@@ -1338,6 +1340,120 @@ plan-adjusted cost basis.
 
 Numbers are recomputed from the shipped hexes with WCAG 2.x relative
 luminance; they are not estimates.
+
+### Stage 5 record — the Console Listing tokens (task UI-501)
+
+`apps/site/src/styles/global.css` is still the single CSS entry: one
+`@import "tailwindcss"`, one `@theme`, and one `@layer base`. Adding
+`--color-*: initial` to `@theme` removes Tailwind's default palette, so the ten
+names below are the only colour tokens the site ships. The light scheme is a
+values-only inversion — `@media (prefers-color-scheme: light) { :root { … } }`
+re-declares the same ten names in the same order and changes no structure, no
+utility and no geometry. `DESIGN.md` owns every value; this subsection is the
+record of what landed and of the contrast recomputed from it.
+
+| Token                 | Dark      | Light     | Semantic role                                                                       |
+| --------------------- | --------- | --------- | ----------------------------------------------------------------------------------- |
+| `--color-canvas`      | `#0b0c0e` | `#f4f5f6` | page ground                                                                         |
+| `--color-panel`       | `#121417` | `#ffffff` | panel, table body and input ground                                                  |
+| `--color-panel-2`     | `#171a1e` | `#edeef0` | status band, lane rail, table head and readout; the binding ground for both schemes |
+| `--color-rule`        | `#262a30` | `#d6d9dd` | structural 1px rule                                                                 |
+| `--color-rule-strong` | `#3a4048` | `#b7bcc3` | 2px section and table-head rule                                                     |
+| `--color-ink`         | `#e8eaed` | `#14171a` | primary text                                                                        |
+| `--color-dim`         | `#9aa2ab` | `#5a6169` | secondary text                                                                      |
+| `--color-faint`       | `#808790` | `#646b72` | tertiary labels                                                                     |
+| `--color-signal`      | `#ffb020` | `#8f4e00` | the one signal: active lane plate, focus ring, caret, committed mark                |
+| `--color-on-signal`   | `#0b0c0e` | `#14171a` | text on the `#ffb020` signal plate                                                  |
+
+`--color-faint` is label-only: uppercase mono legends at 11px and above.
+`--color-panel-2` is the binding ground for both schemes, so a text token clears
+4.5:1 against the band, not only against the canvas.
+
+| Scheme | Pair                            |  Canvas |   Panel | Panel-2 | Floor        | Verdict          |
+| ------ | ------------------------------- | ------: | ------: | ------: | ------------ | ---------------- |
+| dark   | `--color-ink` `#e8eaed`         | 16.24:1 | 15.31:1 | 14.48:1 | 4.5:1 text   | pass             |
+| dark   | `--color-dim` `#9aa2ab`         |  7.58:1 |  7.14:1 |  6.76:1 | 4.5:1 text   | pass             |
+| dark   | `--color-faint` `#808790`       |  5.39:1 |  5.08:1 |  4.81:1 | 4.5:1 text   | pass, label-only |
+| dark   | `--color-signal` `#ffb020`      | 10.70:1 | 10.09:1 |  9.55:1 | 3:1 non-text | pass             |
+| dark   | `--color-rule` `#262a30`        |  1.36:1 |  1.28:1 |  1.21:1 | none         | structure        |
+| dark   | `--color-rule-strong` `#3a4048` |  1.87:1 |  1.76:1 |  1.67:1 | none         | structure        |
+| light  | `--color-ink` `#14171a`         | 16.48:1 | 17.99:1 | 15.50:1 | 4.5:1 text   | pass             |
+| light  | `--color-dim` `#5a6169`         |  5.75:1 |  6.27:1 |  5.40:1 | 4.5:1 text   | pass             |
+| light  | `--color-faint` `#646b72`       |  4.95:1 |  5.40:1 |  4.65:1 | 4.5:1 text   | pass, label-only |
+| light  | `--color-signal` `#8f4e00`      |  5.91:1 |  6.45:1 |  5.55:1 | 3:1 non-text | pass             |
+| light  | `--color-rule` `#d6d9dd`        |  1.30:1 |  1.42:1 |  1.22:1 | none         | structure        |
+| light  | `--color-rule-strong` `#b7bcc3` |  1.75:1 |  1.91:1 |  1.65:1 | none         | structure        |
+
+`--color-rule` and `--color-rule-strong` are structure and carry no threshold.
+The tightest text pair in the whole matrix is `--color-faint` on
+`--color-panel-2` — `#808790` on `#171a1e`, and `#646b72` on `#edeef0` in light
+— and it still clears the 4.5:1 text floor; every text pair in both schemes
+clears it. `--color-on-signal` never sits on a neutral ground: paired with the
+`#ffb020` plate it measures 10.70:1 in dark and 9.84:1 in light.
+
+`--signal-plate` is the one derived colour property, declared in `@layer base`
+as `var(--color-signal)` in dark and as the literal `#ffb020` in light. It is
+not an eleventh `--color-*` token and is not part of `@theme`. In light,
+`--color-on-signal` (`#14171a`) on the mark `--color-signal` (`#8f4e00`)
+measures 2.79:1 and cannot carry text, while the same text on the `#ffb020`
+plate measures 9.84:1; the fixed plate is what keeps selection legible once the
+mark darkens for contrast on light grounds. `::selection` therefore pairs
+`--signal-plate` with `--color-on-signal` in both schemes.
+
+The type scale is `--text-*: initial` plus six steps. The `--text-*` namespace
+cannot carry a face, so each step's face is paired at the call site —
+`font-mono` with `text-micro` and `text-data`, the sans default with the rest.
+
+| Step             | Size               | Line-height | Tracking            | Weight | Face      |
+| ---------------- | ------------------ | ----------- | ------------------- | ------ | --------- |
+| `--text-micro`   | `0.6875rem` (11px) | 16px        | `0.08em` (0.88px)   | 500    | Plex Mono |
+| `--text-meta`    | `0.8125rem` (13px) | 19px        | normal              | 400    | Plex Sans |
+| `--text-body`    | `0.9375rem` (15px) | 24px        | normal              | 400    | Plex Sans |
+| `--text-data`    | `0.875rem` (14px)  | 20px        | normal              | 400    | Plex Mono |
+| `--text-title`   | `1.25rem` (20px)   | 25px        | normal              | 600    | Plex Sans |
+| `--text-display` | `2rem` (32px)      | 36px        | `-0.02em` (-0.64px) | 600    | Plex Sans |
+
+`--font-sans` and `--font-mono` are role names at this stage and still carry
+their previous fallback stacks, so the face column names the `DESIGN.md` role
+rather than a family measured from this build: task UI-502 sets both stacks,
+the five `@font-face` rules and the woff2 files.
+
+The browser's own surfaces are themed from the same tokens, not left at their
+defaults. `:root` sets `color-scheme`, `caret-color: var(--color-signal)`,
+`scrollbar-color: var(--color-rule-strong) var(--color-panel-2)` and
+`text-underline-offset: 2px`; `::-webkit-scrollbar-track` paints
+`--color-panel-2` and `::-webkit-scrollbar-thumb` paints
+`--color-rule-strong`. `:focus-visible` becomes
+`outline: 2px solid var(--color-signal)` with `outline-offset: 2px`, replacing
+the Stage 4 ink ring. Measured from the built preview at
+`http://localhost:4321/rack-rate/method/`: the caret computes
+`rgb(255, 176, 32)` in dark and `rgb(143, 78, 0)` in light; `scrollbar-color`
+computes `rgb(58, 64, 72) rgb(23, 26, 30)` in dark and
+`rgb(183, 188, 195) rgb(237, 238, 240)` in light; a real `Tab` keystroke lands
+on the skip link with `:focus-visible` matched and the ring computing
+`2px solid rgb(255, 176, 32)` in dark and `2px solid rgb(143, 78, 0)` in light,
+offset `2px` in both; `text-underline-offset` computes `2px`; and
+`::selection` computes an `rgb(255, 176, 32)` background in both schemes with
+`rgb(11, 12, 14)` text in dark and `rgb(20, 23, 26)` text in light.
+
+Motion is unchanged: one `--default-transition-duration: 150ms`, one
+`--default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1)`, the named
+`--ease-standard` on the same curve, and the
+`@media (prefers-reduced-motion: reduce)` block byte-identical to Stage 4.
+
+One Tailwind v4 emission note, since `--color-*: initial` now mirrors the
+existing `--text-*: initial`. Tailwind emits only the theme variables an
+emitted utility consumes, and pruning behaves identically in both namespaces:
+the built CSS at stage 5 declares nine of the ten colours — `--color-faint` is
+absent because no utility uses it yet — and four of the six type steps,
+omitting `--text-micro` and `--text-data` for the same reason, exactly as the
+stage-4 record already documents for `--ease-standard`. The names are declared
+in source and appear in the output the moment UI-502 and its successors pair a
+label with `--color-faint` and the two mono steps. Across the whole built
+stylesheet the unique `--color-*` name set is exactly the ten frozen names, with
+no retired accent name and no default-palette variable, and
+`.text-adjusted`, `.border-adjusted`, `.text-api-ink` and `.decoration-api-ink`
+no longer exist in the output.
 
 ## Social card
 

@@ -399,9 +399,9 @@ milestones:
       - id: UI-501
         title: Token foundation and scheme inversion
         description: "Token foundation and scheme inversion. Files: apps/site/src/styles/global.css. Work: replace the nine incumbent tokens (canvas, panel, rule, ink, dim, adjusted, measured, api, api-ink) with the frozen ten, adding panel-2, rule-strong..."
-        status: todo
+        status: done
         pre: []
-        file: docs/pm/M5/todo/UI-501.md
+        file: docs/pm/M5/done/UI-501.md
         impeccable: true
       - id: UI-502
         title: Self-hosted IBM Plex, its licence, and the two generated assets
